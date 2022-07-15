@@ -1,3 +1,4 @@
+import { DeploymentVoucherFormComponent } from './../../../deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
 import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
@@ -22,6 +23,7 @@ import { ContactAllListComponent } from '../../../contact/contact-all-list/conta
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { BehaviorSubject } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 
 declare const openDatabase;
 
@@ -2137,6 +2139,50 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     this.historyOrderIndex = this.historyOrders.length - 1;
 
     (document.activeElement as HTMLElement).blur();
+  }
+
+  openDeploymentForm(orderForm: FormGroup) {
+    const orderData: CommercePosOrderModel = orderForm.getRawValue();
+    this.commonService.openDialog(DeploymentVoucherFormComponent, {
+      context: {
+        printDialog: CommercePosDeploymentVoucherPrintComponent,
+        data: [
+          {
+            ...orderData,
+            Code: null,
+            Title: `Triển khai cho đơn hàng POS ${orderData.Code}, khách hàng: ${orderData.ObjectName}`,
+            DeploymentDate: new Date(),
+            RelativeVouchers: [{
+              type: 'COMMERCEPOSORDER',
+              id: orderData.Code,
+              text: orderData.Title || `Đơn hàng POS - ${orderData.Code}`,
+            }],
+            Details: orderData.Details.map(detail => {
+              detail.Product = {
+                id: this.commonService.getObjectId(detail.Product),
+                text: this.commonService.getObjectText(detail.Product),
+              } as any;
+              return detail;
+            })
+          }
+        ],
+        onDialogSave(newData) {
+          const relativeVouchers = orderForm.get('RelativeVouchers');
+          const relativeVouchersData: any[] = relativeVouchers.value || [];
+          if (relativeVouchersData.findIndex(f => f.id == newData[0].Code) < 0) {
+            relativeVouchersData.push({
+              type: 'DEPLOYMENT',
+              id: newData[0].Code,
+              text: newData[0].Title
+            });
+          }
+        },
+      }
+    })
+  }
+
+  preview(type: string, id: string) {
+    this.commonService.previewVoucher(type, id);
   }
 
   playNewPipSound() {

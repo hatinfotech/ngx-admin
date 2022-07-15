@@ -36,10 +36,10 @@ export class DeploymentVoucherDetailModel extends Model  {
   No?: number;
   Type?: string;
   Product?: string & ProductModel;
-  Description: string;
-  Quantity: number;
-  Price: number & string;
-  Unit: string & UnitModel;
+  Description?: string;
+  Quantity?: number;
+  Price?: number & string;
+  Unit?: string & UnitModel;
   Image?: string;
   RelateDetail?: string;
 }

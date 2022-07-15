@@ -24,9 +24,9 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   componentName = 'CommercePosReturnsPrintComponent';
   title: string = 'In bill';
   env = environment;
-  apiPath = '/warehouse/find-order-tems';
+  apiPath = '/commerce-pos/returns';
   processMapList: ProcessMap[] = [];
-  idKey: ['Code', 'WarehouseUnit', 'Container'];
+  idKey: ['Code'];
   // formDialog = WarehouseGoodsFormComponent;
 
   @Input() skipPreview: boolean;

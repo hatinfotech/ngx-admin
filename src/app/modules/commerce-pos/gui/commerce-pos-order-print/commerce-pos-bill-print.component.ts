@@ -23,9 +23,9 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   componentName = 'CommercePosBillPrintComponentZ';
   title: string = 'In bill';
   env = environment;
-  apiPath = '/warehouse/find-order-tems';
+  apiPath = '/commerce-pos/orders';
   processMapList: ProcessMap[] = [];
-  idKey: ['Code', 'WarehouseUnit', 'Container'];
+  idKey: ['Code'];
   // formDialog = WarehouseGoodsFormComponent;
 
   @ViewChild('paymentBtn') paymentBtn: ElementRef;
@@ -330,7 +330,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.print(0);
           this.close();
         } else {
-          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning'});
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
 

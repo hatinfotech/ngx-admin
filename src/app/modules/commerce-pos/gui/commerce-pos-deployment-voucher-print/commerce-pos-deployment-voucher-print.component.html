@@ -1,0 +1,154 @@
+<div class="dialog-wrap" #dialogWrap>
+    <nb-card [nbSpinner]="loading" *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 92mm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Deployment.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area">
+                <div class="bill">
+                    <div class="bill-header">
+                        <div class="bill-register-info">
+                            <div class="bill-register-logo"><img [src]="registerInfo.voucherLogo"></div>
+                            <div class="bill-register-name">{{registerInfo.companyName}}</div>
+                            <div class="bill-register-tax-code" *ngIf="registerInfo.companyTaxCode">MST: {{registerInfo.companyTaxCode}}</div>
+                            <div class="bill-register-email" *ngIf="registerInfo.email">Email: {{registerInfo.email}}</div>
+                            <div class="bill-register-website" *ngIf="registerInfo.website">Website: {{registerInfo.website}}</div>
+                            <div class="bill-register-tel" *ngIf="registerInfo.tel">ĐT: {{registerInfo.tel}}</div>
+                            <div class="bill-register-address" *ngIf="registerInfo.address">ĐC: {{registerInfo.address}}</div>
+                        </div>
+                        <div class="bill-title">PHIẾU TRIỂN KHAI<br>KIÊM PHIẾU GIAO HÀNG</div>
+                        <div class="bill-info">{{data.Code}} - {{data.DeploymentDate | date:'short'}}</div>
+                        <div class="barcode" style="text-align: center;">
+                            <img src="{{data.BarCode}}">
+                        </div>
+                        <div class="bill-head-info">
+                            <div class="bill-object-name">Khách hàng: {{data.ObjectName || ''}}</div>
+                            <div class="bill-object-phone">Số điện thoại: {{data.ObjectPhone || ''}}</div>
+                            <div class="bill-object-address">Địa chỉ: {{data.ObjectAddress || ''}}</div>
+                            <div class="bill-object-email">Email: {{data.ObjectEmail || ''}}</div>
+                        </div>
+                    </div>
+
+                    <div class="font-large">
+                        <div>
+                            <table style="width: 100%;" class="print-voucher-detail-table">
+                                <thead class="print-voucher-detail-header">
+                                    <td>#</td>
+                                    <td>{{'Mô tả' | translate | headtitlecase}}</td>
+                                    <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
+                                    <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                                </thead>
+                                <ng-container *ngFor="let detail of data.Details; let i = index;">
+                                    <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
+                                        <td colspan="7" [innerHTML]="detail.Description"></td>
+                                    </tr>
+                                    <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
+                                        <td style="padding-top: 0.5rem; padding-bottom: 0.5rem; font-size: 1.5rem; line-height: 2rem;">{{detail.No}}</td>
+                                        <td style="padding-top: 0.5rem; padding-bottom: 0.5rem;"><span style="font-size: 1.5rem !important; line-height: 1.5rem; font-weight: bold;" [innerHTML]="detail.Description"></span><br>
+                                            <span style="font-size: 1rem; font-style: italic;">
+                                                <span style="font-size: 1.5rem !important; line-height: 1.5rem; font-weight: bold;">SKU: {{detail.Sku}}</span>
+                                            </span>
+                                        </td>
+                                        <td class="text-align-right" style="font-size: 2.8rem !important; font-weight: bold; line-height: 3.6rem !important; padding-top: 0.5rem; padding-bottom: 0.5rem;">{{detail.Quantity | number}}</td>
+                                        <td class="text-align-right" style="font-size: 1.5rem !important; font-weight: bold; padding-top: 0.5rem; padding-bottom: 0.5rem;">{{detail.Unit | objecttext}}</td>
+                                    </tr>
+                                </ng-container>
+                                <tr>
+                                    <td colspan="4">{{'Common.note' | translate | headtitlecase}}: <span [innerHTML]="renderValue(data.Note)"></span></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- <div class="under-line" *ngIf="data.Note"><span [innerHTML]="renderValue(data.Note)"></span></div> -->
+                    <div class="font-large">
+                        <div style="display: flex;">
+                            <div *ngIf="data.MapUrlQrCode">
+                                <img style="margin-right: 0.5rem;" [src]="data.MapUrlQrCode">
+                                <div style="line-height: 1rem !important; padding-bottom: 0.8rem;">Tọa độ<br>google maps</div>
+                            </div>
+                            <div style="flex: 1;">
+                                <div>
+                                    <div class="under-line" style="font-size: 1.5rem !important;
+                            font-weight: bold;
+                            line-height: 2rem !important;">{{'Sales.deliveryAddress' | translate | headtitlecase}}:<br>
+                                        {{renderValue(data.DeliveryAddress)}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size: 1.5rem !important; font-weight: bold; line-height: 2.5rem !important;" class="under-line">{{'Người nhận hàng' | translate | headtitlecase}}:<br>
+                                {{renderValue(data.DirectReceiverName)}}
+                            </div>
+                            <div class="under-line" style="font-size: 1.5rem !important; font-weight: bold; line-height: 2.5rem !important;">{{'SĐT Người nhận hàng' | translate | headtitlecase}}:<br>
+                                {{renderValue(data.DirectReceiverPhone)}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="font-large">
+                        <div>
+                            <div class="under-line">{{'Tài xế' | translate | headtitlecase}} :
+                                {{renderValue(data.DriverName)}} ({{renderValue(data.Driver | objecttext)}})
+                            </div>
+                            <div class="under-line">{{'SĐT tài xế' | translate | headtitlecase}} :
+                                {{renderValue(data.DriverPhone)}}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="under-line">{{'Bên thoanh toán' | translate | headtitlecase}} :
+                                {{renderValue(data.ShippingCostPaymentBy | objecttext)}}
+                            </div>
+                            <div class="under-line">{{'Phí vận chuyển' | translate | headtitlecase}} :
+                                {{renderValue(data.ShippingCost | currency:'VND')}}
+                            </div>
+                            <div class="under-line">{{'Tỷ lệ thanh toán' | translate | headtitlecase}} :
+                                {{renderValue(data.ShippingCostPaymentRatio | number)}}%
+                            </div>
+                        </div>
+                    </div>
+                    <div class="font-large" style="display: flex; flex-wrap: wrap">
+                        <div class="bill-footer-info" style="text-align: center; flex: 0 0 50%; height: 200px;">
+                            <br> Người triển khai<br>Giao hàng
+                        </div>
+                        <div class="bill-footer-info" style="text-align: center; flex: 0 0 50%; height: 200px;">
+                            <br> Người nghiệm thu<br>Nhận hàng
+                        </div>
+                    </div>
+
+                    <div class="bill-footer" style="text-align: left;">
+                        <div style="font-style: italic; padding-top: 3px; padding-bottom: 3px; font-weight: bold; font-size: 14px;">Cảm ơn Quý Khách và hẹn gặp lại</div>
+                        <div>Phiếu được in từ phần mềm<br>ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
+            <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
+                <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+                <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+            </span>
+        </nb-card-footer>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
+                    <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+                </button>
+                <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="prepareCopy(data);" style="float: left">
+                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                </button>
+                <!-- <button *ngIf="mode === 'print'" nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+
+                <!--State process buttons-->
+                <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward-outline'}}"></nb-icon></button>
+                <!--End State process buttons-->
+
+                <button *ngIf="mode === 'print' && data.State === 'APPROVED'" nbButton hero status="success" (click)="receipt(data);">
+                    {{'Sales.receipt' | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward-outline"></nb-icon>
+                </button>
+                <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>

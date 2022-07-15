@@ -1,3 +1,4 @@
+import { CommercePosBillPrintComponent } from './../modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosOrderPrintComponent } from './../modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';
 import { diacritic } from './../lib/diacritic';
 import { timezones } from './../lib/timezones';
@@ -57,6 +58,8 @@ import { CollaboratorEducationArticlePrintComponent } from '../modules/collabora
 import { SalesReturnsVoucherPrintComponent } from '../modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
 import { CommercePosReturnPrintComponent } from '../modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 import { DataManagerPrintComponent } from '../lib/data-manager/data-manager-print.component';
+import { CommercePosDeploymentVoucherPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
+import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 
 interface ClipboardItem {
   readonly types: string[];
@@ -956,7 +959,10 @@ export class CommonService {
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
     'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
+    'COMMERCEPOSORDER80': CommercePosBillPrintComponent,
+    'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
+    'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {

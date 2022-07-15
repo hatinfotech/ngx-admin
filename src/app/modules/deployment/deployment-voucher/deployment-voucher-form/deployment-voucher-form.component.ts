@@ -1,6 +1,6 @@
 import { ProductUnitModel } from './../../../../models/product.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Type } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -31,6 +31,7 @@ import { ChatRoomModel } from '../../../../models/chat-room.model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
+import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 
 @Component({
   selector: 'ngx-deployment-voucher-form',
@@ -47,7 +48,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
   env = environment;
   previewAfterCreate = true;
-  printDialog = DeploymentVoucherPrintComponent;
+  @Input() printDialog: Type<DataManagerPrintComponent<DeploymentVoucherModel>> = DeploymentVoucherPrintComponent;
 
   locale = this.commonService.getCurrentLoaleDataset();
   priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
@@ -691,12 +692,12 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       // RequireInvoice: [false],
 
       // Transport
-      Transportation: [],
-      Driver: [],
-      DriverName: [],
+      Transportation: [null,  Validators.required],
+      Driver: [null, Validators.required],
+      DriverName: [null, Validators.required],
       DriverPhone: [],
       ShippingCost: [],
-      ShippingCostPaymentBy: [],
+      ShippingCostPaymentBy: [null, Validators.required],
       ShippingCostPaymentRatio: [100],
       DirectReceiverName: [],
       DirectReceiverPhone: [],
