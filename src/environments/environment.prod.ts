@@ -6,6 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
   version: '6.1.5.2',
+  // 6.1.5.2:   warehouse: expired and out of stock report anh notification
   // 6.1.5:     Dev sale, purchase, warehouse dashboard
   // 6.1.4:     Update pos search offline data
   // 6.1.3:     Update cost of goods sold calculate
