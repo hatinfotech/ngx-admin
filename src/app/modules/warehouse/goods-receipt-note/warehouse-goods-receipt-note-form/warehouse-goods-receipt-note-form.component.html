@@ -166,7 +166,7 @@
                             <div class="col-sm-2 label">
                                 {{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
                             <div class="col-sm-3 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
-                            <div class="col-sm-5 label">
+                            <div class="col-sm-4 label">
                                 <div class="row">
                                     <div class="col-sm-3 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
                                     <div class="col-sm-7 label">{{'Warehouse.container' | translate | headtitlecase}}</div>
@@ -176,14 +176,15 @@
                                     <!-- <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div> -->
                                 </div>
                             </div>
-                            <div class="col-sm-2 label">
+                            <div class="col-sm-3 label">
                                 <div class="row">
-                                    <div class="col-sm-12 label align-right">{{'Warehouse.accessNumber' | translate | headtitlecase}}</div>
+                                    <div class="col-lg-6 label">{{'Warehouse.accessNumber' | translate | headtitlecase}}</div>
+                                    <div class="col-lg-6 label">{{'Ngày SX/Hạn SD' | translate | headtitlecase}}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }" (sortablejsInit)="sortablejsInit($event, getDetails(formItem).controls)">
+                        <div formArrayName="Details" class="form-details">
                             <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail" [ngClass]="{'category': getFieldValue(detail, 'Type') == 'CATEGORY'}">
                                 <hr>
                                 <div class="row">
@@ -237,7 +238,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
@@ -268,10 +269,30 @@
                                             <!-- <input type="hidden" nbInput fullWidth formControlName="AccessNumbers"> -->
                                         </div>
                                     </div>
-                                    <div class="col-lg-2 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
-                                            <textarea [attr.disabled]="getFieldValue(detail, 'Type') == 'PRODUCT' && !detail['IsManageByAccessNumber'] ? true : null" class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất sẽ được phát sinh tự động' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
-                                        </ngx-form-group>
+                                    <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AccessNumbers" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <textarea [attr.disabled]="getFieldValue(detail, 'Type') == 'PRODUCT' && !detail['IsManageByAccessNumber'] ? true : null" class="scrollable-container" nbInput fullWidth formControlName="AccessNumbers" [placeholder]="getFieldValue(detail, 'Type') == 'PRODUCT' && detail['IsManageByAccessNumber'] ? 'Số truy xuất sẽ được phát sinh tự động' : 'Hàng hóa không quản lý theo số truy xuất'" style="height: 88px" #accessNumbers (change)="onSelectAccessNumbers(detail, $event, true, accessNumbers)" (keyup)="onSelectAccessNumbers(detail, $event, false, accessNumbers)"></textarea>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="DateOfManufacture" label="Ngày sản xuất" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                            <input type="text" [owlDateTime]="DateOfManufacture" [owlDateTimeTrigger]="DateOfManufacture" nbInput fullWidth formControlName="DateOfManufacture" placeholder="{{'Ngày sản xuất' | translate | headtitlecase}}">
+                                                            <owl-date-time #DateOfManufacture [pickerType]="'calendar'" [startAt]="formItem.get('DateOfManufacture')?.value"></owl-date-time>
+                                                        </ngx-form-group>
+                                                    </div>
+                                                    <div class="col-lg-12">
+                                                        <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ExpiryDate" label="Hạn sử dụng" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                            <input type="text" [owlDateTime]="ExpiryDate" [owlDateTimeTrigger]="ExpiryDate" nbInput fullWidth formControlName="ExpiryDate" placeholder="{{'Hạn sử dụng' | translate | headtitlecase}}">
+                                                            <owl-date-time #ExpiryDate [pickerType]="'calendar'"     [startAt]="formItem.get('ExpiryDate')?.value"></owl-date-time>
+                                                        </ngx-form-group>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

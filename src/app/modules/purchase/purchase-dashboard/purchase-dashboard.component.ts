@@ -454,11 +454,11 @@ export class PurchaseDashboardComponent implements OnDestroy {
     //   this.topEmployeeList = rs;
     //   console.log(rs);
     // });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplier: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplier: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
       this.topSupplierList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
       this.topGoodsList = rs;
       console.log(rs);
     });
@@ -536,10 +536,10 @@ export class PurchaseDashboardComponent implements OnDestroy {
         //   pointHoverRadius: 10,
         // },
         {
-          label: 'Nua hàng',
+          label: 'Mua hàng',
           data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.success,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+          borderColor: this.colors.primary,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },

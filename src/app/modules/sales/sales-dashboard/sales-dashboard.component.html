@@ -1,31 +1,17 @@
 <div class="page-deskboard">
 
   <div class="row">
-    <div class="col-xxxl-3 col-md-3 col-sm-6">
-      <nb-card class="status-card">
-        <div class="icon-container">
-          <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/summary'])">
-            <!-- <i [ngClass]="'nb-lightbulb'"></i> -->
-            <nb-icon icon="cube" pack="eva"></nb-icon>
-          </div>
-        </div>
-        <div class="details">
-          <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">{{summaryReport?.PurchaseAmount | currency:'VND'}}</div>
-        </div>
-      </nb-card>
-    </div>
 
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-danger" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
-            <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
+          <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="android-cart" pack="ion"></nb-icon>
           </div>
         </div>
         <div class="details">
-          <div class="title h5">Chi phí bán hàng</div>
-          <div class="status paragraph-2" style="font-weight: bold; color: var(--danger); font-size: 1rem;">{{summaryReport?.PurchaseCost | currency:'VND'}}</div>
+          <div class="title h5">Doanh thu</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--success); font-size: 1rem;">{{summaryReport?.Revenues | currency:'VND'}}</div>
           <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--danger)">Giá vốn: {{summaryReport?.CostOfGoodsSold | currency:'VND'}}</div> -->
           <!-- <div class="status paragraph-2" style="font-weight: bold; color: var(--warning)">Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div> -->
         </div>
@@ -35,13 +21,28 @@
     <div class="col-xxxl-3 col-md-3 col-sm-6">
       <nb-card class="status-card">
         <div class="icon-container">
-          <div class="icon status-success" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
+          <div class="icon status-warning" (click)="this.commonService.router.navigate(['accounting/report/profit-report'])">
             <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
           </div>
         </div>
         <div class="details">
-          <div class="title h5">Chiết khấu thương mại</div>
-          <div style="font-weight: bold; color: var(--success)">{{summaryReport?.CommerceDiscount | currency:'VND'}}</div>
+          <div class="title h5">Giảm doanh thu</div>
+          <div class="status paragraph-2" style="font-weight: bold; font-size: 1rem; color: var(--warning)">Trả hàng: {{summaryReport?.DecreaseRevenuesByReturns | currency:'VND'}}</div>
+          <div class="status paragraph-2" style="font-weight: bold; font-size: 1rem; color: var(--primary)">Giảm giá: {{summaryReport?.DecreaseRevenuesByDiscount | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.commonService.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="cube" pack="ion"></nb-icon>
+          </div>
+        </div>
+        <div class="details">
+          <div class="title h5">Công nợ</div>
+          <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">{{summaryReport?.CustomerReceivableDebt | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -56,12 +57,13 @@
         <div class="details">
           <div class="title h5">Các chỉ số</div>
           <div class="status paragraph-2" style="font-weight: bold; color: var(--primary); font-size: 1rem;">
-            <div>Quá hạn: 7%</div>
-            <div>Mới nhập: 11%</div>
+            <div>Tỷ lệ trả hàng: 2%</div>
+            <div>Tỷ lệ thu hồi vốn: 91%</div>
           </div>
         </div>
       </nb-card>
     </div>
+
   </div>
 
   <div class="row">
@@ -116,29 +118,29 @@
       <!-- <ngx-commerce-pos-most-of-revenus [topCustomerList]="topCustomerList" [topGoodsList]="topGoodsList"></ngx-commerce-pos-most-of-revenus> -->
       <nb-card size="giant" class="same-height-chart" style="height: 562px">
         <nb-tabset fullWidth>
-          <nb-tab tabTitle="TOP KH">
+          <nb-tab tabTitle="TOP NV">
             <nb-list class="scrollable-container">
-              <nb-list-item class="contact" *ngFor="let c of topSupplierList">
-                <nb-user [picture]="c.ObjectAvatar?.Thumbnail" [name]="c.ObjectName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
+              <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>
 
-          <!-- <nb-tab tabTitle="TOP HH">
+          <nb-tab tabTitle="TOP KH">
             <nb-list class="scrollable-container">
-              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+              <nb-list-item class="contact" *ngFor="let c of topCustomerList">
                 <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab> -->
+          </nb-tab>
 
           <nb-tab tabTitle="TOP HH">
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
                 <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
-                <span style="flex: 1;" class="caption">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
+                <span style="flex: 1;" class="caption">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>
@@ -150,6 +152,13 @@
     <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
       <nb-card class="size-giant chart small-header" style="height: 562px">
         <nb-tabset fullWidth>
+          <nb-tab tabTitle="Hoạt động bán hàng">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
           <!-- <nb-tab tabTitle="Hàng hóa">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
@@ -157,24 +166,17 @@
               </nb-card-body>
             </nb-card>
           </nb-tab> -->
-          <nb-tab tabTitle="Hoạt động mua hàng">
+          <!-- <nb-tab tabTitle="Dòng tiền thuần">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
-                <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
-              </nb-card-body>
-            </nb-card>
-          </nb-tab>
-          <!-- <nb-tab tabTitle="Tồn kho">
-            <nb-card class="size-giant chart small-header">
-              <nb-card-body class="commission-statistics-wrapper">
-                <chart type="line" [data]="inventoryStatisticsData" [options]="options"></chart>
+                <chart type="line" [data]="cashFlowStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab> -->
-          <nb-tab tabTitle="Nhóm hàng hóa">
+          <nb-tab tabTitle="Công nợ">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
-                <chart type="pie" [data]="goodsGroupsStatisticsData" [options]="pieOption"></chart>
+                <chart type="line" [data]="debtStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>

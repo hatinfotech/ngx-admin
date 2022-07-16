@@ -58,7 +58,7 @@
                           font-weight: bold;
                           font-size: 16px;">{{detail.Container.FindOrder}}</div>
                           <div class="barcode" style="flex: 1;">
-                            <img (click)="printContainerTemp(detail)" style="margin-left: 5px; cursor: pointer;" [src]="detail.BarCode">
+                            <img nbTooltip="Click vào để in tem vị trí" (click)="printContainerTemp(detail)" style="margin-left: 5px; cursor: pointer;" [src]="detail.BarCode">
                           </div>
                         </div>
                         <div style="display: flex;">
@@ -76,7 +76,11 @@
                       </div>
                     </div>
                   </td>
-                  <td><span style="font-size: 10px;">{{detail.AccessNumbers | objectsid}}</span></td>
+                  <td>
+                    <div *ngIf="detail.DateOfManufacture">NSX: {{detail.DateOfManufacture | date:'shortDate'}}</div>
+                    <div *ngIf="detail.ExpiryDate">HSD: {{detail.ExpiryDate | date:'shortDate'}}</div>
+                    <span style="font-size: 10px;">{{detail.AccessNumbers | objectsid}}</span>
+                  </td>
                   <td class="text-align-right" style="font-weight: bold;
                   font-size: 24px;
                   line-height: 32px;">{{renderValue(detail.Quantity) | number}}</td>

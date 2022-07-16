@@ -19,5 +19,6 @@ export interface NotificationModel {
     Receivers?: string;
     Sender?: {id: string, text: string, avatar: string};
     Data?: any;
+    Path?: string;
     Picture?: string,
 }

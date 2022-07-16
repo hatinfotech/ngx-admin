@@ -265,7 +265,6 @@ import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-
 import { CommercePosReturnPrintComponent } from './modules/commerce-pos/commerce-pos-return/commerce-pos-return-print/commerce-pos-return-print.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
-import { CommercePosDashboardStatisticsComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard-statistics.component';
 import { CommercePosDeploymentVoucherPrintComponent } from './modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
@@ -532,7 +531,7 @@ export class DynamicLocaleId extends String {
     CommercePosReturnListComponent,
     CommercePosReturnPrintComponent,
     CommercePosDashboardComponent,
-    CommercePosDashboardStatisticsComponent,
+    // CommercePosDashboardStatisticsComponent,
     CommercePosDeploymentVoucherPrintComponent,
 
     // Ag-Grid components

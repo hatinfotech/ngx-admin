@@ -116,29 +116,39 @@
       <!-- <ngx-commerce-pos-most-of-revenus [topCustomerList]="topCustomerList" [topGoodsList]="topGoodsList"></ngx-commerce-pos-most-of-revenus> -->
       <nb-card size="giant" class="same-height-chart" style="height: 562px">
         <nb-tabset fullWidth>
-          <nb-tab tabTitle="TOP Offline">
+
+          <nb-tab tabTitle="Sắp hết hàng">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsOutOfStockSoonList">
+                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.UnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ c.Inventory }} {{c.UnitLabel}}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="Sắp hết hạn">
+            <nb-list class="scrollable-container">
+              <nb-list-item class="contact" *ngFor="let c of topGoodsExpiredSoonList">
+                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.UnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ c.ExpiryDate | date:'shortDate' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <!-- <nb-tab tabTitle="Sắp hết hàng">
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </nb-tab> -->
 
-          <nb-tab tabTitle="TOP Online">
+          <!-- <nb-tab tabTitle="Sắp hết hạn">
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topCustomerList">
                 <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
-              </nb-list-item>
-            </nb-list>
-          </nb-tab>
-
-          <!-- <nb-tab tabTitle="TOP HH">
-            <nb-list class="scrollable-container">
-              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
-                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
-                <span style="flex: 1;" class="caption">{{ c.TailCredit | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab> -->

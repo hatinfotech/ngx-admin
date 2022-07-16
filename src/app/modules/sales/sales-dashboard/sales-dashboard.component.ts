@@ -10,8 +10,6 @@ import { ApiService } from '../../../services/api.service';
 import { Icon } from '../../../lib/custom-element/card-header/card-header.component';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { PageModel } from '../../../models/page.model';
-import { from } from 'rxjs';
-import { lab } from 'd3-color';
 import { AccMasterBookModel } from '../../../models/accounting.model';
 interface CardSettings {
   title: string;
@@ -34,16 +32,14 @@ export class SalesDashboardComponent implements OnDestroy {
   title?: string = 'Phát sinh doanh thu/hoa hồng';
   actionButtonList: ActionControl[];
 
-  goodsGroupsStatisticsData: {};
   costAndRevenueStatisticsData: {};
   goodsStatisticsData: {};
-  inventoryStatisticsData: {};
+  cashFlowStatisticsData: {};
   debtStatisticsData: {};
   profitStatisticsData: {};
   orderStatisticsData: {};
   publisherRegisteredStatisticsData: {};
   options: any;
-  pieOption: any;
   costAndRevenueStatisticsDataOptions: any;
   colors: any;
   chartjs: any;
@@ -64,15 +60,10 @@ export class SalesDashboardComponent implements OnDestroy {
     LiabilitiesDebt?: number,
     HeadProfit?: number,
     Profit?: number,
-
-    HeadInventoryValue?: number,
-    PurchaseAmount?: number,
-    PurchaseCost?: number,
-    CommerceDiscount?: number,
   };
 
   topEmployeeList = [];
-  topSupplierList = [];
+  topCustomerList = [];
   topGoodsList = [];
 
   masterBook: AccMasterBookModel;
@@ -150,28 +141,6 @@ export class SalesDashboardComponent implements OnDestroy {
             }
           }
         };
-
-        this.pieOption = {
-          maintainAspectRatio: false,
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: false,
-              },
-            ],
-            yAxes: [
-              {
-                display: false,
-              },
-            ],
-          },
-          legend: {
-            labels: {
-              fontColor: this.chartjs.textColor,
-            },
-          },
-        };
       });
 
     this.solarService.getSolarData()
@@ -182,8 +151,8 @@ export class SalesDashboardComponent implements OnDestroy {
 
     // const currentDate = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: ['MONTH'],
-      DateRange: [this.dateReportList.find(f => f.id === 'MONTH').range],
+      DateReport: ['DAY'],
+      DateRange: [this.dateReportList.find(f => f.id === 'DAY').range],
       Page: [[]],
       ProductGroup: { value: '', disabled: true },
     });
@@ -192,9 +161,9 @@ export class SalesDashboardComponent implements OnDestroy {
       this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
     });
 
-    setTimeout(() => {
-      this.refresh();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.refresh();
+    // }, 1000);
     this.formItem.valueChanges.subscribe(() => {
       this.refresh();
     });
@@ -224,11 +193,12 @@ export class SalesDashboardComponent implements OnDestroy {
         const previousMonth = new Date(current.getTime() - 31 * 24 * 60 * 60 * 1000);
         let fromDate = new Date(this.masterBook.DateOfBeginning);
         this.dateReportList = [
-          { id: 'DAY', text: 'Phân tích theo ngày', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds())] },
-          { id: 'MONTH', text: 'Phân tích theo tháng', range: [new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()), new Date(new Date().getFullYear(), 11, 31)] },
-          { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
-          { id: 'HOUR', text: 'Phân tích theo giờ', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
+          { id: 'DAY', text: 'Phân tích 30 ngày gần nhất', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds())] },
+          { id: 'MONTH', text: 'Phân tích 12 tháng gần nhất', range: [new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()), new Date(new Date().getFullYear(), 11, 31)] },
+          { id: 'DAYOFWEEK', text: 'Phân tích theo các ngày trong tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
+          { id: 'HOUR', text: 'Phân tích theo từng giờ trong ngày', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
         ];
+        this.refresh();
       });
     });
   }
@@ -401,12 +371,12 @@ export class SalesDashboardComponent implements OnDestroy {
 
     this.apiService.getPromise<any[]>('/accounting/reports', {
       reportSummary: true,
-      eq_Accounts: "[156,152,153,632]",
+      eq_Accounts: "511,512,515,521,632,635,642,641,623,131,331",
       skipHeader: true,
       branch: pages,
       toDate: toDate,
       fromDate: fromDate,
-      eq_VoucherType: 'PURCHASE',
+      // entryGroup: 'COMMERCEPOS',
       limit: 'nolimit'
     }).then(summaryReport => {
       console.log(summaryReport);
@@ -423,18 +393,31 @@ export class SalesDashboardComponent implements OnDestroy {
         CostOfGoodsSold: 0,
         Cost: 0,
         CustomerReceivableDebt: 0,
-
-        // HeadInventoryValue: 0,
-        PurchaseAmount: 0,
-        PurchaseCost: 0,
-        CommerceDiscount: 0,
       };
       for (const reportItem of summaryReport) {
-        // if (/^156/.test(reportItem.Account)) 
-        // this.summaryReport.HeadInventoryValue += (reportItem.HeadDebit - reportItem.HeadCredit);
-        this.summaryReport.PurchaseAmount += (reportItem.GenerateDebit);
-        // this.summaryReport.PurchaseCost += (reportItem.GenerateCredit);
-        // this.summaryReport.CommerceDiscount += reportItem.TailAmount;
+        if (/^111/.test(reportItem.Account)) this.summaryReport.Cash += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        if (/^112/.test(reportItem.Account)) this.summaryReport.CashInBank += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        // if (/^112/.test(reportItem.Account)) this.summaryReport.HeadCashInBank += reportItem.HeadAmount;
+        if (/^511|512|515/.test(reportItem.Account)) {
+          this.summaryReport.Revenues += (reportItem.GenerateCredit - reportItem.GenerateDebit);
+        }
+        if (/^521/.test(reportItem.Account)) {
+          this.summaryReport.DecreaseRevenues += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        }
+        if (/^5212/.test(reportItem.Account)) {
+          this.summaryReport.DecreaseRevenuesByReturns += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        }
+        if (/^5213/.test(reportItem.Account)) {
+          this.summaryReport.DecreaseRevenuesByDiscount += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        }
+        if (/^632/.test(reportItem.Account)) {
+          this.summaryReport.CostOfGoodsSold += (reportItem.GenerateDebit - reportItem.GenerateCredit);
+        }
+        if (/^642|635|623|641/.test(reportItem.Account)) {
+          this.summaryReport.Cost += reportItem.GenerateDebit;
+        }
+        if (/^131/.test(reportItem.Account)) this.summaryReport.CustomerReceivableDebt += reportItem.TailAmount;
+        // if (/^131/.test(reportItem.Account)) this.summaryReport.CustomerReceivableHeadDebt += reportItem.HeadAmount;
       }
 
       // this.summaryReport = {
@@ -448,17 +431,17 @@ export class SalesDashboardComponent implements OnDestroy {
       //   // LiabilitiesDebt: summaryReport.filter(f => /^331/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.GenerateCredit), 0),
       //   // Profit: summaryReport.filter(f => /^4212/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
       // };
-      // this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.CostOfGoodsSold - this.summaryReport.DecreaseRevenues - this.summaryReport.Cost;
+      this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.CostOfGoodsSold - this.summaryReport.DecreaseRevenues - this.summaryReport.Cost;
     });
-    // this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
-    //   this.topEmployeeList = rs;
-    //   console.log(rs);
-    // });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplier: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
-      this.topSupplierList = rs;
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
+      this.topEmployeeList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_TailDebit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
+      this.topCustomerList = rs;
+      console.log(rs);
+    });
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
       this.topGoodsList = rs;
       console.log(rs);
     });
@@ -474,36 +457,34 @@ export class SalesDashboardComponent implements OnDestroy {
 
     let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], line5Data: any[], labels: any[], timeline: any[], mergeData: any[];
 
-    /** Goods receipt/delivery */
-    // let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    /** Load data */
+    let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,5213,5212]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', eq_VoucherType: 'PURCHASE' });
-    let costStatistics633 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1562]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', eq_VoucherType: 'PURCHASE' });
+    // let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5213]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5212]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    // line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    // line1Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfDebit }; });
-    line2Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfDebit }; });
-    line3Data = costStatistics633.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfCredit }; });
+    line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    line2Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line3Data = costStatistics641.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     timeline = [...new Set([
-      // ...line1Data.map(item => item['Timeline']),
+      ...line1Data.map(item => item['Timeline']),
       ...line2Data.map(item => item['Timeline']),
-      ...line3Data.map(item => item['Timeline']),
+      // ...line3Data.map(item => item['Timeline']),
     ].sort())];
     labels = [];
     mergeData = timeline.map(t => {
-      // const point1 = line1Data.find(f => f.Timeline == t);
+      const point1 = line1Data.find(f => f.Timeline == t);
       const point2 = line2Data.find(f => f.Timeline == t);
-      const point3 = line3Data.find(f => f.Timeline == t);
-      labels.push(point2?.Label || point3?.Label);
+      // const point3 = line3Data.find(f => f.Timeline == t);
+      labels.push(point1?.Label || point2?.Label);
       // labels.push(point1?.Label);
       return {
         Label: t,
-        // Line1: point1 || { Value: 0 },
+        Line1: point1 || { Value: 0 },
         Line2: point2 || { Value: 0 },
-        Line3: point3 || { Value: 0 },
+        // Line3: point3 || { Value: 0 },
       };
     });
 
@@ -511,22 +492,22 @@ export class SalesDashboardComponent implements OnDestroy {
     this.costAndRevenueStatisticsData = {
       labels: labels,
       datasets: [
-        // {
-        //   label: 'Nhập kho',
-        //   data: mergeData.map(point => point.Line1['Value']),
-        //   borderColor: this.colors.success,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
-        // {
-        //   label: 'Giá vốn',
-        //   data: mergeData.map(point => point.Line2['Value']),
-        //   borderColor: this.colors.danger,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 1),
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
+        {
+          label: 'Doanh thu',
+          data: mergeData.map(point => point.Line1['Value']),
+          borderColor: this.colors.success,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Giá vốn',
+          data: mergeData.map(point => point.Line2['Value']),
+          borderColor: this.colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 1),
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
         // {
         //   label: 'Chi phí',
         //   data: mergeData.map(point => point.Line3['Value']),
@@ -535,146 +516,31 @@ export class SalesDashboardComponent implements OnDestroy {
         //   pointRadius: pointRadius,
         //   pointHoverRadius: 10,
         // },
-        {
-          label: 'Nua hàng',
-          data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.success,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Chi phí mua hàng',
-          data: mergeData.map(point => point.Line3['Value']),
-          borderColor: this.colors.warning,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 1),
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-      ],
-    };
-
-    // Inventory statistics
-    const inventoryValueStatistics156 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[156]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const inventoryValueStatistics152 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[152]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const inventoryValueStatistics153 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[153]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // const costOfGoodsSoldStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // const cashFlowStatisticsData = [];
-    // const inventoryCostStatistics = [];
-    // let previusPoint = null;
-    // for (let i = 0; i < 24; i++) {
-    //   let point = _inventoryCostStatistics.find(f => f.Hour == i);
-    //   if (point) {
-    //     point.Data = point.SumOfDebit - point.SumOfCredit;
-    //     if (previusPoint) {
-    //       point.Data += previusPoint.Data;
-    //     }
-    //     previusPoint = point;
-    //   } else {
-    //     point = {
-    //       Data: previusPoint && previusPoint.Data || 0,
-    //       Hour: i
-    //     };
-    //   }
-    //   inventoryCostStatistics.push(point);
-    // }
-    // const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-
-    /** Prepare data */
-    // line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line2Data = inventoryValueStatistics152.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line3Data = inventoryValueStatistics153.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line4Data = inventoryValueStatistics156.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    timeline = [...new Set([
-      // ...line1Data.map(item => item['Timeline']),
-      ...line2Data.map(item => item['Timeline']),
-      ...line3Data.map(item => item['Timeline']),
-      ...line4Data.map(item => item['Timeline']),
-    ].sort())];
-    labels = [];
-    mergeData = timeline.map(t => {
-      // const point1 = line1Data.find(f => f.Timeline == t);
-      const point2 = line2Data.find(f => f.Timeline == t);
-      const point3 = line3Data.find(f => f.Timeline == t);
-      const point4 = line4Data.find(f => f.Timeline == t);
-      // labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
-      labels.push(point2?.Label || point3?.Label || point4?.Label);
-      // labels.push(point3?.Label || point4?.Label);
-      // labels.push(point4?.Label);
-      return {
-        Label: t,
-        // Line1: point1 || { Value: 0 },
-        Line2: point2 || { Value: 0 },
-        Line3: point3 || { Value: 0 },
-        Line4: point4 || { Value: 0 },
-      };
-    });
-
-
-    this.inventoryStatisticsData = {
-      labels: labels,
-      datasets: [
         // {
-        //   label: 'Voucher',
-        //   // data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-        //   data: mergeData.map(point => point.Line1['Value']),
-        //   borderColor: this.colors.primary,
-        //   // backgroundColor: colors.danger,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
-        //   // fill: true,
-        //   // borderDash: [5, 5],
+        //   label: 'Giảm giá',
+        //   data: mergeData.map(point => point.Line2['Value']),
+        //   borderColor: this.colors.danger,
+        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 1),
         //   pointRadius: pointRadius,
         //   pointHoverRadius: 10,
         // },
-        {
-          label: 'Hàng hóa',
-          // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line4['Value']),
-          borderColor: this.colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Nguyên vật liệu',
-          // data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.warning,
-          // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Công cụ dụng cụ',
-          // data: cashInBankFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line3['Value']),
-          borderColor: this.colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
+        // {
+        //   label: 'Trả hàng',
+        //   data: mergeData.map(point => point.Line3['Value']),
+        //   borderColor: this.colors.warning,
+        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 1),
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
       ],
     };
 
-    // const _customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // // const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // // const loadStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // // const financialLeasingDebtStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3412]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    // // const a1288Statistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1288]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-
-    // const customerReceivableStatistics = [];
+    // const _cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: false, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // // const cashFlowStatisticsData = [];
+    // const cashFlowStatistics = [];
     // let previusPoint = null;
     // for (let i = 0; i < 24; i++) {
-    //   let point = _customerReceivableStatistics.find(f => f.Hour == i);
+    //   let point = _cashFlowStatistics.find(f => f.Hour == i);
     //   if (point) {
     //     point.Data = point.SumOfDebit - point.SumOfCredit;
     //     if (previusPoint) {
@@ -687,108 +553,220 @@ export class SalesDashboardComponent implements OnDestroy {
     //       Hour: i
     //     };
     //   }
-    //   customerReceivableStatistics.push(point);
+    //   cashFlowStatistics.push(point);
     // }
+    // const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // // const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // // const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     // /** Prepare data */
-    // line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.Data; return statistic; });
-    // // line2Data = liabilitiesStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    // // line3Data = loadStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    // // line4Data = financialLeasingDebtStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    // // line5Data = a1288Statistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    // timeline = [
-    //   ...new Set([
-    //     ...line1Data.map(item => item['Timeline']),
-    //     // ...line2Data.map(item => item['Timeline']),
-    //     // ...line3Data.map(item => item['Timeline']),
-    //     // ...line4Data.map(item => item['Timeline']),
-    //     // ...line5Data.map(item => item['Timeline']),
-    //   ].sort())
-    // ];
+    // // line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // // line2Data = goldFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line3Data = cashInBankFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line4Data = cashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.Data; return statistic; });
+    // timeline = [...new Set([
+    //   // ...line1Data.map(item => item['Timeline']),
+    //   // ...line2Data.map(item => item['Timeline']),
+    //   ...line3Data.map(item => item['Timeline']),
+    //   ...line4Data.map(item => item['Timeline']),
+    // ].sort())];
     // labels = [];
     // mergeData = timeline.map(t => {
-    //   const point1 = line1Data.find(f => f.Timeline == t);
+    //   // const point1 = line1Data.find(f => f.Timeline == t);
     //   // const point2 = line2Data.find(f => f.Timeline == t);
-    //   // const point3 = line3Data.find(f => f.Timeline == t);
-    //   // const point4 = line4Data.find(f => f.Timeline == t);
-    //   // const point5 = line5Data.find(f => f.Timeline == t);
+    //   const point3 = line3Data.find(f => f.Timeline == t);
+    //   const point4 = line4Data.find(f => f.Timeline == t);
     //   // labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
-    //   labels.push(point1?.Label);
+    //   labels.push(point3?.Label || point4?.Label);
     //   return {
     //     Label: t,
-    //     Line1: point1 || { Value: 0 },
+    //     // Line1: point1 || { Value: 0 },
     //     // Line2: point2 || { Value: 0 },
-    //     // Line3: point3 || { Value: 0 },
-    //     // Line4: point4 || { Value: 0 },
-    //     // Line5: point5 || { Value: 0 },
+    //     Line3: point3 || { Value: 0 },
+    //     Line4: point4 || { Value: 0 },
     //   };
     // });
 
-    // this.debtStatisticsData = {
-    //   labels,
+
+    // this.cashFlowStatisticsData = {
+    //   labels: labels,
     //   datasets: [
+    //     // {
+    //     //   label: 'Voucher',
+    //     //   // data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+    //     //   data: mergeData.map(point => point.Line1['Value']),
+    //     //   borderColor: this.colors.primary,
+    //     //   // backgroundColor: colors.danger,
+    //     //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
+    //     //   // fill: true,
+    //     //   // borderDash: [5, 5],
+    //     //   pointRadius: pointRadius,
+    //     //   pointHoverRadius: 10,
+    //     // },
+    //     // {
+    //     //   label: 'Vàng',
+    //     //   // data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+    //     //   data: mergeData.map(point => point.Line2['Value']),
+    //     //   borderColor: this.colors.warning,
+    //     //   // backgroundColor: colors.danger,
+    //     //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
+    //     //   // fill: true,
+    //     //   // borderDash: [5, 5],
+    //     //   pointRadius: pointRadius,
+    //     //   pointHoverRadius: 10,
+    //     // },
     //     {
-    //       label: 'Công nợ phải thu',
-    //       // data: customerReceivableStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-    //       data: mergeData.map(point => point.Line1['Value']),
-    //       borderColor: this.colors.success,
+    //       label: 'Tiền trong ngân hàng',
+    //       // data: cashInBankFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+    //       data: mergeData.map(point => point.Line3['Value']),
+    //       borderColor: this.colors.info,
     //       // backgroundColor: colors.danger,
-    //       // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+    //       backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
     //       // fill: true,
     //       // borderDash: [5, 5],
     //       pointRadius: pointRadius,
     //       pointHoverRadius: 10,
     //     },
-    //     // {
-    //     //   label: 'Công nợ phải trả',
-    //     //   // data: liabilitiesStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-    //     //   data: mergeData.map(point => point.Line2['Value']),
-    //     //   borderColor: this.colors.primary,
-    //     //   // backgroundColor: colors.primary,
-    //     //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
-    //     //   // fill: true,
-    //     //   // borderDash: [5, 5],
-    //     //   pointRadius: pointRadius,
-    //     //   pointHoverRadius: 10,
-    //     // },
-    //     // {
-    //     //   label: 'Các khoản vay',
-    //     //   // data: loadStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-    //     //   data: mergeData.map(point => point.Line3['Value']),
-    //     //   borderColor: this.colors.warning,
-    //     //   // backgroundColor: colors.primary,
-    //     //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
-    //     //   // fill: true,
-    //     //   borderDash: [5, 5],
-    //     //   pointRadius: pointRadius,
-    //     //   pointHoverRadius: 10,
-    //     // },
-    //     // {
-    //     //   label: 'Nợ thuê tài chính',
-    //     //   // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-    //     //   data: mergeData.map(point => point.Line4['Value']),
-    //     //   borderColor: this.colors.danger,
-    //     //   // backgroundColor: colors.primary,
-    //     //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
-    //     //   // fill: true,
-    //     //   borderDash: [5, 5],
-    //     //   pointRadius: pointRadius,
-    //     //   pointHoverRadius: 10,
-    //     // },
-    //     // {
-    //     //   label: 'Đầu tư khác',
-    //     //   // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-    //     //   data: mergeData.map(point => point.Line5['Value']),
-    //     //   borderColor: this.colors.info,
-    //     //   // backgroundColor: colors.primary,
-    //     //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
-    //     //   // fill: true,
-    //     //   // borderDash: [5, 5],
-    //     //   pointRadius: pointRadius,
-    //     //   pointHoverRadius: 10,
-    //     // },
+    //     {
+    //       label: 'Tiền mặt',
+    //       // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+    //       data: mergeData.map(point => point.Line4['Value']),
+    //       borderColor: this.colors.success,
+    //       // backgroundColor: colors.danger,
+    //       backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
+    //       // fill: true,
+    //       // borderDash: [5, 5],
+    //       pointRadius: pointRadius,
+    //       pointHoverRadius: 10,
+    //     },
     //   ],
     // };
+
+    const customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // const loadStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // const financialLeasingDebtStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3412]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // const a1288Statistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1288]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+
+    // const customerReceivableStatistics = [];
+    // let previusPoint = null;
+    // for (let point of customerReceivableStatistics) {
+    //   // let point = customerReceivableStatistics.find(f => f.Hour == i);
+    //   if (point) {
+    //     point.Data = point.SumOfDebit - point.SumOfCredit;
+    //     if (previusPoint) {
+    //       point.Data += previusPoint.Data;
+    //     }
+    //     previusPoint = point;
+    //   }
+    //   // else {
+    //   //   point = {
+    //   //     Data: previusPoint && previusPoint.Data || 0,
+    //   //     Hour: i
+    //   //   };
+    //   // }
+    //   // customerReceivableStatistics.push(point);
+    // }
+
+    /** Prepare data */
+    line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line2Data = liabilitiesStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    // line3Data = loadStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    // line4Data = financialLeasingDebtStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    // line5Data = a1288Statistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    timeline = [
+      ...new Set([
+        ...line1Data.map(item => item['Timeline']),
+        // ...line2Data.map(item => item['Timeline']),
+        // ...line3Data.map(item => item['Timeline']),
+        // ...line4Data.map(item => item['Timeline']),
+        // ...line5Data.map(item => item['Timeline']),
+      ].sort())
+    ];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point1 = line1Data.find(f => f.Timeline == t);
+      // const point2 = line2Data.find(f => f.Timeline == t);
+      // const point3 = line3Data.find(f => f.Timeline == t);
+      // const point4 = line4Data.find(f => f.Timeline == t);
+      // const point5 = line5Data.find(f => f.Timeline == t);
+      // labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
+      labels.push(point1?.Label);
+      return {
+        Label: t,
+        Line1: point1 || { Value: 0 },
+        // Line2: point2 || { Value: 0 },
+        // Line3: point3 || { Value: 0 },
+        // Line4: point4 || { Value: 0 },
+        // Line5: point5 || { Value: 0 },
+      };
+    });
+
+    this.debtStatisticsData = {
+      labels,
+      datasets: [
+        {
+          label: 'Công nợ phải thu',
+          // data: customerReceivableStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line1['Value']),
+          borderColor: this.colors.success,
+          // backgroundColor: colors.danger,
+          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        // {
+        //   label: 'Công nợ phải trả',
+        //   // data: liabilitiesStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+        //   data: mergeData.map(point => point.Line2['Value']),
+        //   borderColor: this.colors.primary,
+        //   // backgroundColor: colors.primary,
+        //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.3),
+        //   // fill: true,
+        //   // borderDash: [5, 5],
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
+        // {
+        //   label: 'Các khoản vay',
+        //   // data: loadStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+        //   data: mergeData.map(point => point.Line3['Value']),
+        //   borderColor: this.colors.warning,
+        //   // backgroundColor: colors.primary,
+        //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+        //   // fill: true,
+        //   borderDash: [5, 5],
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
+        // {
+        //   label: 'Nợ thuê tài chính',
+        //   // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+        //   data: mergeData.map(point => point.Line4['Value']),
+        //   borderColor: this.colors.danger,
+        //   // backgroundColor: colors.primary,
+        //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+        //   // fill: true,
+        //   borderDash: [5, 5],
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
+        // {
+        //   label: 'Đầu tư khác',
+        //   // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+        //   data: mergeData.map(point => point.Line5['Value']),
+        //   borderColor: this.colors.info,
+        //   // backgroundColor: colors.primary,
+        //   // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+        //   // fill: true,
+        //   // borderDash: [5, 5],
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
+      ],
+    };
 
     // const _profitStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632,641,642,635,623,811,511,512,515,521,711]", statisticsProfit: true, increment: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
@@ -843,15 +821,6 @@ export class SalesDashboardComponent implements OnDestroy {
     //     },
     //   ],
     // };
-
-
-    this.goodsGroupsStatisticsData = {
-      labels: ['Chiến lược', 'Bán thêm', 'Sản phẩm mồi'],
-      datasets: [{
-        data: [300, 500, 100],
-        backgroundColor: [NbColorHelper.hexToRgbA(this.colors.success, 0.3), NbColorHelper.hexToRgbA(this.colors.warning, 0.3), NbColorHelper.hexToRgbA(this.colors.danger, 0.3)],
-      }],
-    }
   }
 
   getUpcomingMonday() {

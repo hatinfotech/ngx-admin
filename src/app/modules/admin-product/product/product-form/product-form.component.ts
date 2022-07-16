@@ -561,6 +561,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       IsDefaultPurchase: [false],
       IsManageByAccessNumber: [false],
       IsAutoAdjustInventory: [true],
+      IsExpirationGoods: [false],
     });
 
     if (data) {

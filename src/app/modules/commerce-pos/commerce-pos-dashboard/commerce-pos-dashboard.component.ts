@@ -436,15 +436,15 @@ export class CommercePosDashboardComponent implements OnDestroy {
       // };
       this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.CostOfGoodsSold - this.summaryReport.DecreaseRevenues - this.summaryReport.Cost;
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: pages, fromDate: fromDate, toDate: toDate, entryGroup: 'COMMERCEPOS', sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
       this.topEmployeeList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: pages, fromDate: fromDate, toDate: toDate, entryGroup: 'COMMERCEPOS', sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
       this.topCustomerList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, entryGroup: 'COMMERCEPOS', sort_CreditGenerate: 'desc', limit: 100 }).then(rs => {
       this.topGoodsList = rs;
       console.log(rs);
     });

@@ -73,7 +73,8 @@ export class WarehouseDashboardComponent implements OnDestroy {
 
   topEmployeeList = [];
   topCustomerList = [];
-  topGoodsList = [];
+  topGoodsExpiredSoonList = [];
+  topGoodsOutOfStockSoonList = [];
 
   masterBook: AccMasterBookModel;
 
@@ -462,6 +463,18 @@ export class WarehouseDashboardComponent implements OnDestroy {
     //   this.topGoodsList = rs;
     //   console.log(rs);
     // });
+
+    this.apiService.getPromise<any[]>('/warehouse/reports', { inventoryReport: true, report: 'TOPEXPIREDSOON' }).then(rs => {
+      // console.log(rs);
+      this.topGoodsExpiredSoonList = rs;
+    });
+    this.apiService.getPromise<any[]>('/warehouse/reports', { inventoryReport: true, report: 'TOPOUTOFSTOCKSOON' }).then(rs => {
+      // console.log(rs);
+      this.topGoodsOutOfStockSoonList = rs.map(item => {
+        item.Inventory = (parseFloat(item?.Inventory) || 0).toFixed(2);
+        return item;
+      });
+    });
 
     let pointRadius: number = 1;
     if (reportType == 'MONTH') {

@@ -118,7 +118,7 @@
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>
@@ -127,7 +127,7 @@
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topCustomerList">
                 <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.ObjectName" [title]="c.ObjectName" size="large" style="flex: 8"></nb-user>
-                <span class="caption" style="flex: 1;">{{ c.TailCredit | currency:'VND' }}</span>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>
@@ -136,7 +136,7 @@
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
                 <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
-                <span style="flex: 1;" class="caption">{{ c.TailCredit | currency:'VND' }}</span>
+                <span style="flex: 1;" class="caption">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
           </nb-tab>

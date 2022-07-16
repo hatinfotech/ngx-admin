@@ -540,6 +540,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       RelateDetail: [''],
       Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSRECEIPT')],
       AccessNumbers: [[]],
+      DateOfManufacture: [null],
+      ExpiryDate: [null],
     });
 
     if (data) {

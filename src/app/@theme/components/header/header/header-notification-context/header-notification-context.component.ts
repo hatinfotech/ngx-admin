@@ -63,17 +63,17 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
 
     placeholders = [];
     pageSize = 10;
-    static _pageToLoadNext = 1;
-    get pageToLoadNext() { return HeaderNotificationContextComponent._pageToLoadNext; }
-    set pageToLoadNext(number: number) { HeaderNotificationContextComponent._pageToLoadNext = number; }
+    pageToLoadNext = 1;
+    // get pageToLoadNext() { return HeaderNotificationContextComponent._pageToLoadNext; }
+    // set pageToLoadNext(number: number) { HeaderNotificationContextComponent._pageToLoadNext = number; }
     loading = false;
-    static _isEnd = false;
-    get isEnd() {
-        return HeaderNotificationContextComponent._isEnd;
-    }
-    set isEnd(status: boolean) {
-        HeaderNotificationContextComponent._isEnd = status;
-    }
+    isEnd = false;
+    // get isEnd() {
+    //     return HeaderNotificationContextComponent._isEnd;
+    // }
+    // set isEnd(status: boolean) {
+    //     HeaderNotificationContextComponent._isEnd = status;
+    // }
 
     constructor(
         private apiService: ApiService,
@@ -84,6 +84,8 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
         private themeService: NbThemeService,
     ) {
         super();
+
+        // HeaderNotificationContextComponent._pageToLoadNext = 1;
 
         this.themeService.onThemeChange()
             .pipe(
@@ -102,7 +104,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
         // });
 
         this.items = this.notificationService.notifications.map(item => {
-            if(!item.Picture) {
+            if (!item.Picture) {
                 item.Picture = 'assets/images/no-image-available.png';
             }
             return item;
@@ -167,7 +169,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
             .then(async notifications => {
                 this.placeholders = [];
                 this.items.push(...notifications.map(item => {
-                    if(!item.Picture) {
+                    if (!item.Picture) {
                         item.Picture = 'assets/images/no-image-available.png';
                     }
                     return item;

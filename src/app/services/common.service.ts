@@ -334,6 +334,9 @@ export class CommonService {
             if (notification?.Action === 'OPENTICKET') {
               this.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
             }
+            if (notification?.Data?.Action === 'NAVIGATE') {
+              this.navigate(notification?.Data?.Path);
+            }
           }
           break;
       }
