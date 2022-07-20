@@ -34,7 +34,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   @Input() skipPreview: boolean;
   @Input() order: CommercePosOrderModel;
   @Input() instantPayment: boolean;
-  @Input() printType: 'PRICEREPORT' | 'INVOICE' = 'PRICEREPORT';
+  @Input() printType: 'PRICEREPORT' | 'INVOICE' = 'INVOICE';
 
   style = /*css*/`
   #print-area {
@@ -136,9 +136,9 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       return rs;
     });
     if (this.data[0].State == 'APPROVED') {
-      this.printBtn['hostElement'].nativeElement.focus();
+      this.printBtn['hostElement']?.nativeElement.focus();
     } else {
-      this.paymentBtn['hostElement'].nativeElement.focus();
+      this.paymentBtn['hostElement']?.nativeElement.focus();
     }
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
@@ -230,6 +230,8 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       includeContainers: true,
       id: this.id,
       limit: 'nolimit',
+
+      includeDetails: true, includeObject: true, includeRelativeVouchers: true
       // eq_Product: this.product,
       // eq_WarehouseUnit: this.unit,
       // eq_Container: this.container,
@@ -278,7 +280,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   isProcessing = false;
   payment(index: number, option?: { print: boolean }) {
-    const params: any = { payment: true, includeRelativeVouchers: true };
+    const params: any = { payment: true, includeRelativeVouchers: true, includeObject: true };
     let order = this.data[index];
     if (order) {
       // order.State = 'APPROVED';
@@ -324,7 +326,11 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     if (event.key == 'Enter') {
 
       if (!this.instantPayment) {
-        this.payment(0);
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+          this.print(0);
+        } else {
+          this.payment(0);
+        }
       } else {
         if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
           this.print(0);
@@ -333,7 +339,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
-
+      return  false;
     }
     return true;
   }

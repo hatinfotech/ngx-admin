@@ -4,8 +4,8 @@ import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductModel, ProductUnitModel } from './../../../../models/product.model';
 import { ContactModel } from './../../../../models/contact.model';
-import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel } from './../../../../models/commerce-pos.model';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel, CommercePosOrderDetailModel } from './../../../../models/commerce-pos.model';
+import { FormBuilder, FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, ViewChild, ɵCodegenComponentFactoryResolver } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef } from "@nebular/theme";
@@ -24,6 +24,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { BehaviorSubject } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 declare const openDatabase;
 
@@ -71,6 +72,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   status = '';
 
   loading = false;
+  processing = false;
   progress = 0;
   progressStatus = 'success';
   progressLabel = '0%';
@@ -170,11 +172,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel) {
+    // this.commonService.takeUntil('pos-on-object-change', 300, () => {
+
     if (selectedData && !selectedData['doNotAutoFill']) {
       if (selectedData.Code) {
-        formGroup.get('ObjectName').setValue(selectedData.Name);
-        formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-        formGroup.get('ObjectAddress').setValue(selectedData.Address);
+        if (!formGroup['isProcessing']) {
+          formGroup.get('ObjectName').setValue(selectedData.Name);
+          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          formGroup.get('ObjectAddress').setValue(selectedData.Address);
+        }
 
         if (selectedData.Code == 'POSCUSTOMER') {
         } else {
@@ -197,12 +203,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       }
     }
-    if (!this.orderForm['isProcessing'] && !selectedData) {
+    if (!formGroup['isProcessing'] && !selectedData) {
       // Clear
       formGroup.get('ObjectName').setValue('');
       formGroup.get('ObjectPhone').setValue('');
       formGroup.get('ObjectAddress').setValue('');
     }
+
+    // });
 
     (document.activeElement as HTMLElement).blur();
   }
@@ -258,6 +266,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.goodsList = [];
       let offset = 0;
       this.progressStatus = 'danger';
+      this.progress = 0;
       while (true) {
         const rs = await this.apiService.getObservable<WarehouseGoodsInContainerModel[]>('/warehouse/goods-in-containers', {
           sort_Goods: 'asc',
@@ -314,6 +323,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           break;
         }
       }
+      this.progress = 0;
 
       console.log(this.goodsList);
 
@@ -384,12 +394,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       ObjectIdenfiedNumber: [],
       Note: [],
       SubNote: [],
-      Total: [0],
+      Amount: [0],
       CashReceipt: [null],
       DecreaseForTotal: [null],
       // CashBack: [null],
       State: [null],
       DateOfSale: [null],
+      Created: [null],
       Details: this.formBuilder.array([]),
       Returns: [],
       RelativeVouchers: [data?.Returns ? [{ id: data.Returns, text: data.Returns, type: 'COMMERCEPOSRETURN' }] : null],
@@ -400,7 +411,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     newForm['voucherType'] = 'COMMERCEPOSORDER';
     newForm['isReceipt'] = true;
     newForm['isProcessing'] = null;
+    newForm['returnsObj'] = data?.returnsObj;
     if (data) {
+      if (data.Object) {
+        data.Object = {
+          id: this.commonService.getObjectId(data.Object),
+          text: this.commonService.getObjectText(data.Object) || data.ObjectName,
+          Phone: data.ObjectPhone,
+          Email: data.ObjectEmail,
+          Address: data.ObjectAddress,
+        };
+      }
       newForm.patchValue(data);
       if (data.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
@@ -409,21 +430,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
         this.calculateTotal(newForm);
       }
+
     }
 
-    // const decreaseTotal = newForm.get('DecreaseForTotal');
-    // const cashReceipt = newForm.get('CashReceipt');
-    // const cashBack = newForm.get('CashBack');
-    // const total = newForm.get('Total');
-    // const debitFunds = newForm.get('DebitFunds');
-    // const finalReceipt = newForm.get('FinalReceipt');
-    // decreaseTotal.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-    //   finalReceipt.setValue(parseFloat(total.value || 0) - parseFloat(debitFunds.value || 0) - parseFloat(decreaseTotal.value || 0));
-    //   cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(finalReceipt.value || 0));
-    // });
-    // cashReceipt.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-    //   finalReceipt.setValue(parseFloat(total.value || 0) - parseFloat(debitFunds.value || 0) - parseFloat(decreaseTotal.value || 0));
-    //   cashBack.setValue(parseFloat(cashReceipt.value || 0) - parseFloat(finalReceipt.value || 0));
+    // newForm['modified'] = false;
+    // newForm.valueChanges.subscribe(value => {
+    //   console.log('form value modified', value);
+    //   newForm['modified'] = true;
     // });
 
     return newForm;
@@ -443,16 +456,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         Order: [order.Code || null],
         Object: [order.Object || null],
         ObjectName: [order.ObjectName || null],
-        ObjectPhone: [order.objectPhoneEleRef || null],
+        ObjectPhone: [order.objectPhone || null],
         ObjectEmail: [order.ObjectEmail || null],
         ObjectAddress: [order.ObjectAddress || null],
         Note: [],
         SubNote: [],
-        Total: [0],
+        Amount: [0],
         // CashBack: [0],
         CashReceipt: [0],
         State: [null],
         DateOfReturn: [new Date()],
+        Created: [null],
         RelativeVouchers: [[{ id: order.Code, text: order.Title || order.Code, type: 'COMMERCEPOSORDER' }]],
         Details: this.formBuilder.array([]),
         IsDebt: [false],
@@ -476,11 +490,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         ObjectIdenfiedNumber: [],
         Note: [],
         SubNote: [],
-        Total: [0],
+        Amount: [0],
         // CashBack: [0],
         CashReceipt: [0],
         State: [null],
         DateOfSale: [new Date()],
+        Created: [null],
         Details: this.formBuilder.array([]),
         IsDebt: [false],
         RelativeVouchers: [[]]
@@ -500,6 +515,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     newForm['isProcessing'] = null;
+
+    // newForm['modified'] = false;
+    // newForm.valueChanges.subscribe(value => {
+    //   console.log('form value modified', value);
+    //   newForm['modified'] = true;
+    // });
+
     return newForm;
   }
 
@@ -526,7 +548,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return formGroup.get('Details') as FormArray;
   }
 
-  async makeNewOrder(data?: CommercePosOrderModel, returns?: string, option?: { force?: boolean, location?: string }) {
+  async makeNewOrder(data?: CommercePosOrderModel, returns?: string, option?: { force?: boolean, location?: string, autoActiveForm?: boolean }) {
+
+    option = {
+      ...option,
+      autoActiveForm: typeof option?.autoActiveForm == 'undefined' ? true : option.autoActiveForm
+    }
 
     const endOrderForm = this.historyOrders[this.historyOrders.length - 1];
     if (!returns && !option?.force && endOrderForm && this.orderForm['voucherType'] != 'COMMERCEPOSRETURN' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
@@ -535,41 +562,111 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       return this.orderForm;
     }
 
+    let orderForm = null;
     if (this.orderForm.get('State').value !== 'APPROVED') {
       this.save(this.orderForm);
     }
 
     if (returns) {
-      const returnsObj = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + returns, { includeDetails: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+      const returnsObj = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + returns, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true }).then(rs => rs[0]);
 
       let debitFunds = 0;
-
+      // if (!returnsObj.IsDebt) {
       if (returnsObj && returnsObj?.Details) {
         for (const detail of returnsObj.Details) {
           debitFunds += detail.Price * detail.Quantity;
         }
       }
+      // }
 
       if (returnsObj.Object) {
         returnsObj.Object = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.commonService.getObjectId(returnsObj.Object), { includeIdText: true }).then(rs => rs[0]);
       }
 
-      this.orderForm = this.makeNewOrderForm({ ...data, Object: returnsObj.Object, returnsObj, Code: null, Returns: returns, DebitFunds: debitFunds });
+      orderForm = this.makeNewOrderForm({ ...data, Object: returnsObj.Object, ObjectName: data?.ObjectName || returnsObj.ObjectName, ObjectPhone: data?.ObjectPhone || returnsObj.ObjectPhone, ObjectEmail: data?.ObjectEmail || returnsObj.ObjectEmail, ObjectAddress: data?.ObjectAddress || returnsObj.ObjectAddress, returnsObj, Code: null, Returns: returns, DebitFunds: debitFunds });
     } else {
-      this.orderForm = this.makeNewOrderForm(data);
+      orderForm = this.makeNewOrderForm(data);
     }
-    this.calculateTotal(this.orderForm);
+    this.calculateTotal(orderForm);
     if (option?.location == 'HEAD') {
-      this.historyOrders.unshift(this.orderForm);
-      this.historyOrderIndex = 0;
+      this.historyOrders.unshift(orderForm);
+      if (option.autoActiveForm) {
+        this.historyOrderIndex = 0;
+        this.orderForm = orderForm;
+      } else {
+        this.historyOrderIndex++;
+      }
     } else {
-      this.historyOrders.push(this.orderForm);
-      this.historyOrderIndex = this.historyOrders.length - 1;
+      this.historyOrders.push(orderForm);
+      if (option.autoActiveForm) {
+        this.historyOrderIndex = this.historyOrders.length - 1;
+        this.orderForm = orderForm;
+      }
     }
     if (!data || !data.Code) {
-      await this.save(this.orderForm);
+      await this.save(orderForm);
     }
-    return this.orderForm;
+    return orderForm;
+  }
+
+  async makeNewReturns(data?: CommercePosReturnModel, order?: string, option?: { force?: boolean, location?: string, autoActiveForm?: boolean }) {
+
+    option = {
+      ...option,
+      autoActiveForm: typeof option?.autoActiveForm == 'undefined' ? true : option.autoActiveForm
+    }
+
+    // const endOrderForm = this.historyOrders[this.historyOrders.length - 1];
+    // if (!returns && !option?.force && endOrderForm && this.orderForm['voucherType'] != 'COMMERCEPOSRETURN' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
+    //   this.historyOrderIndex = this.historyOrders.length - 1;
+    //   this.orderForm = this.historyOrders[this.historyOrders.length - 1];
+    //   return this.orderForm;
+    // }
+
+    let orderForm = null;
+    if (this.orderForm.get('State').value !== 'APPROVED') {
+      this.save(this.orderForm);
+    }
+
+    // if (order) {
+    //   const returnsObj = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + order, { includeDetails: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+
+    //   let debitFunds = 0;
+
+    //   if (returnsObj && returnsObj?.Details) {
+    //     for (const detail of returnsObj.Details) {
+    //       debitFunds += detail.Price * detail.Quantity;
+    //     }
+    //   }
+
+    //   if (returnsObj.Object) {
+    //     returnsObj.Object = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.commonService.getObjectId(returnsObj.Object), { includeIdText: true }).then(rs => rs[0]);
+    //   }
+
+    //   orderForm = this.makeNewReturnsForm({ ...data, Object: returnsObj.Object, returnsObj, Code: null, Returns: order, DebitFunds: debitFunds });
+    // } else {
+    orderForm = await this.makeNewReturnsForm(data);
+    // }
+    this.calculateTotal(orderForm);
+    if (option?.location == 'HEAD') {
+      this.historyOrders.unshift(orderForm);
+      if (option.autoActiveForm) {
+        this.historyOrderIndex = 0;
+        this.orderForm = orderForm;
+      } else {
+        this.historyOrderIndex++;
+      }
+    } else {
+      this.historyOrders.push(orderForm);
+      if (option.autoActiveForm) {
+        this.historyOrderIndex = this.historyOrders.length - 1;
+        this.orderForm = orderForm;
+      }
+    }
+    if (!data || !data.Code) {
+      await this.save(orderForm);
+    }
+    return orderForm;
   }
 
   toggleFullscreen() {
@@ -590,17 +687,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
-  calculateTotal(form: FormGroup) {
+  calculateTotal(orderForm: FormGroup) {
     let total = 0;
-    for (const detail of this.getDetails(form).controls) {
+    for (const detail of this.getDetails(orderForm).controls) {
       total += parseFloat(detail.get('Price').value) * parseFloat(detail.get('Quantity').value);
     }
 
-    this.orderForm.get('Total').setValue(total);
+    orderForm.get('Amount').setValue(total);
     // const discount = this.orderForm.get('DecreaseForTotal');
     // this.orderForm.get('FinalReceipt').setValue(parseFloat(total || 0 as any) - parseFloat((discount.value || 0)));
 
-    this.onCashReceiptChanged(form);
+    this.onCashReceiptChanged(orderForm);
     return total;
   }
 
@@ -1263,36 +1360,101 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return false;
   }
 
-  onPreviousOrderClick() {
+  dateOfPrevious = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0);
+  async onPreviousOrderClick() {
+    if (this.processing) {
+      console.log('an other process is processing...');
+      return;
+    }
+    this.processing = true;
+    this.status = 'Tải đơn hàng trước...'
     this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
     if (this.historyOrderIndex > 0) {
-      this.save(this.historyOrders[this.historyOrderIndex]);
+      this.save(this.historyOrders[this.historyOrderIndex]).then(rs => {
+        console.log('Đã lưu nháp');
+      }).catch(err => {
+        console.warn('Lưu nháp không thành công', err);
+      });
       this.historyOrderIndex--;
       this.orderForm = this.historyOrders[this.historyOrderIndex];
     } else {
       const params: any = {
         sort_Created: 'desc',
-        limit: 1,
-        includeDetails: true,
-        includeRelativeVouchers: true,
-        includeObject: true
+        limit: 'nolimit',
+        // includeDetails: true,
+        // includeRelativeVouchers: true,
+        // includeObject: true,
+        mergeReturnVouchers: true
       };
+      console.log('Load voucher to:' + this.dateOfPrevious);
       if (this.historyOrders[0] && this.historyOrders[0].get('Code').value) {
-        params.lt_Code = this.historyOrders[0].get('Code').value;
+        // params.lt_Code = this.historyOrders[0].get('Code').value;
+        params.gt_VoucherDate = this.dateOfPrevious.toISOString();
+        params.le_Created = this.historyOrders[0].get('Created').value;
+        params.ne_Code = this.historyOrders[0].get('Code').value;
       }
-      this.apiService.getPromise('/commerce-pos/orders', params).then(rs => {
+      // this.loading = true;
+      this.progressStatus = 'danger';
+      this.progress = 0;
+      await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders', params).then(async rs => {
         console.log(rs);
-        this.makeNewOrder(rs[0], null, { force: true, location: 'HEAD' });
+        let i = 0;
+        this.progress = 0;
+        for (const _order of rs) {
+          i++;
+          if (_order.Type == 'COMMERCEPOSORDER') {
+            const order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + _order.Code, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+            await this.makeNewOrder(order, (order?.RelativeVouchers || []).find(f => f.type == 'COMMERCEPOSRETURN')?.id || null, { force: true, location: 'HEAD', autoActiveForm: false });
+          }
+          if (_order.Type == 'COMMERCEPOSRETURN') {
+            const returns = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + _order.Code, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+            await this.makeNewReturns(returns, null, { force: true, location: 'HEAD', autoActiveForm: false });
+          }
+          const progress = parseInt((i / rs.length * 100) as any);
+          if (progress <= 100) {
+            this.progress = progress;
+          } else {
+            this.progress = 100;
+            this.progressStatus = 'success';
+          }
+          this.progressLabel = 'Tải đơn hàng ' + this.commonService.datePipe.transform(this.dateOfPrevious, 'shortDate') + ' (' + i + '/' + rs.length + ')';
+        }
+        this.progress = 0;
+        if (rs.length > 0) {
+          this.save(this.historyOrders[this.historyOrderIndex]).then(rs => {
+            console.log('Đã lưu nháp');
+          }).catch(err => {
+            console.warn('Lưu nháp không thành công', err);
+          });
+          this.historyOrderIndex--;
+          this.orderForm = this.historyOrders[this.historyOrderIndex];
+        }
       });
+      this.dateOfPrevious.setDate(this.dateOfPrevious.getDate() - 1);
+      // this.loading = false;
     }
+    this.status = '';
+    this.processing = false;
   }
-  onNextOrderClick() {
+  async onNextOrderClick() {
+    if (this.processing) {
+      console.log('an other process is processing...');
+      return;
+    }
+    this.processing = true;
+    this.status = 'Tải đơn hàng sau...'
     this.historyOrderIndex = this.historyOrders.findIndex(f => f === this.orderForm);
     if (this.historyOrderIndex < this.historyOrders.length - 1) {
-      this.save(this.historyOrders[this.historyOrderIndex]);
+      this.save(this.historyOrders[this.historyOrderIndex]).then(rs => {
+        console.log('Đã lưu nháp');
+      }).catch(err => {
+        console.warn('Lưu nháp không thành công', err);
+      });
       this.historyOrderIndex++;
       this.orderForm = this.historyOrders[this.historyOrderIndex];
     }
+    this.processing = false;
+    this.status = '';
   }
 
   focusToQuantity(detailIndex: number) {
@@ -1302,22 +1464,67 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const quantityEle = activeEle.find('.pos-quantity')[0] as HTMLInputElement;
     quantityEle.focus();
     quantityEle.select();
-    let timeout = null;
+    // let timeout = null;
 
-    timeout = setTimeout(() => {
+    // timeout = setTimeout(() => {
+    //   // auto blue after 5s
+    //   quantityEle.blur();
+    // }, 3000);
+
+    // quantityEle.onkeyup = () => {
+    //   // console.log(123);
+    //   clearTimeout(timeout);
+    //   timeout = setTimeout(() => {
+    //     // auto blue after 5s
+    //     quantityEle.blur();
+    //   }, 3000);
+    // };
+
+  }
+
+  autoBlur(event: any, timeout?: number, context?: string) {
+    console.log('autoBlur event: ', event);
+    const control = event.currentTarget;
+    if (control.blurTimeoutProcess) {
+      clearTimeout(control.blurTimeoutProcess);
+    }
+    control.blurTimeoutProcess = setTimeout(() => {
       // auto blue after 5s
-      quantityEle.blur();
-    }, 3000);
+      if (context == 'posSearchInput') {
+        if (!this.searchResults || this.searchResults.length == 0) {
+          this.blurAll();
+        }
+      } else {
+        control.blur();
+      }
+    }, timeout || 5000);
 
-    quantityEle.onkeyup = () => {
+    control.onkeyup = () => {
       // console.log(123);
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
+      clearTimeout(control.blurTimeoutProcess);
+      control.blurTimeoutProcess = setTimeout(() => {
         // auto blue after 5s
-        quantityEle.blur();
-      }, 3000);
+        if (context == 'posSearchInput') {
+          if (!this.searchResults || this.searchResults.length == 0) {
+            this.blurAll();
+          }
+        } else {
+          control.blur();
+        }
+      }, timeout || 5000);
     };
+  }
 
+  clearAutoBlur(event: any, context?: string) {
+    console.log('clearAutoBlur event: ', event);
+    const control = event.currentTarget;
+    if (control.blurTimeoutProcess) {
+      clearTimeout(control.blurTimeoutProcess);
+    }
+
+    // if (context == 'posSearchInput') {
+    //   this.blurAll();
+    // }
   }
 
 
@@ -1368,7 +1575,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       // Toggle debt
       if (event.key == 'F7') {
-        this.toggleDebt();
+        this.toggleDebt(this.orderForm);
         return false;
       }
 
@@ -1380,10 +1587,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
       if (event.key == 'F11') {
         if (this.commonService.dialogStack.length === 0) {
-          if ($(this.decreaseForTotalEleRef.nativeElement).is(':focus')) {
-            this.cashReceiptEleRef.nativeElement.focus();
+          const cashReceiptEle = $('#CashReceipt');
+          const decreaseForTotalEle = $('#DecreaseForTotal');
+          if (decreaseForTotalEle.is(':focus')) {
+            cashReceiptEle[0].focus();
+            cashReceiptEle.select();
           } else {
-            this.decreaseForTotalEleRef.nativeElement.focus();
+            // this.decreaseForTotalEleRef.nativeElement.focus();
+            decreaseForTotalEle[0].focus();
+            decreaseForTotalEle.select();
           }
           event.preventDefault();
           return false;
@@ -1813,19 +2025,27 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
-  onCashReceiptChanged(formGroup: FormGroup) {
+  onCashReceiptChanged(orderForm: FormGroup) {
     // const cashReceiptControl = formGroup.get('CashReceipt');
     // const cashBackControl = formGroup.get('CashBack');
     // const totolControl = formGroup.get('Total');
     // cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
 
-    if (this.orderForm.value?.DebitFunds >= this.orderForm.value?.Total - this.orderForm.value?.DecreaseForTotal) {
-      this.orderForm['isReceipt'] = false;
-      this.orderForm.get('CashReceipt').disable();
-    } else {
-      this.orderForm['isReceipt'] = true;
-      this.orderForm.get('CashReceipt').enable();
+    if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
+      if (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt) {
+        orderForm['isReceipt'] = true;
+        orderForm.get('CashReceipt').enable();
+      } else {
+        if (orderForm.value?.DebitFunds >= orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) {
+          orderForm['isReceipt'] = false;
+          orderForm.get('CashReceipt').disable();
+        } else {
+          orderForm['isReceipt'] = true;
+          orderForm.get('CashReceipt').enable();
+        }
+      }
     }
+
   }
 
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
@@ -1915,6 +2135,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async save(orderForm: FormGroup): Promise<CommercePosOrderModel> {
+    // if (orderForm.get('Code').value && !orderForm['modified']) {
+    //   console.log('voucher was not modified => not need save');
+    //   return orderForm.value;
+    // }
     const voucherType = orderForm['voucherType'];
     const apiPath = voucherType == 'COMMERCEPOSORDER' ? '/commerce-pos/orders' : '/commerce-pos/returns';
     let order = orderForm.getRawValue();
@@ -1930,6 +2154,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           return this.apiService.postPromise(apiPath, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
             orderForm.patchValue(rs[0]);
             orderForm['isProcessing'] = false;
+            // orderForm['modified'] = false;
             return rs[0];
           });
         }
@@ -2108,25 +2333,30 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     });
   }
 
-  toggleDebt() {
-    const debtControl = this.orderForm.get('IsDebt');
+  toggleDebt(orderForm: FormGroup) {
+    const debtControl = orderForm.get('IsDebt');
     debtControl.setValue(!debtControl.value);
-    if (this.orderForm.value?.State == 'APPROVED') {
+    if (orderForm.value?.State == 'APPROVED') {
       this.commonService.toastService.show('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', {});
       return false;
     }
-    if (this.orderForm['voucherType'] == 'COMMERCEPOSORDER') {
+    if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
       if (debtControl.value) {
         this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu công nợ !', 'Ghi nhận doanh thu công nợ', { status: 'primary', duration: 1000 });
       } else {
         this.commonService.toastService.show('Phiếu này sẽ ghi nhận doanh thu tiền mặt !', 'Ghi nhận doanh thu tiền mặt', { status: 'success', duration: 1000 });
       }
-    } else if (this.orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
+    } else if (orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
       if (debtControl.value) {
         this.commonService.toastService.show('Phiếu này sẽ ghi giảm doanh thu công nợ !', 'Ghi giảm doanh thu công nợ', { status: 'primary', duration: 1000 });
       } else {
         this.commonService.toastService.show('Phiếu này sẽ ghi giảm doanh thu tiền mặt !', 'Ghi giảm doanh thu tiền mặt', { status: 'success', duration: 1000 });
       }
+    }
+    if (debtControl.value) {
+      orderForm.get('CashReceipt').disable();
+    } else {
+      orderForm.get('CashReceipt').enable();
     }
     (document.activeElement as HTMLElement).blur();
     return true;
@@ -2141,8 +2371,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     (document.activeElement as HTMLElement).blur();
   }
 
-  openDeploymentForm(orderForm: FormGroup) {
+  async openDeploymentForm(orderForm: FormGroup) {
     const orderData: CommercePosOrderModel = orderForm.getRawValue();
+
+    if (orderData?.Details?.length == 0) {
+      this.commonService.toastService.show('Không có gì để triển khai', 'Không thể triển khai cho đơn hàng rỗng !', { status: 'warning', duration: 10000 })
+      return false;
+    }
+
+    await this.save(orderForm);
     this.commonService.openDialog(DeploymentVoucherFormComponent, {
       context: {
         printDialog: CommercePosDeploymentVoucherPrintComponent,
@@ -2183,6 +2420,21 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   preview(type: string, id: string) {
     this.commonService.previewVoucher(type, id);
+  }
+
+  previewGoodsThumbnail(detail: FormGroup) {
+    let images: any = detail.get('Image').value;
+    if (images && !Array.isArray(images)) {
+      images = [images];
+    }
+    if (images && images.length > 0) {
+      this.commonService.openDialog(ImagesViewerComponent, {
+        context: {
+          images: images.map(m => m.OriginImage),
+          imageIndex: 0
+        }
+      });
+    }
   }
 
   playNewPipSound() {

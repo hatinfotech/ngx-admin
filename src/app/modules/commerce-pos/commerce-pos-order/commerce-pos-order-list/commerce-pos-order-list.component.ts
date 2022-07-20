@@ -286,6 +286,19 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
           class: 'align-right',
           position: 'right',
         },
+        IsDebt: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Nợ'), 'head-title'),
+          type: 'boolean',
+          width: '5%',
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableDateRangeFilterComponent,
+          // },
+          // renderComponent: SmartTableDateTimeComponent,
+          // onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+          //   // instance.format$.next('medium');
+          // },
+        },
         Copy: {
           title: 'Copy',
           type: 'custom',

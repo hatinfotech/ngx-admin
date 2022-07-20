@@ -75,10 +75,10 @@
                 <!-- <button nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
-                <button nbButton hero [disabled]="data[0].State != 'APPROVED'" status="primary" (click)="print(0)">
+                <button nbButton hero [disabled]="data && data[0] && data[0].State != 'APPROVED'" status="primary" (click)="print(0)">
                     <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
                 </button>
-                <button nbButton hero [disabled]="data[0].State != 'APPROVED'" status="success" (click)="continueOrder(0) && close()">
+                <button nbButton hero [disabled]="data && data[0] && data[0].State != 'APPROVED'" status="success" (click)="continueOrder(0) && close()">
                     {{'Đơn mới (F5)' | translate | headtitlecase}}<nb-icon pack="eva" icon="arrow-right-outline"></nb-icon>
                 </button>
             </div>

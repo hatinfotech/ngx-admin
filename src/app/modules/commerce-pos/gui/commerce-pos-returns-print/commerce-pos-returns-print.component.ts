@@ -220,6 +220,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
       // eq_Product: this.product,
       // eq_WarehouseUnit: this.unit,
       // eq_Container: this.container,
+      includeDetails: true, includeObject: true, includeRelativeVouchers: true
     }).then(rs => {
       // rs.map(item => {
       //   if (item.Path) {

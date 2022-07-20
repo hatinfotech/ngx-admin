@@ -36,6 +36,7 @@ export interface SystemConfigModel {
             website: string,
             voucherInfo: string,
             voucherLogo: string,
+            posBillLogo?: string,
             voucherLogoHeight: number,
         }
     },

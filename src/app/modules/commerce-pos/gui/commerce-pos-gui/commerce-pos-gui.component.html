@@ -5,9 +5,9 @@
                 <div class="pos-container scrollable-container" style="flex: 1; display: flex; flex-direction: row; width: 100%; overflow: hidden;">
                     <div class="order" style="display: flex; flex-direction: column; flex: 1;">
 
-                        <div class="pos-search" style="display: flex; flex-direction: row; padding: 1rem; padding-bottom: 0;">
+                        <div class="pos-search" style="display: flex; flex-direction: row; padding: 0.5rem; padding-bottom: 0;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
-                                <input #Search id="posSearchInput" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'COMMERCEPOSRETURN' ? 'danger' : 'success'}}" fieldSize="large" fullWidth [placeholder]="searchInputPlaceholder || 'F3 - Tìm hàng hóa theo số truy xuất, số nhận thức, sku, id, tên...'" class="pos-search-input">
+                                <input #Search id="posSearchInput" (focus)="autoBlur($event, 30000, 'posSearchInput')" (blur)="clearAutoBlur($event, 'posSearchInput')" (keydown)="onSearchInputKeydown($event)" (keyup)="onSearchInputKeyup($event)" type="text" nbInput status="{{orderForm['voucherType'] == 'COMMERCEPOSRETURN' ? 'danger' : 'success'}}" fieldSize="large" fullWidth [placeholder]="searchInputPlaceholder || 'F3 - Tìm hàng hóa theo số truy xuất, số nhận thức, sku, id, tên...'" class="pos-search-input">
                                 <div #searchResultsRef id="searchResults" style="
                                         position: fixed;
                                         z-index: 1;
@@ -18,29 +18,23 @@
                                     " [style.height]="searchResults && searchResults.length > 0 ? '80vh' : '1px'" [style.width]="searchResults && searchResults.length > 0 ? '100vw' : '1px'">
                                     <!-- <div style=""> -->
                                     <cdk-virtual-scroll-viewport #searchListViewport [itemSize]="150" style="height: 80vh;" class="scrollable-container">
-                                        <div class="pos-search-result-item" style="
-                                                cursor: pointer;
-                                                padding: 0.5rem;
-                                                border: 1px solid var(--ck-color-base-border);
-                                                border-top: 0;
-                                                font-size: 1.2rem;
-                                                line-height: 1.4rem;
-                                                display: flex;
-                                                flex-direction: row;
-                                                height: 150px;
-                                                " *cdkVirtualFor="let item of searchResults; let i = index" [ngClass]="{'active': i == searchResultActiveIndex}" (click)="onChooseProduct(item)">
-                                            <div style="
+                                        <div class="pos-search-result-item" *cdkVirtualFor="let item of searchResults; let i = index;" [ngClass]="{
+                                                    'active': i == searchResultActiveIndex,
+                                                    'not-same-pre': !searchResults[i-1] || item.Sku != searchResults[i-1].Sku,
+                                                    'not-same-next': !searchResults[i+1] || item.Sku != searchResults[i+1].Sku
+                                                }" (click)="onChooseProduct(item)">
+                                            <div class="image" style="
                                                     background-repeat: no-repeat; 
                                                     background-size: cover;
                                                     width: 150px; 
                                                     height: 100%;
                                                     margin-right: 0.5rem" [style.backgroundImage]="'url('+item.FeaturePicture?.SmallImage+')'"></div>
                                             <div style="flex: 1;">
-                                                <div>{{item.Name}}</div>
+                                                <div style="font-weight: bold;">{{item.Name}}</div>
                                                 <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
                                                 <div>Vị trí: {{item.Container?.FindOrder || item.Container?.ContainerFindOrder}} - {{item.Container?.ShelfName}}</div>
-                                                <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div>
-                                                <div style="color: var(--danger); font-weight: bold">Giá: {{item.Price | currency:'VND'}}/<span>{{(item.Unit || item.WarehouseUnit) | objecttext}}</span></div>
+                                                <!-- <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div> -->
+                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span></div>
                                             </div>
                                         </div>
                                     </cdk-virtual-scroll-viewport>
@@ -52,7 +46,7 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="pos-search" style="padding: 1rem; padding-bottom: 0;">
+                        <div class="pos-search" style="padding: 0.5rem; padding-bottom: 0;">
                             <div class="pos-search-input-wrap" style="flex: 1; position: relative;">
                                 <ngx-form-group [formGroup]="orderForm" name="Object" label="Khách hàng" [allowCopy]="false" [required]="true" [hideLabel]="true">
                                     <ngx-select2 #customerEle class="" formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(orderForm, $event)"></ngx-select2>
@@ -90,7 +84,7 @@
                                     <td>
                                         <div style="display: flex; flex-direction: column;">
                                             <div style="width: 100%; height: 100%; flex: 1; height: 15rem;">
-                                                <img class="pos-product-image" src="{{detail.value.Image?.SmallImage}}" [ngStyle]="{'height': ((12 - getDetails(orderForm).controls.length) > 4 ? (12 - getDetails(orderForm).controls.length) : 5)+'rem'}">
+                                                <img (click)="previewGoodsThumbnail(detail)" class="pos-product-image" src="{{detail.value.Image?.SmallImage}}" [ngStyle]="{'height': ((12 - getDetails(orderForm).controls.length) > 4 ? (12 - getDetails(orderForm).controls.length) : 5)+'rem'}">
                                             </div>
                                             <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}} - Vị trí: {{detail.value?.FindOrder}}</div>
 
@@ -106,7 +100,7 @@
                                         </button>
                                     </td>
                                     <td style="text-align: right;">
-                                        <input class="pos-quantity" nbInput size="large" formControlName="Quantity" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
+                                        <input class="pos-quantity" nbInput size="large" formControlName="Quantity" (focus)="autoBlur($event, 5000)" (blur)="clearAutoBlur($event)" (keydown)="onQuantityKeydown(orderForm, detail, $event, quantityFormat)" (keyup)="onQuantityChanged(orderForm, detail, $event, quantityFormat)">
                                         <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
                                         <div *ngIf="detail.value.AccessNumbers && detail.value.AccessNumbers.length > 0" class="pos-access-numbers">Số truy xuất: {{detail.value.AccessNumbers | objectstext}}</div>
                                         <div class="pos-price">x {{detail.value.Price | currency:'VND'}}</div>
@@ -131,6 +125,7 @@
                                     <div class="pos-info">
                                         <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': (orderForm['voucherType'] == 'COMMERCEPOSRETURN' || orderForm.value['State'] == 'UNRECORDED'),'text-color-success':(orderForm['voucherType'] == 'COMMERCEPOSORDER' && orderForm.value['State'] != 'UNRECORDED')}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
                                         <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-warning">Đang khởi tạo...</div>
+                                        <div *ngIf="orderForm.value?.DateOfSale || orderForm.value?.DateOfReturn" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-primary">{{(orderForm.value?.DateOfSale || orderForm.value?.DateOfReturn) | date:'short'}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -145,14 +140,14 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="warning" *ngIf="orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt(orderForm)">
                                         <div>
                                             <nb-icon icon="book-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F7</span>
                                         </div>
                                         <div class="button-label">Công nợ</div>
                                     </button>
-                                    <button nbButton fullWidth size="medium" status="primary" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt()">
+                                    <button nbButton fullWidth size="medium" status="primary" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" [outline]="true" *ngIf="!orderForm.value?.IsDebt" class="pos-business-button" (click)="toggleDebt(orderForm)">
                                         <div>
                                             <nb-icon icon="book-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F7</span>
@@ -320,63 +315,76 @@
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px">
                                         <nb-badge text="Số điện thoại (F8)" status="primary" position="top left" style="left: 5px;"></nb-badge>
-                                        <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Số điện thoại..." class="pos-contact-field-input">
+                                        <input style="padding-left: 0.5rem; padding-right: 0.5rem" id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Số điện thoại..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px">
                                         <nb-badge text="Tên khách hàng (F8)" status="primary" position="top left" style="left: 5px;"></nb-badge>
-                                        <input id="ObjectName" #ObjectName formControlName="ObjectName" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
+                                        <input style="padding-left: 0.5rem; padding-right: 0.5rem" id="ObjectName" #ObjectName formControlName="ObjectName" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Tên khách hàng..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                                 <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                     <div class="pos-contact-field" style="padding-top: 10px; margin-bottom: 5px;">
                                         <nb-badge text="Địa chỉ (F8)" status="primary" position="top left" style="left: 5px;"></nb-badge>
-                                        <input id="ObjectAddress" #ObjectAddress formControlName="ObjectAddress" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Địa chỉ..." class="pos-contact-field-input">
+                                        <input style="padding-left: 0.5rem; padding-right: 0.5rem" id="ObjectAddress" #ObjectAddress formControlName="ObjectAddress" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" status="primary" fieldSize="large" fullWidth placeholder="Địa chỉ..." class="pos-contact-field-input">
                                     </div>
                                 </div>
                             </div>
-                            <div class="row" style="padding-bottom: 0.5rem;">
+                            <div class="row" style="padding-bottom: 0.5rem;" *ngIf="orderForm['voucherType'] == 'COMMERCEPOSORDER'">
                                 <div class="col-xxxl-12">
                                     <div class="pos-total-payment" style="text-align: right; margin-top: 5px; padding-top: 1rem; padding-bottom: 1rem; border-color: var(--info)">
                                         <nb-badge text="Tạm tính" status="info" position="top left" style="top: -5px; left: 5px; font-size: 0.8rem;"></nb-badge>
-                                        <div style="color: var(--info)">{{orderForm.value?.Total | currency:'VND'}}</div>
+                                        <div style="color: var(--info)">{{orderForm.value?.Amount | currency:'VND'}}</div>
                                         <ng-container *ngIf="orderForm.value.State != 'APPROVED' && orderForm.value.Object?.id && orderForm.value.Object?.id != 'POSCUSTOMER'">
                                             <div *ngIf="orderForm['ReceivableDebt']" style="color: var(--warning);">Công nợ:<br>{{orderForm['ReceivableDebt'] | currency:'VND'}}</div>
                                         </ng-container>
                                         <div *ngIf="orderForm.value?.Returns">
-                                            <ng-container *ngIf="!orderForm.value.Object?.id || orderForm.value.Object?.id == 'POSCUSTOMER'">
-                                                <div style="color: var(--warning);">Hoàn tiền:<br>{{orderForm.value.DebitFunds | currency:'VND'}}</div>
-                                                <div style="color: var(--danger)">{{orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? 'Tạm trả' : 'Tạm thu' }}:<br>{{(orderForm.value?.Total - orderForm.value.DebitFunds < 0 ? -(orderForm.value?.Total - orderForm.value.DebitFunds) : (orderForm.value?.Total - orderForm.value.DebitFunds)) | currency:'VND'}}</div>
+                                            <!-- <ng-container *ngIf="!orderForm.value.Object?.id || orderForm.value.Object?.id == 'POSCUSTOMER'"> -->
+                                            <div style="color: var(--warning);">{{orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 'Giảm nợ' : 'Hoàn tiền'}}:<br>{{orderForm.value.DebitFunds | currency:'VND'}}</div>
+                                            <ng-container *ngIf="orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt">
+                                                <div style="color: var(--danger)">Tạm thu:<br>{{orderForm.value?.Amount | currency:'VND'}}</div>
+                                            </ng-container>
+                                            <ng-container *ngIf="!orderForm['returnsObj'] || !orderForm['returnsObj'].IsDebt">
+                                                <div style="color: var(--danger)">{{orderForm.value?.Amount - orderForm.value.DebitFunds < 0 ? 'Tạm trả' : 'Tạm thu' }}:<br>{{(orderForm.value?.Amount - orderForm.value.DebitFunds < 0 ? -(orderForm.value?.Amount - orderForm.value.DebitFunds) : (orderForm.value?.Amount - orderForm.value.DebitFunds)) | currency:'VND'}}</div>
                                             </ng-container>
                                         </div>
+                                        <!-- </ng-container> -->
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-12" style="margin-bottom: 0.5rem;">
+                                <div class="col-md-12" style="margin-bottom: 0.5rem;" *ngIf="orderForm['voucherType'] == 'COMMERCEPOSORDER'">
                                     <div class="pos-contact-field" style="padding-top: 10px; margin-bottom: 5px;">
                                         <nb-badge text="Bớt (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
-                                        <nb-badge text="{{orderForm.value.Total && orderForm.value.DecreaseForTotal && ((orderForm.value.DecreaseForTotal || 0)/orderForm.value.Total*100).toFixed(2)}}%" status="danger" position="top right"></nb-badge>
-                                        <input style="color: var(--success) !important; padding: 0.5rem;" #DecreaseForTotal formControlName="DecreaseForTotal" type="text" nbInput status="success" fieldSize="large" fullWidth placeholder="Bớt lấy thảo" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                        <nb-badge text="{{orderForm.value.Amount && orderForm.value.DecreaseForTotal && ((orderForm.value.DecreaseForTotal || 0)/orderForm.value.Amount*100).toFixed(2)}}%" status="danger" position="top right"></nb-badge>
+                                        <input id="DecreaseForTotal" style="color: var(--success) !important; padding: 0.5rem;" #DecreaseForTotal formControlName="DecreaseForTotal" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="success" fieldSize="large" fullWidth placeholder="Bớt lấy thảo" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; margin-bottom: 0.5rem; margin-top: 0.6rem;">
-                                        <nb-badge text="{{orderForm['isReceipt'] ? 'Phải thu' : 'Phải trả'}}" status="danger" position="top left" style="left: 5px; font-size: 0.8rem;"></nb-badge>
-                                        <div>{{ (orderForm['isReceipt']? (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) : -(orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds)) | currency:'VND'}}</div>
-                                    </div>
+                                    <ng-container *ngIf="orderForm['voucherType'] == 'COMMERCEPOSRETURN'">
+                                        <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; margin-bottom: 0.5rem; margin-top: 0.6rem;">
+                                            <nb-badge text="{{orderForm.value?.IsDebt ? 'Giảm nợ' : 'Phải trả'}}" status="danger" position="top left" style="left: 5px; font-size: 0.8rem;"></nb-badge>
+                                            <div>{{ orderForm.value?.Amount | currency:'VND'}}</div>
+                                        </div>
+                                    </ng-container>
+                                    <ng-container *ngIf="orderForm['voucherType'] == 'COMMERCEPOSORDER'">
+                                        <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; margin-bottom: 0.5rem; margin-top: 0.6rem;">
+                                            <nb-badge text="{{orderForm['isReceipt'] ? (orderForm.value?.IsDebt ? 'Ghi nợ' : 'Phải thu') : (orderForm.value?.IsDebt ? 'Giảm nợ' : 'Phải trả')}}" status="danger" position="top left" style="left: 5px; font-size: 0.8rem;"></nb-badge>
+                                            <div>{{ (orderForm['isReceipt']? (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds)) : -(orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds))) | currency:'VND'}}</div>
+                                        </div>
+                                    </ng-container>
                                 </div>
-                                <div class="col-md-12" style="margin-bottom: 0.5rem;">
+                                <div class="col-md-12" style="margin-bottom: 0.5rem;" *ngIf="orderForm['voucherType'] == 'COMMERCEPOSORDER' && !orderForm.value?.IsDebt">
                                     <div class="pos-contact-field" style="padding-top: 10px">
                                         <nb-badge text="Khách đưa (F11)" status="primary" position="top left" style="left: 5px;"></nb-badge>
-                                        <input style="color: var(--primary) !important; padding: 0.5rem;" #CashReceipt formControlName="CashReceipt" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Khách đưa" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                        <input id="CashReceipt" style="color: var(--primary) !important; padding: 0.5rem;" #CashReceipt formControlName="CashReceipt" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="primary" fieldSize="large" fullWidth placeholder="Khách đưa" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
                                     </div>
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12" *ngIf="orderForm['voucherType'] == 'COMMERCEPOSORDER' && !orderForm.value?.IsDebt">
                                     <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--warning); margin-bottom: 0.5rem; margin-top: 0.6rem;">
                                         <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
-                                        <div style="color: var(--warning)">{{orderForm.value?.CashReceipt - (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) > 0 ? (orderForm.value?.CashReceipt - (orderForm.value?.Total - orderForm.value?.DecreaseForTotal - orderForm.value?.DebitFunds) | currency:'VND') : '--'}}</div>
+                                        <div style="color: var(--warning)">{{orderForm.value?.CashReceipt - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds)) > 0 ? (orderForm.value?.CashReceipt - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds)) | currency:'VND') : '--'}}</div>
                                     </div>
                                 </div>
                                 <div class="col-xxxl-8">
@@ -414,8 +422,8 @@
                     </div>
                 </div>
                 <div class="pos-status">
-                    <nb-progress-bar *ngIf="loading" [value]="progress" [status]="progressStatus" size="tiny" style="margin: 0.5rem;">{{progressLabel}}</nb-progress-bar>
-                    <div *ngIf="!loading" style="display: flex; align-items: center; padding: 0.2rem; padding-left: 0.5rem; padding-right: 0.5rem; white-space: nowrap;">
+                    <nb-progress-bar *ngIf="progress > 0" [value]="progress" [status]="progressStatus" size="tiny" style="margin: 0.5rem;">{{progressLabel}}</nb-progress-bar>
+                    <div *ngIf="progress == 0" style="display: flex; align-items: center; padding: 0.2rem; padding-left: 0.5rem; padding-right: 0.5rem; white-space: nowrap;">
                         <div class="status" style="flex: 1;">Commerce POS v1.0 | Nhân viên bán hàng: {{(commonService.loginInfo$ | async)?.user?.Name}}</div>
                         <div class="pos-time" style="text-align: right; width: 350px;">{{currentDate | date:'short'}} - Trạng thái: {{ status || 'Ready'}}</div>
                     </div>

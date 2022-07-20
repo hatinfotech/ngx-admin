@@ -307,9 +307,10 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       text: 'Title',
     },
     data: [
+      { id: 'XEBAGAC', text: 'Xe ba gác' },
       { id: 'XEBEN', text: 'Xe ben' },
+      { id: 'XEMAY', text: 'Xe máy' },
       { id: 'XETAI', text: 'Xe tải' },
-      { id: 'XEBAGAC', text: 'Xe ba gác' }
     ],
   };
 
