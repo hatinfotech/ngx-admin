@@ -1,3 +1,4 @@
+import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { DeploymentVoucherFormComponent } from './../../../deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
 import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { UnitModel } from './../../../../models/unit.model';
@@ -298,7 +299,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.goodsList.push({
               Code: goodsInContainer.Goods,
               Sku: goodsInContainer.GoodsSku?.toUpperCase(),
-              Name: goodsInContainer.GoodsName,
+              Name: goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')',
               FeaturePicture: goodsInContainer.GoodsThumbnail,
               // Unit: goodsInContainer.Unit,
               Container: {
@@ -311,7 +312,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel, Sequence: goodsInContainer.UnitSeq },
               // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
               Price: price,
-              Keyword: (goodsInContainer.GoodsSku + ' ' + goodsInContainer.GoodsName).toLowerCase()
+              Keyword: (goodsInContainer.GoodsSku + ' ' + goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')').toLowerCase()
             });
           }
 
@@ -825,7 +826,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }), take(1)).toPromise();
 
     try {
-      this.inputValue = inputValue;
+      this.inputValue = inputValue = inputValue && inputValue.trim() || inputValue;
       const detailsControls = this.getDetails(this.orderForm).controls
       const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
       const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
@@ -1007,6 +1008,38 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                     });
                   }, 50);
                   throw new Error('Trường hợp tạo phiếu bán hàng từ phiếu trả hàng');
+                } else if (new RegExp('^113' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Xem lại phiếu triển khai và đơn hàng liên quan',
+                        actions: [
+                          {
+                            label: 'Mở lại bill liên quan (F10)',
+                            keyShortcut: 'F10',
+                            status: 'primary',
+                            action: async () => {
+                              const deploymentVoucher = await this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + inputValue, { includeRelativeVouchers: true }).then(rs => rs[0]);
+                              this.loadVoucher(deploymentVoucher?.RelativeVouchers?.find(f => f.type == 'COMMERCEPOSORDER')?.id);
+                            }
+                          },
+                          {
+                            label: 'Xem lại (Enter)',
+                            keyShortcut: 'Enter',
+                            status: 'success',
+                            focus: true,
+                            action: async () => {
+                              this.commonService.previewVoucher('DEPLOYMENT80', inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  throw new Error('Trường hợp xem lại phiếu triển khai');
                 } else if (new RegExp('^118' + coreId).test(inputValue)) {
                   product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, {
                     includeUnit: true,
@@ -1314,6 +1347,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       console.log('Barcode process sucess for queue: ' + queueId);
       return existsProduct;
     } catch (err) {
+      console.error(err);
       this.isBarcodeProcessing.next(queueId + 1);
       return null;
     }
@@ -2394,13 +2428,16 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               id: orderData.Code,
               text: orderData.Title || `Đơn hàng POS - ${orderData.Code}`,
             }],
+            DirectReceiverName: orderData.ObjectName,
+            DirectReceiverPhone: orderData.ObjectPhone,
+            DeliveryAddress: orderData.ObjectAddress,
             Details: orderData.Details.map(detail => {
-              detail.Product = {
-                id: this.commonService.getObjectId(detail.Product),
-                text: this.commonService.getObjectText(detail.Product),
-              } as any;
+              const product = this.productMap[this.commonService.getObjectId(detail.Product)];
+              product.id = product?.Code;
+              product.text = product?.Name;
+              detail.Product = product as any;
               return detail;
-            })
+            }).filter(f => f.Product?.Type != 'SERVICE')
           }
         ],
         onDialogSave(newData) {

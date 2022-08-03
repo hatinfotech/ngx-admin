@@ -28,7 +28,7 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
+                                                    <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
@@ -38,7 +38,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <ngx-form-group [formGroup]="formItem" name="ObjectAddress" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{formItem.get('ObjectAddress').placeholder || ('Common.address' | translate | headtitlecase)}}">
+                                                    <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{'Common.address' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
@@ -128,7 +128,7 @@
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="RelativeVouchers" label="Common.relationVoucher" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <button class="fit-control-button" [outline]="true" nbButton status="primary" fullWidth (click)="openRelativeVoucherChoosedDialog(formItem)" size="medium" hero>
-                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm chứng từ liên quan
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm CT liên quan
                                     </button>
                                 </ngx-form-group>
                             </div>

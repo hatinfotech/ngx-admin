@@ -114,7 +114,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -152,7 +152,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -430,7 +430,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -455,7 +455,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -693,7 +693,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       // RequireInvoice: [false],
 
       // Transport
-      Transportation: [null,  Validators.required],
+      Transportation: [null, Validators.required],
       Driver: [null, Validators.required],
       DriverName: [null, Validators.required],
       DriverPhone: [],
@@ -734,15 +734,15 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   patchFormGroupValue = (formGroup: FormGroup, data: DeploymentVoucherModel) => {
 
     if (data) {
-      formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-      formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-      data['ObjectPhone'] = null;
-      data['ObjectAddress'] = null;
+      // formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
+      // formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+      // data['ObjectPhone'] = null;
+      // data['ObjectAddress'] = null;
 
-      formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
-      formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
-      data['ContactPhone'] = null;
-      data['ContactAddress'] = null;
+      // formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+      // formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+      // data['ContactPhone'] = null;
+      // data['ContactAddress'] = null;
 
       formGroup.patchValue(data);
     }
@@ -918,6 +918,9 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
           formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+          formGroup.get('DeliveryAddress').setValue(selectedData.Address);
+          formGroup.get('DirectReceiverName').setValue(selectedData.Name);
+          formGroup.get('DirectReceiverPhone').setValue(selectedData.Phone);
         }
       }
     }
@@ -1241,21 +1244,21 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
-      if (source === 'ToMoney') {
-        detail.get('Price').setValue(this.calculatToMoney(detail, source));
-      } else {
-        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-      }
-      // Call culate total
-      const details = this.getDetails(formItem);
-      let total = 0;
-      for (let i = 0; i < details.controls.length; i++) {
-        total += this.calculatToMoney(details.controls[i] as FormGroup);
-      }
-      formItem.get('_total').setValue(total);
-    });
-    return false;
+    // this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+    //   if (source === 'ToMoney') {
+    //     detail.get('Price').setValue(this.calculatToMoney(detail, source));
+    //   } else {
+    //     detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+    //   }
+    //   // Call culate total
+    //   const details = this.getDetails(formItem);
+    //   let total = 0;
+    //   for (let i = 0; i < details.controls.length; i++) {
+    //     total += this.calculatToMoney(details.controls[i] as FormGroup);
+    //   }
+    //   formItem.get('_total').setValue(total);
+    // });
+    // return false;
   }
 
   // preview(formItem: FormGroup) {
