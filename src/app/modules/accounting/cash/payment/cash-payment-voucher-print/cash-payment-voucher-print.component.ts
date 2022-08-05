@@ -21,7 +21,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
 
   /** Component name */
   componentName = 'CashPaymentVoucherPrintComponent';
-  title: string = 'Xem trước phiếu thu';
+  title: string = 'Xem trước phiếu chi';
   apiPath = '/accounting/cash-vouchers';
   // approvedConfirm?: boolean;
   env = environment;
@@ -61,7 +61,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
   }
 
   renderTitle(data: CashVoucherModel) {
-    return `Phieu_Thu_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+    return `Phieu_Chi_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
   }
 
   close() {

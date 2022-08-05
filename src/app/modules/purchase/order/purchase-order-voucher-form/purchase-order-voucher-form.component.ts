@@ -343,6 +343,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   /** Execute api get */
   executeGet(params: any, success: (resources: PurchaseOrderVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeDetails'] = true;
     params['includeRelativeVouchers'] = true;
     params['useBaseTimezone'] = true;
