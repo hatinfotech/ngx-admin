@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -10,6 +11,8 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
 import { AccountingBankAccountFormComponent } from '../accounting-bank-account-form/accounting-bank-account-form.component';
+import { AccountingDetailByObjectReportComponent } from '../../reports/accounting-detail-by-object-report/accounting-detail-by-object-report.component';
+import { AccountingAccountDetailsReportPrintComponent } from '../../reports/print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 
 @Component({
   selector: 'ngx-accounting-bank-account-list',
@@ -90,19 +93,44 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         BranchAddress: {
           title: this.commonService.translateText('Common.branchAddress'),
           type: 'string',
-          width: '20%',
+          width: '15%',
           // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
-          width: '20%',
+          width: '15%',
         },
         TailAmount: {
           title: this.commonService.translateText('Accounting.tailAmount'),
           type: 'acc-currency',
           width: '10%',
         },
+        Preview: {
+          title: this.commonService.translateText('Common.detail'),
+          type: 'custom',
+          width: '10%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'external-link-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.label = this.commonService.translateText('Common.detail');
+            instance.valueChange.subscribe(value => {
+              // instance.icon = value ? 'unlock' : 'lock';
+              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+              // instance.disabled = value !== 'REQUEST';
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+              this.openInstantDetailReport(rowData);
+            });
+          },
+        }
         // Copy: {
         //   title: 'Copy',
         //   type: 'custom',
@@ -143,6 +171,25 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         // },
       },
     });
+  }
+
+  openInstantDetailReport(rowData: AccBankAccountModel) {
+    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
+      context: {
+        inputMode: 'dialog',
+        // object: rowData.Object,
+        title: 'Chi tiết giao dịch của tài khoản ngân hàng `' + rowData.Description + '`',
+        accounts: ['1121'],
+        report: 'reportDetailByAccountAndObject',
+        fromDate: null,
+        toDate: null,
+        filter: {
+          eq_BankAccount: rowData.Code
+        },
+        reportComponent: AccountingAccountDetailsReportPrintComponent,
+      },
+      closeOnEsc: false,
+    })
   }
 
   ngOnInit() {

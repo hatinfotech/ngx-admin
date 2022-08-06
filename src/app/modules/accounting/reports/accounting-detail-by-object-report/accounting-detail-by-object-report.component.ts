@@ -37,10 +37,12 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
   totalBalance: { Debit: number, Credit: number } = null;
   tabs: any[];
 
+  @Input() title?: string;
   @Input() object?: string;
   @Input() accounts?: string[];
   @Input() fromDate?: Date;
   @Input() toDate?: Date;
+  @Input() filter?: any;
   @Input() report?: string;
   @Input() balance?: 'debt' | 'credit' | 'both';
   @Input() reportComponent: Type<any> | TemplateRef<any>;
@@ -346,6 +348,9 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
 
       params['toDate'] = toDate.toISOString();
       params['fromDate'] = fromDate.toISOString();
+      if (this.filter) {
+        params = { ...params, ...this.filter };
+      }
       // }
 
       return params;
