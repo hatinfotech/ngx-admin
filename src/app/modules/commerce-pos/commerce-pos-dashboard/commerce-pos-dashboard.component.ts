@@ -462,8 +462,6 @@ export class CommercePosDashboardComponent implements OnDestroy {
 
     /** Load data */
     let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
-    // let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
-    // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
     let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5213]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
     let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5212]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
 
@@ -491,7 +489,6 @@ export class CommercePosDashboardComponent implements OnDestroy {
       };
     });
 
-
     this.costAndRevenueStatisticsData = {
       labels: labels,
       datasets: [
@@ -503,22 +500,6 @@ export class CommercePosDashboardComponent implements OnDestroy {
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
-        // {
-        //   label: 'Giá vốn',
-        //   data: mergeData.map(point => point.Line2['Value']),
-        //   borderColor: this.colors.danger,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 1),
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
-        // {
-        //   label: 'Chi phí',
-        //   data: mergeData.map(point => point.Line3['Value']),
-        //   borderColor: this.colors.warning,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 1),
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
         {
           label: 'Giảm giá',
           data: mergeData.map(point => point.Line2['Value']),
@@ -539,7 +520,6 @@ export class CommercePosDashboardComponent implements OnDestroy {
     };
 
     const _cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: false, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'COMMERCEPOS' });
-    // const cashFlowStatisticsData = [];
     const cashFlowStatistics = [];
     let previusPoint = null;
     for (let i = 0; i < 24; i++) {

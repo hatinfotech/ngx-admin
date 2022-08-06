@@ -397,7 +397,6 @@ export class SalesDashboardComponent implements OnDestroy {
       for (const reportItem of summaryReport) {
         if (/^111/.test(reportItem.Account)) this.summaryReport.Cash += (reportItem.GenerateDebit - reportItem.GenerateCredit);
         if (/^112/.test(reportItem.Account)) this.summaryReport.CashInBank += (reportItem.GenerateDebit - reportItem.GenerateCredit);
-        // if (/^112/.test(reportItem.Account)) this.summaryReport.HeadCashInBank += reportItem.HeadAmount;
         if (/^511|512|515/.test(reportItem.Account)) {
           this.summaryReport.Revenues += (reportItem.GenerateCredit - reportItem.GenerateDebit);
         }
@@ -417,7 +416,6 @@ export class SalesDashboardComponent implements OnDestroy {
           this.summaryReport.Cost += reportItem.GenerateDebit;
         }
         if (/^131/.test(reportItem.Account)) this.summaryReport.CustomerReceivableDebt += reportItem.TailAmount;
-        // if (/^131/.test(reportItem.Account)) this.summaryReport.CustomerReceivableHeadDebt += reportItem.HeadAmount;
       }
 
       // this.summaryReport = {
