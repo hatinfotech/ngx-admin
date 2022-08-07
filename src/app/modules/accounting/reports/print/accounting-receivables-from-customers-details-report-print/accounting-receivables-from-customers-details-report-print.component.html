@@ -52,7 +52,7 @@
                                 <td class="" style="white-space: nowrap">{{'ĐVT' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Đơn giá' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td>
+                                <!-- <td class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td> -->
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
@@ -62,13 +62,12 @@
                                 <td class="text-align-right">{{detail.Quantity ? (detail.Quantity | number) : ''}}</td>
                                 <td>{{detail.ProductUnitLabel}}</td>
                                 <td class="text-align-right" [innerHtml]="detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : ''"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
+                                <td class="text-align-right" style="font-weight: bold;" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
+                                <!-- <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td> -->
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="7" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ'}}: </td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
-                                <td> </td>
                             </tr>
                         </table>
                     </div>

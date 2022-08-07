@@ -159,10 +159,17 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(data => {
+        const objectInfo = data.find(f => f.Voucher != 'OPN');
         const item = {
           FromDate: fromDate,
           ToDate: toDate,
-          ReportDate: new Date(), 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data
+          ReportDate: new Date(),
+          'Object': object,
+          ObjectName: objectInfo['ObjectName'],
+          ObjectPhone: objectInfo['ObjectPhone'],
+          ObjectEmail: objectInfo['ObjectEmail'],
+          ObjectAddress: objectInfo['ObjectAddress'],
+          Details: data
         };
         return item;
       }));
@@ -184,10 +191,10 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
         // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
-        if(detail.VoucherType == 'RECEIPT') {
+        if (detail.VoucherType == 'RECEIPT') {
           detail.Description = `Thu tiền: ${detail.Description}`;
         }
-        if(detail.VoucherType == 'SALESRETURNS') {
+        if (detail.VoucherType == 'SALESRETURNS') {
           detail.Description = `Trả hàng: ${detail.Description}`;
         }
       }
