@@ -46,6 +46,27 @@ this.commonService.openDialog(DialogFormComponent, {
   },
 });
  */
+
+export interface DialogFormControl {
+  name: string,
+  type?: string,
+  dataList?: { id: string, text: string }[],
+  label: string,
+  placeholder: string,
+  initValue?: any;
+  disabled?: boolean,
+  focus?: boolean,
+  option?: any,
+  value?: any
+}
+export interface DialogFormAction {
+  label: string,
+  icon?: string,
+  status?: string,
+  keyShortcut?: string,
+  disabled?: (actionParamrs: DialogFormAction, form: FormGroup, dialog?: DialogFormComponent) => boolean,
+  action?: (form: FormGroup, dialog?: DialogFormComponent) => any
+}
 @Component({
   selector: 'ngx-dialog-form',
   templateUrl: './dialog-form.component.html',
@@ -57,24 +78,16 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   @Input() title: string;
   @Input() cardStyle?: any;
 
-  @Input() controls: {
-    name: string,
-    type?: string,
-    dataList?: { id: string, text: string }[],
-    label: string,
-    placeholder: string,
-    initValue?: any;
-    disabled?: boolean,
-    focus?: boolean,
-    option?: any
-  }[];
-  @Input() actions: { label: string, icon?: string, status?: string, keyShortcut?: string, action?: (form: FormGroup, dialog?: DialogFormComponent) => any }[];
+  @Input() controls: DialogFormControl[];
+  @Input() actions: DialogFormAction[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
   curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
   formGroup: FormGroup;
+  processing = false;
+  processingProcess = null;
 
   inited = new BehaviorSubject<boolean>(false);
 
@@ -98,6 +111,24 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
       });
     }
   }
+
+  startProcessing(timeout?: number) {
+    this.processing = true;
+    if (this.processingProcess) {
+      clearTimeout(this.processingProcess);
+    }
+    this.processingProcess = setTimeout(() => {
+      this.processing = false;
+    }, timeout || 10000);
+  }
+
+  stopProcessing() {
+    if (this.processingProcess) {
+      clearTimeout(this.processingProcess);
+    }
+    this.processing = false;
+  }
+
   ngAfterViewInit(): void {
     this.inited.pipe(filter(f => f), take(1)).toPromise().then(rs => {
       this.controls.forEach(control => {
@@ -146,8 +177,15 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     return true;
   }
 
-  onAction(item: any, form: FormGroup) {
+  onAction(item: DialogFormAction, form: FormGroup) {
     return item?.action(form, this);
+  }
+
+  checkButtonDisabled(actionParams: DialogFormAction, form: FormGroup) {
+    if (actionParams?.disabled) {
+      return actionParams?.disabled(actionParams, form, this);
+    }
+    return false;
   }
 
   dismiss() {

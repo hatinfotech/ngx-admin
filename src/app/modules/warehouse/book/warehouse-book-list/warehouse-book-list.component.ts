@@ -1,3 +1,4 @@
+import { takeUntil } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WarehouseBookModel } from '../../../../models/warehouse.model';
@@ -8,6 +9,9 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { WarehouseBookCommitComponent } from '../warehouse-book-commit/warehouse-book-commit.component';
+import { FormGroup } from '@angular/forms';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 
 @Component({
   selector: 'ngx-warehouse-book-list',
@@ -104,12 +108,113 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
         Note: {
           title: this.commonService.translateText('Common.note'),
           type: 'string',
-          width: '30%',
+          width: '50%',
         },
+        // Commited: {
+        //   title: this.commonService.translateText('Warehouse.Book.commit'),
+        //   type: 'datetime',
+        //   width: '15%',
+        // },
         Commited: {
-          title: this.commonService.translateText('Warehouse.Book.commit'),
-          type: 'datetime',
-          width: '15%',
+          title: this.commonService.translateText('Chốt sổ'),
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'lock-outline';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.valueChange.subscribe(value => {
+              instance.label = instance.rowData.Commited ? this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.commonService.translateText('Chưa chốt sổ');
+              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
+              if (instance.rowData.Commited) {
+                instance.icon = 'lock-outline';
+              } else {
+                instance.icon = 'unlock-outline';
+              }
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseBookModel) => {
+              this.commonService.openDialog(DialogFormComponent, {
+                context: {
+                  title: 'Chốt sổ kho',
+                  cardStyle: { width: '377px' },
+                  onInit: async (form, dialog) => {
+                    return true;
+                  },
+                  controls: [
+                    {
+                      name: 'Commmited',
+                      label: 'Chốt sổ đến ngày',
+                      placeholder: 'Chốt sổ đến ngày',
+                      type: 'date',
+                      initValue: instance.rowData.Commited && new Date(instance.rowData.Commited) || new Date(),
+                      focus: true,
+                    },
+                  ],
+                  actions: [
+                    {
+                      label: 'Esc - Trở về',
+                      icon: 'back',
+                      status: 'basic',
+                      keyShortcut: 'Escape',
+                      action: () => { return true; },
+                    },
+                    {
+                      label: 'Chốt sổ',
+                      icon: 'lock-outline',
+                      status: 'danger',
+                      disabled: (actionParams, form: FormGroup, dialog) => {
+                        const oldCommited = instance.rowData.Commited && new Date(instance.rowData.Commited) || null;
+                        const commited = (form.get('Commmited').value as Date);
+                        if (oldCommited && commited && oldCommited.getFullYear() == commited.getFullYear() && oldCommited.getMonth() == commited.getMonth() && oldCommited.getDate() == commited.getDate()) {
+                          return true;
+                        }
+                        return false;
+                      },
+                      // keyShortcut: 'Enter',
+                      action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                        const commited = (form.get('Commmited').value as Date);
+                        commited.setHours(23, 59, 59, 999);
+                        formDialogConpoent.startProcessing();
+                        await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
+                          console.log(rs);
+                          this.commonService.toastService.show('Đã chốt sổ kho đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.refresh();
+                          return rs;
+                        }).catch(err => {
+                          console.error(err);
+                          formDialogConpoent.stopProcessing();
+                        });
+                        formDialogConpoent.stopProcessing();
+                        return true;
+                      },
+                    },
+                    {
+                      label: 'Mở khóa',
+                      icon: 'unlock-outline',
+                      status: 'primary',
+                      keyShortcut: 'Escape',
+                      action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                        formDialogConpoent.startProcessing();
+                        await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
+                          console.log(rs);
+                          this.commonService.toastService.show('Đã mở chốt sổ kho !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.refresh();
+                          return rs;
+                        }).catch(err => {
+                          console.error(err);
+                          formDialogConpoent.stopProcessing();
+                        });
+                        formDialogConpoent.stopProcessing();
+                        return true;
+                      },
+                    },
+                  ],
+                },
+              });
+            });
+          },
         },
         State: {
           title: this.commonService.translateText('Common.state'),

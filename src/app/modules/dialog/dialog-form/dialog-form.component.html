@@ -1,4 +1,4 @@
-<nb-card [ngStyle]="cardStyle">
+<nb-card [ngStyle]="cardStyle" [nbSpinner]="processing">
   <nb-card-header>{{ title }}</nb-card-header>
   <nb-card-body>
     <div [formGroup]="formGroup" #formEle>
@@ -10,12 +10,22 @@
             <input [name]="control.name" *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
             <textarea [name]="control.name" *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
             <ngx-select2 [name]="control.name" [formControlName]="control.name" *ngIf="control.type == 'select2'" [select2Option]="control.option"></ngx-select2>
+            <ng-container *ngIf="control.type == 'datetime'">
+              <input type="text" [owlDateTime]="DateTimePicker" [owlDateTimeTrigger]="DateTimePicker" nbInput fullWidth [name]="control.name" [formControlName]="control.name" [placeholder]="control.placeholder">
+              <owl-date-time #DateTimePicker></owl-date-time>
+            </ng-container>
+            <ng-container *ngIf="control.type == 'date'">
+              <input type="text" [owlDateTime]="DateTimePicker" [owlDateTimeTrigger]="DateTimePicker" nbInput fullWidth [name]="control.name" [formControlName]="control.name" [placeholder]="control.placeholder">
+              <owl-date-time #DateTimePicker [pickerType]="'calendar'"></owl-date-time>
+            </ng-container>
           </div>
         </div>
       </div>
     </div>
   </nb-card-body>
   <nb-card-footer>
-    <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="onAction(item, formGroup) && dismiss()">{{ item?.label }}</button>
+    <div class="buttons-row">
+      <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="onAction(item, formGroup) && dismiss()" [disabled]="checkButtonDisabled(item, formGroup)">{{ item?.label }}</button>
+    </div>
   </nb-card-footer>
 </nb-card>

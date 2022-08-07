@@ -1,5 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
@@ -10,6 +12,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { AccMasterBookModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
 import { AccMasterBookFormComponent } from '../acc-master-book-form/acc-master-book-form.component';
 import { AccMasterBookHeadAmountComponent } from '../acc-master-book-head-amount/acc-master-book-head-amount.component';
@@ -17,7 +20,10 @@ import { AccMasterBookHeadAmountComponent } from '../acc-master-book-head-amount
 @Component({
   selector: 'ngx-acc-master-book-list',
   templateUrl: './acc-master-book-list.component.html',
-  styleUrls: ['./acc-master-book-list.component.scss']
+  styleUrls: ['./acc-master-book-list.component.scss'],
+  providers: [
+    DatePipe,
+  ]
 })
 export class AccMasterBookListComponent extends ServerDataManagerListComponent<AccMasterBookModel> implements OnInit {
 
@@ -100,6 +106,107 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
           title: this.commonService.translateText('Accounting.MasterBook.dateOfBeginning'),
           type: 'datetime',
           width: '20%',
+        },
+        Commited: {
+          title: this.commonService.translateText('Chốt sổ'),
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'lock-outline';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.valueChange.subscribe(value => {
+              instance.label = instance.rowData.Commited ? this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.commonService.translateText('Chưa chốt sổ');
+              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
+              if (instance.rowData.Commited) {
+                instance.icon = 'lock-outline';
+              } else {
+                instance.icon = 'unlock-outline';
+              }
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
+              this.commonService.openDialog(DialogFormComponent, {
+                context: {
+                  title: 'Chốt sổ kế toán',
+                  cardStyle: { width: '377px' },
+                  onInit: async (form, dialog) => {
+                    return true;
+                  },
+                  controls: [
+                    {
+                      name: 'Commmited',
+                      label: 'Chốt sổ đến ngày',
+                      placeholder: 'Chốt sổ đến ngày',
+                      type: 'date',
+                      initValue: instance.rowData.Commited && new Date(instance.rowData.Commited) || new Date(),
+                      focus: true,
+                    },
+                  ],
+                  actions: [
+                    {
+                      label: 'Esc - Trở về',
+                      icon: 'back',
+                      status: 'basic',
+                      keyShortcut: 'Escape',
+                      action: () => { return true; },
+                    },
+                    {
+                      label: 'Chốt sổ',
+                      icon: 'lock-outline',
+                      status: 'danger',
+                      disabled: (actionParams, form: FormGroup, dialog) => {
+                        const oldCommited = instance.rowData.Commited && new Date(instance.rowData.Commited) || null;
+                        const commited = (form.get('Commmited').value as Date);
+                        if (oldCommited && commited && oldCommited.getFullYear() == commited.getFullYear() && oldCommited.getMonth() == commited.getMonth() && oldCommited.getDate() == commited.getDate()) {
+                          return true;
+                        }
+                        return false;
+                      },
+                      // keyShortcut: 'Enter',
+                      action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                        const commited = (form.get('Commmited').value as Date);
+                        commited.setHours(23, 59, 59, 999);
+                        formDialogConpoent.startProcessing();
+                        await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
+                          console.log(rs);
+                          this.commonService.toastService.show('Đã chốt sổ kế toán đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.refresh();
+                          return rs;
+                        }).catch(err => {
+                          console.error(err);
+                          formDialogConpoent.stopProcessing();
+                        });
+                        formDialogConpoent.stopProcessing();
+                        return true;
+                      },
+                    },
+                    {
+                      label: 'Mở khóa',
+                      icon: 'unlock-outline',
+                      status: 'primary',
+                      keyShortcut: 'Escape',
+                      action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                        formDialogConpoent.startProcessing();
+                        await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
+                          console.log(rs);
+                          this.commonService.toastService.show('Đã mở chốt sổ kế toán !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.refresh();
+                          return rs;
+                        }).catch(err => {
+                          console.error(err);
+                          formDialogConpoent.stopProcessing();
+                        });
+                        formDialogConpoent.stopProcessing();
+                        return true;
+                      },
+                    },
+                  ],
+                },
+              });
+            });
+          },
         },
         State: {
           title: this.commonService.translateText('Common.state'),

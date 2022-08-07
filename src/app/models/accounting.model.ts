@@ -147,6 +147,7 @@ export interface AccMasterBookModel {
     DateOfStart?: string;
     DateOfEnd?: string;
     DateOfBeginning?: string;
+    Commited?: string;
 }
 export interface AccMasterBookEntryModel {
     [key: string]: any;
