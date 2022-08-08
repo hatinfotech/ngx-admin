@@ -49,8 +49,10 @@ export class AccountingDashboardComponent implements OnDestroy {
 
   summaryReport: {
     Cash?: number,
+    Gold?: number,
     CashInBank?: number,
     Revenues?: number,
+    DecreaseRevenues?: number,
     Cost?: number,
     CustomerReceivableDebt?: number,
     LiabilitiesDebt?: number,
@@ -371,13 +373,15 @@ export class AccountingDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
-    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, eq_Accounts: "111,112,511,512,515,521,632,635,642,641,623,2288,711,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate, limit: 'nolimit' }).then(summaryReport => {
+    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, eq_Accounts: "111,112,511,521,515,521,632,635,642,641,623,2288,711,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate, limit: 'nolimit' }).then(summaryReport => {
       console.log(summaryReport);
 
       this.summaryReport = {
-        Cash: summaryReport.filter(f => /^111/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        Cash: summaryReport.filter(f => /^1111/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
+        Gold: summaryReport.filter(f => /^1113/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         CashInBank: summaryReport.filter(f => /^112/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
-        Revenues: summaryReport.filter(f => /^511|512|515|711/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
+        Revenues: summaryReport.filter(f => /^511|515|711/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
+        DecreaseRevenues: summaryReport.filter(f => /^521/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         Cost: summaryReport.filter(f => /^632|642|635|623|641|811|521/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         CustomerReceivableDebt: summaryReport.filter(f => /^131/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailDebit), 0),
         LiabilitiesDebt: summaryReport.filter(f => /^331/.test(f.Account)).reduce((sum, current) => sum + parseFloat(current.TailCredit), 0),
@@ -406,7 +410,7 @@ export class AccountingDashboardComponent implements OnDestroy {
     let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], line5Data: any[], labels: any[], timeline: any[], mergeData: any[];
 
     /** Load data */
-    let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
@@ -438,7 +442,7 @@ export class AccountingDashboardComponent implements OnDestroy {
       labels: labels,
       datasets: [
         {
-          label: 'Doanh số',
+          label: 'Doanh thu',
           data: mergeData.map(point => point.Line1['Value']),
           borderColor: this.colors.success,
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),

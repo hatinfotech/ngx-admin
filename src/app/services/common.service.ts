@@ -1,3 +1,5 @@
+import { Select2QueryOptions } from './../../vendor/ng2select2 copy/lib/ng2-select2.interface';
+import { Select2Option } from './../lib/custom-element/select2/select2.component';
 import { CommercePosBillPrintComponent } from './../modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosOrderPrintComponent } from './../modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';
 import { diacritic } from './../lib/diacritic';
@@ -52,7 +54,7 @@ import { WarehouseGoodsReceiptNotePrintComponent } from '../modules/warehouse/go
 import { WarehouseInventoryAdjustNotePrintComponent } from '../modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
 import { QuickTicketFormComponent } from '../modules/helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
 import { NotificationModel } from '../models/notification.model';
-import { RootConfigModel, SystemConfigModel } from '../models/model';
+import { AnyProps, RootConfigModel, SystemConfigModel } from '../models/model';
 import { AdminProductService } from '../modules/admin-product/admin-product.service';
 import { CollaboratorEducationArticlePrintComponent } from '../modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 import { SalesReturnsVoucherPrintComponent } from '../modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
@@ -1253,13 +1255,13 @@ export class CommonService {
   };
 
 
-  makeSelect2AjaxOption(url: string, query: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }) {
+  makeSelect2AjaxOption(url: string, query: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }): Select2Option {
     return {
       ...this.select2OptionForTemplate,
       placeholder: option.placeholder || this.select2OptionForTemplate.placeholder,
       ajax: {
         delay: 300,
-        data: function (params) {
+        data: function (params: Select2QueryOptions & AnyProps) {
           return {
             ...params,
             offset: params.offset || 0,
@@ -1279,10 +1281,14 @@ export class CommonService {
             }),
           ).toPromise().then(rs => {
             success(rs);
+            // return rs.res;
+            // return null;
           }).catch(err => {
             console.error(err);
             failure();
+            // return null;
           });
+          return null;
         },
         processResults: (rs: { data: any[], total: number }, params: any) => {
           const data = rs.data;

@@ -84,14 +84,19 @@
                     <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="Page" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
                     <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="[]" (selectChange)="onChangePage($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
-                    <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+                <div class="col-sm-2">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroups" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductGroups" [select2Option]="select2ProductGroup" [data]="productGroupList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-2">
+                  <ngx-form-group [formGroup]="formItem" name="Products" label="Sản phẩm" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Products" [select2Option]="select2OptionForProduct"></ngx-select2>
                   </ngx-form-group>
                 </div>
               </div>

@@ -234,37 +234,6 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       }
     }),
     withThumbnail: true,
-    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    // allowClear: true,
-    // width: '100%',
-    // dropdownAutoWidth: true,
-    // minimumInputLength: 0,
-    // withThumbnail: true,
-    // keyMap: {
-    //   id: 'id',
-    //   text: 'text',
-    // },
-    // ajax: {
-    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-    //     console.log(settings);
-    //     const params = settings.data;
-    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,Sku=>Sku,FeaturePicture=>FeaturePicture,Pictures=>Pictures", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'] }).then(rs => {
-    //       success(rs);
-    //     }).catch(err => {
-    //       console.error(err);
-    //       failure();
-    //     });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     return {
-    //       results: data.map(item => {
-    //         item.thumbnail = item?.FeaturePicture?.Thumbnail;
-    //         return item;
-    //       })
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForUnit = {

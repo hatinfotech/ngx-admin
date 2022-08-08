@@ -83,14 +83,19 @@
                     <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="Page" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
                     <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="[]" (selectChange)="onChangePage($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
                     <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-2">
+                  <ngx-form-group [formGroup]="formItem" name="Products" label="Sản phẩm" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Products" [select2Option]="select2OptionForProduct"></ngx-select2>
                   </ngx-form-group>
                 </div>
               </div>
@@ -99,8 +104,8 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
-                    <label class="label">Action</label>
-                    <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
+                    <label class="label">Refresh</label>
+                    <button nbButton fullWidth status="success" (click)="refresh()"><nb-icon pack="eva" icon="sync-outline"></nb-icon></button>
                   </div>
                 </div>
               </div>
@@ -162,6 +167,13 @@
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="bar" [data]="costAndRevenueStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="So sánh hoạt động mua hàng">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="bar" [data]="goodsCompareStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>

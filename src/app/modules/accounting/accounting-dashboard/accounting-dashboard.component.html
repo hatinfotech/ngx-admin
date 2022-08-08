@@ -11,10 +11,11 @@
         </div>
 
         <div class="details">
-          <div class="title h5">Quỹ</div>
-          <div class="status paragraph-2">Tiền mặt+vàng: {{summaryReport?.Cash | currency:'VND'}}</div>
+          <div class="title h6">Quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div>
+          <div class="status paragraph-2">Tiền mặt: {{summaryReport?.Cash | currency:'VND'}}</div>
           <div class="status paragraph-2">Tiền ngân hàng: {{summaryReport?.CashInBank | currency:'VND'}}</div>
-          <div class="status paragraph-2">Tổng quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div>
+          <div class="status paragraph-2">Vàng: {{summaryReport?.Gold | currency:'VND'}}</div>
+          <!-- <div class="status paragraph-2">Tổng quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div> -->
         </div>
       </nb-card>
     </div>
@@ -27,8 +28,9 @@
         </div>
 
         <div class="details">
-          <div class="title h5">Doanh thu</div>
-          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}<br/>Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
+          <div class="title h6">Doanh thu</div>
+          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}</div>
+          <div class="status paragraph-2">Giảm danh thu: {{summaryReport?.DecreaseRevenues | currency:'VND'}}<br/>Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
         </div>
       </nb-card>
     </div>
@@ -41,7 +43,7 @@
         </div>
 
         <div class="details">
-          <div class="title h5">Công nợ</div>
+          <div class="title h6">Công nợ</div>
           <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br/>Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div>
         </div>
       </nb-card>
@@ -55,7 +57,7 @@
         </div>
 
         <div class="details">
-          <div class="title h5">Lãi/lỗ</div>
+          <div class="title h6">Lãi/lỗ</div>
           <div class="status paragraph-2">{{summaryReport?.Profit | currency:'VND'}}</div>
         </div>
       </nb-card>

@@ -54,3 +54,7 @@ export class MyObject {
         return this.text;
     }
 }
+
+export interface AnyProps {
+    [key: string]: any
+}
