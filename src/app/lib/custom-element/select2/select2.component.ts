@@ -3,7 +3,7 @@ import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VAL
 // import { Select2Options, Select2AjaxOptions, Select2QueryOptions, Select2SelectionObject, IdTextPair } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import * as _ from 'lodash';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { Select2AjaxOptions } from '../../../../vendor/ng2select2 copy/lib/ng2-select2.interface';
+import { Select2AjaxOptions } from '../../../../vendor/ng2select2.copy/lib/ng2-select2.interface';
 import { IdTextPair, Select2Options, Select2QueryOptions, Select2SelectionObject } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 
 // declare var Search: any;

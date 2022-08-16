@@ -73,25 +73,40 @@
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="row">
-                <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
-                    <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
+                <div class="col-sm-1">
+                  <ngx-form-group [formGroup]="formItem" name="Branchs" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Branchs" [select2Option]="select2OptionForBrach" [data]="branchList" (selectChange)="onChangeBranch($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
+                  <ngx-form-group [formGroup]="formItem" name="ReportType" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
+                    <ngx-select2 formControlName="ReportType" [select2Option]="select2ReportTypeOption" [data]="dateReportList" (selectChange)="onReportTypeChange($event)"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
                     <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
                     <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-2">
-                  <ngx-form-group [formGroup]="formItem" name="Page" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
-                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="[]" (selectChange)="onChangePage($event)"></ngx-select2>
+                <div class="col-sm-1">
+                  <ngx-form-group [formGroup]="formItem" name="Employees" label="Nhân viên" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Employees" [select2Option]="select2Employee" [data]="employeeList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-1">
+                  <ngx-form-group [formGroup]="formItem" name="Objects" label="Khách hàng" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Objects" [select2Option]="select2OptionForContact"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div class="col-sm-1">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroups" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductGroups" [select2Option]="select2ProductGroup" [data]="productGroupList"></ngx-select2>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-2">
-                  <ngx-form-group [formGroup]="formItem" name="ProductGroups" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
-                    <ngx-select2 formControlName="ProductGroups" [select2Option]="select2ProductGroup" [data]="productGroupList"></ngx-select2>
+                  <ngx-form-group [formGroup]="formItem" name="ProductCategories" label="Danh mục sản phẩm" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductCategories" [select2Option]="select2CategoryGroup" [data]="productCategoryList"></ngx-select2>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-2">
@@ -106,7 +121,9 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label class="label">Action</label>
-                    <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
+                    <button nbButton fullWidth status="success" (click)="refresh()">
+                      <nb-icon pack="eva" icon="sync-outline"></nb-icon>
+                    </button>
                   </div>
                 </div>
               </div>

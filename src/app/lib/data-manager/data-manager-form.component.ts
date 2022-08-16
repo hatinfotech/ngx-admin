@@ -781,41 +781,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         return item;
       }
     }),
-
-    // placeholder: 'Chọn liên hệ...',
-    // allowClear: true,
-    // width: '100%',
-    // dropdownAutoWidth: true,
-    // minimumInputLength: 0,
-    // // multiple: true,
-    // // tags: false,
-    // keyMap: {
-    //   id: 'id',
-    //   text: 'text',
-    // },
-    // ajax: {
-    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-    //     console.log(settings);
-    //     const params = settings.data;
-    //     this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, search: params['term'] }).then(rs => {
-    //       success(rs);
-    //     }).catch(err => {
-    //       console.error(err);
-    //       failure();
-    //     });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
 
 }

@@ -1,4 +1,4 @@
-import { Select2QueryOptions } from './../../vendor/ng2select2 copy/lib/ng2-select2.interface';
+import { Select2QueryOptions } from '../../vendor/ng2select2/lib/ng2-select2.interface';
 import { Select2Option } from './../lib/custom-element/select2/select2.component';
 import { CommercePosBillPrintComponent } from './../modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosOrderPrintComponent } from './../modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';

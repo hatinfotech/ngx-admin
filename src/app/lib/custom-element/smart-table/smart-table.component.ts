@@ -1,5 +1,5 @@
 import { Select2Option } from './../select2/select2.component';
-import { Select2Component } from './../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
+import { Select2Component } from '../../../../vendor/ng2select2.copy/lib/ng2-select2.component';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef, Type } from '@angular/core';
 

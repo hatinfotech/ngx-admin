@@ -1,3 +1,5 @@
+import { UserModel } from './../../../models/user.model';
+import { ProductCategoryModel } from './../../../models/product.model';
 import { CurrencyPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -12,6 +14,7 @@ import { ActionControl } from '../../../lib/custom-element/action-control-list/a
 import { PageModel } from '../../../models/page.model';
 import { AccMasterBookModel } from '../../../models/accounting.model';
 import { Select2Option } from '../../../lib/custom-element/select2/select2.component';
+import { BranchModel } from '../../../models/branch.model';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -144,8 +147,17 @@ export class SalesDashboardComponent implements OnDestroy {
         };
       });
 
-    this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { onlyIdText: true }).then(rs => {
+    this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
       this.productGroupList = rs;
+    });
+    this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
+      this.productCategoryList = rs;
+    });
+    this.apiService.getPromise<UserModel[]>('/user/users', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
+      this.employeeList = rs;
+    });
+    this.apiService.getPromise<BranchModel[]>('/branch/branches', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
+      this.branchList = rs;
     });
 
     this.solarService.getSolarData()
@@ -156,13 +168,16 @@ export class SalesDashboardComponent implements OnDestroy {
 
     // const currentDate = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: ['DAY'],
+      ReportType: ['DAY'],
       DateRange: [this.dateReportList.find(f => f.id === 'DAY').range],
-      Page: [[]],
+      Branchs: [[]],
       ProductGroups: [[]],
+      ProductCategories: [[]],
       Products: [[]],
+      Employees: [[]],
+      Objects: [[]],
     });
-    this.formItem.get('DateReport').valueChanges.subscribe(value => {
+    this.formItem.get('ReportType').valueChanges.subscribe(value => {
       console.log(value);
       this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
     });
@@ -209,13 +224,16 @@ export class SalesDashboardComponent implements OnDestroy {
     });
   }
 
-  select2OptionForPage = {
-    placeholder: 'Tất cả chi nhánh...',
+  select2OptionForBrach = {
+    placeholder: 'Chi nhánh...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     multiple: true,
+    filter: (term: string, text: string, option: any) => {
+      return !term || this.commonService.smartFilter(text, term);
+    },
     keyMap: {
       id: 'id',
       text: 'text',
@@ -235,7 +253,7 @@ export class SalesDashboardComponent implements OnDestroy {
     withThumbnail: true,
   };
 
-  select2DateReportOption = {
+  select2ReportTypeOption = {
     placeholder: 'Chọn thời gian...',
     allowClear: true,
     width: '100%',
@@ -264,24 +282,66 @@ export class SalesDashboardComponent implements OnDestroy {
     "7": "Thứ bảy",
   };
 
-  onDateReportChange(dateReport: any) {
+  onReportTypeChange(dateReport: any) {
     console.log(dateReport);
   }
 
-  select2ProductGroup = {
-    placeholder: 'Tất cả nhóm sản phẩm...',
+  select2ProductGroup: Select2Option = {
+    placeholder: 'Nhóm sản phẩm...',
     allowClear: false,
     width: '100%',
     dropdownAutoWidth: true,
     multiple: true,
     minimumInputLength: 0,
+    filter: (term: string, text: string, option: any) => {
+      return !term || this.commonService.smartFilter(text, term);
+    },
     keyMap: {
       id: 'id',
       text: 'text',
     },
   };
+  select2CategoryGroup: Select2Option = {
+    placeholder: 'Tất cả danh mục sản phẩm...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    multiple: true,
+    minimumInputLength: 0,
+    filter: (term: string, text: string, option: any) => {
+      return !term || this.commonService.smartFilter(text, term);
+    },
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2Employee: Select2Option = {
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, isn_User: null }, {
+      placeholder: 'Chọn nhân viên...', limit: 10, prepareReaultItem: (item) => {
+        item['id'] = item['User'];
+        item['text'] = item['User'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        return item;
+      }
+    }),
+    multiple: true,
+  };
+
+  select2OptionForContact: Select2Option = {
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+      placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        return item;
+      }
+    }),
+    multiple: true,
+  };
+
 
   productGroupList: ProductGroupModel[] = [];
+  productCategoryList: ProductCategoryModel[] = [];
+  employeeList: UserModel[] = [];
+  branchList: BranchModel[] = [];
 
   private alive = true;
 
@@ -349,7 +409,7 @@ export class SalesDashboardComponent implements OnDestroy {
     this.alive = false;
   }
 
-  onChangePage(page: PageModel) {
+  onChangeBranch(page: PageModel) {
 
   }
 
@@ -380,14 +440,13 @@ export class SalesDashboardComponent implements OnDestroy {
   }
 
   async refresh() {
-    const reportType = this.commonService.getObjectId(this.formItem.get('DateReport').value);
-    let pages = this.formItem.get('Page').value;
-    if (pages) {
-      pages = pages.map(page => this.commonService.getObjectId(page));
-      pages = pages.join(',');
-    }
+    const reportType = this.commonService.getObjectId(this.formItem.get('ReportType').value);
+    let branches = this.formItem.get('Branchs').value?.map(branch => this.commonService.getObjectId(branch));
     let products = this.formItem.get('Products')?.value?.map(m => this.commonService.getObjectId(m)) || [];
     let productGroups = this.formItem.get('ProductGroups')?.value?.map(m => this.commonService.getObjectId(m)) || [];
+    let productCategories = this.formItem.get('ProductCategories')?.value?.map(m => this.commonService.getObjectId(m)) || [];
+    let employees = this.formItem.get('Employees')?.value?.map(m => this.commonService.getObjectId(m)) || [];
+    let objects = this.formItem.get('Objects')?.value?.map(m => this.commonService.getObjectId(m)) || [];
     const dateRange: Date[] = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
@@ -395,13 +454,17 @@ export class SalesDashboardComponent implements OnDestroy {
     const extendproductsQuery = {
       ...(products.length > 0 ? { eq_Product: `[${products.join(',')}]` } : {}),
       ...(productGroups.length > 0 ? { eq_ProductGroup: `[${productGroups.join(',')}]` } : {}),
+      ...(productCategories.length > 0 ? { eq_ProductCategory: `[${productCategories.join(',')}]` } : {}),
+      ...(employees.length > 0 ? { eq_Employee: `[${employees.join(',')}]` } : {}),
+      ...(branches.length > 0 ? { eq_Branch: `[${branches.join(',')}]` } : {}),
+      ...(objects.length > 0 ? { eq_Object: `[${objects.join(',')}]` } : {}),
     }
 
     this.apiService.getPromise<any[]>('/accounting/reports', {
       reportSummary: true,
       eq_Accounts: "511,512,515,521,632,635,642,641,623,131,331",
       skipHeader: true,
-      branch: pages,
+      // branch: branches,
       toDate: toDate,
       fromDate: fromDate,
       // entryGroup: 'COMMERCEPOS',
@@ -448,15 +511,15 @@ export class SalesDashboardComponent implements OnDestroy {
       }
       this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.CostOfGoodsSold - this.summaryReport.DecreaseRevenues - this.summaryReport.Cost;
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topEmployeeList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topCustomerList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topGoodsList = rs;
       console.log(rs);
     });
@@ -473,8 +536,8 @@ export class SalesDashboardComponent implements OnDestroy {
     let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], line5Data: any[], labels: any[], timeline: any[], mergeData: any[];
 
     /** Load data */
-    let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,5213,5212]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
-    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
+    let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,5213,5212]", statisticsRevenue: true, branch: branches, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
+    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: branches, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
 
     /** Prepare data */
     line1Data = revenueStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
@@ -518,7 +581,7 @@ export class SalesDashboardComponent implements OnDestroy {
       ],
     };
 
-    const customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
+    const customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: true, branch: branches, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', ...extendproductsQuery });
 
     /** Prepare data */
     line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });

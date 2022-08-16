@@ -1,6 +1,6 @@
 import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsContainerListComponent } from './../../goods-container/warehouse-goods-container-list/warehouse-goods-container-list.component';
-import { Select2Component } from '../../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
+import { Select2Component } from '../../../../../vendor/ng2select2.copy/lib/ng2-select2.component';
 import { ProductUnitModel } from '../../../../models/product.model';
 import { WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';

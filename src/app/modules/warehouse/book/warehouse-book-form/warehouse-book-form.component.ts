@@ -1,4 +1,4 @@
-import { Select2Component } from './../../../../../vendor/ng2select2 copy/lib/ng2-select2.component';
+import { Select2Component } from '../../../../../vendor/ng2select2.copy/lib/ng2-select2.component';
 import { WarehouseGoodsContainerModel } from './../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
