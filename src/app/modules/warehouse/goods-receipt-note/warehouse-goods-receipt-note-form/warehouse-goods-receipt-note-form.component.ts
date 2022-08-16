@@ -516,6 +516,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     let newForm = null;
     newForm = this.formBuilder.group({
       // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
