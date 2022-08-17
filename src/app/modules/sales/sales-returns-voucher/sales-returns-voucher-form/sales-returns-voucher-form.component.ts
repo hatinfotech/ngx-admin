@@ -621,6 +621,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
     let newForm = null;
     newForm = this.formBuilder.group({
       // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {

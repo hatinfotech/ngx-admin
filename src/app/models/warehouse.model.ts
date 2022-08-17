@@ -54,6 +54,7 @@ export class WarehouseGoodsReceiptNoteModel {
 
 export class WarehouseGoodsReceiptNoteDetailModel {
   [key: string]: any;
+  SystemUuid?: string;
   Id?: string | number;
   No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
@@ -124,6 +125,7 @@ export class WarehouseInventoryAdjustNoteModel {
 
 export class WarehouseInventoryAdjustNoteDetailModel {
   [key: string]: any;
+  SystemUuid?: string;
   Id?: string | number;
   No?: number;
   Voucher?: string & WarehouseInventoryAdjustNoteModel;
@@ -180,6 +182,7 @@ export class WarehouseGoodsDeliveryNoteModel {
 
 export class WarehouseGoodsDeliveryNoteDetailModel {
   Id?: string | number;
+  SystemUuid?: string;
   No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
   Type?: string;

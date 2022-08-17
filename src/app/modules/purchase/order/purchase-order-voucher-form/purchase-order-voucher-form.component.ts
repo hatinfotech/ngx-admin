@@ -441,6 +441,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: PurchaseOrderVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],

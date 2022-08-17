@@ -33,6 +33,7 @@ export class DeploymentVoucherModel extends Model  {
 
 export class DeploymentVoucherDetailModel extends Model  {
   Id?: string & number;
+  SystemUuid?: string;
   No?: number;
   Type?: string;
   Product?: string & ProductModel;

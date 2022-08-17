@@ -427,7 +427,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      // Id: [''],
+      SystemUuid: [''],
       AccountingBusiness: [''],
       Description: ['', Validators.required],
       RelateCode: [''],

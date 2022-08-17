@@ -58,6 +58,7 @@ export interface CashVoucherModel {
 
 export interface CashVoucherDetailModel {
     Id?: string;
+    SystemUuid?: string;
     Voucher?: string;
     RelateCode?: string;
     Description?: string;

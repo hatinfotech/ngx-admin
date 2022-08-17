@@ -528,6 +528,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   makeNewOrderDetail(detail?: CommercePosReturnDetailModel) {
     return this.formBuilder.group({
+      SystemUuid: [detail.SystemUuid || null],
       Sku: [detail.Sku || null],
       Product: [detail.Product || null],
       Unit: [detail.Unit || 'n/a'],
@@ -2181,6 +2182,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
         if (order.Code) {
           return this.apiService.putPromise(apiPath + '/' + order.Code, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
+            if (rs[0].Details) {
+              for (const index in rs[0].Details) {
+                const detailForm = (orderForm.get('Details') as FormArray).controls[index] as FormGroup;
+                detailForm.get('SystemUuid').setValue(rs[0].Details[index].SystemUuid);
+              }
+            }
             return rs[0];
           });
         } else {
@@ -2189,6 +2196,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             orderForm.patchValue(rs[0]);
             orderForm['isProcessing'] = false;
             // orderForm['modified'] = false;
+            if (rs[0].Details) {
+              for (const index in rs[0].Details) {
+                const detailForm = (orderForm.get('Details') as FormArray).controls[index] as FormGroup;
+                detailForm.get('SystemUuid').setValue(rs[0].Details[index].SystemUuid);
+              }
+            }
             return rs[0];
           });
         }

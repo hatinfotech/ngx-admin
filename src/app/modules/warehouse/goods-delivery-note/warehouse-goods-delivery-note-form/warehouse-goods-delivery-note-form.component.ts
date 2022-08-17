@@ -494,6 +494,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     const newForm = this.formBuilder.group({
       // Id: [''],
       No: [''],
+      SystemUuid: [''],
       Type: ['PRODUCT', Validators.required],
       Product: [''],
       Description: ['', Validators.required],

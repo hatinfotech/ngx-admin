@@ -44,6 +44,7 @@ export class SalesVoucherModel extends Model {
 
 export class SalesVoucherDetailModel extends Model  {
   Id?: any;
+  SystemUuid?: string;
   Voucher?: string;
   No?: number;
   Type?: string;

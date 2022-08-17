@@ -524,6 +524,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     let newForm: FormGroup;
     newForm = this.formBuilder.group({
       // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {

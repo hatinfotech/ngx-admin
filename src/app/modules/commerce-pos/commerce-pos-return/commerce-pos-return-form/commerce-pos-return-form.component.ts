@@ -737,7 +737,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CommercePosReturnDetailModel): FormGroup {
     let newForm = null;
     newForm = this.formBuilder.group({
-      // Id: [''],
+      SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {

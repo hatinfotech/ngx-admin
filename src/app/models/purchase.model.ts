@@ -32,6 +32,7 @@ export class PurchasePriceTableModel {
 
 export class PurchasePriceTableDetailModel {
   Id?: string & number;
+  SystemUuid?: string;
   PriceTable?: string;
   Product?: string & ProductModel;
   PriceType?: string;
@@ -91,6 +92,7 @@ export class PurchaseVoucherModel {
 
 export class PurchaseVoucherDetailModel {
   Id?: string | number;
+  SystemUuid?: string;
   Type?: string;
   No?: number;
   Voucher?: PurchaseVoucherModel & string;
