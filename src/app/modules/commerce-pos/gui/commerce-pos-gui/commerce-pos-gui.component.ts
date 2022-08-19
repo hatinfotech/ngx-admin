@@ -1749,7 +1749,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         return true;
       }
       if (event.key == 'F5') {
-        this.makeNewOrder();
+        if (this.commonService.dialogStack.length === 0) {
+          this.makeNewOrder();
+        }
         event.preventDefault();
         return true;
       }

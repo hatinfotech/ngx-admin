@@ -264,6 +264,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
     }
   }
 
+  isProcessing = false;
   approve(index: number, option?: { print: boolean }) {
     const params: any = { payment: true, includeRelativeVouchers: true };
     let order = this.data[index];
@@ -271,25 +272,35 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
       order.State = 'APPROVED';
       if (order.Code) {
         // params['id0'] = order.Code;
+        this.isProcessing = true;
         this.apiService.putPromise('/commerce-pos/returns/' + order.Code, params, [order]).then(rs => {
           order = this.data[index] = rs[0];
+          this.isProcessing = false;
           setTimeout(async () => {
             if (option?.print) {
               await this.print(index);
             }
             this.onSaveAndClose(order, this);
           });
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
         });
       } else {
+        this.isProcessing = true;
         this.apiService.postPromise('/commerce-pos/returns', params, [order]).then(rs => {
           this.id = [rs[0].Code];
           order = this.data[index] = rs[0];
+          this.isProcessing = false;
           setTimeout(async () => {
             if (option?.print) {
               await this.print(index);
             }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           }, 300);
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
         });
 
       }
@@ -304,14 +315,20 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
 
   onKeyboardEvent(event: KeyboardEvent) {
     if (event.key == 'F5') {
-      this.continueOrder(0);
-      this.close();
+      if (!this.isProcessing) {
+        this.continueOrder(0);
+        this.close();
+      } else {
+        this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong phiếu trả hàng này !', 'Chưa thể tiếp tục mua hàng !', { status: 'warning' });
+      }
       return false;
     }
     if (event.key == 'Enter') {
 
       if (!this.instantPayment) {
-        this.print(0);
+        if (!this.isProcessing) {
+          this.print(0);
+        }
       } else {
         if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
           this.print(0);
