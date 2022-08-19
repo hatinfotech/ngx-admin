@@ -52,32 +52,43 @@
                                 <td class="" style="white-space: nowrap">{{'ĐVT' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Đơn giá' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" style="white-space: nowrap">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
-                                <!-- <td class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td> -->
+                                <td *ngIf="showIncreaseAmount" class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
                                 <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td>{{detail.Voucher}}</td>
                                 <td>{{detail.Description}}</td>
-                                <td class="text-align-right">{{detail.Quantity ? (detail.Quantity | number) : ''}}</td>
+                                <td class="text-align-right">{{detail.Quantity ? (detail.Quantity | number) : '--'}}</td>
                                 <td>{{detail.ProductUnitLabel}}</td>
-                                <td class="text-align-right" [innerHtml]="detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : ''"></td>
+                                <td class="text-align-right" [innerHtml]="detail.Quantity ? renderCurrency((detail.GenerateDebit - detail.GenerateCredit) / detail.Quantity) : '--'"></td>
                                 <td class="text-align-right" style="font-weight: bold;" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
-                                <!-- <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td> -->
+                                <td *ngIf="showIncreaseAmount" class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td colspan="7" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ'}}: </td>
+                                <td colspan="2" class="text-align-lèt">Ghi chú: </td>
+                                <td colspan="5" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ'}}: </td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
+                                <td *ngIf="showIncreaseAmount" class="text-align-right"></td>
                             </tr>
                         </table>
                     </div>
                 </div>
+                <div style="font-style: italic;">
+                    <span *ngIf="showIncreaseAmount">
+                        - Cột <b>«biến động»</b> thể hiện số tiền nợ tính đến dòng hiện tại.<br>
+                        - Số tiền trong ngoặc (...) thể hiện khách hàng đã thanh toán số tiền nhiều hơn nợ.<br>
+                    </span>
+                    <span *ngIf="data.ObjectNote">
+                        - {{data.ObjectNote}}.
+                    </span>
+                </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Bên bán
+                        <br>Bên bán<br><br><br><br><br><br>--
                     </div>
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Khách hàng
+                        <br>Khách hàng<br><br><br><br><br><br>--
                     </div>
                 </div>
             </div>

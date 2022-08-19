@@ -44,6 +44,7 @@
                         <table style="width: 100%;" class="print-voucher-detail-table">
                             <thead class="print-voucher-detail-header">
                                 <td>#</td>
+                                <td>{{'Hình' | translate | headtitlecase}}</td>
                                 <td>{{'Sku' | translate | headtitlecase}}</td>
                                 <td>{{'Sales.technicalDescription' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
@@ -58,19 +59,28 @@
                                 </tr>
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                                     <td>{{detail.No}}</td>
-                                    <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
-                                    <td><span [innerHTML]="renderValue(detail.Description)"></span></td>
+                                    <td>
+                                        <img *ngIf="detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
+                                    </td>
+                                    <td>
+                                        <ngx-barcode [bc-value]="detail.Product?.Sku" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="30" [bc-width]="1" [bc-margin]="0"></ngx-barcode>
+                                        <div style="margin-left: 10px;" class="nowrap">
+                                            <span>{{detail.Product?.Sku}}</span>
+                                            <span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span>
+                                        </div>
+                                    </td>
+                                    <td><span [innerHTML]="(detail?.Product?.Technical ? 'Tên: ': '') + renderValue(detail.Description) + (detail?.Product?.Technical ? ('<br>Thông số kỹ thuật: <br>'+detail?.Product?.Technical) : '')"></span></td>
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                                     <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                                     <!-- <td class="text-align-right nowrap">{{detail.Tax | objecttext}}</td> -->
-                                    <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
+                                    <td class="text-align-right" style="font-weight: bold">{{detail['ToMoney'] | currency:'VND'}}</td>
                                 </tr>
                             </ng-container>
                             <tr>
-                                <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
+                                <td colspan="3" style="font-weight: bold">{{'Common.note' | translate | headtitlecase}}</td>
+                                <td colspan="4" class="text-align-right" style="font-weight: bold">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td class="text-align-right"  style="font-weight: bold">{{data['Total'] | currency:'VND'}}</td>
                             </tr>
                         </table>
                     </div>

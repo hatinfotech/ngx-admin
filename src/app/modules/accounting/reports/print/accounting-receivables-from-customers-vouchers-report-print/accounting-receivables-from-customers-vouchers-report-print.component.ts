@@ -10,6 +10,7 @@ import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { ContactModel } from '../../../../../models/contact.model';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -158,11 +159,21 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
-      }).then(data => {
+      }).then(async data => {
+
+        const contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + object, {}).then(rs => rs[0]);
+
         const item = {
           FromDate: fromDate,
           ToDate: toDate,
-          ReportDate: new Date(), 'Object': object, ObjectName: data[0]['ObjectName'], ObjectPhone: data[0]['ObjectPhone'], ObjectEmail: data[0]['ObjectEmail'], ObjectAddress: data[0]['ObjectAddress'], Details: data
+          ReportDate: new Date(), 
+          'Object': object, 
+          ObjectName: data[0]['ObjectName'], 
+          ObjectPhone: data[0]['ObjectPhone'], 
+          ObjectEmail: data[0]['ObjectEmail'], 
+          ObjectAddress: data[0]['ObjectAddress'], 
+          ObjectNote: contact.Note, 
+          Details: data
         };
         return item;
       }));
@@ -182,10 +193,15 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
       const item = data[i];
       item['TotalDebit'] = 0;
       item['TotalCredit'] = 0;
+      item['TotalReturn'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
         item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
-        item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+        if (detail.VoucherType == 'RECEIPT') {
+          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+        } else if(detail.VoucherType == 'COMMERCEPOSRETURN') {
+          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+        }
         // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
       }
       item['Total'] = item.Details[item.Details.length - 1]?.IncrementAmount;

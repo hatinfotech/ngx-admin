@@ -45,37 +45,51 @@
                         <table style="width: 100%;" class="print-voucher-detail-table ">
                             <thead class="print-voucher-detail-header">
                                 <td>#</td>
-                                <td class="" style="white-space: nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
-                                <td class="" style="white-space: nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
-                                <td class="" style="white-space: nowrap">{{'Common.description' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Giá trị hóa đơn' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Số đã thu' | translate | headtitlecase}}</td>
-                                <td class="text-align-right" style="white-space: nowrap">{{'Biến động' | translate | headtitlecase}}</td>
+                                <td class="nowrap">{{'Common.dateOfVoucher' | translate | headtitlecase}}</td>
+                                <td class="nowrap">{{'Common.voucher' | translate | headtitlecase}}</td>
+                                <td class="nowrap">{{'Common.description' | translate | headtitlecase}}</td>
+                                <td class="text-align-right nowrap">{{'Bán hàng' | translate | headtitlecase}}</td>
+                                <td class="text-align-right nowrap">{{'Trả hàng' | translate | headtitlecase}}</td>
+                                <td class="text-align-right nowrap">{{'Số đã thu' | translate | headtitlecase}}</td>
+                                <td class="text-align-right nowrap">{{'Biến động' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
                                 <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td>{{detail.Voucher}}</td>
-                                <td>{{detail.Voucher === 'OPN' && 'Đầu kỳ' || detail.VoucherDescription}}</td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit || detail.HeadDebit)"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateCredit || detail.HeadCredit)"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
+                                <td>{{detail.Voucher === 'OPN' && 'Đầu kỳ' || (detail.VoucherDescription + ' (' +detail.Description+ ')')}}</td>
+                                <td class="text-align-right nowrap" [innerHtml]="detail.VoucherType != 'COMMERCEPOSRETURN' && detail.VoucherType != 'RECEIPT' && detail.IncrementAmount != 0 ? renderCurrency(detail.GenerateDebit || detail.HeadDebit) : '--'"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="detail.VoucherType == 'COMMERCEPOSRETURN' ? renderCurrency(detail.GenerateCredit || detail.HeadCredit) : '--'"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="detail.VoucherType == 'RECEIPT' ? renderCurrency(detail.GenerateCredit || detail.HeadCredit) : '--'"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td colspan="4" class="text-align-right">Tổng cộng: </td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(data.TotalDebit)"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(data.TotalCredit)"></td>
-                                <td class="text-align-right" [innerHtml]="renderCurrency(data.Total)"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalDebit)"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalReturn)"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalCredit)"></td>
+                                <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.Total)"></td>
                             </tr>
                         </table>
                     </div>
                 </div>
+                <div style="font-style: italic;">
+                    <b>* Thuyết minh</b>: <br>
+                    - Tổng giá trị các đơn hàng: {{renderCurrency(data.TotalDebit)}}<br>
+                    - Tổng giá trị hàng trả lại: {{renderCurrency(data.TotalReturn)}}<br>
+                    - Tổng đã thu: {{renderCurrency(data.TotalCredit)}}<br>
+                    - Tổng doanh thu thực tế (Bán hàng - Trả hàng): {{renderCurrency(data.TotalDebit - data.TotalReturn)}}<br>
+                    - Công nợ còn lại = Bán hàng - Trả hàng - Số đã thu: {{renderCurrency(data.Total)}}<br>
+                    <span *ngIf="data.ObjectNote">
+                        <b>* Ghi chú</b>: {{data.ObjectNote}}.
+                    </span>
+                </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Bên bán
+                        <br>Bên bán<br><br><br><br><br><br>--
                     </div>
                     <div style="text-align: center; flex: 0 0 50%;">
-                        <br>Khách hàng
+                        <br>Khách hàng<br><br><br><br><br><br>--
                     </div>
                 </div>
             </div>

@@ -1,3 +1,4 @@
+import { ContactModel } from './../../../../../models/contact.model';
 import { AccountingService } from '../../../accounting.service';
 import { DatePipe, CurrencyPipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
@@ -29,7 +30,7 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
   @Input() objects: string[];
-
+  showIncreaseAmount = false;
   constructor(
     public commonService: CommonService,
     public router: Router,
@@ -48,7 +49,23 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
   }
 
   async init() {
-    const result = await super.init();
+    const result = await super.init().then(rs =>{
+
+      this.actionButtonList.unshift({
+        name: 'showPicture',
+        label: 'Hiển thị cột biến động',
+        title: 'Biến cộng',
+        status: 'info',
+        size: 'medium',
+        icon: 'eye-outline',
+        click: () => {
+          this.showIncreaseAmount = !this.showIncreaseAmount;
+          return true;
+        }
+      });
+
+      return rs;
+    });
     // this.title = `PhieuChi_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
     // for (const i in this.data) {
     //   const data = this.data[i];
@@ -158,8 +175,11 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
-      }).then(data => {
+      }).then(async data => {
         const objectInfo = data.find(f => f.Voucher != 'OPN');
+
+        const contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + object, {}).then(rs => rs[0]);
+
         const item = {
           FromDate: fromDate,
           ToDate: toDate,
@@ -169,6 +189,7 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
           ObjectPhone: objectInfo['ObjectPhone'],
           ObjectEmail: objectInfo['ObjectEmail'],
           ObjectAddress: objectInfo['ObjectAddress'],
+          ObjectNote: contact.Note,
           Details: data
         };
         return item;
@@ -187,19 +208,33 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
   summaryCalculate(data: any[]) {
     for (const i in data) {
       const item = data[i];
-      item['Total'] = 0;
+      // item['Total'] = 0;
+      // // item['Title'] = this.renderTitle(item);
+      // for (const detail of item.Details) {
+      //   // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
+      //   if (detail.VoucherType == 'RECEIPT') {
+      //     detail.Description = `Thu tiền: ${detail.Description}`;
+      //   }
+      //   if (detail.VoucherType == 'SALESRETURNS') {
+      //     detail.Description = `Trả hàng: ${detail.Description}`;
+      //   }
+      // }
+      // item['Total'] = item.Details[item?.Details.length - 1]?.IncrementAmount;
+
+      item['TotalDebit'] = 0;
+      item['TotalCredit'] = 0;
+      item['TotalReturn'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
+        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
         if (detail.VoucherType == 'RECEIPT') {
-          detail.Description = `Thu tiền: ${detail.Description}`;
-        }
-        if (detail.VoucherType == 'SALESRETURNS') {
-          detail.Description = `Trả hàng: ${detail.Description}`;
+          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+        } else if(detail.VoucherType == 'COMMERCEPOSRETURN') {
+          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
         }
       }
-      item['Total'] = item.Details[item?.Details.length - 1]?.IncrementAmount;
-      //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
+      item['Total'] = item.Details[item.Details.length - 1]?.IncrementAmount;
+
     }
     return data;
   }

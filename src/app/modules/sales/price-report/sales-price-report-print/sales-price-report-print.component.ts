@@ -48,7 +48,23 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   async init() {
-    const result = await super.init();
+    const result = await super.init().then(rs => {
+
+      this.actionButtonList.unshift({
+        name: 'showPicture',
+        label: 'PDF',
+        title: 'Download PDF',
+        status: 'danger',
+        size: 'medium',
+        icon: 'download-outline',
+        click: () => {
+          this.downloadPdf(this.id);
+          return true;
+        }
+      });
+
+      return rs;
+    });
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     // for (const i in this.data) {
     //   const data = this.data[i];
@@ -80,6 +96,10 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   //     return data['Id'];
   //   }
   // }
+
+  downloadPdf(ids: string[]) {
+    window.open(this.apiService.buildApiUrl(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true, renderPdf: 'download' }), '__blank');
+  }
 
   renderTitle(data: SalesPriceReportModel) {
     return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
