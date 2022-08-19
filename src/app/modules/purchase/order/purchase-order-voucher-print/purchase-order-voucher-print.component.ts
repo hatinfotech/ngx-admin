@@ -13,6 +13,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
+import { base64 } from '@firebase/util';
 // import { PurchaseModule } from '../../purchase.module';
 
 @Component({
@@ -30,6 +31,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   processMapList: ProcessMap[] = [];
   formDialog = PurchaseOrderVoucherFormComponent;
 
+  showPicture = true;
+
   constructor(
     public commonService: CommonService,
     public router: Router,
@@ -46,7 +49,33 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   async init() {
-    const result = await super.init();
+    const result = await super.init().then(rs => {
+      this.actionButtonList.unshift({
+        name: 'showPicture',
+        label: 'Hình ảnh',
+        title: 'H.Thị hình',
+        status: 'info',
+        size: 'medium',
+        icon: 'eye-outline',
+        click: () => {
+          this.showPicture = !this.showPicture;
+          return true;
+        }
+      });
+      this.actionButtonList.unshift({
+        name: 'showPicture',
+        label: 'PDF',
+        title: 'Download PDF',
+        status: 'danger',
+        size: 'medium',
+        icon: 'download-outline',
+        click: () => {
+          this.downloadPdf(this.id);
+          return true;
+        }
+      });
+      return rs;
+    });
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
     // for (const i in this.data) {
@@ -212,6 +241,10 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       item['Total'] = 0;
       item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
+
+        // Generate barcode
+        // detail['SkuBarcode'] = JsBarcode(detail.Product?.Sku, 'text');
+
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
       this.processMapList[i] = AppModule.processMaps.purchaseOrder[item.State || ''];
@@ -278,5 +311,51 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       },
     });
   }
+
+  downloadPdf(ids: string[]) {
+    window.open(this.apiService.buildApiUrl(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true, renderPdf: 'download' }), '__blank');
+    // this.apiService.putPromise(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true, renderPdf: 'download' }, [
+    //   {
+    //     Code: '12200345034',
+    //     Html: '<h1>Hoàng Anh Phú Lộc</h1>',
+    //   }
+    // ]).then(rs => {
+    //   console.log(rs);
+    //   // window.open(rs[0]['Pdf'], '__blank');
+
+    //   this.saveBlobAsFile('output.pdf', rs[0]['Pdf']);
+    // });
+  }
+
+  /**
+ * Save a text as file using HTML <a> temporary element and Blob
+ * @see https://stackoverflow.com/questions/49988202/macos-webview-download-a-html5-blob-file
+ * @param fileName String
+ * @param fileContents String JSON String
+ * @author Loreto Parisi
+*/
+  saveBlobAsFile(fileName: string, fileContents: string) {
+    if (typeof (Blob) != 'undefined') { // using Blob
+      var textFileAsBlob = new Blob([fileContents], { type: 'application/pdf' });
+      var downloadLink: any = document.createElement("a");
+      downloadLink.download = fileName;
+      if (window.webkitURL != null) {
+        downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+      }
+      else {
+        downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+        downloadLink.onclick = document.body.removeChild(event.target as any);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+      }
+      downloadLink.click();
+    } else {
+      var pp = document.createElement('a');
+      pp.setAttribute('href', 'data:application/pdf;charset=utf-8,' + encodeURIComponent(fileContents));
+      pp.setAttribute('download', fileName);
+      pp.onclick = document.body.removeChild(event.target as any);
+      pp.click();
+    }
+  }//saveBlobAsFile
 
 }

@@ -4,7 +4,7 @@
       <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Purchase.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
-      <div id="print-area">
+      <div id="print-area" style="position: relative;">
         <ngx-print-header></ngx-print-header>
         <div>
           <div class="print-title">{{ 'Purchase.Order.title' | translate:{action: '', definition: ''} | uppercase }}
@@ -57,27 +57,50 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
-                <td>{{'Sku' | translate | headtitlecase}}</td>
-                <td>{{'Common.productOrService' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
+                <td *ngIf="showPicture" style="white-space: nowrap">{{'Hình' | translate | headtitlecase}}</td>
+                <td style="white-space: nowrap"><div style="margin-left: 10px;">{{'Sku' | translate | headtitlecase}}</div></td>
+                <td style="white-space: nowrap">{{'Common.productOrService' | translate | headtitlecase}}</td>
+                <td class="text-align-right" style="white-space: nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="text-align-right" style="white-space: nowrap">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right" style="white-space: nowrap">{{'Voucher.price' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
-                <td class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
+                <td class="text-align-right" style="white-space: nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
               </thead>
               <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                 <td>{{detail.No}}</td>
-                <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
+                <td *ngIf="showPicture">
+                  <div *ngIf="detail?.Image && detail?.Image.length > 0 && detail?.Image[0].SmallImage && detail?.Image[0].SmallImage" style="
+                    background-repeat:no-repeat;
+                    background-color: #ccc;
+                    background-size: cover;
+                    overflow: hidden;
+
+                    width: 80px;
+                    height: 80px;
+
+                    background-image: url({{detail?.Image[0].SmallImage}});
+                  "></div>
+                </td>
+                <td>
+                  
+                  <ngx-barcode [bc-value]="detail.Product?.Sku" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="30" [bc-width]="2" [bc-margin]="0"></ngx-barcode>
+                  <div style="margin-left: 10px">
+                    <span>{{detail.Product?.Sku}}</span>
+                    <span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span>
+                  </div>
+                  
+                </td>
                 <td><span class="description" style="cursor: pointer" (click)="updateSalePrice(detail)">{{renderValue(detail.Description)}}</span></td>
                 <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                 <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                 <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                 <!-- <td class="text-align-right">{{detail.Tax | objecttext}}</td> -->
-                <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
+                <td class="text-align-right" style="font-weight: bold;">{{detail['ToMoney'] | currency:'VND'}}</td>
               </tr>
               <tr style="font-weight: bold;">
                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td *ngIf="showPicture" colspan="5" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td *ngIf="!showPicture" colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
               </tr>
             </table>
@@ -103,6 +126,7 @@
             <br><br><br>
           </div>
         </div>
+        <div class="print-footer" style="display: none">Phiếu được in từ phần mềm ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu.</div>
       </div>
     </nb-card-body>
     <nb-card-footer>
