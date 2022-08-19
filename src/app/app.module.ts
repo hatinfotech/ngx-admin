@@ -269,6 +269,7 @@ import { CommercePosDeploymentVoucherPrintComponent } from './modules/commerce-p
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
+import { NgxBarcodeModule } from 'ngx-barcode';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -611,6 +612,8 @@ export class DynamicLocaleId extends String {
     }),
     NgxMaskModule.forRoot(options),
     NgxUploaderModule,
+
+    NgxBarcodeModule.forRoot(),
 
     // Photo browser
     // AngularImageViewerModule,

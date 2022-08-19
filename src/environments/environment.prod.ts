@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.6.4',
+  version: '6.1.7.2',
+  // 6.1.7:   SystemUuid for detail resources 
   // 6.1.6:   book commited feature
   // 6.1.5.2:   warehouse: expired and out of stock report anh notification
   // 6.1.5:     Dev sale, purchase, warehouse dashboard
