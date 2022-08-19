@@ -150,7 +150,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     return value;
   }
 
-  async print(index?: number) {
+  async print(index?: number, voucherType?: string) {
     return new Promise(resolve => {
       if (this.onSaveAndPrint) {
         this.onSaveAndPrint(this.identifier);

@@ -31,9 +31,9 @@
                     <div class="bill-body">
                         <table style="width: 100%;" border="0" cellPadding="2">
                             <thead>
-                                <td>Hàng hóa</td>
-                                <td style="text-align: right;">Đ.Giá x SL</td>
-                                <td style="text-align: right;">Thành tiền</td>
+                                <td>Hàng hóa/Dịch vụ</td>
+                                <td style="text-align: right;" class="nowrap">Đ.Giá x SL</td>
+                                <td style="text-align: right;" class="nowrap">Thành tiền</td>
                             </thead>
                             <tr *ngFor="let detail of order.Details">
                                 <td>
@@ -87,8 +87,11 @@
                 <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
                     <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
                 </button>
-                <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0)">
-                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
+                <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0, 'RETAILINVOICE')">
+                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In HD (F9)' | translate | headtitlecase}}
+                </button>
+                <button #priceReportPrintBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="info" (click)="print(0, 'PRICEREPORT')">
+                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In BG (Enter)' | translate | headtitlecase}}
                 </button>
             </div>
         </nb-card-footer>

@@ -1640,9 +1640,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // Payment/re-print
       if (event.key == 'F9') {
         if (this.orderForm.value?.State == 'APPROVED') {
-          this.print(this.orderForm, { printType: 'INVOICE' });
+          this.print(this.orderForm, { printType: 'PRICEREPORT' });
         } else {
-          this.payment(this.orderForm, { skipPrint: false, printType: 'INVOICE' });
+          this.payment(this.orderForm, { skipPrint: false, printType: 'PRICEREPORT' });
         }
         event.preventDefault();
         // }
@@ -1795,6 +1795,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             }
           }
         }
+      }
+    } else {
+      // Skip system function key
+      if (['F12','F5','F3'].indexOf(event.key) > -1) {
+        return false;
       }
     }
 
@@ -2085,7 +2090,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   }
 
-  async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE', skipPrint?: boolean }) {
+  async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE', skipPrint?: boolean }) {
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
       this.commonService.toastService.show('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { status: 'warning', duration: 5000 })
@@ -2213,7 +2218,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return null;
   }
 
-  async print(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'INVOICE' }) {
+  async print(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE' }) {
     if (orderForm.get('State').value !== 'APPROVED') {
       this.commonService.toastService.show('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { status: 'warning' });
       return false;

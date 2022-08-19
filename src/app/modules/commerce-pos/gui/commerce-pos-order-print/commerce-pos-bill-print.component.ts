@@ -21,7 +21,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
 
   /** Component name */
   componentName = 'CommercePosBillPrintComponentZ';
-  title: string = 'In bill';
+  title: string = 'PHIẾU BÁO GIÁ';
   env = environment;
   apiPath = '/commerce-pos/orders';
   processMapList: ProcessMap[] = [];
@@ -34,7 +34,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   @Input() skipPreview: boolean;
   @Input() order: CommercePosOrderModel;
   @Input() instantPayment: boolean;
-  @Input() printType: 'PRICEREPORT' | 'INVOICE' = 'INVOICE';
+  @Input() printType: 'PRICEREPORT' | 'RETAILINVOICE' = 'PRICEREPORT';
 
   style = /*css*/`
   #print-area {
@@ -123,7 +123,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     if (this.printType == 'PRICEREPORT') {
       this.title = 'PHIẾU BÁO GIÁ';
     }
-    if (this.printType == 'INVOICE') {
+    if (this.printType == 'RETAILINVOICE') {
       this.title = 'HÓA ĐƠN BÁN LẺ';
     }
     const result = await super.init().then(rs => {
@@ -291,7 +291,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           order = this.data[index] = rs[0];
           setTimeout(async () => {
             if (option?.print) {
-              await this.print(index);
+              await this.print(index, this.printType);
             }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           });
@@ -308,7 +308,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           setTimeout(async () => {
             // await this.print(index);
             if (option?.print) {
-              await this.print(index);
+              await this.print(index, this.printType);
             }
             if (this.onSaveAndClose) this.onSaveAndClose(order, this);
           }, 300);
@@ -323,18 +323,38 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   }
 
   onKeyboardEvent(event: KeyboardEvent) {
-    if (event.key == 'Enter') {
+    if (event.key == 'F9') {
 
       if (!this.instantPayment) {
         if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
-          this.print(0);
+          this.print(0, 'RETAILINVOICE');
         } else {
           this.payment(0);
         }
       } else {
         if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
-          this.print(0);
-          this.close();
+          this.print(0, 'RETAILINVOICE').then(() => {
+            this.close();
+          });
+        } else {
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+        }
+      }
+      return  false;
+    }
+    if (event.key == 'Enter') {
+
+      if (!this.instantPayment) {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+          this.print(0, 'PRICEREPORT');
+        } else {
+          this.payment(0);
+        }
+      } else {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+          this.print(0, 'PRICEREPORT').then(() => {
+            this.close();
+          });
         } else {
           this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
@@ -342,6 +362,16 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
       return  false;
     }
     return true;
+  }
+
+  async print(index?: number, voucherType?: string) {
+    if(voucherType == 'PRICEREPORT') {
+      this.title = 'PHIẾU BÁO GIÁ';
+    } else if(voucherType == 'RETAILINVOICE') {
+      this.title = 'HÓA ĐƠN BÁN LẺ';
+    }
+    await new Promise(resolve => setTimeout(() => resolve(true), 300));
+    return super.print(index);
   }
 
 }
