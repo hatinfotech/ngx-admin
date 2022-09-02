@@ -1362,7 +1362,7 @@ export class CommonService {
     // let unit = unitMap[unitSeq];
     // let unitId = this.getObjectId(unit);
     productId = productId.slice(unitIdLength + 1);
-    if (/^9/.test(productId)) {// trường hợp id sp ngoài core
+    if (/^0/.test(productId) && productId.length > 5) {// trường hợp id sp ngoài core => bắt đầu bằng số 9 bị đụng độ với id core local khi nó đặt tới 9x, 9xx, 9xxx,... => cho bắt đầu lại bằng 0
       productId = '118' + productId.slice(1);
     } else {
       productId = '118' + coreId + productId;

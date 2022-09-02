@@ -322,9 +322,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   async init() {
-    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(rs => rs.map(account => {
+    this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit', sort_Code: 'asc' }).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
+      if(account.NumOfChildren > 0) {
+        account.disabled = true;
+      }
       return account;
     }));
 

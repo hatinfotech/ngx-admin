@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.8.1',
+  version: '6.1.9.4',
+  // 6.1.9.2:   Fix barcode extract for outside product ip 
   // 6.1.9.1:   Update account report: increase amount column
   // 6.1.8.1:   Fix POS return feature
   // 6.1.7:   SystemUuid for detail resources 

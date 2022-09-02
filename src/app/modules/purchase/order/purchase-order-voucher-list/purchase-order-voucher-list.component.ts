@@ -246,7 +246,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.commonService.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',

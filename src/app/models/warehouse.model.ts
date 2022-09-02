@@ -241,7 +241,7 @@ export class WarehouseBookModel {
 export class WarehouseGoodsInContainerModel {
   Id?: string | number;
   Warehouse?: string & WarehouseModel;
-  Goods?: string & GoodsModel;
+  Goods?: string;
   GoodsName?: string & GoodsModel;
   SearchIndex?: string;
   GoodsSku?: string;

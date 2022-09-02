@@ -8,7 +8,7 @@ import { ApiService } from '../../../../services/api.service';
 import { FormControl } from '@angular/forms';
 import { NbDialogRef } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
-import { WarehouseGoodsContainerModel, GoodsModel } from '../../../../models/warehouse.model';
+import { WarehouseGoodsContainerModel, GoodsModel, WarehouseGoodsInContainerModel } from '../../../../models/warehouse.model';
 import { rejects } from 'assert';
 
 @Component({
@@ -20,7 +20,7 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
 
   componentName: string = 'AssignContainerFormComponent';
   @Input() inputMode: 'dialog' | 'page' | 'inline';
-  @Input() inputGoodsList: ProductModel[];
+  @Input() inputGoodsList: WarehouseGoodsInContainerModel[];
   @Input() onDialogSave: (newData: ProductModel[]) => void;
   @Input() onDialogClose: () => void;
 
@@ -89,10 +89,10 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
           Warehouse: this.containersFormControl.value?.Warehouse,
           Type: 'DRAWERS',
         }]).then(async rs => {
-          const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Code, updateContainerDescription: true, assignContainers: rs[0].Code }, [
+          const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Goods, updateContainerDescription: true, assignContainers: rs[0].Code }, [
             {
-              Code: inputGoods.Code,
-              WarehouseUnit: this.commonService.getObjectId(inputGoods.WarehouseUnit)
+              Goods: inputGoods.Goods,
+              Unit: this.commonService.getObjectId(inputGoods.Unit)
             }
           ]);
           rs[0].Path = goods[0].Containers[0]['Path'];
@@ -117,7 +117,7 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
       const ids = [];
       const updateList: GoodsModel[] = [];
       for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+        const product: GoodsModel = { Goods: this.inputGoodsList[p].Unit, Unit: this.commonService.getObjectId(this.inputGoodsList[p].Unit) };
         ids.push(product.Code);
         // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.commonService.getObjectId(choosed) === this.commonService.getObjectId(container['Container'])));
 

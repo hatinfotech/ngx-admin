@@ -297,9 +297,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           for (const goodsInContainer of rs) {
             const price = this.masterPriceTable[`${goodsInContainer.Goods}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
             this.goodsList.push({
+              id: `${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`,
+              text: goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')',
               Code: goodsInContainer.Goods,
               Sku: goodsInContainer.GoodsSku?.toUpperCase(),
-              Name: goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')',
+              Name: goodsInContainer.GoodsName,
               FeaturePicture: goodsInContainer.GoodsThumbnail,
               // Unit: goodsInContainer.Unit,
               Container: {
@@ -755,14 +757,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               includeFeaturePicture: true,
               includeUnit: true,
               includeContainer: true,
-              sort_Name: 'asc',
-              sort_UnitConvertNo: 'asc',
+              sort_GoodsName: 'asc',
+              sort_UnitNo: 'asc',
               search: inputValue,
               limit: 20
             }).then(rs => {
               if (currentSearchCount == this.lastSearchCount) {
                 this.searchResults = rs.map(goods => {
-                  goods.Price = this.masterPriceTable[`${goods.Code}-${this.commonService.getObjectId(goods.WarehouseUnit)}`]?.Price;
+                  goods.Price = this.masterPriceTable[`${goods.Goods}-${this.commonService.getObjectId(goods.Unit)}`]?.Price;
                   return goods;
                 });
                 if (rs[0]) {

@@ -72,7 +72,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
     const ids = [];
     const updateList: GoodsModel[] = [];
     for (let p = 0; p < this.inputGoodsList.length; p++) {
-      const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+      const product: GoodsModel = { Goods: this.inputGoodsList[p].Code, Unit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
       ids.push(product.Code);
       updateList.push(product);
     }

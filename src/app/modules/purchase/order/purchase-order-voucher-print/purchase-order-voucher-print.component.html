@@ -80,7 +80,7 @@
 
                     background-image: url({{detail?.Image[0].SmallImage}});
                   "></div> -->
-                  <img *ngIf="detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
+                  <img *ngIf="detail?.Image && detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
                 </td>
                 <td>
                   

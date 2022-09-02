@@ -610,13 +610,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         includeUnit: true,
         includeContainers: true,
         includeAccessNumbers: true,
-        eq_Code: productId,
-        eq_ConversionUnit: unitId
+        eq_Goods: productId,
+        eq_Unit: unitId
       }).then(goodsList => {
         // const results = [];
         if (goodsList && goodsList.length > 0) {
-          if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
-            detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
+          if (goodsList[0].Unit && goodsList[0]['IsManageByAccessNumber']) {
+            detail['IsManageByAccessNumber'] = goodsList[0]['IsManageByAccessNumber'] || false;
           }
           return goodsList[0].Containers.map(m => ({
             // ...m,
@@ -1006,7 +1006,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       sort_Id: 'desc',
       offset: 0,
       limit: 100,
-      eq_Code: productId,
+      eq_Goods: productId,
       eq_UnitSeq: unitSeq,
     }).then(rs => {
       console.log(rs);
@@ -1021,13 +1021,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               details.removeAt(0);
             }
             existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
-              Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
-              Unit: goods.WarehouseUnit,
+              Product: { Code: goods.Goods, id: goods.Goods, text: goods.GoodsName },
+              Unit: goods.Unit,
               Container: goods.Container,
               AccessNumbers: [accessNumber],
               Quantity: 1,
-              Description: goods.Name,
-              Pictures: goods.Pictures
+              Description: goods.GoodsName,
+              Pictures: goods.GoodsPictures
             } as any);
             existsGoods['IsManageByAccessNumber'] = true;
             details.push(existsGoods);

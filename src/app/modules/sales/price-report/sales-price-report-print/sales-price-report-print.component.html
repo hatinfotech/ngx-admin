@@ -60,7 +60,7 @@
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
                                     <td>{{detail.No}}</td>
                                     <td>
-                                        <img *ngIf="detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
+                                        <img *ngIf="detail?.Image && detail?.Image[0] && detail?.Image[0] != 'null' && detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
                                     </td>
                                     <td>
                                         <ngx-barcode [bc-value]="detail.Product?.Sku" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="30" [bc-width]="1" [bc-margin]="0"></ngx-barcode>
@@ -69,12 +69,20 @@
                                             <span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span>
                                         </div>
                                     </td>
-                                    <td><span [innerHTML]="(detail?.Product?.Technical ? 'Tên: ': '') + renderValue(detail.Description) + (detail?.Product?.Technical ? ('<br>Thông số kỹ thuật: <br>'+detail?.Product?.Technical) : '')"></span></td>
+                                    <td><span [innerHTML]="renderValue(detail.Description)"></span></td>
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                                     <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                                     <!-- <td class="text-align-right nowrap">{{detail.Tax | objecttext}}</td> -->
                                     <td class="text-align-right" style="font-weight: bold">{{detail['ToMoney'] | currency:'VND'}}</td>
+                                </tr>
+                                <tr class="print-voucher-detail-line" *ngIf="detail?.Product?.Description">
+                                    <td>&nbsp;</td>
+                                    <td colspan="7" [innerHTML]="'Thông số kỹ thuật: <br>'+detail?.Product?.Description"></td>
+                                </tr>
+                                <tr class="print-voucher-detail-line" *ngIf="detail?.Product?.Technical">
+                                    <td>&nbsp;</td>
+                                    <td colspan="7" [innerHTML]="'Thông số kỹ thuật: <br>'+detail?.Product?.Technical"></td>
                                 </tr>
                             </ng-container>
                             <tr>

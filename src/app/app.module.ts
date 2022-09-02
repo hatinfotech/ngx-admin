@@ -750,6 +750,17 @@ export class AppModule {
     responseTitle: 'Common.unApprove',
     responseText: 'Common.unApproveSuccessText',
   };
+  static inQueueState: ProcessMap = {
+    state: 'INQUEUE',
+    label: 'Hàng đợi',
+    confirmLabel: 'Chuyển sang hàng đợi',
+    status: 'warning',
+    outline: false,
+    confirmTitle: 'Chuyển sang hàng đợi',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái đợi ?',
+    responseTitle: 'Đã chuyển sang hàng đợi',
+    responseText: 'Đã chuyển sang hàng đợi thành công',
+  };
   static confirmationRequestedState: ProcessMap = {
     state: 'CONFIRMATIONREQUESTED',
     label: 'Common.confirmRequested',
@@ -965,6 +976,12 @@ export class AppModule {
       },
       "NOTJUSTAPPROVED": {
         ...AppModule.notJustApprodedState,
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "INQUEUE": {
+        ...AppModule.inQueueState,
         nextStates: [
           AppModule.approvedState,
         ],
