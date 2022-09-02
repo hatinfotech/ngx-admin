@@ -227,7 +227,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       this.commonService.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
-          inputGoodsList: [{ Goods: currentProduct, Unit: currentUnit }],
+          inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
           onDialogSave: (newData: ProductModel[]) => {
             this.onSelectUnit(formGroup, formGroup.get('Unit').value, true).then(rs => {
               formGroup.get('Container').patchValue({
@@ -560,7 +560,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       this.commonService.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
-          inputGoodsList: [{ Goods: productId, Unit: unitId as any }],
+          inputGoodsList: [{ Code: productId, WarehouseUnit: unitId as any }],
           onDialogSave: (newData: WarehouseGoodsContainerModel[]) => {
             resolve(newData[0]);
           },
@@ -858,7 +858,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           this.commonService.openDialog(AssignNewContainerFormComponent, {
             context: {
               inputMode: 'dialog',
-              inputGoodsList: [{ Goods: currentProduct, Unit: currentUnit }],
+              inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
               onDialogSave: (newData: ProductModel[]) => {
                 this.onSelectContainer(formGroup, formGroup.get('Container').value, true).then(rs => {
                   formGroup.get('Container').patchValue({
@@ -1364,8 +1364,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               includeUnit: true,
               includeContainers: true,
               includeAccessNumbers: true,
-              eq_Goods: this.commonService.getObjectId(goodsField.value),
-              eq_Unit: this.commonService.getObjectId(unitField.value),
+              eq_Code: this.commonService.getObjectId(goodsField.value),
+              eq_ConversionUnit: this.commonService.getObjectId(unitField.value),
             }).then(goodsList => {
               // const results = [];
               if (goodsList && goodsList.length > 0) {
@@ -1699,13 +1699,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           includeUnit: true,
           includeContainers: true,
           includeAccessNumbers: true,
-          eq_Goods: productId,
-          eq_Unit: unitId
+          eq_Code: productId,
+          eq_ConversionUnit: unitId
         }).then(goodsList => {
           // const results = [];
           if (goodsList && goodsList.length > 0) {
-            if (goodsList[0].Unit && goodsList[0]['IsManageByAccessNumber']) {
-              detail['IsManageByAccessNumber'] = goodsList[0]['IsManageByAccessNumber'] || false;
+            if (goodsList[0].WarehouseUnit && goodsList[0].WarehouseUnit['IsManageByAccessNumber']) {
+              detail['IsManageByAccessNumber'] = goodsList[0].WarehouseUnit['IsManageByAccessNumber'] || false;
             } else {
               detail['IsManageByAccessNumber'] = false;
             }
@@ -2150,7 +2150,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         sort_Id: 'desc',
         offset: 0,
         limit: 100,
-        eq_Goods: productId,
+        eq_Code: productId,
         eq_UnitSeq: unitSeq,
       }).then(rs => {
         console.log(rs);

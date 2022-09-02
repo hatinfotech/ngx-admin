@@ -20,7 +20,7 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
 
   componentName: string = 'AssignContainerFormComponent';
   @Input() inputMode: 'dialog' | 'page' | 'inline';
-  @Input() inputGoodsList: WarehouseGoodsInContainerModel[];
+  @Input() inputGoodsList: ProductModel[];
   @Input() onDialogSave: (newData: ProductModel[]) => void;
   @Input() onDialogClose: () => void;
 
@@ -89,10 +89,10 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
           Warehouse: this.containersFormControl.value?.Warehouse,
           Type: 'DRAWERS',
         }]).then(async rs => {
-          const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Goods, updateContainerDescription: true, assignContainers: rs[0].Code }, [
+          const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Code, updateContainerDescription: true, assignContainers: rs[0].Code }, [
             {
-              Goods: inputGoods.Goods,
-              Unit: this.commonService.getObjectId(inputGoods.Unit)
+              Code: inputGoods.Code,
+              WarehouseUnit: this.commonService.getObjectId(inputGoods.WarehouseUnit)
             }
           ]);
           rs[0].Path = goods[0].Containers[0]['Path'];

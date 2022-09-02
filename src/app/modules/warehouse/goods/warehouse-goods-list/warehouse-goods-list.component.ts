@@ -34,7 +34,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
 
   componentName: string = 'WarehouseGoodsListComponent';
   formPath = '/warehouse/goods/form';
-  apiPath = '/warehouse/goods';
+  apiPath = '/warehouse/goods-in-containers';
   idKey: string | string[] = ['Goods', 'Unit', 'Container'];
   formDialog = WarehouseGoodsFormComponent;
 

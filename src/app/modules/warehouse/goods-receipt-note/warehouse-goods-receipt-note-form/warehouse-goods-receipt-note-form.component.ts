@@ -132,7 +132,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       this.commonService.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
-          inputGoodsList: [{ Goods: currentProduct, Unit: currentUnit }],
+          inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
           onDialogSave: (newData: ProductModel[]) => {
             this.onSelectUnit(formGroup, formGroup.get('Unit').value, true).then(rs => {
               formGroup.get('Container').patchValue({
@@ -670,8 +670,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         select: 'Code',
         includeUnit: true,
         includeContainers: true,
-        eq_Goods: productId,
-        eq_Unit: unitId
+        eq_Code: productId,
+        eq_ConversionUnit: unitId
       }).then(goodsList => {
         // const results = [];
         if (goodsList && goodsList.length > 0) {
