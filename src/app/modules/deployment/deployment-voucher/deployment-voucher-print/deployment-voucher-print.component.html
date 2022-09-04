@@ -90,14 +90,8 @@
                         </div>
                     </div>
                     <div style="display:flex">
-                        <div style="flex: 1" class="under-line">{{'Bên thoanh toán' | translate | headtitlecase}} :
+                        <div style="flex: 1" class="under-line">{{'Bên trả phí vận chuyển' | translate | headtitlecase}} :
                             {{renderValue(data.ShippingCostPaymentBy | objecttext)}}
-                        </div>
-                        <div class="under-line">{{'Phí vận chuyển' | translate | headtitlecase}} :
-                            {{renderValue(data.ShippingCost | currency:'VND')}}
-                        </div>
-                        <div class="under-line">{{'Tỷ lệ thanh toán' | translate | headtitlecase}} :
-                            {{renderValue(data.ShippingCostPaymentRatio | number)}}%
                         </div>
                     </div>
                 </div>

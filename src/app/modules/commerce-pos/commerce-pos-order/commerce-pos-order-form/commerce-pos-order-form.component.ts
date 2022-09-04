@@ -802,7 +802,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         }
       }
     });
-    newForm['IsManageByAccessNumber'] = data.Unit['IsManageByAccessNumber'] || false;
+    newForm['IsManageByAccessNumber'] = data?.Unit['IsManageByAccessNumber'] || false;
 
     return newForm;
   }

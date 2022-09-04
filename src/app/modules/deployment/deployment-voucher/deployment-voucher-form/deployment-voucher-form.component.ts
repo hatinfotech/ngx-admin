@@ -384,8 +384,9 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       text: 'Name',
     },
     data: [
-      { id: 'SALER', text: 'Bên bán' },
+      { id: 'SELLER', text: 'Bên bán' },
       { id: 'CUSTOMER', text: 'Bên mua' },
+      { id: 'BOTH', text: 'Bên bán và bên mua' },
     ]
   };
 
@@ -600,7 +601,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     //   this.taxList = SalesVoucherFormComponent._taxList;
     // }
 
-    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'DEPLOYMENT', select: 'id=>Code,text=>Name,type=>Type' });
 
     return super.init().then(status => {
       if (this.isDuplicate) {
@@ -693,12 +694,12 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       // RequireInvoice: [false],
 
       // Transport
-      Transportation: [null, Validators.required],
-      Driver: [null, Validators.required],
-      DriverName: [null, Validators.required],
+      Transportation: [null],
+      Driver: [null],
+      DriverName: [null],
       DriverPhone: [],
       ShippingCost: [],
-      ShippingCostPaymentBy: [null, Validators.required],
+      ShippingCostPaymentBy: [null],
       ShippingCostPaymentRatio: [100],
       DirectReceiverName: [],
       DirectReceiverPhone: [],
@@ -811,7 +812,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       // ToMoney: [0],
       Image: [[]],
       // Reason: [''],
-      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
+      // Business: [this.accountingBusinessList.filter(f => f.id === 'SHIPPINGCOSTBYDEBT')],
       Business: { disabled: true, value: [] },
     });
 
@@ -1365,7 +1366,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                 } else {
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, DirectReceiverName: refVoucher.ObjectName, DirectReceiverPhone: refVoucher.ObjectPhone, DeliveryAddress: refVoucher.ObjectAddress, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1378,9 +1379,12 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
-                      details.push(newDtailFormGroup);
+                      const product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products/' + voucherDetail.Product.Code).then(rs => rs[0]);
+                      if (product.Type == 'PRODUCT') {
+                        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
+                        newDtailFormGroup.get('Business').disable();
+                        details.push(newDtailFormGroup);
+                      }
                     }
                   }
                 }
@@ -1419,7 +1423,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                   // }
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, DirectReceiverName: refVoucher.ObjectName, DirectReceiverPhone: refVoucher.ObjectPhone, DeliveryAddress: refVoucher.ObjectAddress, Code: null, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1434,15 +1438,18 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title } as any));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
+                      const product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products/' + voucherDetail.Product.Code).then(rs => rs[0]);
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
-                      newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
-                      details.push(newDtailFormGroup);
-                      await new Promise(resolve => setTimeout(() => resolve(true), 300));
-                      this.toMoney(formGroup, newDtailFormGroup);
+                      if (product.Type == 'PRODUCT') {
+                        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
+                        newDtailFormGroup.get('Business').disable();
+                        newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
+                        details.push(newDtailFormGroup);
+                        await new Promise(resolve => setTimeout(() => resolve(true), 300));
+                        this.toMoney(formGroup, newDtailFormGroup);
+                      }
                     }
                   }
                 }

@@ -4,8 +4,10 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  */
 export const environment = {
-  // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update . Environment
-  version: '6.1.9.6',
+  // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
+  version: '6.1.10.3',
+  // 6.1.10:   CommercePOS: load product from product search index
+  // 6.1.9.7:   Hotfix warehouse goods list not show all unit for add new container
   // 6.1.9.2:   Fix barcode extract for outside product ip 
   // 6.1.9.1:   Update account report: increase amount column
   // 6.1.8.1:   Fix POS return feature

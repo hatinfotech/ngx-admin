@@ -82,3 +82,44 @@ export class ProductGroupModel {
   Name?: string;
   Description?: string;
 }
+export interface ProductSearchIndexModel {
+  Code?: string;
+  Sku?: string;
+  Type?: string;
+  Name?: string;
+  BaseUnit?: string;
+  BaseUnitLabel?: string;
+  Unit?: string;
+  UnitSeq?: string;
+  UnitNo?: string;
+  ConversionRatio?: string;
+  IsDefaultSales?: string;
+  IsDefaultPurchase?: string;
+  IsManageByAccessNumber?: string;
+  IsAutoAdjustInventory?: string;
+  IsExpirationGoods?: string;
+  UnitLabel?: string;
+  Price?: number;
+  Container?: string;
+  ContainerName?: string;
+  ContainerShelf?: string;
+  ContainerShelfName?: string;
+  ContainerFindOrder?: string;
+  ContainerAccAccount?: string;
+  ContainerAccAccountName?: string;
+  Warehouse?: string;
+  WarehouseName?: string;
+  SearchIndex?: string;
+  SearchText?: string;
+  Group?: string;
+  GroupName?: string;
+  Category?: string;
+  CategoryName?: string;
+  FeaturePicture?: FileModel;
+  Pictures?: FileModel[];
+  Technical?: string;
+  Description?: string;
+  Inventory?: string;
+  LastUpdate?: string;
+  IsNotBusiness?: string;
+}

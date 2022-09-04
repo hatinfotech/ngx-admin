@@ -34,8 +34,8 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
 
   componentName: string = 'WarehouseGoodsListComponent';
   formPath = '/warehouse/goods/form';
-  apiPath = '/warehouse/goods-in-containers';
-  idKey: string | string[] = ['Goods', 'Unit', 'Container'];
+  apiPath = '/warehouse/goods';
+  idKey: string | string[] = ['Code', 'WarehouseUnit', 'Container'];
   formDialog = WarehouseGoodsFormComponent;
 
   containerList: WarehouseGoodsContainerModel[] = [];
@@ -63,30 +63,28 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       delete: this.configDeleteButton(),
       pager: this.configPaging(),
       columns: {
-        GoodsThumbnail: {
+        FeaturePicture: {
           title: 'Hình',
           type: 'custom',
           width: '5%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['GoodsThumbnail'] ? product['GoodsThumbnail']['Thumbnail'] : '';
+            return product['FeaturePicture'] ? product['FeaturePicture']['Thumbnail'] : '';
           },
           renderComponent: SmartTableThumbnailComponent,
           onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
             instance.valueChange.subscribe(value => {
             });
             instance.previewAction.subscribe((row: ProductModel) => {
-              // const pictureList = row?.Pictures || [];
-              const pictureList = [];
-              if ((pictureList.length == 0 && row.GoodsThumbnail?.OriginImage)) {
-                pictureList.push(row.GoodsThumbnail);
+              const pictureList = row?.Pictures || [];
+              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+                pictureList.push(row.FeaturePicture);
               }
               if (pictureList.length > 0) {
-                // const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
-                // const currentIndex = 0;
-                // if (pictureList.length > 1) {
-                  // const currentItems = pictureList.splice(currentIndex, 1);
-                  // pictureList.unshift(currentItems[0]);
-                // }
+                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+                if (pictureList.length > 1) {
+                  const currentItems = pictureList.splice(currentIndex, 1);
+                  pictureList.unshift(currentItems[0]);
+                }
                 this.commonService.openDialog(ImagesViewerComponent, {
                   context: {
                     images: pictureList.map(m => m['OriginImage']),
@@ -117,17 +115,17 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             instance.title = this.commonService.translateText('click to change main product picture');
           },
         },
-        Goods: {
-          title: 'ID',
+        Code: {
+          title: 'Code',
           type: 'string',
           width: '8%',
         },
-        GoodsSku: {
+        Sku: {
           title: 'Sku',
           type: 'string',
           width: '10%',
         },
-        GoodsName: {
+        Name: {
           title: 'Tên',
           type: 'string',
           width: '20%',
@@ -171,44 +169,58 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             },
           },
         },
-        // Container: {
-        //   title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+        ContainerFindOrder: {
+          title: this.commonService.translateText('Số nhận thức', { action: '', definition: '' }),
+          type: 'html',
+          width: '15%',
+          // valuePrepareFunction: (value: any, product: GoodsModel) => {
+          //   return value && (this.commonService.getObjectText(value)) || '';
+          // },
+          // filter: {
+          //   type: 'custom',
+          //   component: SmartTableSelect2FilterComponent,
+          //   config: {
+          //     delay: 0,
+          //     select2Option: {
+          //       placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+          //       allowClear: true,
+          //       width: '100%',
+          //       dropdownAutoWidth: true,
+          //       minimumInputLength: 0,
+          //       keyMap: {
+          //         id: 'id',
+          //         text: 'text',
+          //       },
+          //       multiple: true,
+          //       logic: 'OR',
+          //       ajax: {
+          //         url: (params: any) => {
+          //           return 'data:text/plan,[]';
+          //         },
+          //         delay: 0,
+          //         processResults: (data: any, params: any) => {
+          //           return {
+          //             results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+          //           };
+          //         },
+          //       },
+          //     },
+          //   },
+          // },
+        },
+        // ContainerPath: {
+        //   title: this.commonService.translateText('Warehouse.GoodsContainer.path', { action: '', definition: '' }),
         //   type: 'html',
         //   width: '15%',
-        //   valuePrepareFunction: (value: any, row: WarehouseGoodsInContainerModel) => {
-        //     // return value && (this.commonService.getObjectText(value)) || '';
-        //     return  row.ContainerPath;
-        //   },
         //   filter: {
         //     type: 'custom',
-        //     component: SmartTableSelect2FilterComponent,
+        //     component: SmartTableFilterComponent,
         //     config: {
-        //       delay: 0,
-        //       select2Option: {
-        //         placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
-        //         allowClear: true,
-        //         width: '100%',
-        //         dropdownAutoWidth: true,
-        //         minimumInputLength: 0,
-        //         keyMap: {
-        //           id: 'id',
-        //           text: 'text',
-        //         },
-        //         multiple: true,
-        //         logic: 'OR',
-        //         ajax: {
-        //           url: (params: any) => {
-        //             return 'data:text/plan,[]';
-        //           },
-        //           delay: 0,
-        //           processResults: (data: any, params: any) => {
-        //             return {
-        //               results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
-        //             };
-        //           },
-        //         },
-        //       },
-        //     },
+        //       condition: 'bleft',
+        //     }
+        //   },
+        //   valuePrepareFunction: (value: any, product: GoodsModel) => {
+        //     return product?.Container?.ContainerPath;
         //   },
         // },
 
@@ -301,22 +313,6 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
           //   });
           // },
         },
-        ContainerFindOrder: {
-          title: this.commonService.translateText('Số nhận thức', { action: '', definition: '' }),
-          type: 'html',
-          width: '15%',
-          filter: {
-            type: 'custom',
-            component: SmartTableFilterComponent,
-            config: {
-              condition: 'bleft',
-            }
-          },
-          valuePrepareFunction: (value: any, row: WarehouseGoodsInContainerModel) => {
-            // return product?.Container?.ContainerPath;
-            return row.ContainerFindOrder;
-          },
-        },
         // Goods: {
         //   title: this.commonService.translateText('Hàng hóa', { action: '', definition: '' }),
         //   type: 'html',
@@ -361,20 +357,18 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
         //     },
         //   },
         // },
-        Unit: {
+        ConversionUnit: {
           title: 'ĐVT',
           type: 'html',
           width: '7%',
-          valuePrepareFunction: (value: string, row: WarehouseGoodsInContainerModel) => {
-            // return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
-            return row.UnitLabel;
+          valuePrepareFunction: (value: string, product: ProductModel) => {
+            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
           },
           filter: {
             type: 'custom',
             component: SmartTableSelect2FilterComponent,
             config: {
               delay: 0,
-              condition: 'eq',
               select2Option: {
                 placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
                 allowClear: true,
@@ -622,7 +616,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             instance.label = this.commonService.translateText('Gán/gở vị trí');
             instance.valueChange.subscribe(value => {
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsInContainerModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ProductModel) => {
               const editedItems = rowData;
               this.commonService.openDialog(AssignNewContainerFormComponent, {
                 context: {
@@ -632,7 +626,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                     if (rowData.Container) {
                       this.refresh();
                     } else {
-                      this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Goods, { includeContainer: true, includeUnit: true }).then(rs => {
+                      this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + editedItems.Code, { includeContainer: true, includeUnit: true }).then(rs => {
                         this.updateGridItems([editedItems], [{ ...editedItems, Container: rs[0]['Container'] || [], ContainerPath: rs[0]['Container'] && rs[0]['Container']['ContainerPath'] || null }]);
                       });
                     }
@@ -759,8 +753,9 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
       params['includeContainer'] = true;
       params['includeInventory'] = true;
       params['includeLastInventoryAdjust'] = true;
+      params['includeAccessNumbers'] = true;
       // params['includeUnitConversions'] = true;
-      // params['sort_GoodsName'] = 'asc';
+      params['sort_Id'] = 'desc';
       return params;
     };
 

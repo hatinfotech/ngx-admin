@@ -3,7 +3,7 @@ import { DeploymentVoucherFormComponent } from './../../../deployment/deployment
 import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
-import { ProductModel, ProductUnitModel } from './../../../../models/product.model';
+import { ProductModel, ProductSearchIndexModel, ProductUnitModel } from './../../../../models/product.model';
 import { ContactModel } from './../../../../models/contact.model';
 import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel, CommercePosOrderDetailModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray, AbstractControl } from '@angular/forms';
@@ -269,8 +269,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.progressStatus = 'danger';
       this.progress = 0;
       while (true) {
-        const rs = await this.apiService.getObservable<WarehouseGoodsInContainerModel[]>('/warehouse/goods-in-containers', {
-          sort_Goods: 'asc',
+        const rs = await this.apiService.getObservable<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', {
+          // includeUnitConversion: true,
+          sort_Code: 'asc',
           sort_UnitNo: 'asc',
           offset: offset,
           limit: 100
@@ -285,7 +286,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           const rs = result.data;
           const total = result.total;
 
-          const progress = parseInt(((offset + 101) / result.total * 100) as any);
+          const progress = parseInt(((offset + 101) / total * 100) as any);
           if (progress <= 100) {
             this.progress = progress;
           } else {
@@ -295,14 +296,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.progressLabel = 'Tải thông tin hàng hóa (' + this.progress + '%)';
 
           for (const goodsInContainer of rs) {
-            const price = this.masterPriceTable[`${goodsInContainer.Goods}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
+            const price = this.masterPriceTable[`${goodsInContainer.Code}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
             this.goodsList.push({
-              id: `${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`,
-              text: goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')',
-              Code: goodsInContainer.Goods,
-              Sku: goodsInContainer.GoodsSku?.toUpperCase(),
-              Name: goodsInContainer.GoodsName,
-              FeaturePicture: goodsInContainer.GoodsThumbnail,
+              id: `${goodsInContainer.Code}-${goodsInContainer.Unit}-${goodsInContainer.Container}`,
+              text: goodsInContainer.Name + ' (' + goodsInContainer.UnitLabel + ')',
+              Code: goodsInContainer.Code,
+              Sku: goodsInContainer.Sku?.toUpperCase(),
+              Name: goodsInContainer.Name,
+              FeaturePicture: goodsInContainer.FeaturePicture,
               // Unit: goodsInContainer.Unit,
               Container: {
                 id: goodsInContainer.Container,
@@ -314,7 +315,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel, Sequence: goodsInContainer.UnitSeq },
               // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
               Price: price,
-              Keyword: (goodsInContainer.GoodsSku + ' ' + goodsInContainer.GoodsName + ' (' + goodsInContainer.UnitLabel + ')').toLowerCase()
+              Keyword: (goodsInContainer.Sku + ' ' + goodsInContainer.Name + ' (' + goodsInContainer.UnitLabel + ')').toLowerCase()
             });
           }
 

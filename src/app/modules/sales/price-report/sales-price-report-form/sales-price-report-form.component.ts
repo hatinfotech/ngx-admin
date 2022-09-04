@@ -2,7 +2,7 @@ import { ProductUnitModel } from './../../../../models/product.model';
 import { ContactFormComponent } from './../../../contact/contact/contact-form/contact-form.component';
 import { SalesMasterPriceTableDetailModel, SalesPriceTableModel } from './../../../../models/sales.model';
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { DataManagerFormComponent, MyUploadAdapter } from '../../../../lib/data-manager/data-manager-form.component';
 import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -25,8 +25,17 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { takeUntil } from 'rxjs/operators';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe } from '@angular/common';
+import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 
 
+
+function MyCustomUploadAdapterPlugin(editor) {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    // Configure the URL to the upload script in your back-end here!
+    const options = editor.config.get('simpleUpload');
+    return new MyUploadAdapter(loader, options);
+  };
+}
 @Component({
   selector: 'ngx-sales-price-report-form',
   templateUrl: './sales-price-report-form.component.html',
@@ -60,6 +69,21 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (ProductUnitModel & { id?: string, text?: string })[];
 
+  public Editor = ClassicEditorBuild;
+  public ckEditorConfig = {
+    height: '200px',
+    // plugins: [ImageResize],
+    extraPlugins: [MyCustomUploadAdapterPlugin],
+    simpleUpload: {
+      uploadUrl: () => {
+        // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
+        return this.commonService.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+          return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
+        });
+      },
+    },
+  };
+  
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -1035,6 +1059,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
     return false;
+  }
+
+  onCkeditorReady(editor: any) {
+    console.log(editor);
   }
 
 }

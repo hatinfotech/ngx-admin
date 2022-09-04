@@ -126,12 +126,14 @@
                             </div>
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>
+                                    <!-- <textarea class="scrollable-container" nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea> -->
+                                    <ckeditor [editor]="Editor" formControlName="Note" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="SubNote" label="Common.subNote" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="SubNote" placeholder="{{'Common.subNote' | translate | headtitlecase}}" rows="3"></textarea>
+                                    <!-- <textarea class="scrollable-container" nbInput fullWidth formControlName="SubNote" placeholder="{{'Common.subNote' | translate | headtitlecase}}" rows="3"></textarea> -->
+                                    <ckeditor [editor]="Editor" formControlName="SubNote" [config]="ckEditorConfig" (ready)="onCkeditorReady($event)"></ckeditor>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12" *ngIf="formItem.get('RelativeVouchers').value?.length > 0">

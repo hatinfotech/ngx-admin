@@ -139,10 +139,15 @@ export class PurchaseDashboardComponent implements OnDestroy {
                   fontColor: this.chartjs.textColor,
                   callback: (value, index, values) => {
                     return this.currencyPipe.transform(value || 0, 'VND')
-                  }
+                  },
+                  beginAtZero: true,
                 },
+                // beginAtZero: true
               },
             ],
+            // y: {
+            //   beginAtZero: true
+            // }
           },
           tooltips: {
             callbacks: {
@@ -476,8 +481,8 @@ export class PurchaseDashboardComponent implements OnDestroy {
     let line1Data: any[], line2Data: any[], line3Data: any[], line4Data: any[], line5Data: any[], labels: any[], timeline: any[], mergeData: any[];
 
     /** Goods receipt/delivery */
-    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroups: 'PURCHASE', ...extendproductsQuery });
-    let costStatistics633 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1562]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroups: 'PURCHASE', ...extendproductsQuery });
+    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery });
+    let costStatistics633 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1562]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery });
 
     /** Prepare data */
     line2Data = costStatistics632.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return { ...statistic, Value: statistic.SumOfDebit }; });
@@ -529,19 +534,28 @@ export class PurchaseDashboardComponent implements OnDestroy {
     /** Goods compare */
     if (extendproductsQuery?.eq_Product && extendproductsQuery?.eq_Product.length > 0) {
 
-      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit', entryGroups: 'PURCHASE', ...extendproductsQuery });
+      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, eq_ProductUnit: 'KG', limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery, groupBy: '[Object]' });
       let linesData: any = {};
       timeline = [];
       for (let entry of statisticsData) {
         entry.Label = this.makeStaticLabel(entry, reportType);
         entry.Timeline = this.makeTimeline(entry, reportType);
-        entry.Value = entry.SumOfDebit;
-        if (!linesData[entry.Product]) {
-          linesData[entry.Product] = [];
+        entry.Value = entry.DebitPrice;
+        if (!linesData[entry.Object]) {
+          linesData[entry.Object] = [];
         }
-        linesData[entry.Product].push(entry);
+        linesData[entry.Object].push(entry);
         timeline.push(entry.Timeline);
       }
+      // for (const i in linesData) {
+      //   for (const j in linesData[i]) {
+      //     if (!linesData[i][j].Value) {
+      //       if (parseInt(j) > 0) {
+      //         linesData[i][j].Value = linesData[i][parseInt(j) - 1].Value;
+      //       }
+      //     }
+      //   }
+      // }
       timeline = [
         ...new Set(
           timeline.sort(),
@@ -577,10 +591,10 @@ export class PurchaseDashboardComponent implements OnDestroy {
       const datasets = Object.keys(linesData).map(lineId => {
         const color = colors.pop();
         return {
-          label: linesData[lineId][0]['Description'],
+          label: linesData[lineId][0]['Object'],
           data: mergeData.map(point => point[lineId]['Value']),
           borderColor: color || this.colors.primary,
-          backgroundColor: NbColorHelper.hexToRgbA(color || this.colors.primary, 1),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         };
