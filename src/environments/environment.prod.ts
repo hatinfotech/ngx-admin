@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.1.10.3',
+  version: '6.1.10.4',
+  // 6.1.10.5:   purchase price statistics  
   // 6.1.10:   CommercePOS: load product from product search index
   // 6.1.9.7:   Hotfix warehouse goods list not show all unit for add new container
   // 6.1.9.2:   Fix barcode extract for outside product ip 

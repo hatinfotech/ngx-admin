@@ -1,3 +1,4 @@
+import { UnitModel } from './../../../models/unit.model';
 import { Select2Option } from './../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
@@ -78,6 +79,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
   topGoodsList = [];
 
   masterBook: AccMasterBookModel;
+  unitList: UnitModel[];
 
   constructor(
     private themeService: NbThemeService,
@@ -194,6 +196,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
       Page: [[]],
       ProductGroup: { value: '', disabled: true },
       Products: [[]],
+      Unit: []
     });
     this.formItem.get('DateReport').valueChanges.subscribe(value => {
       console.log(value);
@@ -207,7 +210,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
       this.refresh();
     });
 
-    this.commonService.waitForReady().then(() => {
+    this.commonService.waitForReady().then(async () => {
       this.actionButtonList = [
         {
           name: 'refresh',
@@ -225,6 +228,8 @@ export class PurchaseDashboardComponent implements OnDestroy {
           },
         },
       ];
+
+      this.unitList = await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { onlyIdText: true });
 
       this.apiService.getPromise<AccMasterBookModel[]>('/accounting/master-books/current', {}).then(rs => {
         this.masterBook = rs[0];
@@ -311,6 +316,19 @@ export class PurchaseDashboardComponent implements OnDestroy {
     }),
     multiple: true,
     withThumbnail: true,
+  };
+
+  select2OptionForUnit: Select2Option = {
+    placeholder: 'Chọn ĐVT...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    withThumbnail: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
   };
 
   private alive = true;
@@ -533,8 +551,8 @@ export class PurchaseDashboardComponent implements OnDestroy {
 
     /** Goods compare */
     if (extendproductsQuery?.eq_Product && extendproductsQuery?.eq_Product.length > 0) {
-
-      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, eq_ProductUnit: 'KG', limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery, groupBy: '[Object]' });
+      const eqUnit = this.commonService.getObjectId(this.formItem.get('Unit').value);
+      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', {includeObject: true, eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, ...(eqUnit ? { eq_ProductUnit: this.commonService.getObjectId(this.formItem.get('Unit').value) } : {}), limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery, groupBy: '[Object]' });
       let linesData: any = {};
       timeline = [];
       for (let entry of statisticsData) {
@@ -547,22 +565,13 @@ export class PurchaseDashboardComponent implements OnDestroy {
         linesData[entry.Object].push(entry);
         timeline.push(entry.Timeline);
       }
-      // for (const i in linesData) {
-      //   for (const j in linesData[i]) {
-      //     if (!linesData[i][j].Value) {
-      //       if (parseInt(j) > 0) {
-      //         linesData[i][j].Value = linesData[i][parseInt(j) - 1].Value;
-      //       }
-      //     }
-      //   }
-      // }
       timeline = [
         ...new Set(
           timeline.sort(),
         )
       ];
       labels = [];
-      mergeData = timeline.map(t => {
+      mergeData = timeline.map((t, index) => {
         for (const lineId in linesData) {
           const lineData = linesData[lineId].find(f => f.Timeline == t);
           if (lineData && lineData.Label) {
@@ -574,6 +583,14 @@ export class PurchaseDashboardComponent implements OnDestroy {
           Label: t,
         };
         for (const lineId in linesData) {
+          const prevLineData = index > 0 ? linesData[lineId].find(f => f.Timeline == timeline[index - 1]) : null;
+          let lineData = linesData[lineId].find(f => f.Timeline == t);
+          if(!lineData) {
+            linesData[lineId].push({
+              Timeline: t,
+              Value: prevLineData && prevLineData.Value || 0,
+            });
+          }
           timelinePoint[lineId] = linesData[lineId].find(f => f.Timeline == t) || { Value: 0 };
         }
         return timelinePoint;

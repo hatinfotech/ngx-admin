@@ -62,7 +62,7 @@
         </div>
       </nb-card>
     </div>
-    
+
   </div>
 
   <div class="row">
@@ -72,12 +72,12 @@
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="row">
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
                     <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                   <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
                     <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
                     <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
@@ -98,6 +98,11 @@
                     <ngx-select2 formControlName="Products" [select2Option]="select2OptionForProduct"></ngx-select2>
                   </ngx-form-group>
                 </div>
+                <div class="col-sm-2">
+                  <ngx-form-group [formGroup]="formItem" name="Unit" label="Đơn vị tính" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Unit" [select2Option]="select2OptionForUnit" [data]="unitList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
               </div>
             </div>
             <div style="margin-left: 1rem;">
@@ -105,7 +110,9 @@
                 <div class="col-sm-12">
                   <div class="form-group">
                     <label class="label">Refresh</label>
-                    <button nbButton fullWidth status="success" (click)="refresh()"><nb-icon pack="eva" icon="sync-outline"></nb-icon></button>
+                    <button nbButton fullWidth status="success" (click)="refresh()">
+                      <nb-icon pack="eva" icon="sync-outline"></nb-icon>
+                    </button>
                   </div>
                 </div>
               </div>
