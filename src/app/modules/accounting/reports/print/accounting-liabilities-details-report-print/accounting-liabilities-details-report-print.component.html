@@ -53,7 +53,7 @@
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
-                                <td>{{detail.VoucherDate | date:'short'}}</td>
+                                <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
                                 <td><a href="#" (click)="this.commonService.previewVoucher(detail.VoucherType, detail.Voucher) && false">{{detail.Voucher}}</a></td>
                                 <td>{{detail.Description}}</td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateCredit - detail.GenerateDebit)"></td>

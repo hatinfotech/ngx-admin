@@ -1,6 +1,6 @@
 import { AccountingService } from '../../../accounting.service';
-import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { environment } from '../../../../../../environments/environment';
@@ -15,7 +15,8 @@ import { CommonService } from '../../../../../services/common.service';
 @Component({
   selector: 'ngx-accounting-receivables-from-customers-report-print',
   templateUrl: './accounting-receivables-from-customers-report-print.component.html',
-  styleUrls: ['./accounting-receivables-from-customers-report-print.component.scss']
+  styleUrls: ['./accounting-receivables-from-customers-report-print.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class AccountingReceivablesFromCustomersReportPrintComponent extends DataManagerPrintComponent<CashVoucherModel> implements OnInit {
 
@@ -27,6 +28,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
   env = environment;
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
+  @Input() objects: string[];
 
   constructor(
     public commonService: CommonService,
@@ -35,6 +37,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     public ref: NbDialogRef<AccountingReceivablesFromCustomersReportPrintComponent>,
     private datePipe: DatePipe,
     public accountingService: AccountingService,
+    private currencyPipe: CurrencyPipe,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -146,12 +149,13 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
     return this.apiService.getPromise<any[]>(this.apiPath, {
       reportReceivablesFromCustomer: true,
-      fromDate: toDate.toISOString(),
+      fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString(),
       limit: 'nolimit',
       excludeZeroDebt: true,
       includeObjectInfo: true,
-      sort_ObjectName: 'asc'
+      sort_ObjectName: 'asc',
+      ...(this.objects && { eq_Object: '[' + this.objects.join(',') + ']' } || {})
     }).then(data => {
       const list = [{
         FromDate: fromDate,
@@ -179,5 +183,16 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     }
     return data;
   }
+
+  renderCurrency(money: number) {
+    if (typeof money == 'undefined' || money === null) return this.currencyPipe.transform(0, 'VND');
+    if (money < 0) {
+      let text = this.currencyPipe.transform(-money, 'VND');
+      return `<span class="text-color-danger">(${text})</span>`;
+    } else {
+      return this.currencyPipe.transform(money, 'VND');
+    }
+  }
+
 
 }

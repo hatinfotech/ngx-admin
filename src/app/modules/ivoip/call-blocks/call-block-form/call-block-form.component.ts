@@ -54,19 +54,19 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
     this.blockActions = [
       {
         id: 'Reject',
-        text: 'Reject',
+        text: 'Reject (Chặn)',
         Code: 'Reject',
         Name: 'Reject',
       },
       {
         id: 'Busy',
-        text: 'Busy',
+        text: 'Busy (Báo bận)',
         Code: 'Busy',
         Name: 'Busy',
       },
       {
         id: 'Hold',
-        text: 'Hold',
+        text: 'Hold (Báo chờ)',
         Code: 'Hold',
         Name: 'Hold',
       },
@@ -84,7 +84,7 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
       call_block_uuid: [''],
       call_block_name: [''],
       call_block_number: ['', Validators.required],
-      call_block_action: ['', Validators.required],
+      call_block_action: ['Reject', Validators.required],
       call_block_enabled: [true],
       is_call_out: [''],
     });

@@ -28,7 +28,9 @@
                                 <td class="">{{'Common.phone' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.address' | translate | headtitlecase}}</td>
                                 <td class="">{{'Common.note' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{'Đầu kỳ' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{'Phát sinh' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{'Cuối kỳ' | translate | headtitlecase}}</td>
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
@@ -37,7 +39,9 @@
                                 <td>{{detail.ObjectPhone}}</td>
                                 <td>{{detail.ObjectAddress}}</td>
                                 <td>{{detail.ObjectNote}}</td>
-                                <td class="text-align-right">{{detail.TailAmount | currency:'VND'}}</td>
+                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.HeadAmount)"></td>
+                                <td class="text-align-right" [innerHtml]="renderCurrency(detail.GenerateDebit - detail.GenerateCredit)"></td>
+                                <td class="text-align-right" style="font-weight: bold;" [innerHtml]="renderCurrency(detail.TailAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td> </td>
@@ -45,11 +49,20 @@
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>
+                                <td> </td>
+                                <td> </td>
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
-                                <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
+                                <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
                             </tr>
                         </table>
                     </div>
+                </div>
+                <div style="font-style: italic;">
+                    <b>* Chú thích</b>: <br>
+                    - Cột <b>«Đầu kỳ»</b> Công nợ trước {{data.FromDate | date: 'short'}}<br>
+                    - Cột <b>«Phát sinh»</b>: Công nợ từ {{data.FromDate | date: 'short'}} -  {{data.ToDate | date: 'short'}}<br>
+                    - Cột <b>«Cuối kỳ»</b>: Công nợ sau {{data.ToDate | date: 'short'}}<br>
+                    - Số tiền trong ngoặc (...) thể hiện số tiền thanh toán nhiều hơn số nợ
                 </div>
                 <div style="display: flex; flex-wrap: wrap">
                     <div style="text-align: center; flex: 0 0 50%;">

@@ -99,7 +99,8 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
             showLoadinng: true,
             // title: 'Xem trước',
             mode: 'print',
-            id: ['all']
+            id: ['all'],
+            objects: this.selectedIds,
           },
         });
       };
