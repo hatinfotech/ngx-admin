@@ -155,7 +155,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
       excludeZeroDebt: true,
       includeObjectInfo: true,
       sort_ObjectName: 'asc',
-      ...(this.objects && { eq_Object: '[' + this.objects.join(',') + ']' } || {})
+      ...(this.objects && this.objects.length > 0 && { eq_Object: '[' + this.objects.join(',') + ']' } || {})
     }).then(data => {
       const list = [{
         FromDate: fromDate,

@@ -34,7 +34,7 @@
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
-                                <td>{{detail.Object}}</td>
+                                <td><div style="max-width: 70px; overflow: hidden; text-overflow: ellipsis;">{{detail.Object}}</div></td>
                                 <td>{{detail.ObjectName}}</td>
                                 <td>{{detail.ObjectPhone}}</td>
                                 <td>{{detail.ObjectAddress}}</td>
