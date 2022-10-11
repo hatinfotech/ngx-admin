@@ -51,7 +51,76 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
 
   async init() {
     // await this.loadCache();
-    return super.init();
+    return super.init().then(state => {
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'unrecord',
+        status: 'warning',
+        label: 'Bỏ ghi',
+        title: 'Bỏ ghi các phiếu đã chọn',
+        size: 'medium',
+        icon: 'slash-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          this.commonService.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
+            {
+              label: 'Trở về',
+              status: 'basic',
+              action: () => {
+              }
+            },
+            {
+              label: 'Bỏ ghi',
+              status: 'warning',
+              focus: true,
+              action: () => {
+                this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+                  this.commonService.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
+                  this.refresh();
+                });
+              }
+            },
+          ]);
+        }
+      });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'writetobook',
+        status: 'primary',
+        label: 'Duyệt',
+        title: 'Duyệt các phiếu đã chọn',
+        size: 'medium',
+        icon: 'checkmark-square-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          this.commonService.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
+            {
+              label: 'Trở về',
+              status: 'basic',
+              action: () => {
+              }
+            },
+            {
+              label: 'Duyệt',
+              status: 'primary',
+              focus: true,
+              action: () => {
+                this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+                  this.commonService.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
+                  this.refresh();
+                });
+              }
+            },
+          ]);
+        }
+      });
+
+      return state;
+    });
   }
 
   editing = {};

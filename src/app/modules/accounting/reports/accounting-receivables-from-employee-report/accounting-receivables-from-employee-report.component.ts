@@ -157,11 +157,17 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
           title: '[' + this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailDebit'),
           type: 'acc-currency',
           width: '10%',
+          valuePrepareFunction(cell, row) {
+            return -row.TailCredit as any;
+          }
         },
         TailCredit: {
           title: this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailCredit') + ']',
           type: 'acc-currency',
           width: '10%',
+          valuePrepareFunction(cell, row) {
+            return -row.TailDebit as any;
+          }
         },
         Preview: {
           title: this.commonService.translateText('Common.detail'),
@@ -268,7 +274,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
       context: {
         inputMode: 'dialog',
         object: rowData.Object,
-        accounts: ['141'],
+        accounts: ['334'],
         fromDate: null,
         toDate: null,
         report: 'reportDetailByAccountAndObject',
