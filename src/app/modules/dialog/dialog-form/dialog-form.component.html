@@ -8,7 +8,7 @@
             <label class="label"><span class="valid">{{ control.label }}</span></label>
             <input [name]="control.name" *ngIf="!control.type || control.type == 'text'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder">
             <input [name]="control.name" *ngIf="control.type == 'currency'" type="text" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder" currencyMask [options]="curencyFormat">
-            <textarea [name]="control.name" *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
+            <textarea style="max-height: 100px" class="scrollable-container" [name]="control.name" *ngIf="control.type == 'textarea'" nbInput fullWidth [formControlName]="control.name" [placeholder]="control.placeholder"></textarea>
             <ngx-select2 [name]="control.name" [formControlName]="control.name" *ngIf="control.type == 'select2'" [select2Option]="control.option"></ngx-select2>
             <ng-container *ngIf="control.type == 'datetime'">
               <input type="text" [owlDateTime]="DateTimePicker" [owlDateTimeTrigger]="DateTimePicker" nbInput fullWidth [name]="control.name" [formControlName]="control.name" [placeholder]="control.placeholder">

@@ -24,6 +24,8 @@ import { ImagesViewerComponent } from '../../../../lib/custom-element/my-compone
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 import { AssignNewContainerFormComponent } from '../assign-new-containers-form/assign-new-containers-form.component';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -687,6 +689,72 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
               priceTable: 'default',
               id: this.selectedItems.map(item => this.makeId(item)),
             }
+          });
+        }
+      });
+
+      this.actionButtonList.unshift({
+        name: 'reprintAccessNumbers',
+        status: 'success',
+        label: 'In lại số truy xuất',
+        title: 'Thêm vào sanh sách in lại',
+        icon: 'pricetags-outline',
+        size: 'medium',
+        click: () => {
+          this.commonService.openDialog(DialogFormComponent, {
+            context: {
+              title: 'Thêm số truy xuất vào danh sách in lại',
+              controls: [
+                {
+                  name: 'AccessNumbers',
+                  label: 'Số truy xuất',
+                  initValue: '',
+                  placeholder: 'Mỗi dòng 1 số truy xuất',
+                  type: 'textarea',
+                },
+              ],
+              actions: [
+                {
+                  label: 'Trở về',
+                  icon: 'back',
+                  status: 'info',
+                  action: () => true,
+                },
+                {
+                  label: 'In',
+                  icon: 'printer-outline',
+                  status: 'success',
+                  action: (form: FormGroup) => {
+
+                    let accessNumbersText: string = form.get('AccessNumbers').value;
+                    accessNumbersText = accessNumbersText.trim();
+                    let accessNumbers = accessNumbersText.split('\n');
+
+                    accessNumbers = accessNumbers.filter(f => {
+                      f = f.trim();
+                      return f && !/[^0-9]/.test(f) && /^127/.test(f);
+                    })
+                    
+                    console.log(accessNumbers);
+
+                    this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                      context: {
+                        id: accessNumbers,
+                      }
+                    });
+
+                    // this.apiService.putPromise(this.apiPath + '/settings', {}, [{
+                    //   Name: 'MINIERP_RELEASE_VERSION',
+                    //   Value: form.value['Version'],
+                    // }]).then(rs => {
+                    //   this.refresh();
+                    // });
+                    
+                    return false; // do not close dialog after action
+                  },
+                },
+              ],
+            },
           });
         }
       });
