@@ -268,68 +268,64 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       let offset = 0;
       this.progressStatus = 'danger';
       this.progress = 0;
-      while (true) {
-        const rs = await this.apiService.getObservable<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', {
-          // includeUnitConversion: true,
-          sort_Code: 'asc',
-          sort_UnitNo: 'asc',
-          offset: offset,
-          limit: 100
-        }).pipe(
-          map((res) => {
-            const total = +res.headers.get('x-total-count');
-            let data = res.body;
-            return { data, total };
-          }),
-        ).toPromise().then(result => {
+      // while (true) {
+      const rs = await this.apiService.getPromise<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true })
+        // .pipe(
+        //   map((res) => {
+        //     const total = +res.headers.get('x-total-count');
+        //     let data = res.body;
+        //     return { data, total };
+        //   }),
+        // ).toPromise()
+        .then(rs => {
 
-          const rs = result.data;
-          const total = result.total;
+          // const rs = result.data;
+          // const total = result.total;
 
-          const progress = parseInt(((offset + 101) / total * 100) as any);
-          if (progress <= 100) {
-            this.progress = progress;
-          } else {
-            this.progress = 100;
-            this.progressStatus = 'success';
-          }
-          this.progressLabel = 'Tải thông tin hàng hóa (' + this.progress + '%)';
+          // const progress = parseInt(((offset + 101) / total * 100) as any);
+          // if (progress <= 100) {
+          //   this.progress = progress;
+          // } else {
+          //   this.progress = 100;
+          //   this.progressStatus = 'success';
+          // }
+          // this.progressLabel = 'Tải thông tin hàng hóa (' + this.progress + '%)';
 
-          for (const goodsInContainer of rs) {
-            const price = this.masterPriceTable[`${goodsInContainer.Code}-${this.commonService.getObjectId(goodsInContainer.Unit)}`]?.Price || null;
+          for (const productSearchIndex of rs) {
+            const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
             this.goodsList.push({
-              id: `${goodsInContainer.Code}-${goodsInContainer.Unit}-${goodsInContainer.Container}`,
-              text: goodsInContainer.Name + ' (' + goodsInContainer.UnitLabel + ')',
-              Code: goodsInContainer.Code,
-              Sku: goodsInContainer.Sku?.toUpperCase(),
-              Name: goodsInContainer.Name,
-              FeaturePicture: goodsInContainer.FeaturePicture,
+              id: `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`,
+              text: productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')',
+              Code: productSearchIndex.Code,
+              Sku: productSearchIndex.Sku?.toUpperCase(),
+              Name: productSearchIndex.Name,
+              FeaturePicture: productSearchIndex.FeaturePicture,
               // Unit: goodsInContainer.Unit,
               Container: {
-                id: goodsInContainer.Container,
-                text: goodsInContainer.ContainerName,
-                FindOrder: goodsInContainer.ContainerFindOrder,
-                Shelf: goodsInContainer.ContainerShelf,
-                ShelfName: goodsInContainer.ContainerShelfName,
+                id: productSearchIndex.Container,
+                text: productSearchIndex.ContainerName,
+                FindOrder: productSearchIndex.ContainerFindOrder,
+                Shelf: productSearchIndex.ContainerShelf,
+                ShelfName: productSearchIndex.ContainerShelfName,
               },
-              Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel, Sequence: goodsInContainer.UnitSeq },
+              Unit: { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq },
               // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
               Price: price,
-              Keyword: (goodsInContainer.Sku + ' ' + goodsInContainer.Name + ' (' + goodsInContainer.UnitLabel + ')').toLowerCase()
+              Keyword: (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase()
             });
           }
 
-          offset += 100;
+          // offset += 100;
           return rs;
         });
 
-        if (!rs || rs.length == 0) {
-          break;
-        }
-      }
+      // if (!rs || rs.length == 0) {
+      //   break;
+      // }
+      // }
       this.progress = 0;
 
-      console.log(this.goodsList);
+      // console.log(this.goodsList);
 
 
 
@@ -351,11 +347,47 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   async init() {
     this.loading = true;
     const result = await super.init().then(async status => {
-
+      const loginId = await this.commonService.loginInfo$.pipe(filter(f => !!f), take(1)).toPromise().then(loginInfo => loginInfo?.user?.Code);
+      this.apiService.getPromise<any>('/commerce-pos/product-search-indexs', { cacheCheckPonit: true }).then(rs => rs.data).then(serverProductSearchIndexCheckPoint => {
+        console.log(serverProductSearchIndexCheckPoint);
+        localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
+      });
       await this.updateGodosInfo();
 
       // Notification
       this.commonService.toastService.show('Hệ thống đã sẵn sàng để bán hàng !', 'POS đã sẵn sàng', { status: 'success' });
+      setInterval(() => {
+        console.log('Listen new master price table update...');
+        // this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
+        //   console.log(rs);
+        //   if (rs && rs.State == 'UPDATED') {
+        //     this.commonService.toastService.show('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
+        //     return this.updateGodosInfo().then(status => {
+        //       this.commonService.toastService.show('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
+        //       return status;
+        //     });
+        //   }
+        //   return false;
+        // }).catch(err => {
+        //   console.log(err);
+        // });
+
+        this.apiService.getPromise<any>('/commerce-pos/product-search-indexs', { cacheCheckPonit: true }).then(rs => rs.data).then(serverProductSearchIndexCheckPoint => {
+          console.log(serverProductSearchIndexCheckPoint);
+          const productSearchCacheCheckPoint = localStorage.getItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT');
+          if (serverProductSearchIndexCheckPoint && serverProductSearchIndexCheckPoint != productSearchCacheCheckPoint) {
+            this.commonService.toastService.show('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
+            return this.updateGodosInfo().then(status => {
+              this.commonService.toastService.show('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
+              localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
+              return status;
+            });
+          }
+          return false;
+        }).catch(err => {
+          console.log(err);
+        });
+      }, 20000);
 
       return status;
     });
@@ -365,22 +397,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     await this.save(this.orderForm);
 
     // Listen price table update
-    setInterval(() => {
-      console.log('Listen new master price table update...');
-      this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
-        console.log(rs);
-        if (rs && rs.State == 'UPDATED') {
-          this.commonService.toastService.show('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
-          return this.updateGodosInfo().then(status => {
-            this.commonService.toastService.show('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
-            return status;
-          });
-        }
-        return false;
-      }).catch(err => {
-        console.log(err);
-      });
-    }, 20000);
 
     this.loading = false;
     return result;
@@ -736,7 +752,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           if (this.goodsList && this.goodsList.length > 0) {
             // Search in local memory
             let rs = this.goodsList.filter(f => new RegExp('^' + inputValue.toUpperCase()).test(f.Sku)).slice(0, 256);
-            rs = rs.concat(rs, this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256));
+            // rs = rs.concat(rs, this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256));
+            let rsByKeyword = this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256);
+            for (const item of rsByKeyword) {
+              if (rs.findIndex(f => f.Code == item.Code && this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(item.Unit) && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(item.Container)) < 0) {
+                rs.push(item);
+              }
+            }
 
             if (currentSearchCount == this.lastSearchCount) {
               this.searchResults = rs;
@@ -1801,7 +1823,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     } else {
       // Skip system function key
-      if (['F12','F5','F3'].indexOf(event.key) > -1) {
+      if (['F12', 'F5', 'F3'].indexOf(event.key) > -1) {
         return false;
       }
     }
