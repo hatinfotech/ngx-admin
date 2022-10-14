@@ -282,7 +282,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     return this.apiService.getPromise<SalesMasterPriceTableModel[]>(this.apiPath, { id: ids }).then(async rs => {
 
       const extendParams: any = {};
-      if (this.params.selectedProducts && this.params.selectedProducts.length > 0) {
+      if (this?.params?.selectedProducts && this.params.selectedProducts.length > 0) {
         extendParams.id = this.params.selectedProducts;
         delete this.params.selectedProducts;
       }
@@ -337,9 +337,9 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
               Sku: newDetail.Sku,
               Name: newDetail.Name,
               Unit: newDetail.Unit,
-              FindOrder: findOrderTemData.FindOrder,
+              FindOrder: findOrderTemData?.FindOrder,
               Price: newDetail.Price,
-              BarCode: findOrderTemData.BarCode,
+              BarCode: findOrderTemData?.BarCode,
             };
             return newDetail;
           })

@@ -1,3 +1,4 @@
+import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SalesMasterPriceTableModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -124,7 +125,26 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
               instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesMasterPriceTableModel) => {
-              this.preview([rowData]);
+              // this.preview([rowData]);
+              this.commonService.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: 'Bảng giá chính',
+                  content: 'Bạn có muốn ' + (instance.rowData.State != 'APPROVED' ? ' duyệt ' : ' bỏ duyệt ') + 'bảng giá này không ?',
+                  actions: [
+                    {
+                      label: instance.rowData.State != 'APPROVED' ? 'Duyệt' : 'Bỏ duyệt',
+                      status: 'primary',
+                      action: () => {
+                        this.apiService.putPromise(this.apiPath + '/' + instance.rowData?.Code, { changeState: instance.rowData.State != 'APPROVED' ? 'APPROVED' : 'NOTJUSTAPPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                          this.commonService.toastService.show('Đã thay đổi trạng thái bảng giá: ' + instance.rowData.State != 'APPROVED' ? 'Duyetej' : 'Bỏ duyệt', 'Đã thay đổi trạng thái bảng giá', {status: 'success'});
+                          this.refresh();
+                        });
+                        return true;
+                      }
+                    }
+                  ]
+                }
+              });
             });
           },
         },
