@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
 import { ContactDetailModel } from '../../../models/contact.model';
+import { CoreConnectionModel } from '../../../models/core-connection.model';
 import { PageModel } from '../../../models/page.model';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
@@ -67,6 +68,21 @@ export class PageFormComponent extends DataManagerFormComponent<PageModel> imple
           results: data,
         };
       },
+    },
+  };
+
+  coreConnectionList: CoreConnectionModel[];
+  select2CoreConnectionOption = {
+    placeholder: 'Chọn BM ONE...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
     },
   };
 
@@ -137,6 +153,9 @@ export class PageFormComponent extends DataManagerFormComponent<PageModel> imple
 
   async init(): Promise<boolean> {
     return super.init().then(status => {
+      this.apiService.getPromise<CoreConnectionModel[]>('/core-connection/connections', { onlyIdText: true }).then(rs => {
+        this.coreConnectionList = rs;
+      });
       if (this.isDuplicate) {
         // Clear id
         this.id = [];
@@ -190,10 +209,11 @@ export class PageFormComponent extends DataManagerFormComponent<PageModel> imple
       Code: [''],
       Name: ['', Validators.required],
       Description: ['', Validators.required],
-      EventUrl: [''],
-      PlatformApiUrl: [''],
-      PlatformApiToken: [''],
+      // EventUrl: [''],
+      // PlatformApiUrl: [''],
+      // PlatformApiToken: [''],
       PriceTable: [''],
+      CoreConnection: [''],
     });
     if (data) {
       newForm.patchValue(data);

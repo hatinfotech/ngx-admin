@@ -270,6 +270,8 @@ import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashb
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
 import { NgxBarcodeModule } from 'ngx-barcode';
+import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
+import { CoreConnectionFormComponent } from './modules/core-connection/core-connection-form/core-connection-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -537,6 +539,10 @@ export class DynamicLocaleId extends String {
 
     // Ag-Grid components
     BtnCellRenderer,
+
+    // Core connection
+    CoreConnectionListComponent,
+    CoreConnectionFormComponent,
 
   ],
   imports: [

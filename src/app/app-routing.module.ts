@@ -111,6 +111,7 @@ import { CommercePosReturnListComponent } from './modules/commerce-pos/commerce-
 import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-pos-dashboard/commerce-pos-dashboard.component';
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
+import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -933,6 +934,14 @@ const routes: Routes = [
     path: 'collaborator/page/dashboard',
     canActivate: [AuthGuardService],
     component: CollaboratorPageDashboardComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'core-connection/list',
+    canActivate: [AuthGuardService],
+    component: CoreConnectionListComponent,
     data: {
       reuse: true,
     },

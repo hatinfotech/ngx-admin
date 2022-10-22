@@ -3,24 +3,23 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { ContactDetailModel } from '../../../../models/contact.model';
-import { CoreConnectionModel } from '../../../../models/core-connection.model';
-import { PageModel } from '../../../../models/page.model';
-import { ApiService } from '../../../../services/api.service';
-import { CommonService } from '../../../../services/common.service';
+import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
+import { ContactDetailModel } from '../../../models/contact.model';
+import { PageModel } from '../../../models/page.model';
+import { ApiService } from '../../../services/api.service';
+import { CommonService } from '../../../services/common.service';
 
 @Component({
-  selector: 'ngx-collaborator-page-form',
-  templateUrl: './collaborator-page-form.component.html',
-  styleUrls: ['./collaborator-page-form.component.scss']
+  selector: 'ngx-core-connection-form',
+  templateUrl: './core-connection-form.component.html',
+  styleUrls: ['./core-connection-form.component.scss']
 })
-export class CollaboratorPageFormComponent extends DataManagerFormComponent<PageModel> implements OnInit {
+export class CoreConnectionFormComponent extends DataManagerFormComponent<PageModel> implements OnInit {
 
-  componentName: string = 'CollaboratorPageFormComponent';
+  componentName: string = 'CoreConnectionFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/page/form';
-  apiPath = '/collaborator/pages';
+  baseFormUrl = '/core-connection/form';
+  apiPath = '/core-connection/connections';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -30,7 +29,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref: NbDialogRef<CollaboratorPageFormComponent>,
+    public ref: NbDialogRef<CoreConnectionFormComponent>,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
   }
@@ -128,88 +127,6 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     },
   };
 
-  coreConnectionList: CoreConnectionModel[];
-  select2CoreConnectionOption = {
-    placeholder: 'Chọn BM ONE...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-  };
-
-  select2OptionForWeekend = {
-    placeholder: this.commonService.translateText('Common.dayOfWeek') + '...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    data: [
-      {
-        id: '0',
-        text: 'Thứ hai'
-      },
-      {
-        id: '1',
-        text: 'Thứ ba'
-      },
-      {
-        id: '2',
-        text: 'Thứ tư'
-      },
-      {
-        id: '3',
-        text: 'Thứ năm'
-      },
-      {
-        id: '4',
-        text: 'Thứ sáu'
-      },
-      {
-        id: '5',
-        text: 'Thứ bảy'
-      },
-      {
-        id: '6',
-        text: 'Chủ nhật'
-      },
-    ]
-  };
-
-  endOfYearInputMask = {
-    alias: 'datetime',
-    inputFormat: 'dd/mm',
-    // parser: (value: string) => {
-    //   const values = value.split('/');
-    //   const year = +values[2];
-    //   const month = +values[1] - 1;
-    //   const date = +values[0];
-    //   return new Date(year, month, date);
-    // },
-  };
-  endOfMonthInputMask = {
-    alias: 'datetime',
-    inputFormat: 'dd',
-    // parser: (value: string) => {
-    //   const values = value.split('/');
-    //   const year = +values[2];
-    //   const month = +values[1] - 1;
-    //   const date = +values[0];
-    //   return new Date(year, month, date);
-    // },
-  };
-
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -220,11 +137,6 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
 
   async init(): Promise<boolean> {
     return super.init().then(status => {
-
-      this.apiService.getPromise<CoreConnectionModel[]>('/core-connection/connections', { onlyIdText: true }).then(rs => {
-        this.coreConnectionList = rs;
-      });
-      
       if (this.isDuplicate) {
         // Clear id
         this.id = [];
@@ -275,22 +187,11 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
   makeNewFormGroup(data?: PageModel): FormGroup {
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
-      Code: [''],
-      Name: ['', Validators.required],
-      TagName: ['', Validators.required],
-      Summary: ['', Validators.required],
-      Description: ['', Validators.required],
-      // EventUrl: [''],
-      // PlatformApiUrl: [''],
-      // PlatformApiToken: [''],
-      PriceTable: [''],
-      Logo: [''],
-      Banner: [''],
-      Weekend: ['6', Validators.required],
-      EndOfTheMonth: ['28', Validators.required],
-      EndOfTheQuarter: ['28', Validators.required],
-      EndOfTheYear: ['24/12', Validators.required],
-      CoreConnection: [''],
+      Code: {disabled: true, value: ''},
+      RefCore: ['', Validators.required],
+      RefCoreName: ['', Validators.required],
+      RefCoreHook: ['', Validators.required],
+      RefCoreNote: [''],
     });
     if (data) {
       newForm.patchValue(data);

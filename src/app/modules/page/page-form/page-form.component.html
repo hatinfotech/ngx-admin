@@ -30,6 +30,11 @@
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-12">
+                  <ngx-form-group [formGroup]="formItem" name="CoreConnection" label="BM One" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="CoreConnection" [select2Option]="select2CoreConnectionOption" [data]="coreConnectionList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <!-- <div class="col-sm-12">
                   <ngx-form-group [formGroup]="formItem" name="EventUrl" label="Common.eventUrl" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                     <input type="text" nbInput fullWidth formControlName="EventUrl" placeholder="{{'Common.eventUrl' | translate | headtitlecase}}">
                   </ngx-form-group>
@@ -43,7 +48,7 @@
                   <ngx-form-group [formGroup]="formItem" name="PlatformApiToken" label="Common.apiToken" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                     <textarea type="text" class="scrollable-container" nbInput fullWidth formControlName="PlatformApiToken" placeholder="{{'Common.apiToken' | translate | headtitlecase}}"></textarea>
                   </ngx-form-group>
-                </div>
+                </div> -->
               </div>
             </div>
           </nb-card-body>
