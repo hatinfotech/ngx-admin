@@ -84,52 +84,35 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
     ];
     return super.init().then(rs => {
 
-      // Push product, categories, groups and units to collaborator platform
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'pushProduct',
-      //   label: this.commonService.translateText('Collaborator.Product.push'),
-      //   icon: 'cloud-upload-outline',
-      //   status: 'danger',
-      //   size: 'medium',
-      //   title: this.commonService.translateText('Common.subscribe'),
-      //   click: () => {
-      //     this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
-      //       context: {
-      //         inputMode: 'dialog',
-      //         onDialogChoose: async (chooseItems: PageModel[]) => {
-      //           console.log(chooseItems);
-      //           this.commonService.openDialog(ShowcaseDialogComponent, {
-      //             context: {
-      //               title: this.commonService.translateText('Common.subscribe'),
-      //               content: this.commonService.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
-      //               actions: [
-      //                 {
-      //                   label: this.commonService.translateText('Common.close'),
-      //                   status: 'primary',
-      //                 },
-      //                 {
-      //                   label: this.commonService.translateText('Common.subscribe'),
-      //                   status: 'danger',
-      //                   action: () => {
-      //                     this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
-      //                       this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
-      //                         status: 'success',
-      //                       })
-      //                       this.refresh();
-      //                     });
-      //                   }
-      //                 },
-      //               ],
-      //             },
-      //           })
-      //         },
-      //         onDialogClose: () => {
-      //         },
-      //       },
-      //     })
-      //   },
-      // });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'generateConnectionString',
+        label: this.commonService.translateText(''),
+        icon: 'cloud-upload-outline',
+        status: 'danger',
+        size: 'medium',
+        title: this.commonService.translateText('Tạo chuỗi kết nối'),
+        click: () => {
+          this.apiService.postPromise(this.apiPath, { generateConnectionString: true }, []).then(rs => {
+            this.commonService.showDialog('Chuỗi kết nối core', rs['data'], [
+              {
+                label: 'Đóng',
+                status: 'basic',
+                action: () => {
+
+                },
+              },
+              {
+                label: 'Copy',
+                status: 'success',
+                action: () => {
+
+                },
+              },
+            ])
+          });
+        },
+      });
 
       return rs;
     });
@@ -170,7 +153,6 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
           title: this.commonService.translateText('Collaborator.Page.pushProductLabel'),
           type: 'custom',
           width: '10%',
-          // class: 'align-right',
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
@@ -181,18 +163,8 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             instance.title = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.label = this.commonService.translateText('Collaborator.Page.pushProductLabel');
             instance.init.subscribe((page: PageModel) => {
-              // if (!page.PlatformApiUrl || !page.PlatformApiToken) {
-              // instance.disabled = true;
-              // }
-              // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              // instance.label = this.commonService.translateText(processMap?.label);
-              // instance.status = processMap?.status;
-              // instance.outline = processMap?.outline;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-              // if (!rowData.PlatformApiUrl || !rowData.PlatformApiToken) {
-              //   return false;
-              // }
               this.commonService.openDialog(ShowcaseDialogComponent, {
                 closeOnBackdropClick: false,
                 closeOnEsc: false,
@@ -231,39 +203,39 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             });
           },
         },
-        Token: {
-          title: this.commonService.translateText('Common.token'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'award-outline';
-            instance.display = true;
-            instance.status = 'primary';
-            instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.generateToken');
-            instance.label = this.commonService.translateText('Common.generateToken');
-            instance.init.subscribe(value => {
-              // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              // instance.label = this.commonService.translateText(processMap?.label);
-              // instance.status = processMap?.status;
-              // instance.outline = processMap?.outline;
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-              this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
-                this.commonService.showDialog('Collaborator', rs[0].PlatformApiToken, [
-                  {
-                    label: 'Close',
-                    status: 'danger',
-                    action: () => { },
-                  }
-                ])
-              });
-            });
-          },
-        },
+        // Token: {
+        //   title: this.commonService.translateText('Common.token'),
+        //   type: 'custom',
+        //   width: '5%',
+        //   // class: 'align-right',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'award-outline';
+        //     instance.display = true;
+        //     instance.status = 'primary';
+        //     instance.disabled = this.isChoosedMode;
+        //     instance.title = this.commonService.translateText('Common.generateToken');
+        //     instance.label = this.commonService.translateText('Common.generateToken');
+        //     instance.init.subscribe(value => {
+        //       // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
+        //       // instance.label = this.commonService.translateText(processMap?.label);
+        //       // instance.status = processMap?.status;
+        //       // instance.outline = processMap?.outline;
+        //     });
+        //     instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
+        //       this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
+        //         this.commonService.showDialog('Collaborator', rs[0].PlatformApiToken, [
+        //           {
+        //             label: 'Close',
+        //             status: 'danger',
+        //             action: () => { },
+        //           }
+        //         ])
+        //       });
+        //     });
+        //   },
+        // },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',

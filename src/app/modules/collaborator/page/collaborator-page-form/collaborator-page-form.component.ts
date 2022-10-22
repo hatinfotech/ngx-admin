@@ -219,12 +219,13 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
   }
 
   async init(): Promise<boolean> {
+
+    await this.apiService.getPromise<CoreConnectionModel[]>('/core-connection/connections', { onlyIdText: true }).then(rs => {
+      this.coreConnectionList = rs;
+    });
+
     return super.init().then(status => {
 
-      this.apiService.getPromise<CoreConnectionModel[]>('/core-connection/connections', { onlyIdText: true }).then(rs => {
-        this.coreConnectionList = rs;
-      });
-      
       if (this.isDuplicate) {
         // Clear id
         this.id = [];
