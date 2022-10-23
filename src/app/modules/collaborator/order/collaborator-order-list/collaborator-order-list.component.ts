@@ -354,24 +354,25 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
               // this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              if (rowData.State == 'PROCESSING') {
-                const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
-                if (priceReportRef) {
-                  this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-                    context: {
-                      inputId: [priceReportRef.id],
-                      inputMode: 'dialog',
-                      showLoadinng: true,
-                      onDialogSave: () => {
-                        this.refresh();
-                      },
-                      onDialogClose: () => { },
-                    }
-                  });
-                }
-              } else {
-                this.preview([rowData]);
-              }
+              // this.refresh();
+              // if (rowData.State == 'PROCESSING') {
+              //   const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
+              //   if (priceReportRef) {
+              //     this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+              //       context: {
+              //         inputId: [priceReportRef.id],
+              //         inputMode: 'dialog',
+              //         showLoadinng: true,
+              //         onDialogSave: () => {
+              //           this.refresh();
+              //         },
+              //         onDialogClose: () => { },
+              //       }
+              //     });
+              //   }
+              // } else {
+              this.preview([rowData]);
+              // }
 
               // });
             });
@@ -470,30 +471,30 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         onChange: async (data: CollaboratorOrderModel, printComponent: CollaboratorOrderPrintComponent) => {
 
           printComponent.close();
-          if (data.State === 'PROCESSING') {
-            // Get relative vouchers
-            // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
-            if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
-              const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
-              if (priceReportRef) {
-                this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-                  context: {
-                    inputId: [priceReportRef.id],
-                    inputMode: 'dialog',
-                    onDialogSave: async (data) => {
-                      console.log(data);
-                      // setTimeout(() => {
-                      this.refresh();
-                      // }, 1000);
-                    },
-                    onDialogClose: () => { },
-                  }
-                });
-              }
-            }
-          } else {
-            this.refresh();
-          }
+          // if (data.State === 'PROCESSING') {
+          //   // Get relative vouchers
+          //   // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
+          //   if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
+          //     const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
+          //     if (priceReportRef) {
+          //       this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+          //         context: {
+          //           inputId: [priceReportRef.id],
+          //           inputMode: 'dialog',
+          //           onDialogSave: async (data) => {
+          //             console.log(data);
+          //             // setTimeout(() => {
+          //             this.refresh();
+          //             // }, 1000);
+          //           },
+          //           onDialogClose: () => { },
+          //         }
+          //       });
+          //     }
+          //   }
+          // } else {
+          this.refresh();
+          // }
 
         },
         onSaveAndClose: () => {

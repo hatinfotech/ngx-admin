@@ -426,7 +426,10 @@
         "addNewContact": "thêm liên hệ mới",
         "editContact": "chỉnh sửa liên hệ",
         "pictureList": "danh sách hình ảnh",
-        "printBarCode": "in mã vạch"
+        "printBarCode": "in mã vạch",
+        "province": "Tỉnh/Tp",
+        "district": "Quận/Huyện",
+        "ward": "Phường/Xã"
     },
     "Contact": {
         "Customer": {

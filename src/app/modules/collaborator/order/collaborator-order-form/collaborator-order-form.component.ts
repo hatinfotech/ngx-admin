@@ -9,6 +9,7 @@ import { Select2, Select2QueryOptions } from '../../../../../vendor/ng2select2/l
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { BusinessModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
@@ -29,25 +30,6 @@ import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/col
   styleUrls: ['./collaborator-order-form.component.scss']
 })
 export class CollaboratorOrderFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
-
-  componentName: string = 'CollaboratorOrderFormComponent';
-  idKey = 'Code';
-  apiPath = '/collaborator/orders';
-  baseFormUrl = '/collaborator/order/form';
-
-  env = environment;
-
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
-
-  /** Tax list */
-  static _taxList: (TaxModel & { id?: string, text?: string })[];
-  taxList: (TaxModel & { id?: string, text?: string })[];
-
-  /** Unit list */
-  static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: (UnitModel & { id?: string, text?: string })[];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -79,8 +61,92 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     });
   }
 
+  componentName: string = 'CollaboratorOrderFormComponent';
+  idKey = 'Code';
+  apiPath = '/collaborator/orders';
+  baseFormUrl = '/collaborator/order/form';
+
+  env = environment;
+
+  locale = this.commonService.getCurrentLoaleDataset();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+  
+  /** Tax list */
+  static _taxList: (TaxModel & { id?: string, text?: string })[];
+  taxList: (TaxModel & { id?: string, text?: string })[];
+
+  /** Unit list */
+  static _unitList: (UnitModel & { id?: string, text?: string })[];
+  unitList: (UnitModel & { id?: string, text?: string })[];
+
+  customIcons: { [key: string]: CustomIcon[] } = {};
+  getCustomIcons(name: string): CustomIcon[] {
+    if (this.customIcons[name]) return this.customIcons[name];
+    return this.customIcons[name] = [{
+      icon: 'plus-square-outline',
+      title: this.commonService.translateText('Common.addNewProduct'),
+      status: 'success',
+      states: {
+        '<>': {
+          icon: 'edit-outline',
+          status: 'primary',
+          title: this.commonService.translateText('Common.editProduct'),
+        },
+        '': {
+          icon: 'plus-square-outline',
+          status: 'success',
+          title: this.commonService.translateText('Common.addNewProduct'),
+        },
+      },
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
+        this.commonService.openDialog(ProductFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            inputId: currentProduct ? [currentProduct] : null,
+            showLoadinng: true,
+            onDialogSave: (newData: ProductModel[]) => {
+              console.log(newData);
+              // const formItem = formGroupComponent.formGroup;
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              formGroup.get('Product').patchValue(newProduct);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+  }
+
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -104,7 +170,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -306,7 +372,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     },
   };
 
-  makeSelect2Option(select2Options:any, formGroup: FormGroup) {
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
     return {
       ...select2Options,
       formGroup
@@ -400,6 +466,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   async init(): Promise<boolean> {
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -514,8 +581,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         details.clear();
-        itemFormData.Details.forEach(condition => {
-          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, condition);
+        itemFormData.Details.forEach(detailData => {
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
@@ -646,6 +714,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
+      AccessNumbers: [],
+      Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
     if (data) {
@@ -882,34 +952,52 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     return false;
   }
 
+  getRawFormData() {
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      for (const detail of item.Details) {
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(f => !!f).map(ac => {
+            if (/^127/.test(ac)) {
+              return { id: ac, text: ac };
+            }
+            const acd = this.commonService.decompileAccessNumber(ac);
+            return acd.accessNumber;
+          });
+        }
+      }
+    }
+    return data;
+  }
+
   // getRawFormData() {
   //   const data = super.getRawFormData();
 
   //   return data;
   // }
 
-  customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          // inputId: ids,
-          onDialogSave: (newData: ProductModel[]) => {
-            console.log(newData);
-            // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
-            formGroup.get('Product').patchValue(newProduct);
-            this.onSelectProduct(formGroup, newProduct, option.parentForm)
-          },
-          onDialogClose: () => {
+  // customIcons: CustomIcon[] = [{
+  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.commonService.openDialog(ProductFormComponent, {
+  //       context: {
+  //         inputMode: 'dialog',
+  //         // inputId: ids,
+  //         onDialogSave: (newData: ProductModel[]) => {
+  //           console.log(newData);
+  //           // const formItem = formGroupComponent.formGroup;
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           formGroup.get('Product').patchValue(newProduct);
+  //           this.onSelectProduct(formGroup, newProduct, option.parentForm)
+  //         },
+  //         onDialogClose: () => {
 
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    }
-  }];
+  //         },
+  //       },
+  //       closeOnEsc: false,
+  //       closeOnBackdropClick: false,
+  //     });
+  //   }
+  // }];
 
   openCreateNewProductForm(array: FormArray, index: number, name: string) {
 
