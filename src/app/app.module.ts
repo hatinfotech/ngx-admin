@@ -103,7 +103,6 @@ import { CollaboratorPageDashboardComponent } from './modules/collaborator/colla
 import { MostActivePublishersComponent } from './modules/collaborator/collaborator-page-dashboard/most-active-publishers/most-active-publishers.component';
 import { PageCommissionStatisticsComponent } from './modules/collaborator/collaborator-page-dashboard/page-commission-statistics.component';
 import { CollaboratorPageReportComponent } from './modules/collaborator/collaborator-page-report/collaborator-page-report.component';
-import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorPublisherDashboardComponent } from './modules/collaborator/collaborator-publisher-dashboard/collaborator-publisher-dashboard.component';
 import { MostActiveProductsComponent } from './modules/collaborator/collaborator-publisher-dashboard/most-active-products/most-active-products.component';
 import { PublisherCommissionStatisticsComponent } from './modules/collaborator/collaborator-publisher-dashboard/publisher-commission-statistics.component';
@@ -272,6 +271,9 @@ import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-d
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
 import { CoreConnectionFormComponent } from './modules/core-connection/core-connection-form/core-connection-form.component';
+import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
+import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
+import { CollaboratorBasicStrategyFormComponent } from './modules/collaborator/basic-strategy/basic-strategy-form/collaborator-basic-strategy-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -465,7 +467,7 @@ export class DynamicLocaleId extends String {
     CollaboratorPublisherReportComponent,
     CollaboratorPublisherSummaryComponent,
     CollaboratorPageDashboardComponent,
-    CollaboratorPageComponent,
+    // CollaboratorPageComponent,
     CollaboratorPublisherComponent,
     CollaboratorProductPreviewListComponent,
     CollaboratorSubscriptionProductComponent,
@@ -502,6 +504,9 @@ export class DynamicLocaleId extends String {
     PageCommissionStatisticsComponent,
     PageListComponent,
     PageFormComponent,
+
+    // Collaborator
+    CollaboratorPageComponent,
     CollaboratorCommissionListComponent,
     CollaboratorCommissionFormComponent,
     CollaboratorCommissionPrintComponent,
@@ -519,6 +524,8 @@ export class DynamicLocaleId extends String {
     CollaboratorEducationArticleListComponent,
     CollaboratorEducationArticleFormComponent,
     CollaboratorEducationArticlePrintComponent,
+    CollaboratorBasicStrategyListComponent,
+    CollaboratorBasicStrategyFormComponent,
 
     DynamicListDialogComponent,
 

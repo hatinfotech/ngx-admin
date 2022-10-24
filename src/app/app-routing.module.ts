@@ -112,6 +112,7 @@ import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-p
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
 import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
 import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
+import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1140,6 +1141,14 @@ const routes: Routes = [
     path: 'collaborator/order/list',
     canActivate: [AuthGuardService],
     component: CollaboratorOrderListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/basic-strategy/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorBasicStrategyListComponent,
     data: {
       reuse: true,
     },
