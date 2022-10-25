@@ -1,10 +1,8 @@
 import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsContainerListComponent } from './../../goods-container/warehouse-goods-container-list/warehouse-goods-container-list.component';
-import { Select2Component } from '../../../../../vendor/ng2select2.copy/lib/ng2-select2.component';
 import { ProductUnitModel } from '../../../../models/product.model';
 import { WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition, NbThemeService } from '@nebular/theme';
@@ -33,34 +31,36 @@ import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsP
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+// @Component({
+//   selector: 'btn-cell-renderer',
+//   template: `
+//     <button nbButton [outline]="true" [status]="status" (click)="btnClickedHandler($event)" size="small" hero fullWidth>
+//         <nb-icon pack="eva" icon="minus-circle-outline"></nb-icon>{{'Gở' | translate | headtitlecase}}
+//     </button>
+//   `,
+// })
+// export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
+//   @Input('status') status = 'basic';
+//   refresh(params: ICellRendererParams): boolean {
+//     throw new Error('Method not implemented.');
+//   }
+//   private params: any;
 
-@Component({
-  selector: 'btn-cell-renderer',
-  template: `
-    <button nbButton [outline]="true" status="danger" (click)="btnClickedHandler($event)" size="small" hero fullWidth>
-        <nb-icon pack="eva" icon="minus-circle-outline"></nb-icon>{{'Gở' | translate | headtitlecase}}
-    </button>
-  `,
-})
-export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
-  refresh(params: ICellRendererParams): boolean {
-    throw new Error('Method not implemented.');
-  }
-  private params: any;
+//   agInit(params: any): void {
+//     this.params = params;
+//   }
 
-  agInit(params: any): void {
-    this.params = params;
-  }
+//   btnClickedHandler(event) {
+//     this.params.clicked(this.params);
+//   }
 
-  btnClickedHandler(event) {
-    this.params.clicked(this.params);
-  }
-
-  ngOnDestroy() {
-    // no need to remove the button click handler 
-    // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
-  }
-}
+//   ngOnDestroy() {
+//     // no need to remove the button click handler 
+//     // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+//   }
+// }
 
 @Component({
   selector: 'ngx-inventory-adjust-note-form',

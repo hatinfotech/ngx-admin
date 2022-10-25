@@ -1,24 +1,25 @@
+import { CollaboratorAddonStrategyProductModel, CollaboratorAddonStrategyModel } from './../../../../models/collaborator.model';
+import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as ClassicEditorBuild from '@ckeditor/ckeditor5-build-classic';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { createMask } from '@ngneat/input-mask';
-// import { createMask } from '@ngneat/input-mask';
+import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { take, filter } from 'rxjs/operators';
-import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { FileModel } from '../../../../models/file.model';
-import { ProductModel, ProductUnitModel, ProductCategoryModel, ProductGroupModel, ProductPictureModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { ProductModel, ProductUnitModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
+import { WarehouseGoodsContainerModel, WarehouseInventoryAdjustNoteDetailModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { WarehouseGoodsContainerListComponent } from '../../../warehouse/goods-container/warehouse-goods-container-list/warehouse-goods-container-list.component';
+import { AssignNewContainerFormComponent } from '../../../warehouse/goods/assign-new-containers-form/assign-new-containers-form.component';
+// import { BtnCellRenderer } from '../../../warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
 import { CollaboratorService } from '../../collaborator.service';
-
+import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
+import { ChangeDetectorRef } from '@angular/core';
+import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { CollaboratorBasicStrategyProductFormComponent } from '../product-form/collaborator-basic-strategy-product-form.component';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',
@@ -27,42 +28,467 @@ import { CollaboratorService } from '../../collaborator.service';
     CurrencyPipe
   ]
 })
-export class CollaboratorBasicStrategyFormComponent extends DataManagerFormComponent<ProductModel> implements OnInit {
+export class CollaboratorBasicStrategyFormComponent extends DataManagerFormComponent<CollaboratorAddonStrategyModel> implements OnInit {
+
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public commonService: CommonService,
+    public ref?: NbDialogRef<CollaboratorBasicStrategyFormComponent>,
+    public collaboratorService?: CollaboratorService,
+    public themeService?: NbThemeService,
+    public onDetectChangeRef?: ChangeDetectorRef
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+
+
+    const $this = this;
+    /** AG-Grid */
+    this.columnDefs = [
+      {
+        headerName: '#',
+        width: 110,
+        valueGetter: 'node.data.Product',
+        cellRenderer: 'loadingCellRenderer',
+        sortable: false,
+        pinned: 'left',
+      },
+      {
+        headerName: 'Sku',
+        field: 'Sku',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'Hình',
+        field: 'FeaturePicture',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+        cellRenderer: 'imageRender',
+      },
+      {
+        headerName: 'Tên sản phẩm',
+        field: 'ProductName',
+        width: 400,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'ĐVT',
+        field: 'Unit',
+        width: 110,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'CKCB',
+        field: 'Level1CommissionRatio',
+        width: 110,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Cài đặt',
+        field: 'id',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        cellRenderer: 'btnCellRenderer',
+        cellRendererParams: {
+          icon: 'settings-2-outline',
+          status: 'primary',
+          label: 'Cài đặt',
+          clicked: (params: { node: RowNode, data: CollaboratorAddonStrategyProductModel, api: GridApi } & { [key: string]: any }) => {
+            // alert(`${field} was clicked`);
+            console.log(params);
+
+            // Setting for product
+            this.commonService.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+              context: {
+                data: [
+                  params.data,
+                ],
+                onDialogSave(newData) {
+                  console.log(newData);
+                  let currentNode: RowNode = $this.gridApi.getRowNode($this.commonService.getObjectId(params.data.Product) + '-' + $this.commonService.getObjectId(params.data.Unit));
+                  currentNode.setData(newData[0]);
+                },
+              }
+            });
+
+            return false;
+
+          },
+        },
+      },
+      {
+        headerName: 'Gở',
+        field: 'id',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        cellRenderer: 'btnCellRenderer',
+        cellRendererParams: {
+          icon: 'minus-circle-outline',
+          status: 'danger',
+          label: 'Gở',
+          clicked: (params: { node: RowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
+            // alert(`${field} was clicked`);
+            console.log(params);
+
+            // Remove row
+            params.api.applyTransaction({ remove: [params.node.data] });
+            return false;
+          },
+        },
+      },
+    ];
+
+    this.pagination = false;
+    this.maxBlocksInCache = 5;
+    this.paginationPageSize = this.cacheBlockSize = 1000;
+    /** End AG-Grid */
+
+
+
+
+  }
 
   componentName: string = 'CollaboratorBasicStrategyFormComponent';
-  idKey = ['Page', 'Product'];
-  apiPath = '/collaborator/page-products';
-  baseFormUrl = '/collaborator/product/form';
-
+  idKey = ['Code'];
+  apiPath = '/collaborator/basic-strategies';
+  baseFormUrl = '/collaborator/basic-strategy/form';
+  themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
   unitList: ProductUnitModel[] = [];
+
+
+
+
+
+
+
+  /** AG-Grid */
+  public gridApi: GridApi;
+  public gridColumnApi: ColumnApi;
+  public modules: Module[] = AllCommunityModules;
+  public dataSource: IDatasource;
+  public columnDefs: ColDef[];
+  public rowSelection = 'multiple';
+  // public rowModelType = 'infinite';
+  public rowModelType = 'clientSide';
+  public paginationPageSize: number;
+  public cacheOverflowSize = 2;
+  public maxConcurrentDatasourceRequests = 2;
+  public infiniteInitialRowCount = 1;
+  public maxBlocksInCache: number;
+  public cacheBlockSize: number;
+  public rowData: WarehouseInventoryAdjustNoteDetailModel[];
+  public gridParams;
+  public multiSortKey = 'ctrl';
+  public rowDragManaged = false;
+  public getRowHeight;
+  public rowHeight: number = 60;
+  public hadRowsSelected = false;
+  public pagination: boolean;
+  public emailAddressListDetails: WarehouseInventoryAdjustNoteDetailModel[] = [];
+  // public suppressKeyboardEvent = (event) => {
+  //   console.log(event);
+  // };
+  public defaultColDef = {
+    sortable: true,
+    resizable: true,
+    // suppressSizeToFit: true,
+
+    suppressKeyboardEvent: (params: SuppressKeyboardEventParams) => {
+      if (!params.editing) {
+
+        let isDeleteKey = params.event.key === 'Delete';
+
+        // Delete selected rows with back space
+        if (isDeleteKey) {
+          // const selectedRows: RowNode[] = params.api.getSelectedRows();
+          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const currentIndex = selectedNodes[0].rowIndex;
+          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+
+          // Find Next and Prev Node
+          params.api.forEachNode((node, index) => {
+            if (wasFoundCurrnet === true) {
+              nextNode = node;
+              nextIndex = index;
+              wasFoundCurrnet = null;
+              // wasFoundPrevNode = true;
+            }
+            if (index === currentIndex) {
+              wasFoundCurrnet = true;
+            }
+            if (wasFoundCurrnet === false) {
+              prevNode = node;
+              prevIndex = index;
+            }
+            // nextId = index;
+          });
+
+          // Remove
+          params.api.applyTransaction({ remove: [selectedNodes[0].data] });
+
+          // Select alternate node
+          if (nextNode) {
+            nextNode.setSelected(true, true);
+            params.api.ensureIndexVisible(nextIndex);
+          } else if (prevNode) {
+            prevNode.setSelected(true, true);
+            params.api.ensureIndexVisible(prevIndex);
+          }
+          return true;
+        }
+
+        // Barcode scan detative
+
+        return false;
+      }
+    }
+
+  };
+  public getRowNodeId = (item: CollaboratorAddonStrategyProductModel) => {
+    return this.commonService.getObjectId(item.Product) + '-' + this.commonService.getObjectId(item.Unit);
+  }
+  public getRowStyle = (params: { node: RowNode }) => {
+  };
+
+  async createNewContainer(productId: string, unitId: string): Promise<WarehouseGoodsContainerModel> {
+    return new Promise((resolve, reject) => {
+      this.commonService.openDialog(AssignNewContainerFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          inputGoodsList: [{ Code: productId, WarehouseUnit: unitId as any }],
+          onDialogSave: (newData: WarehouseGoodsContainerModel[]) => {
+            resolve(newData[0]);
+          },
+          onDialogClose: () => {
+            resolve(null);
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    });
+  }
+
+  async openCreateOfPreviewContainersDialog(productId: string, productName: string, unitId: string, containers: string[]) {
+    return new Promise<WarehouseGoodsContainerModel>((resolve, reject) => {
+      this.commonService.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
+        {
+          label: 'Tạo mới',
+          status: 'danger',
+          action: async () => {
+            await this.createNewContainer(productId, unitId).then(container => {
+              resolve(container);
+            });
+            return true;
+          }
+        },
+        {
+          label: 'Xem lại',
+          status: 'primary',
+          action: () => {
+            this.commonService.openDialog(WarehouseGoodsContainerListComponent, {
+              context: {
+                // isChoosedMode: true,
+                inputFilter: {
+                  eq_Code: '[' + containers.join(',') + ']'
+                },
+                onDialogChoose: (containers => {
+                  console.log(containers);
+                  resolve(containers[0]);
+                })
+              }
+            });
+            return true;
+          }
+        }
+      ], () => {
+        // resolve(null);
+      });
+    });
+  }
+
+  public cellDoubleClicked = (params: CellDoubleClickedEvent) => {
+    console.log(params);
+    const shelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+    if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
+      if (!params.data.Containers || params.data.Containers.length == 0) {
+
+        this.createNewContainer(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectId(params.data.Unit)).then(container => {
+          params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
+          params.node.setDataValue('Warehouse', container.Warehouse);
+          params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
+        });
+
+      } else {
+        this.openCreateOfPreviewContainersDialog(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectText(params.data.Product), this.commonService.getObjectId(params.data.Unit), params.data.Containers.map(m => this.commonService.getObjectId(m))).then(container => {
+          if (this.commonService.getObjectId(shelf) && container.Shelf != this.commonService.getObjectId(shelf)) {
+            this.commonService.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
+          } else {
+            params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
+            params.node.setDataValue('Warehouse', container.Warehouse);
+            params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
+
+            // Update row data
+            params.data.Containers.push({ ...container, id: container.Code, text: container.Path });
+            params.node.setData({ ...params.data, Containers: params.data.Containers });
+          }
+        });
+      }
+    }
+    if (params.colDef.field == 'AccessNumbers') {
+      this.commonService.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
+    }
+  };
+
+
+  public components = {
+    loadingCellRenderer: (params) => {
+      if (params.value) {
+        return params.value;
+      } else {
+        return '<img src="assets/images/loading.gif">';
+      }
+    },
+    textRender: (params) => {
+      if (Array.isArray(params.value)) {
+        return params.value.map(m => this.commonService.getObjectText(m)).join(', ');
+      } else {
+        return this.commonService.getObjectText(params.value);
+      }
+    },
+    idRender: (params) => {
+      if (Array.isArray(params.value)) {
+        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
+      } else {
+        return this.commonService.getObjectId(params.value);
+      }
+    },
+    numberRender: (params) => {
+      return params.value;
+    },
+    imageRender: (params) => {
+      let image = params.value;
+      // if (Array.isArray(params.value)) {
+      //   image = params.value[0];
+      // }
+      return image?.Thumbnail ? '<div style="width: 50px; height: 50px; background-image: url(' + image?.Thumbnail + '); border-radius: 5px; background-repeat: no-repeat; background-size: cover; margin: 5px;"></div>' : '';
+    },
+    btnCellRenderer: BtnCellRenderer
+  };
+  onGridReady(params) {
+    this.gridParams = params;
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
+    this.loadList();
+
+  }
+  onColumnResized() {
+    this.gridApi.resetRowHeights();
+  }
+  onRowSelected() {
+    this.updateActionState();
+  }
+  updateActionState() {
+    this.hadRowsSelected = this.getSelectedRows().length > 0;
+  }
+  getSelectedRows() {
+    return this.gridApi.getSelectedRows();
+  }
+  loadList(callback?: (list: CollaboratorAddonStrategyProductModel[]) => void) {
+    if (this.gridApi) {
+      let products: CollaboratorAddonStrategyProductModel[] = (this.array.controls[0].get('Products').value || []).map((detail: CollaboratorAddonStrategyProductModel) => {
+        // if (detail.Container) {
+        //   detail.Shelf = { id: detail.Container.Shelf, text: detail.Container.ShelfName };
+        // }
+        // detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
+        return detail;
+      });
+      this.gridApi.setRowData(products);
+
+    }
+
+  }
+
+  initDataSource() {
+    this.dataSource = {
+      rowCount: null,
+      getRows: (getRowParams: IGetRowsParams) => {
+        console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+        let details: CollaboratorAddonStrategyProductModel[] = (this.array.controls[0]['Products'] as []).slice(getRowParams.startRow, getRowParams.endRow);
+        let lastRow = -1;
+        if (details.length < this.paginationPageSize) {
+          lastRow = getRowParams.startRow + details.length;
+        }
+        getRowParams.successCallback(details, lastRow);
+        this.gridApi.resetRowHeights();
+
+      },
+    };
+  }
+  /** End AG-Grid */
+
+
+
+
+
+
+
+
+
+
 
   // Category list for select2
   categoryList: (ProductCategoryModel & { id?: string, text?: string })[] = [];
   // Group list for select2
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
+  productList: ProductModel[] = [];
+  // productList = {
+  //   rowCount: null,
+  //   getRows: (getRowParams: IGetRowsParams) => {
+  //     console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+  //     this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 40, offset: getRowParams.startRow, includeIdText: true }).then(productList => {
+  //       let lastRow = -1;
+  //       if (productList.length < 40) {
+  //         lastRow = getRowParams.startRow + productList.length;
+  //       }
+  //       getRowParams.successCallback(productList, lastRow);
+  //     });
+  //   },
+  // };
+  publisherList = {
+    rowCount: null,
+    getRows: (getRowParams: IGetRowsParams) => {
+      console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+      this.apiService.getPromise<ProductModel[]>('/contact/contacts', { limit: 40, offset: getRowParams.startRow, includeIdText: true }).then(publisherList => {
+        let lastRow = -1;
+        if (publisherList.length < 40) {
+          lastRow = getRowParams.startRow + publisherList.length;
+        }
+        getRowParams.successCallback(publisherList, lastRow);
+      });
+    },
+  };
 
-  // public Editor = ClassicEditorBuild;
   percentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 3 };
   okrPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 1 };
   kpiPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
-  // currencyInputMask = createMask({
-  //   alias: 'numeric',
-  //   // inputmode: 'numeric',
-  //   groupSeparator: this.commonService.getNumberGroupPointChar(),
-  //   radixPoint: this.commonService.getNumberRadixPointChar(),
-  //   digits: 2,
-  //   // digitsOptional: false,
-  //   prefix: '',
-  //   placeholder: '0',
-  //   // autoUnmask:true,
-  //   // unmaskAsNumber: true,
-  //   parser: (value: string) => {
-  //     return parseFloat(value.replace(/\,/, '.'));
-  //   },
-  //   onBeforeMask: (initialValue: string, opts: Inputmask.Options) => {
-  //     return `${initialValue}`.replace(/\./, ',');
-  //   }
-  // });
   currencyInputMask = this.commonService.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 3
@@ -79,35 +505,23 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     digitsOptional: false,
     digits: 2
   });
-
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public commonService: CommonService,
-    public ref?: NbDialogRef<CollaboratorBasicStrategyFormComponent>,
-    public collaboratorService?: CollaboratorService,
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-
-    /** ngx-uploader */
-    // this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
-    // this.files = []; // local uploading files array
-    // this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader
-    // this.humanizeBytes = humanizeBytes;
-    /** End ngx-uploader */
-
-    // Config editor
-    // this.Editor;
-  }
+  select2OptionForPage = {
+    placeholder: 'Chọn trang...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   async loadCache() {
     // iniit category
     this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
     this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ id: cate.Code, text: cate.Name })) as any;
+    this.productList = (await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 100, includeIdText: true }));
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -202,9 +616,6 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
       text: 'Title',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText: true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
@@ -225,32 +636,6 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     },
   };
 
-  // select2AdvandeTermPublishers = {
-  //   placeholder: 'Chọn cộng tác viên...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   // multiple: true,
-  //   // tags: true,
-  //   keyMap: {
-  //     id: 'Code',
-  //     text: 'Title',
-  //   },
-  //   ajax: {
-  //     url: params => {
-  //       return this.apiService.buildApiUrl('/collaborator/education-articles', { onlyIdText:true, filter_Title: params['term'] ? params['term'] : '', limit: 20 });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       // console.info(data, params);
-  //       return {
-  //         results: data,
-  //       };
-  //     },
-  //   },
-  // };
-
   select2ExtendTermPublishers = {
     placeholder: 'Chọn cộng tác viên...',
     allowClear: true,
@@ -264,9 +649,6 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
       text: 'text',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/collaborator/publishers', { onlyIdText: true, filter_Name: params['term'] });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
@@ -279,7 +661,6 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
       },
       delay: 300,
       processResults: (data: any, params: any) => {
-        // console.info(data, params);
         return {
           results: data,
         };
@@ -300,88 +681,26 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   async init() {
     await this.loadCache();
-    // this.unitList = await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { select: 'id=>Code,text=>Name', limit: 'nolimit' });
     return super.init().then(rs => {
-      // Add page choosed
-      // this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
-      //   this.actionButtonList.unshift({
-      //     type: 'select2',
-      //     name: 'pbxdomain',
-      //     status: 'success',
-      //     label: 'Select page',
-      //     icon: 'plus',
-      //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
-      //     size: 'medium',
-      //     select2: {
-      //       data: pageList, option: {
-      //         placeholder: 'Chọn trang...',
-      //         allowClear: false,
-      //         width: '100%',
-      //         dropdownAutoWidth: true,
-      //         minimumInputLength: 0,
-      //         keyMap: {
-      //           id: 'id',
-      //           text: 'text',
-      //         },
-      //       }
-      //     },
-      //     value: () => this.collaboratorService.currentpage$.value,
-      //     change: (value: any, option: any) => {
-      //       // this.onChangePage(value);
-      //       this.collaboratorService.currentpage$.next(this.commonService.getObjectId(value));
-      //     },
-      //     disabled: () => {
-      //       return true;
-      //     },
-      //     click: () => {
-      //       // this.gotoForm();
-      //       return false;
-      //     },
-      //   });
-      // });
       return rs;
     });
   }
 
   /** Execute api get */
   executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeConditions'] = true;
-    // params['includeActions'] = true;
-    // params['forNgPickDateTime'] = true;
-    params['includeProduct'] = true;
-    params['includeLevels'] = true;
-    params['includeKpis'] = true;
-    params['includeExtendTerm'] = true;
-    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    params['includeProducts'] = true;
+    // params['includeLevels'] = true;
+    // params['includeKpis'] = true;
+    // params['includeExtendTerm'] = true;
     super.executeGet(params, success, error);
   }
 
   async formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
-      // if (itemFormData?.Levels) {
-      //   const details = this.getLevels(newForm);
-      //   details.clear();
-      //   itemFormData.Levels.forEach(unitConversion => {
-      //     // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-      //     const newLevelFormGroup = this.makeNewLevelFormGroup(unitConversion, newForm);
-      //     details.push(newLevelFormGroup);
-      //     const comIndex = details.length - 1;
-      //     this.onAddLevelFormGroup(newForm, comIndex, newLevelFormGroup);
-      //   });
-      // }
-
-      // if (itemFormData?.Kpis) {
-      //   const kpis = this.getKpis(newForm);
-      //   kpis.clear();
-      //   itemFormData.Kpis.forEach(kpi => {
-      //     // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-      //     const newKpiFormGroup = this.makeNewKpiFormGroup(kpi, newForm);
-      //     kpis.push(newKpiFormGroup);
-      //     const comIndex = kpis.length - 1;
-      //     this.onAddKpiFormGroup(newForm, comIndex, newKpiFormGroup);
-      //   });
-      // }
+      if (this.gridApi) {
+        this.loadList();
+      }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -392,83 +711,82 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
   }
 
   makeNewFormGroup(data?: ProductModel): FormGroup {
+    const currentDate = new Date();
     const newForm = this.formBuilder.group({
-      Page: { value: '', disabled: true },
-      Product: { value: '', disabled: true },
-      IsUsed: [false],
-      Sku: { value: '', disabled: true },
-      Name: { value: '', disabled: true },
-      Unit: { value: '', disabled: true },
-      Cycle: ['MONTHLY'],
-      IsSelfOrder: [false],
-      SelfOrderDiscount: [null],
-      DateOfStart: [new Date()],
-      IsAutoExtended: [true],
-      IsDiscountByVoucher: [false],
-      // Levels: this.formBuilder.array([]),
-      // Kpis: this.formBuilder.array([]),
-      PlatformFee: [],
+      Code: { value: '', disabled: true },
+      Title: ['', Validators.required],
+      Page: [this.collaboratorService.currentpage$.value, Validators.required],
+      // Cycle: ['MONTHLY'],
+      // IsSelfOrder: [false],
+      // SelfOrderDiscount: [null],
+      DateRange: [[Date.today(), Date.today().next().month()], Validators.required],
+      // IsAutoExtended: [true],
+      // IsAllPublisher: [false],
+      // IsAllProduct: [false],
+      // IsDiscountByVoucher: [false],
+      // PlatformFee: [],
 
-      // Level 1 field
-      Level1Badge: { value: 'CTV Bán Hàng Đồng 1', disabled: true },
-      Level1Label: { value: 'CTV Bán Hàng Level 1', disabled: true },
-      Level1Description: ['Bán dược bao nhiêu hưởng bấy nhiêu'],
-      Level1CommissionRatio: [],
+      // // Level 1 field
+      // Level1Badge: { value: 'CTV Bán Hàng Đồng 1', disabled: true },
+      // Level1Label: { value: 'CTV Bán Hàng Level 1', disabled: true },
+      // Level1Description: ['Bán dược bao nhiêu hưởng bấy nhiêu'],
+      // Level1CommissionRatio: [null, Validators.required],
 
-      IsAppliedForLevel1Weekly: [true],
-      Level1WeeklyLabel: { disabled: true, value: 'Theo tuần' },
-      Level1WeeklyKpi: [],
-      Level1WeeklyOkr: [],
-      Level1WeeklyAwardRatio: [],
+      // IsAppliedForLevel1Weekly: [true],
+      // Level1WeeklyLabel: { disabled: true, value: 'Theo tuần' },
+      // Level1WeeklyKpi: [],
+      // Level1WeeklyOkr: [],
+      // Level1WeeklyAwardRatio: [],
 
-      IsAppliedForLevel1Monthly: [true],
-      Level1MonthlyLabel: { disabled: true, value: 'Theo tháng' },
-      Level1MonthlyKpi: [],
-      Level1MonthlyOkr: [],
-      Level1MonthlyAwardRatio: [],
+      // IsAppliedForLevel1Monthly: [true],
+      // Level1MonthlyLabel: { disabled: true, value: 'Theo tháng' },
+      // Level1MonthlyKpi: [],
+      // Level1MonthlyOkr: [],
+      // Level1MonthlyAwardRatio: [],
 
-      IsAppliedForLevel1Quarterly: [true],
-      Level1QuarterlyLabel: { disabled: true, value: 'Theo quý' },
-      Level1QuarterlyKpi: [],
-      Level1QuarterlyOkr: [],
-      Level1QuarterlyAwardRatio: [],
+      // IsAppliedForLevel1Quarterly: [true],
+      // Level1QuarterlyLabel: { disabled: true, value: 'Theo quý' },
+      // Level1QuarterlyKpi: [],
+      // Level1QuarterlyOkr: [],
+      // Level1QuarterlyAwardRatio: [],
 
-      IsAppliedForLevel1Yearly: [true],
-      Level1YearlyLabel: { disabled: true, value: 'Theo năm' },
-      Level1YearlyKpi: [],
-      Level1YearlyOkr: [],
-      Level1YearlyAwardRatio: [],
+      // IsAppliedForLevel1Yearly: [true],
+      // Level1YearlyLabel: { disabled: true, value: 'Theo năm' },
+      // Level1YearlyKpi: [],
+      // Level1YearlyOkr: [],
+      // Level1YearlyAwardRatio: [],
 
-      // Level 2 field
-      Level2ExtBadge: { disabled: true, value: 'CTV Bán Hàng Bạc 2' },
-      Level2ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 2' },
-      Level2ExtRequiredKpi: [],
-      Level2ExtRequiredOkr: [],
-      Level2ExtAwardRatio: [],
-      Level2ExtDescription: [],
+      // // Level 2 field
+      // Level2ExtBadge: { disabled: true, value: 'CTV Bán Hàng Bạc 2' },
+      // Level2ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 2' },
+      // Level2ExtRequiredKpi: [],
+      // Level2ExtRequiredOkr: [],
+      // Level2ExtAwardRatio: [],
+      // Level2ExtDescription: [],
 
-      // Level 3 field
-      Level3ExtBadge: { disabled: true, value: 'CTV Bán Hàng Vàng 3' },
-      Level3ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 3' },
-      Level3ExtRequiredKpi: [],
-      Level3ExtRequiredOkr: [],
-      Level3ExtAwardRatio: [],
-      Level3ExtDescription: [],
+      // // Level 3 field
+      // Level3ExtBadge: { disabled: true, value: 'CTV Bán Hàng Vàng 3' },
+      // Level3ExtLabel: { disabled: true, value: 'CTV Bán Hàng Level 3' },
+      // Level3ExtRequiredKpi: [],
+      // Level3ExtRequiredOkr: [],
+      // Level3ExtAwardRatio: [],
+      // Level3ExtDescription: [],
 
-      ExtendTerm: [],
-      ExtendTermLabel: [],
-      // ExtendTermPublishers: [],
-      // ExtendTermRatio: [],
+      // ExtendTerm: [],
+      // ExtendTermLabel: [],
+
+      Products: [[]],
+      // Publishers: [],
 
 
     });
     if (data) {
-      // data.PlatformFee = `${data.PlatformFee}`.replace(/\./, ',');
+      data.DateRange = [data.DateOfStart, data.DateOfEnd];
       newForm.patchValue(data);
     }
-    newForm.get('PlatformFee').valueChanges.subscribe(value => {
-      console.log(value);
-    });
+    // newForm.get('PlatformFee').valueChanges.subscribe(value => {
+    //   console.log(value);
+    // });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductModel): void {
@@ -484,8 +802,6 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
       this.router.navigate(['/admin-product/product/list']);
     } else {
       this.ref.close();
-      // this.onDialogClose();
-      // this.dismiss();
     }
     return false;
   }
@@ -493,133 +809,102 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  /** Levels Form */
-  makeNewLevelFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
-    const newForm = this.formBuilder.group({
-      Id: [],
-      Level: [],
-      Description: [],
-      Badge: [],
-      CommissionRatio: [],
-    });
-
-    if (data) {
-      // data['Id_old'] = data['Id'];
-      newForm.patchValue(data);
-    }
-    return newForm;
-  }
-  getLevels(formItem: FormGroup) {
-    return formItem.get('Levels') as FormArray;
-  }
-  addLevelFormGroup(formItem: FormGroup) {
-    // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewLevelFormGroup(null, formItem);
-    this.getLevels(formItem).push(newFormGroup);
-    this.onAddLevelFormGroup(formItem, this.getLevels(formItem).length - 1, newFormGroup);
-    return false;
-  }
-  removeLevelGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
-    this.getLevels(parentForm).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveLevelFormGroup(formItem, index);
-    return false;
-  }
-  onAddLevelFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
-  }
-  onRemoveLevelFormGroup(formItem: FormGroup, index: number) {
-    // this.componentList[mainIndex].splice(index, 1);
-  }
-  /** End Levels Form */
-
-  /** OKr Form */
-  makeNewKpiFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
-    const newForm = this.formBuilder.group({
-      Id: [],
-      Cycle: [],
-      Quantity: [],
-      Okr: [],
-      CommissionRatio: [],
-    });
-
-    if (data) {
-      // data['Id_old'] = data['Id'];
-      newForm.patchValue(data);
-    }
-    return newForm;
-  }
-  getKpis(formItem: FormGroup) {
-    return formItem.get('Kpis') as FormArray;
-  }
-  addKpiFormGroup(formItem: FormGroup) {
-    // this.componentList[formGroupIndex].push([]);
-    const newFormGroup = this.makeNewKpiFormGroup(null, formItem);
-    this.getKpis(formItem).push(newFormGroup);
-    this.onAddKpiFormGroup(formItem, this.getKpis(formItem).length - 1, newFormGroup);
-    return false;
-  }
-  removeKpiGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
-    this.getKpis(parentForm).removeAt(index);
-    // this.componentList[formGroupIndex].splice(index, 1);
-    this.onRemoveKpiFormGroup(formItem, index);
-    return false;
-  }
-  onAddKpiFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
-    // this.componentList[mainIndex].push([]);
-  }
-  onRemoveKpiFormGroup(formItem: FormGroup, index: number) {
-    // this.componentList[mainIndex].splice(index, 1);
-  }
-  /** End Levels Form */
-
   /** Execute api put */
   executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
-    // params['page'] = this.collaboratorService?.currentpage$?.value;
     return super.executePut(params, data, success, error);
   }
 
   /** Execute api post */
   executePost(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
-    // params['page'] = this.collaboratorService?.currentpage$?.value;
     return super.executePost(params, data, success, error);
   }
 
   getRawFormData() {
     const data = super.getRawFormData();
     for (const item of data.array) {
-      // item['Page'] = this.collaboratorService.currentpage$.value;
-      // if (item['DateOfStart']) {
-      // const dateOfStart = new Date(item['DateOfStart']);
-      // item['DateOfStart'] = new Date(dateOfStart.getFullYear(), dateOfStart.getMonth(), dateOfStart.getDate(), 0, 0, 0);
-      // }
+      // Extract date range
+      if (item.DateRange) {
+        item.DateOfStart = item.DateRange[0];
+        item.DateOfEnd = item.DateRange[1];
+      }
+
+      // Get details data from ag-grid
+      item.Products = [];
+      this.gridApi.forEachNode((rowNode, index) => {
+        console.log(rowNode, index);
+        const rawDetail = {};
+        for (const prop in rowNode.data) {
+          rawDetail[prop] = this.commonService.getObjectId(rowNode.data[prop]);
+        }
+        item.Products.push(rawDetail);
+      });
     }
+
+
+
     return data;
   }
 
   async save(): Promise<ProductModel[]> {
-    // if (!this.collaboratorService?.currentpage$?.value) {
-    // this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
-    //   status: 'danger',
-    //   // });
-    // }
     return super.save();
   }
 
-  // alphaNumberOnly(e: any) {  // Accept only alpha numerics, not special characters 
-  //   console.log(e.target.value);
-  //   console.log("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
-  //   var regex = new RegExp("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
-  //   var str = e.target.value + e.key;
-  //   if (regex.test(str)) {
-  //     return true;
-  //   }
-
-  //   e.preventDefault();
-  //   return false;
-  // }
-
   onAdvanceTermChange(formItem: FormGroup, data: any, index: number) {
     formItem.get('ExtendTermLabel').setValue(this.commonService.getObjectText(data));
+  }
+
+  products = [];
+  addProduct(formItem: FormGroup) {
+    const $this = this;
+    this.commonService.openDialog(CollaboratorProductListComponent, {
+      context: {
+        onDialogChoose(chooseItems) {
+          console.log(chooseItems);
+          const newRowNodeTrans = $this.gridApi.applyTransaction({
+            add: chooseItems.map(m => ({
+              id: m.Product,
+              text: m.ProductName,
+              Product: m.Product,
+              ProductName: m.ProductName,
+              Sku: m.Sku,
+              Unit: m.Unit,
+              Pictures: m.Pictures,
+              FeaturePicture: m.FeaturePicture,
+            }))
+          });
+          console.log('New Row Node Trans: ', newRowNodeTrans);
+        },
+      }
+    });
+    return false;
+  }
+
+  editSelectedProducts(formItem: FormGroup) {
+    const $this = this;
+    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+
+    // Setting for product
+    this.commonService.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+      context: {
+        data: selectedNodes.map(m => m.data),
+        onDialogSave(newData) {
+          console.log(newData);
+          for (const itemData of newData) {
+            let currentNode: RowNode = $this.gridApi.getRowNode($this.commonService.getObjectId(itemData.Product) + '-' + $this.commonService.getObjectId(itemData.Unit));
+            currentNode.setData(itemData);
+          }
+        },
+      }
+    });
+
+    return false;
+  }
+
+  removeSelectedProducts(formItem: FormGroup) {
+
+    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+    this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
+
+    return false;
   }
 }

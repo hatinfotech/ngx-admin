@@ -1542,6 +1542,14 @@ nb-icon.fa {
 .ag-theme-balham .ag-root {
   border: none;
 }
+.ag-theme-balham-dark .ag-root-wrapper {
+  background: transparent;
+}
+
+.ag-theme-balham .ag-ltr .ag-cell {
+  display: flex;
+  align-items: center;
+}
 
 nb-card.ag-grid-card nb-card-body .ag-grid-wrap {
   /* margin: -1rem -1.25rem; */

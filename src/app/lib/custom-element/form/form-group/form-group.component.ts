@@ -42,7 +42,7 @@ export class FormGroupComponent implements OnInit, OnDestroy {
   @Input() customIconTitle?: string;
   @Input() customIconSttaus?: string;
   // @Input() customIconAction?: string;
-  @Input() touchedValidate = true;
+  @Input() touchedValidate = false;
 
   protected destroy$: Subject<void> = new Subject<void>();
 

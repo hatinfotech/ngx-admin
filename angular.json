@@ -59,7 +59,19 @@
               "node_modules/echarts/dist/extension/bmap.min.js",
               "node_modules/chart.js/dist/Chart.min.js",
               "node_modules/jquery/dist/jquery.min.js",
-              "node_modules/select2/dist/js/select2.full.js"
+              "node_modules/select2/dist/js/select2.full.js",
+              "node_modules/datejs/src/core/i18n.js",
+              "node_modules/datejs/src/core/core.js",
+              "node_modules/datejs/src/core/core-prototypes.js",
+              "node_modules/datejs/src/core/sugarpak.js",
+              "node_modules/datejs/src/core/format_parser.js",
+              "node_modules/datejs/src/core/parsing_operators.js",
+              "node_modules/datejs/src/core/parsing_translator.js",
+              "node_modules/datejs/src/core/parsing_grammar.js",
+              "node_modules/datejs/src/core/parser.js",
+              "node_modules/datejs/src/core/extras.js",
+              "node_modules/datejs/src/core/time_period.js",
+              "node_modules/datejs/src/core/time_span.js"
             ],
             "allowedCommonJsDependencies": [
               "angular2-chartjs",

@@ -241,7 +241,7 @@ import { AccountingDashboardComponent } from './modules/accounting/accounting-da
 import { AccountingRevenueStatisticsComponent } from './modules/accounting/accounting-dashboard/accounting-dashboard-statistics.component';
 import { AccountingMostOfDebtComponent } from './modules/accounting/accounting-dashboard/accounting-most-of-debt/accounting-most-of-debt.component';
 import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborator/order/collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
-import { BtnCellRenderer, WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
+import { WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
 import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
 import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
 import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
@@ -274,6 +274,7 @@ import { CoreConnectionFormComponent } from './modules/core-connection/core-conn
 import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
 import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
 import { CollaboratorBasicStrategyFormComponent } from './modules/collaborator/basic-strategy/basic-strategy-form/collaborator-basic-strategy-form.component';
+import { CollaboratorBasicStrategyProductFormComponent } from './modules/collaborator/basic-strategy/product-form/collaborator-basic-strategy-product-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -526,6 +527,7 @@ export class DynamicLocaleId extends String {
     CollaboratorEducationArticlePrintComponent,
     CollaboratorBasicStrategyListComponent,
     CollaboratorBasicStrategyFormComponent,
+    CollaboratorBasicStrategyProductFormComponent,
 
     DynamicListDialogComponent,
 
@@ -545,7 +547,7 @@ export class DynamicLocaleId extends String {
     CommercePosDeploymentVoucherPrintComponent,
 
     // Ag-Grid components
-    BtnCellRenderer,
+    // BtnCellRenderer,
 
     // Core connection
     CoreConnectionListComponent,
@@ -847,6 +849,46 @@ export class AppModule {
   // };
 
   static processMaps = {
+    common: {
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'NOTJUSTAPPROVED',
+        nextStates: [
+          { ...AppModule.notJustApprodedState, status: 'warning' },
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "COMPLETE": {
+        ...AppModule.completeState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+    },
     masterPriceTable: {
       "APPROVED": {
         ...AppModule.approvedState,

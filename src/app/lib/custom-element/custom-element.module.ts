@@ -28,6 +28,7 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
 import { ImagesViewerComponent } from './my-components/images-viewer/images-viewer.component';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { InputMaskModule } from '@ngneat/input-mask';
+import { BtnCellRenderer } from './ag-list/ag-list.lib';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -66,6 +67,7 @@ import { InputMaskModule } from '@ngneat/input-mask';
     SmartTableTagComponent,
     SmartTableAccCurrencyComponent,
     ImagesViewerComponent,
+    BtnCellRenderer,
   ],
   imports: [
     CommonModule,
