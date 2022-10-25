@@ -1,7 +1,12 @@
-import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges } from '@angular/core';
+import { filter, take } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { CommonService } from './../../../services/common.service';
+import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
+import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, ColDef } from '@ag-grid-community/all-modules';
 import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
+import { NbThemeService } from '@nebular/theme';
+import { BtnCellRenderer } from './ag-list.lib';
 
 @Component({
   selector: 'ngx-ag-list',
@@ -22,16 +27,24 @@ import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.in
 })
 export class AgListComponent implements ControlValueAccessor, Validator, OnChanges {
 
+  constructor(
+    public commonService: CommonService,
+    public themeService: NbThemeService,
+  ) {
+
+  }
 
   private provinceData: { id: number, name: string, type: 'central' | 'province' };
   onChange: (item: any) => void;
   onTouched: () => void;
   isDisabled: boolean;
   @Input('data') data: IDatasource;
+  @Input('clientData') clientData: any[];
+  @Input('immutableData') immutableData: any[];
   @Input('value') value: { id: string, text: string }[];
   // @Input('disabled') disabled: string | string[];
   @Input('select2Option') select2Option: Select2Options;
-  @Input() columnDefs: any;
+  @Input() columnDefs: ColDef[];
   @Output() selectChange = new EventEmitter<Object>();
   @Output() getData = new EventEmitter<{ limit: number, offset: number }>();
 
@@ -39,8 +52,10 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
   maxBlocksInCache = 9999;
   paginationPageSize = 40;
   cacheBlockSize = 40;
+  themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
 
-  public defaultColDef = {
+
+  defaultColDef = {
     sortable: true,
     resizable: true,
     // suppressSizeToFit: true,
@@ -51,7 +66,7 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
   public modules: Module[] = AllCommunityModules;
 
   public rowSelection = 'multiple';
-  public rowModelType = 'infinite';
+  @Input() rowModelType: 'clientSide' | 'infinite' | 'viewport' | 'serverSide' | undefined = 'infinite';
   public maxConcurrentDatasourceRequests = 2;
   public infiniteInitialRowCount = 1;
   public getRowNodeId = (item: { id: string }) => {
@@ -75,12 +90,36 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
         return '<img src="assets/images/loading.gif">';
       }
     },
+    textRender: (params) => {
+      return this.commonService.getObjectText(params.value);
+    },
+    idRender: (params) => {
+      if (Array.isArray(params.value)) {
+        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
+      } else {
+        return this.commonService.getObjectId(params.value);
+      }
+    },
+    numberRender: (params) => {
+      return params.value;
+    },
+    imageRender: (params) => {
+      let image = params.value;
+      if (Array.isArray(params.value)) {
+        image = params.value[0];
+      }
+      return image?.Thumbnail ? '<img style="height: 45px" src="' + image?.Thumbnail + '">' : '';
+    },
+    btnCellRenderer: BtnCellRenderer,
   };
 
+  onReady$ = new BehaviorSubject<boolean>(false);
   onGridReady(params) {
     this.gridParams = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
+
+    this.onReady$.next(true);
 
     this.gridApi.addEventListener('rowDataChanged', (e) => {
       console.log(e);
@@ -94,8 +133,11 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
   loadList(callback?: (list: any[]) => void) {
 
     if (this.gridApi) {
-      this.gridApi.setDatasource(this.data);
-
+      if (this.data) {
+        this.gridApi.setDatasource(this.data);
+      } else {
+        this.gridApi.setRowData(this.value);
+      }
     }
 
   }
@@ -114,18 +156,24 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.data && changes.data.previousValue !== changes.data.currentValue) {
     }
+    if (changes.value && changes.value.previousValue !== changes.value.currentValue) {
+      this.gridApi.setRowData(this.value);
+    }
   }
 
   select2Value = '';
   fieldValue: string | string[];
 
 
-  isSelect(provinceId: number): boolean {
-    return !this.provinceData ? false : (provinceId === this.provinceData.id);
-  }
+  // isSelect(provinceId: number): boolean {
+  //   return !this.provinceData ? false : (provinceId === this.provinceData.id);
+  // }
 
   writeValue(value: any) {
     this.value = value;
+    this.onReady$.pipe(filter(f => !!f), take(1)).toPromise().then(rs => {
+      this.gridApi.setRowData(this.value);
+    })
     // this.gridApi.forEachNode(node => {
     //   if (value.some(v => v.id === node.data.id)) {
     //     node.setSelected(true, false);
