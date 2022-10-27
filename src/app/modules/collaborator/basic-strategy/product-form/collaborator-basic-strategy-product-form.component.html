@@ -3,7 +3,7 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Cài đặt chiết khấu cơ bản cho CTV Bán Hàng' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
@@ -69,7 +69,7 @@
 
               <label class="label">{{'I/ CÀI ĐẶT CHIẾC KHẤU CHO CTV BÁN HÀNG LEVEL 1 , TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG ĐỒNG 1 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
               <div class="col-xxl-12 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
-                <label class="label">{{'1.1 Hệ số chiếc khấu' | translate | headtitlecase}}</label>
+                <label class="label">{{'1.1 Hệ số chiết khấu' | translate | headtitlecase}}</label>
                 <div class="row">
                   <div class="col-sm-3 label column">{{'Danh hiệu CTV bán hàng' | translate | headtitlecase}}</div>
                   <div class="col-sm-3 label column">{{'Cấp độ CTV Bán Hàng ' | translate | headtitlecase}}</div>

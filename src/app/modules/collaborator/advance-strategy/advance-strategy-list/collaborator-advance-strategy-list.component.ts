@@ -9,31 +9,46 @@ import { ProductCategoryModel, ProductGroupModel } from '../../../../models/prod
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorBasicStrategyFormComponent } from '../basic-strategy-form/collaborator-basic-strategy-form.component';
+import { CollaboratorAdvanceStrategyFormComponent } from '../advance-strategy-form/collaborator-advance-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { CollaboratorBasicStrategyModel } from '../../../../models/collaborator.model';
+import { CollaboratorAdvanceStrategyModel } from '../../../../models/collaborator.model';
 
 @Component({
-  selector: 'ngx-collaborator-basic-strategy-list',
-  templateUrl: './collaborator-basic-strategy-list.component.html',
-  styleUrls: ['./collaborator-basic-strategy-list.component.scss'],
+  selector: 'ngx-collaborator-advance-strategy-list',
+  templateUrl: './collaborator-advance-strategy-list.component.html',
+  styleUrls: ['./collaborator-advance-strategy-list.component.scss'],
   providers: [CurrencyPipe, DatePipe],
 })
-export class CollaboratorBasicStrategyListComponent extends ServerDataManagerListComponent<CollaboratorBasicStrategyModel> implements OnInit {
+export class CollaboratorAdvanceStrategyListComponent extends ServerDataManagerListComponent<CollaboratorAdvanceStrategyModel> implements OnInit {
 
-  componentName: string = 'CollaboratorBasicStrategyListComponent';
-  formPath = '/collaborator/product/form';
-  apiPath = '/collaborator/basic-strategies';
+  componentName: string = 'CollaboratorAdvanceStrategyListComponent';
+  formPath = '';
+  apiPath = '/collaborator/advance-strategies';
   idKey: string | string[] = ['Code'];
-  formDialog = CollaboratorBasicStrategyFormComponent;
+
+  constructor(
+    public apiService: ApiService,
+    public router: Router,
+    public commonService: CommonService,
+    public dialogService: NbDialogService,
+    public toastService: NbToastrService,
+    public _http: HttpClient,
+    public ref: NbDialogRef<CollaboratorAdvanceStrategyListComponent>,
+    public collaboratorService: CollaboratorService,
+    public currencyPipe: CurrencyPipe,
+  ) {
+    super(apiService, router, commonService, dialogService, toastService, ref);
+  }
+
+  formDialog = CollaboratorAdvanceStrategyFormComponent;
   currentPage: PageModel;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorBasicStrategyListComponent>;
+  static _dialog: NbDialogRef<CollaboratorAdvanceStrategyListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -44,20 +59,6 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
   categoryList: ProductCategoryModel[] = [];
   groupList: ProductGroupModel[] = [];
   unitList: UnitModel[] = [];
-
-  constructor(
-    public apiService: ApiService,
-    public router: Router,
-    public commonService: CommonService,
-    public dialogService: NbDialogService,
-    public toastService: NbToastrService,
-    public _http: HttpClient,
-    public ref: NbDialogRef<CollaboratorBasicStrategyListComponent>,
-    public collaboratorService: CollaboratorService,
-    public currencyPipe: CurrencyPipe,
-  ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
-  }
 
 
   async loadCache() {
@@ -178,10 +179,10 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
               instance.outline = processMap.outline;
               // instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorBasicStrategyModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAdvanceStrategyModel) => {
               // this.preview(instance.rowData);
               if (instance.rowData.State == 'NOTJUSTAPPROVED' || instance.rowData.State == 'UNRECORDED') {
-                this.commonService.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                this.commonService.showDialog('Phê duyệt chiến dịch chiết khấu nâng cao', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu nâng cao "' + instance.rowData.Title + '"', [
                   {
                     label: 'Đóng',
                     status: 'basic',
@@ -195,13 +196,13 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu nâng cao !', { status: 'success' });
                       });
                     }
                   }
                 ]);
               } else if (instance.rowData.State == 'APPROVED') {
-                this.commonService.showDialog('Hủy chiến dịch chiết khấu cơ bản', 'Bạn có muốn hủy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                this.commonService.showDialog('Hủy chiến dịch chiết khấu nâng cao', 'Bạn có muốn hủy chiến dịch chiết khấu nâng cao "' + instance.rowData.Title + '"', [
                   {
                     label: 'Đóng',
                     status: 'basic',
@@ -215,7 +216,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu nâng cao !', { status: 'success' });
                       });
                     }
                   },
@@ -226,7 +227,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu nâng cao !', { status: 'success' });
                       });
                     }
                   },
@@ -250,8 +251,8 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
     const source = super.initDataSource();
 
     // Set DataSource: prepareData
-    source.prepareData = (data: CollaboratorBasicStrategyModel[]) => {
-      // data.map((product: CollaboratorBasicStrategyModel) => {
+    source.prepareData = (data: CollaboratorAdvanceStrategyModel[]) => {
+      // data.map((product: CollaboratorAdvanceStrategyModel) => {
       //   if (product.WarehouseUnit && product.WarehouseUnit.Name) {
       //     product.WarehouseUnit.text = product.WarehouseUnit.Name;
       //   }
@@ -278,7 +279,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
     return super.executeDelete(params, success, error, complete);
   }
 
-  getList(callback: (list: CollaboratorBasicStrategyModel[]) => void) {
+  getList(callback: (list: CollaboratorAdvanceStrategyModel[]) => void) {
     super.getList((rs) => {
       if (callback) callback(rs);
     });

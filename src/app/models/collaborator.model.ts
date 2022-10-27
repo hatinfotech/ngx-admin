@@ -449,11 +449,67 @@ export interface CollaboratorBasicStrategyProductModel {
     Description?: string;
 }
 
-export interface CollaboratorAdvanceStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
+export interface CollaboratorAdvanceStrategyPublisherModel {
+    Id?: string;
+    Strategy?: string;
+    Publisher?: string;
+    PublisherName?: string;
+    CommissionRatio?: string;
+    Cycle?: string;
+    DateOfStart?: string;
+    DateOfEnd?: string;
+    IsAutoExtended?: string;
+    PlatformFee?: string;
+    IsDiscountByVoucher?: string;
+    IsSelfOrder?: string;
+    SelfOrderDiscount?: string;
+    Level1Badge?: string;
+    Level1Label?: string;
+    Level1Description?: string;
+    Level1CommissionRatio?: string;
+    IsAppliedForLevel1Weekly?: string;
+    Level2WeeklyLabel?: string;
+    Level1WeeklyKpi?: string;
+    Level1WeeklyOkr?: string;
+    Level1WeeklyAwardRatio?: string;
+    IsAppliedForLevel1Monthly?: string;
+    Level1MonthlyLabel?: string;
+    Level1MonthlyKpi?: string;
+    Level1MonthlyOkr?: string;
+    Level1MonthlyAwardRatio?: string;
+    IsAppliedForLevel1Quarterly?: string;
+    Level1QuarterlyLabel?: string;
+    Level1QuarterlyKpi?: string;
+    Level1QuarterlyOkr?: string;
+    Level1QuarterlyAwardRatio?: string;
+    IsAppliedForLevel1Yearly?: string;
+    Level1YearlyLabel?: string;
+    Level1YearlyKpi?: string;
+    Level1YearlyOkr?: string;
+    Level1YearlyAwardRatio?: string;
+    Level2ExtBadge?: string;
+    Level2ExtLabel?: string;
+    Level2ExtRequiredKpi?: string;
+    Level2ExtRequiredOkr?: string;
+    Level2ExtAwardRatio?: string;
+    Level2ExtDescription?: string;
+    Level3ExtBadge?: string;
+    Level3ExtLabel?: string;
+    Level3ExtRequiredKpi?: string;
+    Level3ExtRequiredOkr?: string;
+    Level3ExtAwardRatio?: string;
+    Level3ExtDescription?: string;
+    ExtendTerm?: string;
+    ExtendTermLabel?: string;
+    ExtendTermPublishers?: string;
+    ExtendTermRatio?: string;
+    Description?: string;
+}
+
 export interface CollaboratorAddonStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorRebuyStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorAdvanceStrategyModel extends CollaboratorBasicStrategyModel {
-    Products?: CollaboratorAdvanceStrategyProductModel[];
+    Publishers?: CollaboratorAdvanceStrategyPublisherModel[];
 }
 export interface CollaboratorAddonStrategyModel extends CollaboratorBasicStrategyModel {
     Products?: CollaboratorAddonStrategyProductModel[];
