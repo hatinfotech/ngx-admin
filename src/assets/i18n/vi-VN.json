@@ -529,21 +529,23 @@
             "title": "Danh sách chi tiết cuộc gọi"
         },
         "CallState": {
-            "ORIGINATOR_CANCEL": "Cuộc gọi nhỡ",
-            "NORMAL_CLEARING": "Hoàn tất cuộc gọi",
-            "CALL_REJECTED": "Bị chặn",
-            "INCOMPATIBLE_DESTINATION": "Không xác định",
+            "ORIGINATOR_CANCEL": "gác máy",
+            "NORMAL_CLEARING": "hoàn tất cuộc gọi",
+            "SUCCESS": "hoàn tất cuộc gọi",
+            "CALL_REJECTED": "bị chặn",
+            "INCOMPATIBLE_DESTINATION": "không xác định",
             "EXCHANGE_ROUTING_ERROR": "lỗi định tuyến",
             "NORMAL_TEMPORARY_FAILURE": "không xác định",
             "USER_BUSY": "bận",
-            "NO_ANSWER": "không trả lời"
+            "NO_ANSWER": "không bắt máy"
         },
         "CallResult": {
             "answered": "OK",
             "missed": "nhỡ",
-            "voicemail": "hộp thư thoại",
+            "voicemail": "nhỡ (hộp thư thoại)",
             "cancelled": "không bắt máy",
-            "failed": "lỗi",
+            "noanswer": "không bắt máy",
+            "failed": "bận",
             "null": "lỗi"
         },
         "Direction": {
@@ -586,7 +588,7 @@
         "soundRecord": "ghi âm",
         "callState": "trạng thái cuộc gọi",
         "receivedNumber": "số nhận cuộc gọi",
-        "hangupCase": "gác máy",
+        "hangupCase": "lý do gác máy",
         "sipInfo": "thông tin sip",
         "deviceRegisterInfo": "thông tin thiết bị đăng ký",
         "noRegisterDevices": "không có thiết bị nào đăng ký"

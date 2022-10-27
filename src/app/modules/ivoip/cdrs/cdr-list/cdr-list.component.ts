@@ -101,13 +101,14 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
                 { value: 'voicemail', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.voicemail'), 'head-title') },
                 { value: 'cancelled', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.cancelled'), 'head-title') },
                 { value: 'failed', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.failed'), 'head-title') },
+                { value: 'noanswer', title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.CallResult.noanswer'), 'head-title') },
               ],
             },
           },
           valuePrepareFunction: (cell: string) => {
             let real = '';
-            if (cell === 'voicemail') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
-            if (cell === 'failed') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
+            // if (cell === 'voicemail') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
+            // if (cell === 'failed') real = this.commonService.translateText('Ivoip.CallResult.cancelled');
 
             return this.commonService.translateText('Ivoip.CallResult.' + cell) + (real ? (' (' + real + ')') : '');
           },
@@ -188,7 +189,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           // title: 'Trạng thái',
           // type: 'string',
           width: '10%',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.hangupCase'), 'head-title'),
+          title: this.commonService.textTransform(this.commonService.translate.instant('Lý do'), 'head-title'),
           type: 'text',
           filter: {
             type: 'custom',
@@ -205,7 +206,19 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
               ],
             },
           },
-          valuePrepareFunction: (cell: string) => {
+          valuePrepareFunction: (cell: string, rowData) => {
+            // if (cell == 'NORMAL_CLEARING' && rowData.CallResult != 'answered') {
+            //   if (rowData.CallResult == 'voicemail') return this.commonService.translateText('Ivoip.CallState.NO_ANSWER')
+            //   if (rowData.CallResult == 'cancelled') return this.commonService.translateText('Ivoip.CallState.USER_BUSY')
+            //   if (rowData.CallResult == 'failed') return this.commonService.translateText('Ivoip.CallState.INCOMPATIBLE_DESTINATION')
+            //   return '--';
+            // }
+            if (['NO_ANSWER', 'USER_BUSY'].indexOf(cell) > -1) {
+              return (rowData.Direction == 'inbound' ? 'Agent ' : (rowData.Direction == 'outbound' ? 'Customer ' : '')) + this.commonService.translateText('Ivoip.CallState.' + cell);
+            }
+            if (['ORIGINATOR_CANCEL'].indexOf(cell) > -1) {
+              return (rowData.Direction == 'inbound' ? 'Customer ' : (rowData.Direction == 'outbound' ? 'Agent ' : '')) + this.commonService.translateText('Ivoip.CallState.' + cell);
+            }
             return this.commonService.translateText('Ivoip.CallState.' + cell);
           },
         },
