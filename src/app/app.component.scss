@@ -1546,7 +1546,7 @@ nb-icon.fa {
   background: transparent;
 }
 
-.ag-theme-balham .ag-ltr .ag-cell {
+[class^="ag-theme-balham"] .ag-ltr .ag-cell {
   display: flex;
   align-items: center;
 }

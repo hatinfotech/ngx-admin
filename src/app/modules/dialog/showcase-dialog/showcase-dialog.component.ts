@@ -7,6 +7,7 @@ export interface DialogActionButton {
   label: string;
   icon?: string;
   status?: string;
+  outline?: boolean;
   disabled?: boolean;
   focus?: boolean;
   keyShortcut?: string;

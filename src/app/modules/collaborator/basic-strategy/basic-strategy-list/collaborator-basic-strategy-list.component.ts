@@ -179,7 +179,61 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
               // instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorBasicStrategyModel) => {
-              this.preview(instance.rowData);
+              // this.preview(instance.rowData);
+              if (instance.rowData.State == 'NOTJUSTAPPROVED' || instance.rowData.State == 'UNRECORDED') {
+                this.commonService.showDialog('Phê duyệt chiến dịch chiếc khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiếc khấu cơ bản "' + instance.rowData.Title + '"', [
+                  {
+                    label: 'Đóng',
+                    status: 'basic',
+                    outline: true,
+                    action: () => true
+                  },
+                  {
+                    label: 'Duyệt chiến dịch',
+                    status: 'success',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                      });
+                    }
+                  }
+                ]);
+              } else if (instance.rowData.State == 'APPROVED') {
+                this.commonService.showDialog('Hủy chiến dịch chiếc khấu cơ bản', 'Bạn có muốn hủy chiến dịch chiếc khấu cơ bản "' + instance.rowData.Title + '"', [
+                  {
+                    label: 'Đóng',
+                    status: 'basic',
+                    outline: true,
+                    action: () => true
+                  },
+                  {
+                    label: 'Hoàn tất',
+                    status: 'primary',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                      });
+                    }
+                  },
+                  {
+                    label: 'Hủy chiến dịch',
+                    status: 'danger',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                      });
+                    }
+                  },
+                ]);
+              } else {
+                this.commonService.toastService.show(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
+              }
             });
           },
         },

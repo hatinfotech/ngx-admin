@@ -16,7 +16,7 @@
     <nb-card-footer *ngIf="footerContent || actions?.length > 0">
       <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
-        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [disabled]="item?.disabled" (click)="onButtonClick(item);" [ngClass]="{'is-focus': item.focus}">
+        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [outline]="item?.outline" [disabled]="item?.disabled" (click)="onButtonClick(item);" [ngClass]="{'is-focus': item.focus}">
           <nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}
         </button>
       </div>
