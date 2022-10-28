@@ -114,6 +114,7 @@ import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-d
 import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
 import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
 import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator/advance-strategy/advance-strategy-list/collaborator-advance-strategy-list.component';
+import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1158,6 +1159,14 @@ const routes: Routes = [
     path: 'collaborator/advance-strategy/list',
     canActivate: [AuthGuardService],
     component: CollaboratorAdvanceStrategyListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/add-on-strategy/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorAddonStrategyListComponent,
     data: {
       reuse: true,
     },

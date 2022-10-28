@@ -278,6 +278,9 @@ import { CollaboratorBasicStrategyProductFormComponent } from './modules/collabo
 import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator/advance-strategy/advance-strategy-list/collaborator-advance-strategy-list.component';
 import { CollaboratorAdvanceStrategyFormComponent } from './modules/collaborator/advance-strategy/advance-strategy-form/collaborator-advance-strategy-form.component';
 import { CollaboratorAdvanceStrategyPublisherFormComponent } from './modules/collaborator/advance-strategy/publisher-form/collaborator-advance-strategy-publisher-form.component';
+import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
+import { CollaboratorAddonStrategyFormComponent } from './modules/collaborator/addon-strategy/addon-strategy-form/collaborator-addon-strategy-form.component';
+import { CollaboratorAddonStrategyPublisherFormComponent } from './modules/collaborator/addon-strategy/publisher-form/collaborator-addon-strategy-publisher-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -534,6 +537,9 @@ export class DynamicLocaleId extends String {
     CollaboratorAdvanceStrategyListComponent,
     CollaboratorAdvanceStrategyFormComponent,
     CollaboratorAdvanceStrategyPublisherFormComponent,
+    CollaboratorAddonStrategyListComponent,
+    CollaboratorAddonStrategyFormComponent,
+    CollaboratorAddonStrategyPublisherFormComponent,
 
     DynamicListDialogComponent,
 
