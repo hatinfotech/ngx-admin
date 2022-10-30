@@ -3,7 +3,7 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Cài đặt chiết khấu nâng cao cho CTV Bán Hàng' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Cài đặt chiết khấu tái mua cho CTV Bán Hàng' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
@@ -19,7 +19,7 @@
               <div class="col-sm-4">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Publisher'), 'warning')">
                   <label class="label"><span class="valid">ID</span><span class="invalid">ID là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Publisher" maxlength="30" placeholder="ID">
+                  <input type="text" nbInput fullWidth formControlName="Publisher" maxlength="30" placeholder="CTV Bán Hàng">
                 </div>
               </div>
               <div class="col-sm-4">
@@ -90,8 +90,6 @@
                     </div>
                   </div>
                 </div>
-
-                
               </div>
 
               <label class="label">{{'II/ CÀI ĐẶT CHIẾC KHẤU CỘNG THÊM CHO CTV BÁN HÀNG LEVEL 2, TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG BẠC 2 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
@@ -191,9 +189,6 @@
                   </div>
                 </div>
               </div>
-
-              
-
             </div>
 
           </div>

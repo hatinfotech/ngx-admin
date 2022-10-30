@@ -34,6 +34,7 @@ export interface SystemConfigModel {
             tel: string,
             address: string,
             website: string,
+            domain: string[],
             voucherInfo: string,
             voucherLogo: string,
             posBillLogo?: string,

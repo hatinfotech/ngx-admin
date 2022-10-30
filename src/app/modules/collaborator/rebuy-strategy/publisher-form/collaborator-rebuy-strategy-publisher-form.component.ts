@@ -12,7 +12,7 @@ import { take, filter } from 'rxjs/operators';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { CollaboratorAddonStrategyPublisherModel } from '../../../../models/collaborator.model';
+import { CollaboratorRebuyStrategyPublisherModel } from '../../../../models/collaborator.model';
 import { FileModel } from '../../../../models/file.model';
 import { ProductModel, ProductUnitModel, ProductCategoryModel, ProductGroupModel, ProductPictureModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
@@ -21,18 +21,18 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
-  selector: 'ngx-collaborator-addon-strategy-publisher-form',
-  templateUrl: './collaborator-addon-strategy-publisher-form.component.html',
-  styleUrls: ['./collaborator-addon-strategy-publisher-form.component.scss'],
+  selector: 'ngx-collaborator-rebuy-strategy-publisher-form',
+  templateUrl: './collaborator-rebuy-strategy-publisher-form.component.html',
+  styleUrls: ['./collaborator-rebuy-strategy-publisher-form.component.scss'],
   providers: [
     CurrencyPipe
   ]
 })
-export class CollaboratorAddonStrategyPublisherFormComponent extends DataManagerFormComponent<CollaboratorAddonStrategyPublisherModel> implements OnInit {
+export class CollaboratorRebuyStrategyPublisherFormComponent extends DataManagerFormComponent<CollaboratorRebuyStrategyPublisherModel> implements OnInit {
 
-  componentName: string = 'CollaboratorAddonStrategyPublisherFormComponent';
+  componentName: string = 'CollaboratorRebuyStrategyPublisherFormComponent';
   idKey = ['Strategy', 'SystemUuid'];
-  apiPath = '/collaborator/addon-strategy/publisher';
+  apiPath = '/collaborator/rebuy-strategy/publisher';
   baseFormUrl = '';
 
   unitList: ProductUnitModel[] = [];
@@ -89,7 +89,7 @@ export class CollaboratorAddonStrategyPublisherFormComponent extends DataManager
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
-    public ref?: NbDialogRef<CollaboratorAddonStrategyPublisherFormComponent>,
+    public ref?: NbDialogRef<CollaboratorRebuyStrategyPublisherFormComponent>,
     public collaboratorService?: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);

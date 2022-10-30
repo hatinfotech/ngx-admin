@@ -509,6 +509,7 @@ export interface CollaboratorAdvanceStrategyPublisherModel {
 export interface CollaboratorAddonStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorRebuyStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorAddonStrategyPublisherModel extends CollaboratorAdvanceStrategyPublisherModel { }
+export interface CollaboratorRebuyStrategyPublisherModel extends CollaboratorAdvanceStrategyPublisherModel { }
 export interface CollaboratorAdvanceStrategyModel extends CollaboratorBasicStrategyModel {
     Publishers?: CollaboratorAdvanceStrategyPublisherModel[];
 }

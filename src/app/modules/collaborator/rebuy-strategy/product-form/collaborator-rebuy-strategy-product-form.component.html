@@ -3,30 +3,49 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Cài đặt chiết khấu nâng cao cho CTV Bán Hàng' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Cài đặt chiết khấu tái mua cho CTV Bán Hàng' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <div class="col-sm-4">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('PublisherName'), 'warning')">
+              <div class="col-sm-8">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('ProductName'), 'warning')">
                   <label class="label"><span class="valid">Tên</span><span class="invalid">Tên là bắt buộc
                       (*)</span>
                   </label>
-                  <input type="text" nbInput fullWidth formControlName="PublisherName" placeholder="Tên sản phẩm">
+                  <input type="text" nbInput fullWidth formControlName="ProductName" placeholder="Tên sản phẩm">
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Publisher'), 'warning')">
-                  <label class="label"><span class="valid">ID</span><span class="invalid">ID là bắt buộc (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Publisher" maxlength="30" placeholder="ID">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Product'), 'warning')">
+                  <label class="label"><span class="valid">Mã sản phẩm</span><span class="invalid">Mã sản phẩm là bắt buộc (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Product" maxlength="30" placeholder="Mã sản phẩm">
                 </div>
               </div>
               <div class="col-sm-4">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsDiscountByVoucher'), 'warning')">
-                  <label class="label"><span class="valid">Giảm giá áp dụng voucher</span></label>
-                  <nb-checkbox formControlName="IsDiscountByVoucher">Giảm giá áp dụng voucher</nb-checkbox>
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Sku'), 'warning')">
+                  <label class="label"><span class="valid">Sku</span><span class="invalid">Sku là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Sku" placeholder="Sku">
                 </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Unit'), 'warning')">
+                  <label class="label"><span class="valid">Đơn vị tính (*)</span><span class="invalid">ĐVT là bắt buộc (*)</span>
+                  </label>
+                  <input type="text" nbInput fullWidth formControlName="Unit" placeholder="Đơn vị tính">
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsUsed'), 'warning')">
+                  <label class="label"><span class="valid">Điều kiện kinh doanh</span></label>
+                  <nb-checkbox formControlName="IsUsed">Đã sử dụng qua sản phẩm</nb-checkbox>
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <nb-checkbox formControlName="IsAutoExtended" title="Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách">Cho phép team CSKH tư vấn bán thêm</nb-checkbox>
+                </ngx-form-group>
               </div>
               <div class="col-sm-4">
                 <ngx-form-group [formGroup]="formItem" name="SelfOrderDiscount" label="Giảm giá x% khi tự đặt hàng trên app ProBox" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
@@ -41,16 +60,11 @@
                   <input type="text" nbInput fullWidth formControlName="PlatformFee" placeholder="%" [inputMask]="towDigitsInputMask">
                 </div>
               </div>
-              <div class="col-sm-2">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsUsed'), 'warning')">
-                  <label class="label"><span class="valid">Điều kiện kinh doanh</span></label>
-                  <nb-checkbox formControlName="IsUsed">Đã sử dụng qua sản phẩm</nb-checkbox>
+              <div class="col-sm-4">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('IsDiscountByVoucher'), 'warning')">
+                  <label class="label"><span class="valid">Giảm giá áp dụng voucher</span></label>
+                  <nb-checkbox formControlName="IsDiscountByVoucher">Giảm giá áp dụng voucher</nb-checkbox>
                 </div>
-              </div>
-              <div class="col-sm-2">
-                <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                  <nb-checkbox formControlName="IsAutoExtended" title="Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách">Cho phép team CSKH tư vấn bán thêm</nb-checkbox>
-                </ngx-form-group>
               </div>
 
               <label class="label">{{'I/ CÀI ĐẶT CHIẾC KHẤU CHO CTV BÁN HÀNG LEVEL 1 , TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG ĐỒNG 1 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
@@ -90,8 +104,6 @@
                     </div>
                   </div>
                 </div>
-
-                
               </div>
 
               <label class="label">{{'II/ CÀI ĐẶT CHIẾC KHẤU CỘNG THÊM CHO CTV BÁN HÀNG LEVEL 2, TƯƠNG ỨNG DANH HIỆU CTV BÁN HÀNG BẠC 2 TRÊN APP PROBOX' | translate | headtitlecase}}</label>
@@ -191,8 +203,6 @@
                   </div>
                 </div>
               </div>
-
-              
 
             </div>
 

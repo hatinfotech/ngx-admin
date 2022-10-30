@@ -115,6 +115,7 @@ import { CoreConnectionListComponent } from './modules/core-connection/core-conn
 import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
 import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator/advance-strategy/advance-strategy-list/collaborator-advance-strategy-list.component';
 import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
+import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1167,6 +1168,14 @@ const routes: Routes = [
     path: 'collaborator/add-on-strategy/list',
     canActivate: [AuthGuardService],
     component: CollaboratorAddonStrategyListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'collaborator/rebuy-strategy/list',
+    canActivate: [AuthGuardService],
+    component: CollaboratorRebuyStrategyListComponent,
     data: {
       reuse: true,
     },

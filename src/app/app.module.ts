@@ -281,6 +281,10 @@ import { CollaboratorAdvanceStrategyPublisherFormComponent } from './modules/col
 import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
 import { CollaboratorAddonStrategyFormComponent } from './modules/collaborator/addon-strategy/addon-strategy-form/collaborator-addon-strategy-form.component';
 import { CollaboratorAddonStrategyPublisherFormComponent } from './modules/collaborator/addon-strategy/publisher-form/collaborator-addon-strategy-publisher-form.component';
+import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
+import { CollaboratorRebuyStrategyFormComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
+import { CollaboratorRebuyStrategyPublisherFormComponent } from './modules/collaborator/rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component';
+import { CollaboratorRebuyStrategyProductFormComponent } from './modules/collaborator/rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -540,6 +544,10 @@ export class DynamicLocaleId extends String {
     CollaboratorAddonStrategyListComponent,
     CollaboratorAddonStrategyFormComponent,
     CollaboratorAddonStrategyPublisherFormComponent,
+    CollaboratorRebuyStrategyListComponent,
+    CollaboratorRebuyStrategyFormComponent,
+    CollaboratorRebuyStrategyPublisherFormComponent,
+    CollaboratorRebuyStrategyProductFormComponent,
 
     DynamicListDialogComponent,
 
