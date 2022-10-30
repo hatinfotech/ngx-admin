@@ -19,6 +19,20 @@ export interface RootConfigModel {
     }
 }
 
+export interface RegisterInfoModel {
+    companyName?: string;
+    companyTaxCode?: string;
+    email?: string;
+    tel?: string;
+    address?: string;
+    website?: string;
+    domain?: string[];
+    voucherInfo?: string;
+    voucherLogo?: string;
+    posBillLogo?: string;
+    voucherLogoHeight?: number;
+}
+
 export interface SystemConfigModel {
     [key: string]: any;
     NOTIFICATION_ALLOW_TIME_RANGE: {
@@ -27,19 +41,7 @@ export interface SystemConfigModel {
     };
     ROOT_CONFIGS: RootConfigModel;
     LICENSE_INFO: {
-        register: {
-            companyName: string,
-            companyTaxCode: string,
-            email: string,
-            tel: string,
-            address: string,
-            website: string,
-            domain: string[],
-            voucherInfo: string,
-            voucherLogo: string,
-            posBillLogo?: string,
-            voucherLogoHeight: number,
-        }
+        register: RegisterInfoModel
     },
 }
 

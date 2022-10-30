@@ -108,6 +108,38 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
   editing = {};
   rows = [];
 
+  runningState = {
+    ...AppModule.approvedState,
+    nextState: 'RUNNING',
+    outlilne: true,
+    status: 'danger',
+    label: 'Đang chạy',
+    nextStates: [
+      { ...AppModule.notJustApprodedState, status: 'warning' },
+    ],
+  };
+
+  processMap = {
+    ...AppModule.processMaps.common,
+    "APPROVED": {
+      ...AppModule.approvedState,
+      nextState: 'RUNNING',
+      status: 'success',
+      nextStates: [
+        { ...AppModule.unrecordedState, status: 'warning' },
+        { ...this.runningState, status: 'success' },
+      ],
+    },
+    "RUNNING": {
+      ...this.runningState,
+      nextState: 'COMPLETE',
+      nextStates: [
+        { ...AppModule.completeState, status: 'basic' },
+        { ...AppModule.unrecordedState, status: 'warning' },
+      ],
+    },
+  };
+
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
       mode: 'external',
@@ -167,19 +199,16 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            // instance.style = 'text-align: right';
-            // instance.class = 'align-right';
+            instance.outline = true;
             instance.title = this.commonService.translateText('Common.unknown');
             instance.label = this.commonService.translateText('Common.unknown');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.common[value || ''];
+              const processMap = this.processMap[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
-              instance.outline = processMap.outline;
-              // instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
+              instance.title = 'Chuyển sang ' + this.commonService.translateText(processMap.nextStates.find(f => f.state == processMap.nextState)?.label);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorBasicStrategyModel) => {
-              // this.preview(instance.rowData);
               if (instance.rowData.State == 'NOTJUSTAPPROVED' || instance.rowData.State == 'UNRECORDED') {
                 this.commonService.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
                   {
@@ -201,7 +230,38 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                   }
                 ]);
               } else if (instance.rowData.State == 'APPROVED') {
-                this.commonService.showDialog('Hủy chiến dịch chiết khấu cơ bản', 'Bạn có muốn hủy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                this.commonService.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                  {
+                    label: 'Đóng',
+                    status: 'basic',
+                    outline: true,
+                    action: () => true
+                  },
+                  {
+                    label: 'Khởi chạy',
+                    status: 'primary',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                      });
+                    }
+                  },
+                  {
+                    label: 'Hủy chiến dịch',
+                    status: 'danger',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                      });
+                    }
+                  },
+                ]);
+              } else if (instance.rowData.State == 'RUNNING') {
+                this.commonService.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
                   {
                     label: 'Đóng',
                     status: 'basic',

@@ -109,6 +109,34 @@ export class CollaboratorAddonStrategyListComponent extends ServerDataManagerLis
   editing = {};
   rows = [];
 
+  runningState = {
+    ...AppModule.approvedState,
+    nextState: 'RUNNING',
+    nextStates: [
+      { ...AppModule.notJustApprodedState, status: 'warning' },
+    ],
+  };
+
+  processMap = {
+    ...AppModule.processMaps.common,
+    "APPROVED": {
+      ...AppModule.approvedState,
+      nextState: 'RUNNING',
+      nextStates: [
+        { ...AppModule.unrecordedState, status: 'warning' },
+        { ...this.runningState, status: 'success' },
+      ],
+    },
+    "RUNNING": {
+      ...AppModule.proccessingState,
+      nextState: 'COMPLETE',
+      nextStates: [
+        { ...AppModule.completeState, status: 'basic' },
+        { ...AppModule.unrecordedState, status: 'warning' },
+      ],
+    },
+  };
+
   loadListSetting(): SmartTableSetting {
     return this.configSetting({
       mode: 'external',
@@ -173,7 +201,7 @@ export class CollaboratorAddonStrategyListComponent extends ServerDataManagerLis
             instance.title = this.commonService.translateText('Common.unknown');
             instance.label = this.commonService.translateText('Common.unknown');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.common[value || ''];
+              const processMap = this.processMap[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
@@ -202,6 +230,37 @@ export class CollaboratorAddonStrategyListComponent extends ServerDataManagerLis
                   }
                 ]);
               } else if (instance.rowData.State == 'APPROVED') {
+                this.commonService.showDialog('Hủy chiến dịch chiết khấu add-on', 'Bạn có muốn hủy chiến dịch chiết khấu add-on "' + instance.rowData.Title + '"', [
+                  {
+                    label: 'Đóng',
+                    status: 'basic',
+                    outline: true,
+                    action: () => true
+                  },
+                  {
+                    label: 'Hoàn tất',
+                    status: 'primary',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu add-on !', { status: 'success' });
+                      });
+                    }
+                  },
+                  {
+                    label: 'Hủy chiến dịch',
+                    status: 'danger',
+                    outline: true,
+                    action: () => {
+                      this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
+                        this.refresh();
+                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu add-on !', { status: 'success' });
+                      });
+                    }
+                  },
+                ]);
+              } else if (instance.rowData.State == 'RUNNING') {
                 this.commonService.showDialog('Hủy chiến dịch chiết khấu add-on', 'Bạn có muốn hủy chiến dịch chiết khấu add-on "' + instance.rowData.Title + '"', [
                   {
                     label: 'Đóng',
