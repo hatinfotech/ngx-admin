@@ -219,6 +219,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     { id: 'D', text: this.commonService.translateText('Common.Pms.delete') },
     { id: 'M', text: this.commonService.translateText('Common.Pms.manage') },
     { id: 'P', text: this.commonService.translateText('Common.Pms.print') },
+    { id: 'S', text: this.commonService.translateText('Thay đổi trạng thái') },
   ];
 
   makeNewFormGroup(data?: M): FormGroup {
