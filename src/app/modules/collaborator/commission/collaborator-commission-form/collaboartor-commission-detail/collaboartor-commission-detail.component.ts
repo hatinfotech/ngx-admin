@@ -116,12 +116,12 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           type: 'string',
           width: '40%', 
         },
-        SumOfBaseQuantity: {
+        SumOfQuantity: {
           title: this.commonService.translateText('SL Bán'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: string, row: any) => {
-            return `~${row['SumOfBaseQuantity']}/${row['UnitLabel']}`;
+            return `${row['SumOfQuantity']}/${row['ProductUnitLabel']}`;
           },
         },
         SumOfNetRevenue: {

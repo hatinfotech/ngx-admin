@@ -309,9 +309,6 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             instance.class = 'align-right';
             instance.title = this.commonService.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
 
@@ -321,14 +318,9 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
                   resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                  // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
               });
-
-              // this.getFormData([rowData.Code]).then(rs => {
-              //   this.preview(rs);
-              // });
             });
           },
         },

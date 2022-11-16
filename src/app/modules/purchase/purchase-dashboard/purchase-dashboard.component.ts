@@ -229,7 +229,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
         },
       ];
 
-      this.unitList = await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { onlyIdText: true });
+      this.unitList = await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { onlyIdText: true, limit: 'nolimit' });
 
       this.apiService.getPromise<AccMasterBookModel[]>('/accounting/master-books/current', {}).then(rs => {
         this.masterBook = rs[0];

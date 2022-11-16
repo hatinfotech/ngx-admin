@@ -55,7 +55,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
     //   }
     //   this.processMapList[i] = AppModule.processMaps.cashVoucher[data.State || ''];
     // }
-    this.summaryCalculate(this.data);
+    // this.summaryCalculate(this.data);
 
     return result;
   }
@@ -223,7 +223,7 @@ export class CashPaymentVoucherPrintComponent extends DataManagerPrintComponent<
       item['Title'] = this.renderTitle(item);
       
       const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
-      item.StateLabel = processMap.label;
+      item.StateLabel = processMap?.label;
 
       for (const detail of item.Details) {
         item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);

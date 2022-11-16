@@ -1,4 +1,3 @@
-import { Select2Component } from '../../../../../vendor/ng2select2/lib/ng2-select2.component';
 import { takeUntil } from 'rxjs/operators';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -16,6 +15,7 @@ import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accountin
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorCommissionDetailComponent } from './collaboartor-commission-detail/collaboartor-commission-detail.component';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { IGetRowsParams } from 'ag-grid-community';
 
 @Component({
   selector: 'ngx-collaborator-commission-form',
@@ -33,10 +33,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   // variables
   locale = this.commonService.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
-
-  // accountDebitList: AccountModel[] = [];
-  // accountCreditList: AccountModel[] = [];
   accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
 
@@ -69,52 +65,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     });
   }
 
-  // getRequestId(callback: (id?: string[]) => void) {
-  //   if (this.mode === 'page') {
-  //     super.getRequestId(callback);
-  //   } else {
-  //     callback(this.inputId);
-  //   }
-  // }
-
-  // select2OptionForContact = {
-  //   placeholder: 'Chọn cộng tác viên...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   // multiple: true,
-  //   tags: true,
-  //   keyMap: {
-  //     id: 'id',
-  //     text: 'text',
-  //   },
-  //   ajax: {
-  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-  //       console.log(settings);
-  //       const params = settings.data;
-  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
-  //         success(rs);
-  //       }).catch(err => {
-  //         console.error(err);
-  //         failure();
-  //       });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       console.info(data, params);
-  //       return {
-  //         results: data.map(item => {
-  //           item['id'] = item['Code'];
-  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-  //           return item;
-  //         }),
-  //       };
-  //     },
-  //   },
-  // };
-
-
   select2OptionForPage = {
     placeholder: 'Chọn trang...',
     allowClear: false,
@@ -127,24 +77,75 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     },
   };
 
-  // select2OptionForCycle = {
-  //   placeholder: 'Chọn loại...',
-  //   allowClear: false,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   keyMap: {
-  //     id: 'id',
-  //     text: 'text',
-  //   },
-  //   data: [
-  //     { id: 'WEEKLY', text: 'Tuần' },
-  //     { id: 'MONTHLY', text: 'Tháng' },
-  //     { id: 'QUARTERLY', text: 'Quý' },
-  //     { id: 'YEARLY', text: 'Năm' },
-  //   ],
-  // };
+  commissionColumnDefs = [
+    {
+      headerName: '#',
+      width: 120,
+      valueGetter: 'node.data.Product',
+      cellRenderer: 'loadingCellRenderer',
+      sortable: false,
+      // pinned: 'left',
+      checkboxSelection: true,
+    },
+    {
+      headerName: 'Sản phẩm',
+      field: 'Description',
+      width: 300,
+      sortable: false,
+      filter: 'agTextColumnFilter',
+      // pinned: 'left',
+    },
+    {
+      headerName: 'ĐVT',
+      field: 'ProductUnit',
+      width: 120,
+      sortable: false,
+      filter: 'agTextColumnFilter',
+      // pinned: 'left',
+    },
+    {
+      headerName: 'SL bán',
+      field: 'SumOfQuantity',
+      width: 100,
+      sortable: false,
+      filter: 'agTextColumnFilter',
+      // pinned: 'left',
+    },
+    {
+      headerName: 'Doanh số',
+      field: 'SumOfNetRevenue',
+      width: 150,
+      sortable: false,
+      filter: 'agTextColumnFilter',
+      // pinned: 'left',
+    },
+    {
+      headerName: 'Chiết khấu',
+      field: 'CommissionAmount',
+      width: 150,
+      sortable: false,
+      filter: 'agTextColumnFilter',
+      // pinned: 'left',
+    },
+  ]
 
+  commissionData = {
+    rowCount: null,
+    getRows: async (getRowParams: IGetRowsParams) => {
+      this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.commonService.getObjectId(this.array.controls[0].get('Page').value), publisher: this.commonService.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
+        let lastRow = -1;
+        if (rs.length < 40) {
+          lastRow = getRowParams.startRow + rs.length;
+        }
+        getRowParams.successCallback(rs, lastRow);
+        return rs;
+      });
+    },
+  };
+
+  onGridChange(event, data) {
+
+  }
 
   ngOnInit() {
     this.restrict();
@@ -157,36 +158,13 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
-        // this.onAddFormGroup(index, newForm, itemFormData);
       }
     });
 
   }
 
   async init() {
-    // this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(rs => rs.map(account => {
-    //   account['id'] = account.Code;
-    //   account['text'] = account.Code + ' - ' + account.Name;
-    //   return account;
-    // }));
-    // this.accountDebitList = this.accountList;
-    // this.accountCreditList = this.accountList;
-    // this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { limit: 'nolimit' }).then(rs => rs.map(accBusiness => {
-    //   accBusiness['id'] = accBusiness.Code;
-    //   accBusiness['text'] = accBusiness.Name;
-    //   return accBusiness;
-    // }));
     return super.init().then(rs => {
-      // this.getRequestId(id => {
-      //   if (!id || id.length === 0) {
-      //     this.addDetailFormGroup(0);
-      //   }
-      //   // else {
-      //   //   for (const mainForm of this.array.controls) {
-      //   //     this.toMoney(mainForm as FormGroup);
-      //   //   }
-      //   // }
-      // });
       return rs;
     });
   }
@@ -215,9 +193,11 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       PublisherBankName: [''],
       PublisherBankAccount: [''],
       // Cycle: [],
-      Amount: {value: '', disabled: true},
+      Amount: { value: '', disabled: true },
       CommissionTo: [new Date(), Validators.required],
-      Description: [`Kết chuyển thưởng đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
+      Description: [`Kết chuyển chiết khấu đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
+
+      CommissionStatictis: [[]],
     });
     if (data) {
       this.prepareRestrictedData(newForm, data);
@@ -233,21 +213,8 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     const publisherEle = newForm.get('Publisher');
     const publisher = this.commonService.getObjectId(publisherEle.value);
     const publisherName = newForm.get('PublisherName').value;
-    newForm.get('Description').setValue(`Kết chuyển thưởng đến ngày ${newForm.get('CommissionTo')?.value?.toLocaleDateString()}`);
+    newForm.get('Description').setValue(`Kết chuyển chiết khấu đến ngày ${newForm.get('CommissionTo')?.value?.toLocaleDateString()}`);
     if (!this.isProcessing && publisher) {
-      // const page = this.commonService.getObjectId(newForm.get('Page').value);
-      // const amountEle = newForm.get('Amount');
-      // const descriptionEle = newForm.get('Description');
-
-      // const dateRange = awardRange;
-      // const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
-      // const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
-
-      // this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'COMMISSION', page: page, publisher: publisher, moment: toDate, limit: 'nolimit' }).then(summaryReport => {
-      //   console.log(summaryReport);
-      //   amountEle.setValue(summaryReport?.CommissionAmount);
-      //   descriptionEle.setValue(`Kết chuyển hoa hồng đến ngày ${awardRange && awardRange[1] && awardRange[1].toLocaleDateString()}`);
-      // });
       setTimeout(() => {
         // newForm['listInstance'] && newForm['listInstance'].refresh();
         this.refreshAllTab(newForm);
@@ -268,14 +235,9 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
         this.onConditionFieldsChange(newForm);
       });
-      // newForm.get('Cycle').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(type => {
-      //   this.onConditionFieldsChange(newForm);
-      // });
     }, 3000);
-    // this.resourceList.push([]);
   }
   onRemoveFormGroup(index: number): void {
-    // this.resourceList.splice(index, 1);
   }
   goback(): false {
     super.goback();
@@ -283,8 +245,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       this.router.navigate(['/accounting/cash-receipt-voucher/list']);
     } else {
       this.ref.close();
-      // this.onDialogClose();
-      // this.dismiss();
     }
     return false;
   }
@@ -293,28 +253,21 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
 
   /** Execute api get */
   executeGet(params: any, success: (resources: CollaboratorCommissionVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    // params['includeDetails'] = true;
     params['includeContact'] = true;
-    // params['includeRelativeVouchers'] = true;
     return super.executeGet(params, success, error);
   }
 
   // Orverride
   getRawFormData() {
     const data = super.getRawFormData();
-    // for (const item of data.array) {
-    //   // item['Type'] = 'RECEIPT';
-    // }
     return data;
   }
 
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-    // console.info(item);
 
     if (!this.isProcessing) {
       if (selectedData && !selectedData['doNotAutoFill']) {
 
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           const data = {
             ObjectName: selectedData.Name,
@@ -322,8 +275,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
             ObjectEmail: selectedData.Email,
             ObjectAddress: selectedData.Address,
             ObjectTaxCode: selectedData.TaxCode,
-            // ObjectBankName: selectedData.BankName,
-            // ObjectBankCode: selectedData.BankAcc,
           };
 
           this.prepareRestrictedData(formGroup, data);
@@ -337,7 +288,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     }
 
     setTimeout(() => {
-      // formGroup['listInstance'] && formGroup['listInstance'].refresh();
       this.refreshAllTab(formGroup);
     }, 500);
   }
@@ -347,13 +297,11 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   toMoney(formItem: FormGroup) {
-    // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
     this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
       for (const detail of details.controls) {
-        // total += this.calculatToMoney(details.controls[i] as FormGroup);
         total += parseInt(detail.get('Amount').value || 0);
 
       }
@@ -361,7 +309,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     });
     return false;
   }
-
 
   async preview(formItem: FormGroup) {
     const data: CollaboratorCommissionVoucherModel = formItem.value;
@@ -391,21 +338,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-    // if (relativeVocher && relativeVocher.type == 'SALES') {
-    //   this.commonService.openDialog(SalesVoucherPrintComponent, {
-    //     context: {
-    //       showLoadinng: true,
-    //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
-    //       // data: data,
-    //       idKey: ['Code'],
-    //       // approvedConfirm: true,
-    //       onClose: (data: SalesVoucherModel) => {
-    //         this.refresh();
-    //       },
-    //     },
-    //   });
-    // }
     return false;
   }
 
@@ -416,9 +348,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   onListInit(listInstance: CollaboartorCommissionDetailComponent, formGroup: FormGroup, tab: string) {
-    // type.selectChange.subscribe(value => {
-    //   console.log(value);
-    // });
     console.log(listInstance);
     if (!formGroup['listInstance']) {
       formGroup['listInstance'] = {};
@@ -427,9 +356,6 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   updateTotalCommission(totalAawrd: number, formGroup: FormGroup, tab: string) {
-    // type.selectChange.subscribe(value => {
-    //   console.log(value);
-    // });
     formGroup.get('Amount').setValue(totalAawrd);
   }
 

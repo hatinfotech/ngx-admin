@@ -1,11 +1,11 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe, CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment.prod';
 import { AppModule } from '../../../../app.module';
-import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CashVoucherDetailModel } from '../../../../models/accounting.model';
 import { CollaboratorAwardVoucherDetailModel, CollaboratorAwardVoucherModel, CollaboratorCommissionVoucherDetailModel, CollaboratorCommissionVoucherDetailOrderModel, CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
@@ -18,7 +18,8 @@ import { CollaboratorCommissionDetailPrintComponent } from '../collaborator-comm
 @Component({
   selector: 'ngx-collaborator-commission-print',
   templateUrl: './collaborator-commission-print.component.html',
-  styleUrls: ['./collaborator-commission-print.component.scss']
+  styleUrls: ['./collaborator-commission-print.component.scss'],
+  providers: [DecimalPipe, CurrencyPipe, DatePipe]
 })
 export class CollaboratorCommissionPrintComponent extends DataManagerPrintComponent<CollaboratorCommissionVoucherModel> implements OnInit {
 
@@ -35,6 +36,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorCommissionPrintComponent>,
     private datePipe: DatePipe,
+    private decimalPipe: DecimalPipe,
   ) {
     super(commonService, router, apiService, ref);
   }
@@ -277,7 +279,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
             },
             ToMoney: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+              title: this.commonService.textTransform(this.commonService.translate.instant('Doanh số'), 'head-title'),
               type: 'custom',
               class: 'align-right',
               width: '10%',
@@ -289,6 +291,38 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
               valuePrepareFunction: (cell: string, row: CollaboratorCommissionVoucherDetailOrderModel) => {
                 return `${row.Quantity * row.Price}`;
+              },
+            },
+            Strategy: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('Chiến dịch'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+            },
+            CommissionRatio: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('% chiết khấu'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableBaseComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                instance.style = 'text-align: right';
+              },
+              valuePrepareFunction: (cell: string, row: CollaboratorCommissionVoucherDetailOrderModel) => {
+                return this.decimalPipe.transform(cell) + ' %';
+              },
+            },
+            CommissionAmount: {
+              title: this.commonService.textTransform(this.commonService.translate.instant('chiết khấu'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
               },
             },
             Preview: {

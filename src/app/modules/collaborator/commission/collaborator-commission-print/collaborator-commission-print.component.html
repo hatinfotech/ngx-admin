@@ -29,24 +29,6 @@
                 <div>
                     <div>
                         <table style="width: 100%;" class="print-voucher-detail-table">
-                            <colgroup>
-                                <!--STT-->
-                                <col span="1" style="width: 1cm;">
-                                <!--Common.product-->
-                                <col span="1" style="width: 2cm;">
-                                <!--Product.name-->
-                                <col span="1" style="width: 2cm;">
-                                <!--Product.unit-->
-                                <col span="1" style="width: 1cm;">
-                                <!--Common.quantity-->
-                                <col span="1" style="width: 1cm;">
-                                <!--Common.quantity-->
-                                <col span="1" style="width: 2cm;">
-                                <!--Commission.Commission.ratio-->
-                                <col span="1" style="width: 2cm;">
-                                <!--Thanh tien-->
-                                <col span="1" style="width: 2cm; text-align: right;">
-                            </colgroup>
                             <tr class="print-voucher-detail-header">
                                 <th class="text-align-left">{{'Common.noNumber' | translate | headtitlecase}}</th>
                                 <th class="text-align-left">{{'Common.product' | translate | headtitlecase}}</th>
@@ -54,7 +36,7 @@
                                 <th class="text-align-left">{{'Product.unit' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Common.quantity' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Common.netRevenue' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'Collaborator.Commission.ratio' | translate | headtitlecase}}</th>
+                                <!-- <th class="text-align-right">{{'Collaborator.Commission.ratio' | translate | headtitlecase}}</th> -->
                                 <th class="text-align-right">{{'Common.numOfMoney' | translate | headtitlecase}}</th>
                             </tr>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
@@ -64,12 +46,16 @@
                                 <td>{{detail.UnitLabel}}</td>
                                 <td class="text-align-right">{{detail.SumOfQuantity}}</td>
                                 <td class="text-align-right">{{detail.SumOfNetRevenue | currency:'VND'}}</td>
-                                <td class="text-align-right">{{detail.CommissionRatio}}</td>
+                                <!-- <td class="text-align-right">{{detail.CommissionRatio}}</td> -->
                                 <td class="text-align-right">{{detail.CommissionAmount | currency:'VND'}}</td>
                             </tr>
                             <tr style="font-weight: bold;">
                                 <td> </td>
                                 <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <!-- <td> </td> -->
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{data.Amount | currency:'VND'}}</td>
                             </tr>

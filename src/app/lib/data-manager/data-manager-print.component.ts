@@ -113,6 +113,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             this.close();
           }
         } catch (err) {
+          console.error(err);
           this.close();
         }
       }

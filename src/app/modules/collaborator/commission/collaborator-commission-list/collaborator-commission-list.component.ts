@@ -7,7 +7,9 @@ import { AppModule } from '../../../../app.module';
 import { SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
+import { ProcessMap } from '../../../../models/process-map.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -174,6 +176,36 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             });
           },
         },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  apiPath: this.apiPath,
+                }
+              });
+            });
+          },
+        },
         Preview: {
           title: this.commonService.translateText('Common.show'),
           type: 'custom',
@@ -278,6 +310,45 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
       },
     });
     return false;
+  }
+
+  changeStateConfirm(data: CollaboratorCommissionVoucherModel) {
+    const params = { id: [data.Code] };
+    const processMap: ProcessMap = AppModule.processMaps.commissionVoucher[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+
+    return new Promise(resolve => {
+      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.commonService.translateText('Common.goback'),
+          status: 'primary',
+          action: () => {
+            resolve(false);
+          },
+        },
+        {
+          label: this.commonService.translateText(processMap?.nextStateLabel),
+          status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
+          action: async () => {
+            this.loading = true;
+            return this.apiService.putPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+              this.loading = false;
+              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Phân quyền', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+                status: 'success',
+              });
+              resolve(true);
+              return true;
+            }).catch(err => {
+              this.loading = false;
+              resolve(false);
+              return false;
+            });
+          },
+        },
+      ], () => {
+        resolve(false);
+      });
+    });
   }
 
 }
