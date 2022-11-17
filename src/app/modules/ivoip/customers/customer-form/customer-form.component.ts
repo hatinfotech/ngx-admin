@@ -657,7 +657,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           });
 
         } else {
-          reject('Thông tin triển khai Mini ERP không tồn tại');
+          reject('Thông tin triển khai ProBox One không tồn tại');
         }
       }, e => reject(e));
     });
@@ -677,7 +677,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         this.apiService.put<MiniErpDeploymentModel[]>('/mini-erp/deployments', { id: miniErpDeploymentCode, uploadMiniErpInstaller: true, silent: true }, miniErpDeployments, respMiniErpDeployments => {
           if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
 
-            this.toastrService.show('success', 'Đã tải bộ cài Mini ERP lên hosting', {
+            this.toastrService.show('success', 'Đã tải bộ cài ProBox One lên hosting', {
               status: 'success',
               hasIcon: true,
               position: NbGlobalPhysicalPosition.TOP_RIGHT,
@@ -685,7 +685,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
 
             resolve(respMiniErpDeployments[0]);
           } else {
-            reject('Lỗi upload bộ cài Mini ERP');
+            reject('Lỗi upload bộ cài ProBox One');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -707,7 +707,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
             resolve(respMiniErpDeployments[0]);
           } else {
-            reject('Lỗi giải nến bộ cài Mini ERP');
+            reject('Lỗi giải nến bộ cài ProBox One');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -721,7 +721,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
             resolve(respMiniErpDeployments[0]);
           } else {
-            reject('Lỗi cấu hình Mini ERP');
+            reject('Lỗi cấu hình ProBox One');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -735,7 +735,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           if (respMiniErpDeployments && respMiniErpDeployments.length > 0) {
             resolve(respMiniErpDeployments[0]);
           } else {
-            reject('Lỗi khởi tạo tài khoản admin cho Mini ERP');
+            reject('Lỗi khởi tạo tài khoản admin cho ProBox One');
           }
         }, e => reject(e));
       }, e => reject(e));
@@ -802,60 +802,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     // let newMiniErpDeployment: MiniErpDeploymentModel;
 
 
-    const executeList: Executable[] = [
-      // Deply PBX
-      {
-        message: 'Khởi tạo tổng đài',
-        maxTry: 3,
-        delayTry: 15000,
-        execute: async () => {
-          newPbxDomain = await this.deployPbxDomain(pbx.Code, formData.DomainName, formData.Name, true);
-          return true;
-        },
-      },
-      {
-        message: 'Tạo thông tin kết nối api cho tổng đài',
-        maxTry: 5,
-        delayTry: 15000,
-        execute: async () => {
-          newPbxUser = await this.deployPbxPbxUser(pbx.Code, newPbxDomain.DomainId, 'Administrator', 'administrator', formData.Name, formData.Email, ['admin'], 'administrator');
-          miniErpDeployment.PbxApiKey = newPbxUser.api_key;
-          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
-          return true;
-        },
-      },
-      {
-        message: 'Tạo danh sách số mở rộng cho tổng đài',
-        maxTry: 3,
-        delayTry: 15000,
-        execute: async () => {
-          newPbxExtensions = await this.deployPbxExtensions(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.Extensions);
-          return true;
-        },
-      },
-      {
-        message: 'Khai báo số đấu nối cho tổng đài',
-        maxTry: 3,
-        delayTry: 15000,
-        execute: async () => {
-          if (formData.PstnNumber) {
-            newPbxPstnNumber = await this.deployPbxPstnNumber(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.PstnNumber, newPbxExtensions[0].extension);
-          }
-          return true;
-        },
-      },
-      // Deploy minierp
-      {
-        message: 'Cài đặt quy tắt gọi ra',
-        maxTry: 3,
-        delayTry: 15000,
-        execute: async () => {
-          if (formData.Gateway) {
-            newPbxOutboundRule = await this.deployPbxOutboundRule(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, newPbxPstnNumber.destination_accountcode, formData.Gateway);
-          }
-          return true;
-        },
-      },
+    const executeScript: Executable[] = [
       {
         message: 'Tạo trang quản lý',
         maxTry: 3,
@@ -910,8 +857,61 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           return true;
         },
       },
+      // Deply PBX
+      {
+        message: 'Khởi tạo tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxDomain = await this.deployPbxDomain(pbx.Code, formData.DomainName, formData.Name, true);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo thông tin kết nối api cho tổng đài',
+        maxTry: 5,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxUser = await this.deployPbxPbxUser(pbx.Code, newPbxDomain.DomainId, 'Administrator', 'administrator', formData.Name, formData.Email, ['admin'], 'administrator');
+          miniErpDeployment.PbxApiKey = newPbxUser.api_key;
+          miniErpDeployment = await this.updateMiniErpDeployment(miniErpDeployment);
+          return true;
+        },
+      },
+      {
+        message: 'Tạo danh sách số mở rộng cho tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          newPbxExtensions = await this.deployPbxExtensions(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.Extensions);
+          return true;
+        },
+      },
+      {
+        message: 'Khai báo số đấu nối cho tổng đài',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          if (formData.PstnNumber) {
+            newPbxPstnNumber = await this.deployPbxPstnNumber(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, formData.PstnNumber, newPbxExtensions[0].extension);
+          }
+          return true;
+        },
+      },
+      // Deploy minierp
+      {
+        message: 'Cài đặt quy tắt gọi ra',
+        maxTry: 3,
+        delayTry: 15000,
+        execute: async () => {
+          if (formData.Gateway) {
+            newPbxOutboundRule = await this.deployPbxOutboundRule(pbx.Code, newPbxDomain.DomainId, newPbxDomain.DomainName, newPbxPstnNumber.destination_accountcode, formData.Gateway);
+          }
+          return true;
+        },
+      },
       // {
-      //   message: 'Triển khai Mini ERP',
+      //   message: 'Triển khai ProBox One',
       //   maxTry: 3,
       //   delayTry: 15000,
       //   execute: async () => {
@@ -919,7 +919,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       //     return true;
       //   },
       // },
-      // Deploy mini erp
+      // Deploy ProBox One
       {
         message: 'Kiểm tra kết nối FTP',
         maxTry: 30,
@@ -930,7 +930,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         },
       },
       {
-        message: 'Tải lên webste bộ cài Mini ERP',
+        message: 'Tải lên website bộ cài ProBox One',
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
@@ -948,7 +948,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         },
       },
       {
-        message: 'Giải nén bộ cài Mini ERP',
+        message: 'Giải nén bộ cài ProBox One',
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
@@ -957,7 +957,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         },
       },
       {
-        message: 'Cấu hình Mini ERP',
+        message: 'Cấu hình ProBox One',
         maxTry: 10,
         delayTry: 15000,
         execute: async () => {
@@ -966,7 +966,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         },
       },
       {
-        message: 'Cấu hình người dùng cho Mini ERP',
+        message: 'Cấu hình người dùng cho ProBox One',
         maxTry: 10,
         delayTry: 15000,
         execute: async () => {
@@ -975,7 +975,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         },
       },
       {
-        message: 'Dọn dep file cài đặt Mini ERP',
+        message: 'Dọn dep file cài đặt ProBox One',
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
@@ -985,7 +985,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       },
       {
         skipSuccess: true,
-        message: 'Đã triển khai xong Mini ERP cho ' + formData.Name,
+        message: 'Đã triển khai xong ProBox One cho ' + formData.Name,
         title: formData.DomainName,
         status: 'success',
         maxTry: 3,
@@ -993,8 +993,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         execute: async () => {
           this.commonService.openDialog(ShowcaseDialogComponent, {
             context: {
-              title: 'Triển khai Mini ERP',
-              content: 'Đã triển khai thành công Mini ERP cho khách ' + formData.Name,
+              title: 'Triển khai ProBox One',
+              content: 'Đã triển khai thành công ProBox One cho khách ' + formData.Name,
               actions: [
                 {
                   label: 'Trở về',
@@ -1022,9 +1022,9 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     /** Execute deployment */
     let execute: Executable;
     setTimeout(() => this.onProcessing(), 1001);
-    const numOfStep = executeList.length;
+    const numOfStep = executeScript.length;
     let processedStep = 0;
-    while (execute = executeList.shift()) {
+    while (execute = executeScript.shift()) {
       processedStep++;
       this.onProcessing();
       this.progressBarValue = processedStep / numOfStep * 100;
