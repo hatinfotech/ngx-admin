@@ -209,6 +209,9 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
           title: 'Tên',
           type: 'string',
           width: '20%',
+          valuePrepareFunction: (cell, row) => {
+            return cell + ' (' + row['Domain'] + ')'
+          },
         },
         LastUpdate: {
           title: 'Câp nhật lần cuối',
