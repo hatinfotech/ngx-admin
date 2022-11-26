@@ -789,6 +789,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           'SALES': { title: 'Phiếu bán hàng' },
           'DEPLOYMENT': { title: 'Phiếu triển khai' },
           'PRICEREPORT': { title: 'Phiếu báo giá' },
+          'CLBRTORDER': { title: 'Đơn hàng CTV Bán hàng' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems, type);
@@ -850,12 +851,12 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu bán hàng không giống với phiếu xuất kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu xuất kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -868,13 +869,57 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
                     if (voucherDetail.Type === 'PRODUCT') {
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
+                      details.push(newDtailFormGroup);
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          }
+          if (type === 'CLBRTORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/collaborator/orders/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+                if (['APPROVED'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Đơn hàng chưa chốt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu xuất kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  // delete refVoucher.Id;
+                  // delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+
+                // Insert order details into voucher details
+                if (refVoucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Đơn hàng CTV Bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  for (const voucherDetail of refVoucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      // delete voucherDetail.Id;
+                      // delete voucherDetail.Voucher;
+                      // delete voucherDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: [], RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
                       details.push(newDtailFormGroup);
                     }
                   }
@@ -985,7 +1030,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     // }
 
     const extracted = this.commonService.extractGoodsBarcode(barcode);
-    let accessNumber = extracted.accessNumber;
+    let accessNumber = parseInt(extracted.accessNumber as any);
     let productId = extracted.productId;
     let unitSeq = extracted.unitSeq;
     // let unit = this.unitMap[unitSeq];
@@ -1001,7 +1046,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       includeCategories: true,
       includeFeaturePicture: true,
       includeUnit: true,
-      includeContainer: true,
+      includeContainers: true,
       includeInventory: true,
       sort_Id: 'desc',
       offset: 0,
@@ -1012,51 +1057,63 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       console.log(rs);
       const details = this.getDetails(this.array.controls[0] as FormGroup);
       for (const goods of rs) {
-        if (goods.AccessNumbers?.indexOf(accessNumber) > -1) {
-          let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
-          // let existsGoods = details.controls.find(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
-          let existsGoods = details.controls[existGoodsIndex];
-          if (!existsGoods) {
-            if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
-              details.removeAt(0);
-            }
-            existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
-              Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
-              Unit: goods.WarehouseUnit,
-              Container: goods.Container,
-              AccessNumbers: [accessNumber],
-              Quantity: 1,
-              Description: goods.Name,
-              Pictures: goods.Pictures
-            } as any);
-            existsGoods['IsManageByAccessNumber'] = true;
-            details.push(existsGoods);
-            this.newDetailPipSound.nativeElement.play();
 
-            this.activeDetailIndex = details.length - 1;
-            setTimeout(() => {
-              $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
-            }, 0);
-          } else {
-            let currentAccessNumbers = existsGoods.get('AccessNumbers').value || [];
-            this.activeDetailIndex = existGoodsIndex;
-            $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
-            if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-              currentAccessNumbers.push(accessNumber);
-              existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
-              existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
-              this.increaseDetailPipSound.nativeElement.play();
+        if (goods.Containers) {
+          for (const container of goods.Containers) {
+            if (container.AccessNumbers?.indexOf(accessNumber) > -1) {
+              // details['IsManageByAccessNumber'] = true;
+              let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+              // let existsGoods = details.controls.find(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+              let existsGoods = details.controls[existGoodsIndex];
+              if (!existsGoods) {
+                if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
+                  details.removeAt(0);
+                }
+                existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
+                  Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
+                  Unit: goods.WarehouseUnit,
+                  Container: container,
+                  AccessNumbers: [accessNumber],
+                  Quantity: 1,
+                  Description: goods.Name,
+                  Pictures: goods.Pictures,
+                } as any);
+                existsGoods['IsManageByAccessNumber'] = true;
+                existsGoods['ContainerList'] = [container];
+                details.push(existsGoods);
+                this.newDetailPipSound.nativeElement.play();
+
+                this.activeDetailIndex = details.length - 1;
+                setTimeout(() => {
+                  $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+                }, 0);
+              } else {
+                existsGoods['IsManageByAccessNumber'] = true;
+                existsGoods['ContainerList'] = [container];
+                let currentAccessNumbers = existsGoods.get('AccessNumbers').value || [];
+                this.activeDetailIndex = existGoodsIndex;
+                $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+                if (currentAccessNumbers.indexOf(accessNumber) < 0) {
+                  currentAccessNumbers.push(accessNumber);
+                  existsGoods.get('Container').setValue(container);
+                  existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
+                  existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
+                  this.increaseDetailPipSound.nativeElement.play();
+                } else {
+                  this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
+                  this.errorSound.nativeElement.play();
+                  $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
+                }
+              }
+              break;
             } else {
-              this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
+              this.commonService.toastService.show(`${goods.Code} - ${goods.Name} không có trong kho !`, 'Hàng hóa không có trong kho !', { status: 'warning' });
               this.errorSound.nativeElement.play();
-              $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
             }
           }
-          break;
-        } else {
-          this.commonService.toastService.show(`${goods.Code} - ${goods.Name} không có trong kho !`, 'Hàng hóa không có trong kho !', { status: 'warning' });
-          this.errorSound.nativeElement.play();
         }
+
+
       }
     });
 

@@ -25,6 +25,7 @@
                                 <td>#</td>
                                 <td class="">{{'Common.code' | translate | headtitlecase}}</td>
                                 <td class="">{{'Common.customer' | translate | headtitlecase}}</td>
+                                <td class="">{{'Nhóm' | translate | headtitlecase}}</td>
                                 <td class="">{{'Common.phone' | translate | headtitlecase}}</td>
                                 <td class="" style="white-space: nowrap">{{'Common.address' | translate | headtitlecase}}</td>
                                 <td class="">{{'Common.note' | translate | headtitlecase}}</td>
@@ -34,8 +35,9 @@
                             </thead>
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
-                                <td><div style="max-width: 70px; overflow: hidden; text-overflow: ellipsis;">{{detail.Object}}</div></td>
+                                <td>{{detail.Object}}</td>
                                 <td>{{detail.ObjectName}}</td>
+                                <td><ng-container *ngIf="detail.ObjectContactGroups">{{detail.ObjectContactGroups | objectstext}}</ng-container></td>
                                 <td>{{detail.ObjectPhone}}</td>
                                 <td>{{detail.ObjectAddress}}</td>
                                 <td>{{detail.ObjectNote}}</td>
@@ -44,6 +46,7 @@
                                 <td class="text-align-right" style="font-weight: bold;" [innerHtml]="renderCurrency(detail.TailAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
+                                <td> </td>
                                 <td> </td>
                                 <td> </td>
                                 <td> </td>

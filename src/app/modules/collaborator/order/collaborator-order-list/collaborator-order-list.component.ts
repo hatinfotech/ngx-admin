@@ -346,7 +346,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
-              instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
+              if (false) instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);// Todo: tmp disabled
               // instance.disabled = (value === 'APPROVE');
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';

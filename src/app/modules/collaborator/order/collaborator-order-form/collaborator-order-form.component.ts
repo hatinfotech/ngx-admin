@@ -620,6 +620,16 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // DirectReceiverName: [''],
       // PaymentStep: [''],
       // PriceTable: [''],
+      Shipper: [''],
+      ShipperName: [''],
+      ShipperPhone: [''],
+      ShipperEmail: [''],
+      ShipperAddress: [''],
+      // Publisher: [''],
+      // PublisherName: [''],
+      // PublisherPhone: [''],
+      // PublisherEmail: [''],
+      // PublisherAddress: [''],
       Province: ['', Validators.required],
       District: ['', Validators.required],
       Ward: ['', Validators.required],
@@ -713,8 +723,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
-      Reason: [''],
-      AccessNumbers: [],
+      // Reason: [''],
+      // AccessNumbers: [],
       Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
@@ -808,6 +818,28 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           formGroup.get('ObjectIdentifiedNumber').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onPublisherChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ShipperName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ShipperPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ShipperPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ShipperEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ShipperEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ShipperAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ShipperAddress').setValue(selectedData['Address']);
+
         }
       }
     }

@@ -379,7 +379,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       putData[this.idKey] = item[this.idKey];
     }
 
-    this.commonService.showDialog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), [
+    this.commonService.showDialog(this.commonService.translateText(nextState.confirmText), nextState.confirmText + ': ' + this.getItemDescription(item), [
       {
         label: this.commonService.translateText('Common.cancel'),
         status: 'primary',

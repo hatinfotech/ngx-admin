@@ -87,7 +87,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   // }
 
   renderTitle(data: CollaboratorOrderModel) {
-    return `PhieuBaoGia_${this.getIdentified(data).join('-')}` + (data.Reported ? ('_' + this.datePipe.transform(data.Reported, 'short')) : '');
+    return `Don_Hang_${this.getIdentified(data).join('-')}` + (data.DateofOrder ? ('_' + this.datePipe.transform(data.DateofOrder, 'short')) : '');
   }
 
   close() {
@@ -283,7 +283,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   }
 
   getItemDescription(item: CollaboratorOrderModel) {
-    return item?.Description;
+    return item?.Title;
   }
 
   summaryCalculate(data: CollaboratorOrderModel[]) {

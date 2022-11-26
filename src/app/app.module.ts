@@ -831,6 +831,42 @@ export class AppModule {
     responseTitle: 'Common.completed',
     responseText: 'Common.completeSuccess',
   };
+  static returnState: ProcessMap = {
+    state: 'RETURN',
+    label: 'Trả hàng',
+    confirmLabel: 'Trả hàng',
+    status: 'danger',
+    outline: true,
+    nextState: '',
+    nextStateLabel: '',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái trả hàng',
+    responseTitle: 'Trả hàng',
+    responseText: 'Đã chuyển sang trạng thái trả hàng',
+  };
+  static transportState: ProcessMap = {
+    state: 'TRANSPORT',
+    label: 'Đang vận chuyển',
+    confirmLabel: 'Vận chuyển',
+    status: 'primary',
+    outline: true,
+    nextState: '',
+    nextStateLabel: '',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái đang vận chuyển',
+    responseTitle: 'Đang vận chuyển',
+    responseText: 'Đã chuyển sang trạng thái đang vận chuyển',
+  };
+  static deliveredState: ProcessMap = {
+    state: 'DELIVERED',
+    label: 'Đã giao hàng',
+    confirmLabel: 'Đã giao hàng',
+    status: 'success',
+    outline: true,
+    nextState: '',
+    nextStateLabel: '',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái đã giao hàng',
+    responseTitle: 'Đã giao hàng',
+    responseText: 'Đã chuyển sang trạng thái đã giao hàng',
+  };
   static depploymentState: ProcessMap = {
     state: 'DEPLOYMENT',
     label: 'Common.deployed',
@@ -1525,32 +1561,56 @@ export class AppModule {
         ...AppModule.proccessingState,
         nextState: 'APPROVED',
         nextStates: [
-          { ...AppModule.approvedState, status: 'success' },
+          { ...AppModule.approvedState, confirmLabel: 'Chốt đơn', confirmText: 'Bạn có muốn chốt đơn', status: 'success' },
           AppModule.unrecordedState,
         ],
       },
       "APPROVED": {
         ...AppModule.approvedState,
-        label: 'Collaborator.Order.approved',
+        label: 'Chốt đơn',
+        nextState: 'COMPLETE',
+        nextStates: [
+          { ...AppModule.transportState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "TRANSPORT": {
+        ...AppModule.transportState,
+        nextState: 'DELIVERED',
+        nextStates: [
+          { ...AppModule.deliveredState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "DELIVERED": {
+        ...AppModule.deliveredState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          // { ...AppModule.returnState, status: 'danger' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "RETURN": {
+        ...AppModule.returnState,
         nextState: 'COMPLETE',
         nextStates: [
           { ...AppModule.completeState, status: 'success' },
           AppModule.unrecordedState,
         ],
       },
-      "COMPLETE": {
-        ...AppModule.completeState,
-        nextState: 'UNRECORDED',
-        nextStates: [
-          AppModule.unrecordedState,
-        ],
-      },
+      // "COMPLETE": {
+      //   ...AppModule.completeState,
+      //   nextState: 'UNRECORDED',
+      //   nextStates: [
+      //     AppModule.unrecordedState,
+      //   ],
+      // },
       "UNRECORDED": {
         ...AppModule.unrecordedState,
         nextState: 'APPROVED',
         nextStates: [
           AppModule.proccessingState,
-          AppModule.approvedState,
+          // { ...AppModule.approvedState, label: 'Chốt đơn', status: 'success' },
           AppModule.unrecordedState,
         ],
       },

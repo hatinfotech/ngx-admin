@@ -29,6 +29,9 @@
                 <nb-tab *ngIf="components['CLBRTAWARD']" tabTitle="{{components['CLBRTAWARD'].title}}">
                     <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTAWARD')" [context]="components['CLBRTAWARD']"></ngx-collaborator-award-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['CLBRTORDER']" tabTitle="{{components['CLBRTORDER'].title}}">
+                    <ngx-collaborator-order-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTORDER')" [context]="components['CLBRTORDER']"></ngx-collaborator-order-list>
+                </nb-tab>
                 <nb-tab *ngIf="components['INVENTORYADJUST']" tabTitle="{{components['INVENTORYADJUST'].title}}">
                     <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'INVENTORYADJUST')" [context]="components['INVENTORYADJUST']"></ngx-collaborator-award-list>
                 </nb-tab>

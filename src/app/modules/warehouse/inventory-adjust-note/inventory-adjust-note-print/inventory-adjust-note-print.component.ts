@@ -92,6 +92,39 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
       },
     });
 
+    this.actionButtonList.unshift({
+      name: 'print-access-numbers',
+      status: 'primary',
+      label: this.commonService.textTransform(this.commonService.translate.instant('In mã vạch cũ'), 'head-title'),
+      icon: 'grid-outline',
+      title: this.commonService.textTransform(this.commonService.translate.instant('In lại mã vạch cũ (mã quét được trong lúc kiểm kho)'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: (event: any, option: any) => {
+        const item = this.data[option.index];
+        let newAccessNumbers: string[] = [];
+        if (item.Details) {
+          for (const detail of item.Details) {
+            if (detail?.AccessNumbers) {
+              newAccessNumbers = newAccessNumbers.concat(detail.AccessNumbers.filter(f => !f.IsNew).map(m => m.AccessNumber));
+            }
+          }
+        }
+        // this.apiService.getPromise('', {});
+
+        this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+          context: {
+            // voucher: item.Code,
+            id: newAccessNumbers,
+            // id: ['xxx']
+          }
+        });
+        return false;
+      },
+    });
+
     this.summaryCalculate(this.data);
 
     return result;
@@ -162,7 +195,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true, onlyNewAccessNumbers: true }).then(rs => {
+    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true, onlyNewAccessNumbersx: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
         // let no = 1;
