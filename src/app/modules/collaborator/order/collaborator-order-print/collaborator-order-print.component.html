@@ -80,8 +80,16 @@
                             </ng-container>
                             <tr>
                                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}</td>
-                                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td colspan="4" class="text-align-right">{{'Tiền hàng' | translate | headtitlecase}}</td>
                                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="text-align-right">{{'Phí vận chuyển' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{data['DeliveryCost'] | currency:'VND'}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="6" class="text-align-right"><b>{{'Tổng cộng' | translate | headtitlecase}}</b></td>
+                                <td class="text-align-right"><b>{{(data['Total'] + data['DeliveryCost']) | currency:'VND'}}</b></td>
                             </tr>
                         </table>
                     </div>

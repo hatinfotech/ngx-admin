@@ -634,6 +634,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       District: ['', Validators.required],
       Ward: ['', Validators.required],
       DeliveryAddress: ['', Validators.required],
+      DeliveryCost: [null],
       DateOfOrder: [new Date(), Validators.required],
       // DateOfDelivery: [''],
       Title: ['', Validators.required],

@@ -32,7 +32,7 @@ export class AccountingReportComponent extends BaseComponent {
     const reportFromDate = localStorage.getItem('Accounting.ReportFromDate');
     const reportToDate = localStorage.getItem('Accounting.ReportToDate');
     this.formItem = this.formBuilder.group({
-      GlobalAccField1: [null, Validators.required],
+      GlobalAccField1: [],
       GlobalAccField2: [],
       GlobalAccField3: [],
       FromDate: [reportToDate ? new Date(parseInt(reportFromDate)) : new Date()],
