@@ -48,6 +48,11 @@
                   <input type="text" nbInput fullWidth formControlName="ForwardUserToken" placeholder="{{'Common.forwardUserToken' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="AppSecret" label="App Secret" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="AppSecret" placeholder="{{'App Secret' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
               <div class="col-sm-9">
                 <ngx-form-group [formGroup]="formItem" name="Description" label="Common.description" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">

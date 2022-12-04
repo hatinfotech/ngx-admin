@@ -91,6 +91,7 @@ export class ZaloOfficialAccountFormComponent extends DataManagerFormComponent<Z
       ApiUrl: ['https://openapi.zalo.me/v2.0', Validators.required],
       Forward: [''],
       ForwardUserToken: [''],
+      AppSecret: [''],
       IsEnabled: [true],
       IsDefault: [false],
     });
