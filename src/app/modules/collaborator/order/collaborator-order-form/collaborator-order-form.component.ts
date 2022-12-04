@@ -5,15 +5,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../../../../environments/environment.prod';
-import { Select2, Select2QueryOptions } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { ChatRoomMemberModel, ChatRoomModel } from '../../../../models/chat-room.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesPriceReportModel, SalesPriceReportDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -21,6 +21,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 
@@ -42,6 +43,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public ref: NbDialogRef<CollaboratorOrderFormComponent>,
     public collaboratorService: CollaboratorService,
     public adminProductService: AdminProductService,
+    public mobileAppService: MobileAppService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
 
@@ -65,6 +67,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   idKey = 'Code';
   apiPath = '/collaborator/orders';
   baseFormUrl = '/collaborator/order/form';
+  listUrl = '/collaborator/order/list';
 
   env = environment;
 
@@ -76,7 +79,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     digitsOptional: false,
     digits: 2
   });
-  
+
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
   taxList: (TaxModel & { id?: string, text?: string })[];
@@ -275,7 +278,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   };
 
   getRequestId(callback: (id?: string[]) => void) {
-    callback(this.inputId);
+    // callback(this.inputId);
+    return super.getRequestId(callback);
   }
 
   select2OptionForProduct = {
@@ -296,7 +300,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
-        this.apiService.getPromise('/collaborator/product-subscriptions', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value }).then(rs => {
+        this.apiService.getPromise('/collaborator/products', { includeIdText: true, limit: 40, includeUnit: false, includeSubscribed: true, includePrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -482,6 +486,111 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         });
       }
 
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'click2call',
+        status: 'danger',
+        label: 'Gọi cho khách',
+        icon: 'phone-call-outline',
+        title: 'Gọi cho khách',
+        size: 'medium',
+        click: () => {
+          this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+            {
+              status: 'basic',
+              label: 'Trở về',
+            },
+            {
+              status: 'danger',
+              icon: 'phone-call-outline',
+              label: 'Gọi ngay',
+              action: () => {
+                this.apiService.putPromise(this.apiPath + '/' + this.id[0], { click2call: true }, [{ Code: this.id[0] }]).then(rs => {
+                  console.log(rs);
+                });
+              },
+            }
+          ]);
+          return false;
+        },
+      });
+
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'opentask',
+        status: 'primary',
+        label: 'Chat với CTV Bán hàng',
+        icon: 'message-circle',
+        title: 'Chat với CTV Bán hàng',
+        size: 'medium',
+        click: () => {
+          this.commonService.showDialog('Chat với CTV Bán hàng', 'Bạn có muốn chát với CTV Bán hàng không ? hệ thống sẽ tạo task và add CTV Bán hàng liên quan vào !', [
+            {
+              status: 'basic',
+              label: 'Trở về',
+            },
+            {
+              status: 'primary',
+              icon: 'message-circle',
+              label: 'Chat',
+              action: async () => {
+                const voucher  = this.array.controls[0].value;
+                let task = voucher.RelativeVouchers?.find(f => f.type == 'CHATROOM');
+                if (task) {
+                  this.commonService.openMobileSidebar();
+                  this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+                } else {
+                  // Assign resource to chat room
+                  task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+                    Code: null,
+                    Resources: [
+                      {
+                        ResourceType: 'CLBRTORDER',
+                        Resource: voucher.Code,
+                        Title: voucher.Title,
+                        Date: voucher.DateOfOrder,
+                      }
+                    ]
+                  }]).then(rs => {
+                    if (rs && rs.length > 0) {
+                      // const link = rs[0].Resources[0];
+                      // if (link && link.ChatRoom) {
+
+                      // Add publisher to chat room
+                      this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
+                        ChatRoom: rs[0].Code as any,
+                        Type: 'CONTACT',
+                        RefUserUuid: this.commonService.getObjectId(voucher.Publisher),
+                        Name: voucher.PublisherName,
+                        Page: voucher.Page,
+                        RefPlatform: 'PROBOXONE',
+                        RefType: 'PUBLISHER',
+                        id: this.commonService.getObjectId(voucher.Publisher),
+                      }]).then(rs2 => {
+
+                        // Connect publisher
+                        this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
+                          Type: 'CONTACT',
+                          Contact: rs2[0].Contact,
+                        }]).then(rs3 => {
+                          this.commonService.openMobileSidebar();
+                          this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
+                        });
+
+                      });
+
+                      // }
+                      return { id: rs[0].Code, text: voucher.Title, type: 'TASK' };
+                    }
+                  });
+                }
+              },
+            }
+          ]);
+          return false;
+        },
+      });
+
       // Add page choosed
       // this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
       //   this.actionButtonList.unshift({
@@ -601,7 +710,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
     const newForm = this.formBuilder.group({
       Page: [this.collaboratorService.currentpage$.value, Validators.required],
-      Code: [''],
+      Code: { disabled: false, value: null },
       Object: [''],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -609,7 +718,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       ObjectAddress: [''],
       ObjectBankName: [''],
       ObjectBankAccount: [''],
-      ObjectIdentifiedNumber: [''],
+      // ObjectIdentifiedNumber: [''],
       // Contact: [''],
       // ContactName: [''],
       // ContactPhone: [''],
@@ -625,16 +734,17 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       ShipperPhone: [''],
       ShipperEmail: [''],
       ShipperAddress: [''],
-      // Publisher: [''],
-      // PublisherName: [''],
-      // PublisherPhone: [''],
-      // PublisherEmail: [''],
-      // PublisherAddress: [''],
+      Publisher: [''],
+      PublisherName: [''],
+      PublisherPhone: [''],
+      PublisherEmail: [''],
+      PublisherAddress: [''],
       Province: ['', Validators.required],
       District: ['', Validators.required],
       Ward: ['', Validators.required],
       DeliveryAddress: ['', Validators.required],
       DeliveryCost: [null],
+      OriginDeliveryCost: [null],
       DateOfOrder: [new Date(), Validators.required],
       // DateOfDelivery: [''],
       Title: ['', Validators.required],
@@ -697,9 +807,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   goback(): false {
-    super.goback();
+    // super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/promotion/promotion/list']);
+      this.router.navigate([this.listUrl]);
     } else {
       this.ref.close();
       // this.dismiss();
@@ -726,7 +836,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Image: [[]],
       // Reason: [''],
       // AccessNumbers: [],
-      Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
+      // Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
     if (data) {
@@ -825,6 +935,28 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   onPublisherChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('PublisherName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('PublisherPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('PublisherPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('PublisherEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('PublisherEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('PublisherAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('PublisherAddress').setValue(selectedData['Address']);
+
+        }
+      }
+    }
+  }
+
+  onShipperChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
     // console.info(item);
 
     if (!this.isProcessing) {
@@ -1067,5 +1199,35 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   // onChangePage(page: CollaboratorPageModel) {
   //   this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
   // }
+
+  saveAndClose() {
+    // const createMode = !this.isEditMode;
+    this.save().then(rs => {
+      // this.goback();
+      // if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
+      //   this.preview(this.makeId(rs[0]), 'list', 'print');
+      // }
+      this.commonService.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
+        {
+          label: 'Trở về',
+          status: 'basic',
+          action: () => {
+
+          }
+        },
+        {
+          label: 'Chốt đơn',
+          status: 'success',
+          action: () => {
+            this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
+              this.commonService.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
+              this.goback();
+            });
+          }
+        },
+      ])
+    });
+    return false;
+  }
 
 }

@@ -13,7 +13,7 @@ import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-man
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
+import { CollaboratorCommissionVoucherModel, CollaboratorOrderModel } from '../../../../models/collaborator.model';
 import { PageModel } from '../../../../models/page.model';
 import { PriceReportModel } from '../../../../models/price-report.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
@@ -35,10 +35,10 @@ import { ChatRoomModel } from '../../../../models/chat-room.model';
 export class CollaboratorOrderListComponent extends ServerDataManagerListComponent<CollaboratorOrderModel> implements OnInit {
 
   componentName: string = 'CollaboratorOrderListComponent';
-  formPath = '/sales/order/form';
+  formPath = '/collaborator/page/order/form';
   apiPath = '/collaborator/orders';
   idKey = 'Code';
-  formDialog = CollaboratorOrderFormComponent;
+  // formDialog = CollaboratorOrderFormComponent;
   printDialog = CollaboratorOrderPrintComponent;
 
   reuseDialog = true;
@@ -223,109 +223,109 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
           width: '20%',
         },
-        Call: {
-          title: 'Call',
-          type: 'custom',
-          width: '10%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'phone-call-outline';
-            instance.display = true;
-            instance.status = 'success';
-            instance.valueChange.subscribe(value => {
-            });
+        // Call: {
+        //   title: 'Call',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'phone-call-outline';
+        //     instance.display = true;
+        //     instance.status = 'success';
+        //     instance.valueChange.subscribe(value => {
+        //     });
 
-            instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-              const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
-              if (priceReportRef) {
-                this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
-                  {
-                    status: 'basic',
-                    label: 'Trở về',
-                  },
-                  {
-                    status: 'success',
-                    icon: 'phone-call-outline',
-                    label: 'Gọi ngay',
-                    action: () => {
-                      this.apiService.putPromise('/collaborator/price-reports/' + priceReportRef.id, { click2call: true }, [{ Code: priceReportRef.id }]).then(rs => {
-                        console.log(rs);
-                      });
-                    },
-                  }
-                ]);
-              }
-            });
-          },
-        },
-        Task: {
-          title: 'Task',
-          type: 'custom',
-          width: '10%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'message-circle';
-            instance.display = true;
-            instance.status = 'info';
-            instance.title = 'Tạo task trao đổi với CTV';
-            instance.valueChange.subscribe(value => {
-            });
+        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
+        //       const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
+        //       if (priceReportRef) {
+        //         this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+        //           {
+        //             status: 'basic',
+        //             label: 'Trở về',
+        //           },
+        //           {
+        //             status: 'success',
+        //             icon: 'phone-call-outline',
+        //             label: 'Gọi ngay',
+        //             action: () => {
+        //               this.apiService.putPromise('/collaborator/price-reports/' + priceReportRef.id, { click2call: true }, [{ Code: priceReportRef.id }]).then(rs => {
+        //                 console.log(rs);
+        //               });
+        //             },
+        //           }
+        //         ]);
+        //       }
+        //     });
+        //   },
+        // },
+        // Task: {
+        //   title: 'Task',
+        //   type: 'custom',
+        //   width: '10%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'message-circle';
+        //     instance.display = true;
+        //     instance.status = 'info';
+        //     instance.title = 'Tạo task trao đổi với CTV';
+        //     instance.valueChange.subscribe(value => {
+        //     });
 
-            instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-              let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
-              if (task) {
-                this.commonService.openMobileSidebar();
-                this.mobileAppService.openChatRoom({ ChatRoom: task.id });
-              } else {
-                // Assign resource to chat room
-                task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
-                  Code: null,
-                  Resources: [
-                    {
-                      ResourceType: 'CLBRTORDER',
-                      Resource: row.Code,
-                      Title: row.Title,
-                      Date: row.DateOfOrder,
-                    }
-                  ]
-                }]).then(rs => {
-                  if (rs && rs.length > 0) {
-                    // const link = rs[0].Resources[0];
-                    // if (link && link.ChatRoom) {
+        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
+        //       let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
+        //       if (task) {
+        //         this.commonService.openMobileSidebar();
+        //         this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+        //       } else {
+        //         // Assign resource to chat room
+        //         task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+        //           Code: null,
+        //           Resources: [
+        //             {
+        //               ResourceType: 'CLBRTORDER',
+        //               Resource: row.Code,
+        //               Title: row.Title,
+        //               Date: row.DateOfOrder,
+        //             }
+        //           ]
+        //         }]).then(rs => {
+        //           if (rs && rs.length > 0) {
+        //             // const link = rs[0].Resources[0];
+        //             // if (link && link.ChatRoom) {
 
-                    // Add publisher to chat room
-                    this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
-                      ChatRoom: rs[0].Code as any,
-                      Type: 'CONTACT',
-                      RefUserUuid: this.commonService.getObjectId(row.Publisher),
-                      Name: row.PublisherName,
-                      Page: row.Page,
-                      RefPlatform: 'PROBOXONE',
-                      RefType: 'PUBLISHER',
-                      id: this.commonService.getObjectId(row.Publisher),
-                    }]).then(rs2 => {
+        //             // Add publisher to chat room
+        //             this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
+        //               ChatRoom: rs[0].Code as any,
+        //               Type: 'CONTACT',
+        //               RefUserUuid: this.commonService.getObjectId(row.Publisher),
+        //               Name: row.PublisherName,
+        //               Page: row.Page,
+        //               RefPlatform: 'PROBOXONE',
+        //               RefType: 'PUBLISHER',
+        //               id: this.commonService.getObjectId(row.Publisher),
+        //             }]).then(rs2 => {
 
-                      // Connect publisher
-                      this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
-                        Type: 'CONTACT',
-                        Contact: rs2[0].Contact,
-                      }]).then(rs3 => {
-                        this.commonService.openMobileSidebar();
-                        this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
-                      });
+        //               // Connect publisher
+        //               this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
+        //                 Type: 'CONTACT',
+        //                 Contact: rs2[0].Contact,
+        //               }]).then(rs3 => {
+        //                 this.commonService.openMobileSidebar();
+        //                 this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
+        //               });
 
-                    });
+        //             });
 
-                    // }
-                    return { id: rs[0].Code, text: row.Title, type: 'TASK' };
-                  }
-                });
-              }
-            });
-          },
-        },
+        //             // }
+        //             return { id: rs[0].Code, text: row.Title, type: 'TASK' };
+        //           }
+        //         });
+        //       }
+        //     });
+        //   },
+        // },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -355,26 +355,57 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
               // this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
               // this.refresh();
-              // if (rowData.State == 'PROCESSING') {
-              //   const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
-              //   if (priceReportRef) {
-              //     this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-              //       context: {
-              //         inputId: [priceReportRef.id],
-              //         inputMode: 'dialog',
-              //         showLoadinng: true,
-              //         onDialogSave: () => {
-              //           this.refresh();
-              //         },
-              //         onDialogClose: () => { },
-              //       }
-              //     });
-              //   }
-              // } else {
-              this.preview([rowData]);
-              // }
+              if (rowData.State == 'PROCESSING') {
+                // const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
+                // if (priceReportRef) {
+                //   this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                //     context: {
+                //       inputId: [priceReportRef.id],
+                //       inputMode: 'dialog',
+                //       showLoadinng: true,
+                //       onDialogSave: () => {
+                //         this.refresh();
+                //       },
+                //       onDialogClose: () => { },
+                //     }
+                //   });
+                // }
+                this.openForm([rowData.Code]);
+              } else {
+                this.preview([rowData]);
+              }
 
               // });
+            });
+          },
+        },
+        Permission: {
+          title: this.commonService.translateText('Common.permission'),
+          type: 'custom',
+          width: '5%',
+          class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'shield';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.style = 'text-align: right';
+            instance.class = 'align-right';
+            instance.title = this.commonService.translateText('Common.preview');
+            instance.valueChange.subscribe(value => {
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
+
+              this.commonService.openDialog(ResourcePermissionEditComponent, {
+                context: {
+                  inputMode: 'dialog',
+                  inputId: [rowData.Code],
+                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  apiPath: this.apiPath,
+                }
+              });
             });
           },
         },
@@ -471,30 +502,31 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         onChange: async (data: CollaboratorOrderModel, printComponent: CollaboratorOrderPrintComponent) => {
 
           printComponent.close();
-          // if (data.State === 'PROCESSING') {
-          //   // Get relative vouchers
-          //   // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
-          //   if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
-          //     const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
-          //     if (priceReportRef) {
-          //       this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-          //         context: {
-          //           inputId: [priceReportRef.id],
-          //           inputMode: 'dialog',
-          //           onDialogSave: async (data) => {
-          //             console.log(data);
-          //             // setTimeout(() => {
-          //             this.refresh();
-          //             // }, 1000);
-          //           },
-          //           onDialogClose: () => { },
-          //         }
-          //       });
-          //     }
-          //   }
-          // } else {
-          this.refresh();
-          // }
+          if (data.State === 'PROCESSING') {
+            // Get relative vouchers
+            // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
+            // if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
+            // const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
+            // if (priceReportRef) {
+            // this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+            //   context: {
+            //     inputId: [priceReportRef.id],
+            //     inputMode: 'dialog',
+            //     onDialogSave: async (data) => {
+            //       console.log(data);
+            //       // setTimeout(() => {
+            //       this.refresh();
+            //       // }, 1000);
+            //     },
+            //     onDialogClose: () => { },
+            //   }
+            // });
+            this.gotoForm(data.Code);
+            // }
+            // }
+          } else {
+            this.refresh();
+          }
 
         },
         onSaveAndClose: () => {

@@ -920,6 +920,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: [], RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
+                      newDtailFormGroup.get('Business').setValue([{id: 'WHTRANSPORT', text: 'Đang vận chuyển (xuất kho hàng đi đường)', 'type': 'WAREHOUSEDELIVERY'}]);
                       details.push(newDtailFormGroup);
 
                       this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);

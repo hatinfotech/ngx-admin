@@ -116,6 +116,7 @@ import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/b
 import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator/advance-strategy/advance-strategy-list/collaborator-advance-strategy-list.component';
 import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
 import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
+import { CollaboratorOrderFormComponent } from './modules/collaborator/order/collaborator-order-form/collaborator-order-form.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -994,6 +995,14 @@ const routes: Routes = [
         data: {
           reuse: true,
         },
+      },
+      {
+        path: 'order/form',
+        component: CollaboratorOrderFormComponent,
+      },
+      {
+        path: 'order/form/:id',
+        component: CollaboratorOrderFormComponent,
       },
       {
         path: 'product/list',
