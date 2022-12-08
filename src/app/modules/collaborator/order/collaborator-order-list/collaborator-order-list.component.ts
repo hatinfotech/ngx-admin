@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableButtonComponent, SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -189,18 +189,28 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             // instance.format$.next('medium');
           },
         },
-        // Amount: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
-        //   type: 'custom',
-        //   class: 'align-right',
-        //   width: '10%',
-        //   position: 'right',
-        //   renderComponent: SmartTableCurrencyComponent,
-        //   onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-        //     // instance.format$.next('medium');
-        //     instance.style = 'text-align: right';
-        //   },
-        // },
+        Amount: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Tiền hàng'), 'head-title'),
+          type: 'custom',
+          class: 'align-right',
+          width: '10%',
+          position: 'right',
+          renderComponent: SmartTableCurrencyComponent,
+          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+            instance.style = 'text-align: right';
+          },
+        },
+        Total: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Tổng tiền'), 'head-title'),
+          type: 'custom',
+          class: 'align-right',
+          width: '10%',
+          position: 'right',
+          renderComponent: SmartTableCurrencyComponent,
+          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+            instance.style = 'text-align: right';
+          },
+        },
         RelativeVouchers: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
