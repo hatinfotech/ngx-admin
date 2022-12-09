@@ -327,7 +327,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
         params['eq_Object'] = this.object;
       }
       if (this.accounts) {
-        params['eq_Account'] = this.accounts.join(',');
+        params['eq_Accounts'] = this.accounts.join(',');
       }
       if (this.balance) {
         params['balance'] = this.balance;
@@ -335,8 +335,10 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
       if (this.report) {
         params[this.report] = true;
       } else {
-        params['reportDetailByObject'] = true;
+        // params['reportDetailByObject'] = true;
       }
+      params['groupBy'] = 'Voucher,WriteNo';
+      params['includeRowHeader'] = true;
       params['includeIncrementAmount'] = true;
 
       // if (this.accountingService?.reportToDate$?.value) {

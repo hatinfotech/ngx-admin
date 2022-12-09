@@ -179,6 +179,10 @@ export class ApiService {
     if (/^http/i.test(path)) {
       return `${path}?${paramsStr}`;
     }
+    if (/^\/v\d+/i.test(path)) {
+      const baseUrl = this.baseApiUrl.replace(/\/v\d+.*/, '');
+      return `${baseUrl}${path}?${paramsStr}`;
+    }
     return `${this.baseApiUrl}${path}?${paramsStr}`;
   }
 

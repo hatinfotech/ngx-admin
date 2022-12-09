@@ -1,0 +1,14 @@
+<div class="dialog-wrap {{inputMode}}">
+    <nb-card class="small-header smart-table no-border">
+        <nb-card-header>
+            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Góp vốn' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+
+        <nb-card-body>
+            <div class="ng2-smart-table-wrap">
+                <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+                </ng2-smart-table>
+            </div>
+        </nb-card-body>
+    </nb-card>
+</div>

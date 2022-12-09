@@ -39,6 +39,7 @@ export class AccountingDashboardComponent implements OnDestroy {
   goodsStatisticsData: {};
   cashFlowStatisticsData: {};
   debtStatisticsData: {};
+  investStatisticsData: {};
   profitStatisticsData: {};
   orderStatisticsData: {};
   publisherRegisteredStatisticsData: {};
@@ -373,7 +374,7 @@ export class AccountingDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
-    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummary: true, eq_Accounts: "111,112,511,521,515,521,632,635,642,641,623,2288,711,811,131,331", skipHeader: true, branch: pages, toDate: toDate, fromDate: fromDate, limit: 'nolimit' }).then(summaryReport => {
+    this.apiService.getPromise<any[]>('/accounting/reports', { reportSummaryx: true, eq_Accounts: "111,112,511,521,515,521,632,635,642,641,623,2288,711,811,131,331", groupBy: 'Account', skipHeaderx: true, branch: pages, toDate: toDate, fromDate: fromDate, limit: 'nolimit' }).then(summaryReport => {
       console.log(summaryReport);
 
       this.summaryReport = {
@@ -389,11 +390,11 @@ export class AccountingDashboardComponent implements OnDestroy {
       };
       this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.Cost;
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportReceivablesFromCustomer: true, branch: pages, toDate: toDate, sort_TailDebit: 'desc' }).then(customerReceivableDebt => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportReceivablesFromCustomerx: true, eq_Accounts: '131', groupBy: 'Object', branch: pages, toDate: toDate, sort_TailDebit: 'desc' }).then(customerReceivableDebt => {
       this.customerReceivableDebt = customerReceivableDebt;
       console.log(customerReceivableDebt);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportLiabilities: true, branch: pages, toDate: toDate, sort_TailCredit: 'desc' }).then(liabilitityDebt => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportLiabilitiesz: true, eq_Accounts: '331', groupBy: 'Object', branch: pages, toDate: toDate, sort_TailCredit: 'desc' }).then(liabilitityDebt => {
       this.liabilitityDebt = liabilitityDebt;
       console.log(liabilitityDebt);
     });
@@ -504,10 +505,10 @@ export class AccountingDashboardComponent implements OnDestroy {
     const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
-    line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line2Data = goldFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line3Data = cashInBankFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line4Data = cashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
@@ -537,25 +538,25 @@ export class AccountingDashboardComponent implements OnDestroy {
     this.cashFlowStatisticsData = {
       labels: labels,
       datasets: [
+        // {
+        //   label: 'Voucher',
+        //   // data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+        //   data: mergeData.map(point => point.Line1['Value']),
+        //   borderColor: this.colors.primary,
+        //   // backgroundColor: colors.danger,
+        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
+        //   // fill: true,
+        //   // borderDash: [5, 5],
+        //   pointRadius: pointRadius,
+        //   pointHoverRadius: 10,
+        // },
         {
-          label: 'Voucher',
-          // data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line1['Value']),
-          borderColor: this.colors.primary,
+          label: 'Tiền mặt',
+          // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line4['Value']),
+          borderColor: this.colors.danger,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: pointRadius,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Vàng',
-          // data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.warning,
-          // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: pointRadius,
@@ -574,14 +575,26 @@ export class AccountingDashboardComponent implements OnDestroy {
           pointHoverRadius: 10,
         },
         {
-          label: 'Tiền mặt',
+          label: 'Vàng',
+          // data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line2['Value']),
+          borderColor: this.colors.warning,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tổng tiền',
           // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-          data: mergeData.map(point => point.Line4['Value']),
+          data: mergeData.map(point => point.Line4['Value'] + point.Line3['Value'] + point.Line2['Value']),
           borderColor: this.colors.success,
           // backgroundColor: colors.danger,
           backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
           // fill: true,
-          // borderDash: [5, 5],
+          borderDash: [5, 5],
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
@@ -592,21 +605,18 @@ export class AccountingDashboardComponent implements OnDestroy {
     const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const loadStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const financialLeasingDebtStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3412]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const a1288Statistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1288]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
     line1Data = customerReceivableStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line2Data = liabilitiesStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
     line3Data = loadStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
     line4Data = financialLeasingDebtStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-    line5Data = a1288Statistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     timeline = [
       ...new Set([
         ...line1Data.map(item => item['Timeline']),
         ...line2Data.map(item => item['Timeline']),
         ...line3Data.map(item => item['Timeline']),
         ...line4Data.map(item => item['Timeline']),
-        ...line5Data.map(item => item['Timeline']),
       ].sort())
     ];
     labels = [];
@@ -615,7 +625,6 @@ export class AccountingDashboardComponent implements OnDestroy {
       const point2 = line2Data.find(f => f.Timeline == t);
       const point3 = line3Data.find(f => f.Timeline == t);
       const point4 = line4Data.find(f => f.Timeline == t);
-      const point5 = line5Data.find(f => f.Timeline == t);
       labels.push(point1?.Label || point2?.Label || point3?.Label || point4?.Label);
       return {
         Label: t,
@@ -623,7 +632,6 @@ export class AccountingDashboardComponent implements OnDestroy {
         Line2: point2 || { Value: 0 },
         Line3: point3 || { Value: 0 },
         Line4: point4 || { Value: 0 },
-        Line5: point5 || { Value: 0 },
       };
     });
 
@@ -678,13 +686,52 @@ export class AccountingDashboardComponent implements OnDestroy {
           pointRadius: pointRadius,
           pointHoverRadius: 10,
         },
+      ],
+    };
+
+    const a1288Statistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1288]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const a411Statistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[4111]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    line1Data = a1288Statistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line2Data = a411Statistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    timeline = [
+      ...new Set([
+        ...line1Data.map(item => item['Timeline']),
+        ...line2Data.map(item => item['Timeline']),
+      ].sort())
+    ];
+    labels = [];
+    mergeData = timeline.map(t => {
+      const point1 = line1Data.find(f => f.Timeline == t);
+      const point2 = line2Data.find(f => f.Timeline == t);
+      labels.push(point1?.Label);
+      return {
+        Label: t,
+        Line1: point1 || { Value: 0 },
+        Line2: point2 || { Value: 0 },
+      };
+    });
+    this.investStatisticsData = {
+      labels,
+      datasets: [
         {
           label: 'Đầu tư khác',
           // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
-          data: mergeData.map(point => point.Line5['Value']),
+          data: mergeData.map(point => point.Line1['Value']),
           borderColor: this.colors.success,
           // backgroundColor: colors.primary,
-          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Góp vốn',
+          // data: financialLeasingDebtStatistics.map(statistic => statistic.SumOfCredit - statistic.SumOfDebit),
+          data: mergeData.map(point => point.Line2['Value']),
+          borderColor: this.colors.primary,
+          // backgroundColor: colors.primary,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: pointRadius,

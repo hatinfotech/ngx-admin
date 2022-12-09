@@ -156,7 +156,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
         console.log(toDate);
         this.refresh();
       });
-      
+
       return rs;
     });
   }
@@ -257,11 +257,13 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
   executeGet(params: any, success: (resources: AccountModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: AccountModel[] | HttpErrorResponse) => void) {
     // params['includeParent'] = true;
     params['reportProfit'] = true;
-    if (this.accountingService?.reportToDate$?.value) {
-      const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-      const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 25, 59, 59, 999);
-      params['toDate'] = toDate.toISOString();
-    }
+    params['eq_Accounts'] = '511,515,512,521,632,635,,641,642,623,811,711';
+    params['groupBy'] = 'Account';
+    // if (this.accountingService?.reportToDate$?.value) {
+    const choosedDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+    const toDate = new Date(choosedDate.getFullYear(), choosedDate.getMonth(), choosedDate.getDate(), 25, 59, 59, 999);
+    params['toDate'] = toDate.toISOString();
+    // }
 
     super.executeGet(params, success, error, complete);
   }

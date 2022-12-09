@@ -148,7 +148,10 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
     const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
     return this.apiService.getPromise<any[]>(this.apiPath, {
-      reportReceivablesFromCustomer: true,
+      // reportReceivablesFromCustomer: true,
+      includeColumnHeader: true,
+      groupBy: 'Object',
+      eq_Accounts: '131',
       fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString(),
       limit: 'nolimit',

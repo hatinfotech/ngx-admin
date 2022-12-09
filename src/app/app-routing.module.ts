@@ -117,6 +117,7 @@ import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator
 import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
 import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
 import { CollaboratorOrderFormComponent } from './modules/collaborator/order/collaborator-order-form/collaborator-order-form.component';
+import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -709,6 +710,13 @@ const routes: Routes = [
       {
         path: 'profit-report',
         component: AccountingProfitReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'contributed-capital-report',
+        component: AccountingContributedCapitalReportComponent,
         data: {
           reuse: true,
         },

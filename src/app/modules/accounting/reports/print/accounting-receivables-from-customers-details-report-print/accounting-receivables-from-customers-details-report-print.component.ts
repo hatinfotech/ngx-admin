@@ -167,9 +167,11 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
     const promiseAll = [];
     for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportDetailByAccountAndObject: true,
-        eq_Account: '131',
+        // reportDetailByAccountAndObject: true,
+        includeRowHeader: true,
+        eq_Accounts: '131',
         eq_Object: object,
+        groupBy: 'Voucher,WriteNo',
         includeIncrementAmount: true,
         includeObjectInfo: true,
         fromDate: fromDate.toISOString(),
@@ -226,6 +228,9 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
       item['TotalReturn'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
+        if(detail['Voucher'] == 'OPN') {
+          detail['GenerateDebit'] = detail['HeadAmount'];
+        }
         item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
         if (detail.VoucherType == 'RECEIPT') {
           item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);

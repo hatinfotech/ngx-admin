@@ -286,7 +286,10 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      params['reportCashFlow'] = true;
+      params['includeColumnHeader'] = true;
+      params['eq_Accounts'] = '131,331';
+      params['groupBy'] = 'Object';
+
     const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
     const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 

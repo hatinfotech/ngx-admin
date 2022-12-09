@@ -151,28 +151,31 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
     const promiseAll = [];
     for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportVoucherByAccountAndObject: true,
-        eq_Account: '131',
+        // reportVoucherByAccountAndObject: true,
+        includeRowHeader: true,
+        eq_Accounts: '131',
         eq_Object: object,
+        groupBy: 'Voucher',
         includeIncrementAmount: true,
         includeObjectInfo: true,
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
       }).then(async data => {
+        const objectInfo = data.find(f => f.Voucher != 'OPN');
 
         const contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + object, {}).then(rs => rs[0]);
 
         const item = {
           FromDate: fromDate,
           ToDate: toDate,
-          ReportDate: new Date(), 
-          'Object': object, 
-          ObjectName: data[0]['ObjectName'], 
-          ObjectPhone: data[0]['ObjectPhone'], 
-          ObjectEmail: data[0]['ObjectEmail'], 
-          ObjectAddress: data[0]['ObjectAddress'], 
-          ObjectNote: contact.Note, 
+          ReportDate: new Date(),
+          'Object': object,
+          ObjectName: objectInfo['ObjectName'],
+          ObjectPhone: objectInfo['ObjectPhone'],
+          ObjectEmail: objectInfo['ObjectEmail'],
+          ObjectAddress: objectInfo['ObjectAddress'],
+          ObjectNote: contact.Note,
           Details: data
         };
         return item;

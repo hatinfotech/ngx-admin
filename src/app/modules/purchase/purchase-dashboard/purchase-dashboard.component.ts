@@ -1,6 +1,6 @@
 import { UnitModel } from './../../../models/unit.model';
 import { Select2Option } from './../../../lib/custom-element/select2/select2.component';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
@@ -24,7 +24,7 @@ interface CardSettings {
   selector: 'ngx-purchase-dashboard',
   templateUrl: './purchase-dashboard.component.html',
   styleUrls: ['./purchase-dashboard.component.scss'],
-  providers: [CurrencyPipe]
+  providers: [CurrencyPipe, DecimalPipe]
 })
 export class PurchaseDashboardComponent implements OnDestroy {
 
@@ -88,6 +88,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
     public formBuilder: FormBuilder,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
+    public decimalPipe: DecimalPipe,
   ) {
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
@@ -445,8 +446,9 @@ export class PurchaseDashboardComponent implements OnDestroy {
 
     this.apiService.getPromise<any[]>('/accounting/reports', {
       reportSummary: true,
-      eq_Accounts: "[156,152,153,632]",
-      skipHeader: true,
+      eq_Accounts: "156,152,153,632",
+      // skipHeader: true,
+      groupBy: 'Account',
       branch: pages,
       toDate: toDate,
       fromDate: fromDate,
@@ -478,12 +480,15 @@ export class PurchaseDashboardComponent implements OnDestroy {
         this.summaryReport.PurchaseAmount += (reportItem.GenerateDebit);
       }
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplier: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromSupplierx: true, eq_Accounts: '156,152,153', isn_Object: null, ne_ContraAccount: '911', groupBy: 'Object', branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
       this.topSupplierList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoods: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
-      this.topGoodsList = rs;
+    this.apiService.getPromise<any>('/accounting/reports', { reportPurchaseFromGoodsx: true, eq_Accounts: '156,152,153', isn_Product: null, ne_ContraAccount: '911', groupBy: 'Product,ProductUnit', includeProductInfo: true, branch: pages, fromDate: fromDate, toDate: toDate, sort_DebitGenerate: 'desc', limit: 100 }).then(rs => {
+      this.topGoodsList = rs.map(m => {
+        m.TailDebitQuantity = this.decimalPipe.transform(m.TailDebitQuantity);
+        return m;
+      });
       console.log(rs);
     });
 

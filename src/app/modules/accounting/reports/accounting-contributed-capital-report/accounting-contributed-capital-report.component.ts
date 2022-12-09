@@ -16,13 +16,13 @@ import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 
 @Component({
-  selector: 'ngx-accounting-receivables-from-employee-report',
-  templateUrl: './accounting-receivables-from-employee-report.component.html',
-  styleUrls: ['./accounting-receivables-from-employee-report.component.scss']
+  selector: 'ngx-accounting-contributed-capital-report',
+  templateUrl: './accounting-contributed-capital-report.component.html',
+  styleUrls: ['./accounting-contributed-capital-report.component.scss']
 })
-export class AccountingReceivablesFromEmployeeReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
+export class AccountingContributedCapitalReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'AccountingReceivablesFromEmployeeReportComponent';
+  componentName: string = 'AccountingContributedCapitalReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
   idKey = 'Code';
@@ -45,7 +45,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<AccountingReceivablesFromEmployeeReportComponent>,
+    public ref: NbDialogRef<AccountingContributedCapitalReportComponent>,
     public accountingService: AccountingService,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
@@ -154,19 +154,19 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
           width: '10%',
         },
         TailDebit: {
-          title: '[' + this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailDebit'),
+          title: '[' + this.commonService.translateText('Hoàn vốn'),
           type: 'acc-currency',
           width: '10%',
           valuePrepareFunction(cell, row) {
-            return -row.TailCredit as any;
+            return row.TailDebit as any;
           }
         },
         TailCredit: {
-          title: this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailCredit') + ']',
+          title: this.commonService.translateText('Góp vốn') + ']',
           type: 'acc-currency',
           width: '10%',
           valuePrepareFunction(cell, row) {
-            return -row.TailDebit as any;
+            return row.TailCredit as any;
           }
         },
         Preview: {
@@ -238,9 +238,8 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
 
       // params['reportReceivablesFromEmployee'] = true;
       params['includeColumnHeader'] = true;
-      params['eq_Accounts'] = '334';
+      params['eq_Accounts'] = '411';
       params['groupBy'] = 'Object';
-      params['sort_TailCredit'] = 'asc';
 
       const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
       const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
@@ -278,10 +277,10 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
       context: {
         inputMode: 'dialog',
         object: rowData.Object,
-        accounts: ['334'],
+        accounts: ['411'],
         fromDate: null,
         toDate: null,
-        report: 'reportDetailByAccountAndObject',
+        // report: 'reportDetailByAccountAndObject',
       },
       closeOnEsc: false,
     })

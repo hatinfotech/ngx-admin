@@ -267,15 +267,19 @@ export class AccountingLiabilitiesReportComponent extends ServerDataManagerListC
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      params['reportLiabilities'] = true;
+      // params['reportLiabilities'] = true;
       const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
       const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 
       const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
       const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
 
+      params['includeColumnHeader'] = true;
+      params['eq_Accounts'] = '331';
+      params['groupBy'] = 'Object';
       params['toDate'] = toDate.toISOString();
       params['fromDate'] = fromDate.toISOString();
+      params['sort_TailCredit'] = 'desc';
 
       return params;
     };
@@ -315,7 +319,7 @@ export class AccountingLiabilitiesReportComponent extends ServerDataManagerListC
         accounts: ['331'],
         fromDate: null,
         toDate: null,
-        report: 'reportDetailByAccountAndObject',
+        // report: 'reportDetailByAccountAndObject',
       },
       closeOnEsc: false,
     })

@@ -10,6 +10,7 @@ import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { ContactModel } from '../../../../../models/contact.model';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -150,19 +151,32 @@ export class AccountingLiabilitiesDetailsReportPrintComponent extends DataManage
     const promiseAll = [];
     for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
-        reportDetailByAccountAndObject: true,
-        eq_Account: '331',
+        // reportDetailByAccountAndObject: true,
+        includeRowHeader: true,
+        groupBy: 'Voucher,WriteNo',
+        eq_Accounts: '331',
         eq_Object: object,
         includeIncrementAmount: true,
         includeObjectInfo: true,
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
-      }).then(data => {
+      }).then(async data => {
+        const objectInfo = data.find(f => f.Voucher != 'OPN');
+
+        const contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + object, {}).then(rs => rs[0]);
+
         const item = {
           FromDate: fromDate,
           ToDate: toDate,
-          ReportDate: new Date(), 'Object': object, ObjectName: data[0]['ObjectName'], Details: data
+          ReportDate: new Date(),
+          'Object': object,
+          ObjectName: objectInfo['ObjectName'],
+          ObjectPhone: objectInfo['ObjectPhone'],
+          ObjectEmail: objectInfo['ObjectEmail'],
+          ObjectAddress: objectInfo['ObjectAddress'],
+          ObjectNote: contact.Note,
+          Details: data
         };
         return item;
       }));

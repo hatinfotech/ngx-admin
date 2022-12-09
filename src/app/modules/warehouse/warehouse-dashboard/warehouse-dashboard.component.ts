@@ -402,8 +402,9 @@ export class WarehouseDashboardComponent implements OnDestroy {
 
     this.apiService.getPromise<any[]>('/accounting/reports', {
       reportSummary: true,
-      eq_Accounts: "[156,152,153]",
-      skipHeader: true,
+      eq_Accounts: "156,152,153",
+      groupBy: 'Account',
+      // skipHeader: true,
       branch: pages,
       toDate: toDate,
       // fromDate: fromDate,

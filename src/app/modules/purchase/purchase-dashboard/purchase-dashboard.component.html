@@ -150,7 +150,7 @@
           <nb-tab tabTitle="TOP HH">
             <nb-list class="scrollable-container">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
-                <nb-user style="flex: 9;" [picture]="c.Thumbnail?.Thumbnail" [name]="c.Description" [title]="'ĐVT: ' + c.ProductUnitLabel" size="large"></nb-user>
+                <nb-user style="flex: 9;" [picture]="c.ProductFeaturePicture?.Thumbnail" [name]="c.Description" [title]="'SL: ' + c.TailDebitQuantity + ' ' + c.ProductUnitLabel" size="large"></nb-user>
                 <span style="flex: 1;" class="caption">{{ (c.GenerateDebit - c.GenerateCredit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>

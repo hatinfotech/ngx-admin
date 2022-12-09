@@ -137,7 +137,7 @@ export const environment = {
     },
   },
   api: {
-    baseUrl: '/v2',
+    baseUrl: '/v3',
   },
   number: {
     // replace by system locale

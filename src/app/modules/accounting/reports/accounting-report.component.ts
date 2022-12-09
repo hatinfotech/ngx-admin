@@ -107,6 +107,11 @@ export class AccountingReportComponent extends BaseComponent {
         // icon: 'pie-chart',
       },
       {
+        title: this.commonService.translateText('Góp vốn'),
+        route: '/accounting/report/contributed-capital-report',
+        // icon: 'pie-chart',
+      },
+      {
         title: this.commonService.translateText('Accounting.ProfitReport.label'),
         route: '/accounting/report/profit-report',
         // icon: 'pie-chart',

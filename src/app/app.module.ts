@@ -285,6 +285,7 @@ import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/r
 import { CollaboratorRebuyStrategyFormComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
 import { CollaboratorRebuyStrategyPublisherFormComponent } from './modules/collaborator/rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component';
 import { CollaboratorRebuyStrategyProductFormComponent } from './modules/collaborator/rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component';
+import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -429,7 +430,7 @@ export class DynamicLocaleId extends String {
     AccountingRevenueStatisticsComponent,
     AccountingMostOfDebtComponent,
     AccountingAccountDetailsReportPrintComponent,
-
+    AccountingContributedCapitalReportComponent,
 
     // Deployment components
     DeploymentVoucherListComponent,

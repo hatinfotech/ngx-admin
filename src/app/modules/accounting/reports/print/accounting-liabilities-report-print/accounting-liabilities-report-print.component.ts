@@ -145,12 +145,16 @@ export class AccountingLiabilitiesReportPrintComponent extends DataManagerPrintC
     const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
     const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
     return this.apiService.getPromise<any[]>(this.apiPath, {
-      reportLiabilities: true,
+      // reportLiabilities: true,
+      includeColumnHeader: true,
+      groupBy: 'Object',
+      eq_Accounts: '331',
       fromDate: fromDate.toISOString(),
       toDate: toDate.toISOString(),
       limit: 'nolimit',
-      excludeZeroDebt: true,
+      excludeZeroCredit: true,
       sort_ObjectName: 'asc',
+      // sort_TailCredit: 'desc',
       includeObjectInfo: true,
     }).then(data => {
       const list = [{

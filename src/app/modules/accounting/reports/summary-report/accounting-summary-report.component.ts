@@ -317,8 +317,11 @@ export class AccountingSummaryReportComponent extends ServerDataManagerListCompo
       const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
       const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59);
 
-      params['reportSummary'] = true;
+      // params['reportSummary'] = true;
       // params['eq_Accounts'] = '[111,112,128,131,138,141,136,211,331,338,511,512,515,521,632,635,641,642,711,4222,811,156,1331,3331,4212,4111,4112,4118,3341,3411,3348,3349,3350,6411,4211,3412,2288]';
+      params['includeColumnHeader'] = true;
+      params['sort_Account'] = 'asc';
+      params['groupBy'] = 'Account';
       params['toDate'] = toDate.toISOString();
       params['fromDate'] = fromDate.toISOString();
 

@@ -286,7 +286,11 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
 
-      params['reportReceivablesFromCustomer'] = true;
+      // params['reportReceivablesFromCustomer'] = true;
+      params['includeColumnHeader'] = true;
+      params['eq_Accounts'] = '131';
+      params['groupBy'] = 'Object';
+      params['sort_TailDebit'] = 'desc';
       const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
       const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
 
@@ -340,7 +344,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
         accounts: ['131'],
         fromDate: null,
         toDate: null,
-        report: 'reportDetailByAccountAndObject',
+        // report: 'reportDetailByAccountAndObject',
         reportComponent: AccountingReceivablesFromCustomersDetailsReportPrintComponent,
       },
       closeOnEsc: false,

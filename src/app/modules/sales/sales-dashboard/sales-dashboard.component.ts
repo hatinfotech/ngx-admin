@@ -511,15 +511,15 @@ export class SalesDashboardComponent implements OnDestroy {
       }
       this.summaryReport.Profit = this.summaryReport.Revenues - this.summaryReport.CostOfGoodsSold - this.summaryReport.DecreaseRevenues - this.summaryReport.Cost;
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployee: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromEmployeex: true, eq_Accounts: '511,512,515', isn_Product: null, ne_ContraAccount: '911', groupBy: 'Employee', includeEmployeeInfo: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topEmployeeList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomer: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromCustomerx: true, eq_Accounts: '511,512,515', isn_Object: null, ne_ContraAccount: '911', groupBy: 'Object', branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topCustomerList = rs;
       console.log(rs);
     });
-    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoods: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
+    this.apiService.getPromise<any>('/accounting/reports', { reportNetRevenusFromGoodsx: true, eq_Accounts: '511,512,515', isn_Object: null, ne_ContraAccount: '911', groupBy: 'Product,ProductUnit', includeProductInfo: true, branch: branches, fromDate: fromDate, toDate: toDate, sort_CreditGenerate: 'desc', limit: 100, ...extendproductsQuery }).then(rs => {
       this.topGoodsList = rs;
       console.log(rs);
     });

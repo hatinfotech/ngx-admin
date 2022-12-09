@@ -147,6 +147,13 @@
               </nb-card-body>
             </nb-card>
           </nb-tab>
+          <nb-tab tabTitle="Đầu tư góp vốn">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="investStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
           <nb-tab tabTitle="Lãi/lỗ">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
