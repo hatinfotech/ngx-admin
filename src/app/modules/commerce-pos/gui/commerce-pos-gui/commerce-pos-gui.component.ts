@@ -26,6 +26,7 @@ import { BehaviorSubject } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { resolve } from 'dns';
 
 declare const openDatabase;
 
@@ -188,7 +189,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           // Load current debt
           if (formGroup['voucherType'] == 'COMMERCEPOSORDER' && formGroup.get('State').value != 'APPROVED') {
             this.apiService.getPromise<any[]>('/accounting/reports', {
-              reportReceivablesFromCustomer: true,
+              // reportReceivablesFromCustomer: true,
+              // groupBy: 'Object',
+              eq_Accounts: '131',
               // fromDate: new Date().toISOString(),
               toDate: new Date().toISOString(),
               limit: 1,
@@ -840,7 +843,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   isBarcodeProcessing = new BehaviorSubject<number>(0);
   barcodeQueue: { inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel } }[] = [];
   barcodeProcessCount = -1;
-  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel }) {
+  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel, onHadPrimise?: (promise: Promise<any>) => void }) {
 
     this.barcodeProcessCount++;
     const queueId = this.barcodeProcessCount;
@@ -1110,7 +1113,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
             // get access number inventory 
             if (new RegExp('^127' + coreId).test(accessNumber)) {
-              const waitForGetProductByAccessNumber = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+              const getProductByAccessNumberPromise = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
                 accessNumber: accessNumber,
                 includeUnit: true,
                 includePrice: false,
@@ -1126,101 +1129,113 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   throw new Error(`Số truy xuất ${accessNumber} không tồn tại !`);
                 }
 
-                setTimeout(async () => {
-                  const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
-                  existsProduct = detailsControls[existsProductIndex] as FormGroup;
-                  if (existsProduct) {
+                const addReturnGoodsPromise = new Promise((resolve, reject) => {
+                  setTimeout(async () => {
+                    try {
+                      const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+                      existsProduct = detailsControls[existsProductIndex] as FormGroup;
+                      if (existsProduct) {
 
-                    existsProduct.get('Container').setValue(product.Container);
+                        existsProduct.get('Container').setValue(product.Container);
 
-                    if (this.orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
-                      if (product.Inventory && product.Inventory > 0) {
-                        this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
-                        existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
-
-
-                        // return;
-                      } else {
-                        // Update price by previous voucher sales price
-                        if (product['LastAccEntry'] && product['LastWarehouseEntry']) {
-                          existsProduct.get('Price').setValue(product['LastAccEntry']['SalesPrice']);
-
-                          this.calculateToMoney(existsProduct);
-                          this.calculateTotal(this.orderForm);
+                        if (this.orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
+                          if (product.Inventory && product.Inventory > 0) {
+                            this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
+                            existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
 
 
-                          // Auto set object
-                          if (product['LastAccEntry']['Object']) {
-                            const object = this.orderForm.get('Object');
-                            if (!object.value) {
-                              await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + product['LastAccEntry']['Object'], { includeIdText: true, limit: 1 }).then(rs => {
-                                object.setValue(rs[0]);
-                              });
-                            } else {
-                              if (this.commonService.getObjectId(product['LastAccEntry']['Object']) != this.commonService.getObjectId(object.value)) {
+                            // return;
+                          } else {
+                            // Update price by previous voucher sales price
+                            if (product['LastAccEntry'] && product['LastWarehouseEntry']) {
+                              existsProduct.get('Price').setValue(product['LastAccEntry']['SalesPrice']);
 
-                                this.commonService.toastService.show('Liên hệ trên đơn bán hàng phải giống với trên đơn trả hàng !', 'Không đúng liên hệ đã mua hàng trước đó', { status: 'warning' });
-                                return false;
+                              this.calculateToMoney(existsProduct);
+                              this.calculateTotal(this.orderForm);
 
+
+                              // Auto set object
+                              if (product['LastAccEntry']['Object']) {
+                                const object = this.orderForm.get('Object');
+                                if (!object.value) {
+                                  await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + product['LastAccEntry']['Object'], { includeIdText: true, limit: 1 }).then(rs => {
+                                    object.setValue(rs[0]);
+                                  });
+                                } else {
+                                  if (this.commonService.getObjectId(product['LastAccEntry']['Object']) != this.commonService.getObjectId(object.value)) {
+
+                                    this.commonService.toastService.show('Liên hệ trên đơn bán hàng phải giống với trên đơn trả hàng !', 'Không đúng liên hệ đã mua hàng trước đó', { status: 'warning' });
+                                    return false;
+
+                                  }
+                                }
                               }
+
+                              // Set relative vouchers
+                              const detailsRelativeVouchers = existsProduct.get('RelativeVouchers');
+                              const detailsRelativeVouchersData = detailsRelativeVouchers.value || [];
+
+                              if (!detailsRelativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                                detailsRelativeVouchersData.push({
+                                  type: 'COMMERCEPOSORDER',
+                                  id: product['LastAccEntry']['Voucher'],
+                                  text: product['LastAccEntry']['Voucher'],
+                                  VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
+                                  'Object': {
+                                    id: product['LastWarehouseEntry']['Object'],
+                                    text: product['LastWarehouseEntry']['ObjectName']
+                                  }
+                                });
+                                detailsRelativeVouchers.setValue([...detailsRelativeVouchersData]);
+                              }
+
+                              const relativeVouchers = this.orderForm.get('RelativeVouchers');
+                              const relativeVouchersData = relativeVouchers.value || [];
+                              if (!relativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                                relativeVouchersData.push({
+                                  type: 'COMMERCEPOSORDER',
+                                  id: product['LastAccEntry']['Voucher'],
+                                  text: product['LastAccEntry']['Voucher'],
+                                  VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
+                                  'Object': {
+                                    id: product['LastWarehouseEntry']['Object'],
+                                    text: product['LastWarehouseEntry']['ObjectName']
+                                  }
+                                });
+                                relativeVouchers.setValue([...relativeVouchersData]);
+
+                                await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+                              }
+
+                              // Trả hàng về vị trí trước đó đã xuất bán
+                              existsProduct.get('Container').setValue(product['LastWarehouseEntry']['Container']);
+
                             }
+
                           }
-
-                          const detailsRelativeVouchers = existsProduct.get('RelativeVouchers');
-                          const detailsRelativeVouchersData = detailsRelativeVouchers.value || [];
-
-                          if (!detailsRelativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
-                            detailsRelativeVouchersData.push({
-                              type: 'COMMERCEPOSORDER',
-                              id: product['LastAccEntry']['Voucher'],
-                              text: product['LastAccEntry']['Voucher'],
-                              VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
-                              'Object': {
-                                id: product['LastWarehouseEntry']['Object'],
-                                text: product['LastWarehouseEntry']['ObjectName']
-                              }
-                            });
-                            detailsRelativeVouchers.setValue([...detailsRelativeVouchersData]);
+                        } else {
+                          if (!product.Inventory || product.Inventory < 1) {
+                            this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { status: 'warning' });
+                            existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                            // return;
                           }
-
-                          const relativeVouchers = this.orderForm.get('RelativeVouchers');
-                          const relativeVouchersData = relativeVouchers.value || [];
-                          if (!relativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
-                            relativeVouchersData.push({
-                              type: 'COMMERCEPOSORDER',
-                              id: product['LastAccEntry']['Voucher'],
-                              text: product['LastAccEntry']['Voucher'],
-                              VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
-                              'Object': {
-                                id: product['LastWarehouseEntry']['Object'],
-                                text: product['LastWarehouseEntry']['ObjectName']
-                              }
-                            });
-                            relativeVouchers.setValue([...relativeVouchersData]);
-                          }
-
-                          // Trả hàng về vị trí trước đó đã xuất bán
-                          existsProduct.get('Container').setValue(product['LastWarehouseEntry']['Container']);
-
                         }
-
                       }
-                    } else {
-                      if (!product.Inventory || product.Inventory < 1) {
-                        this.commonService.toastService.show(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { status: 'warning' });
-                        existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
-                        // return;
-                      }
+                    } catch (err) {
+                      reject(err);
                     }
-                  }
-                }, 1000);
-
+                    resolve(true);
+                  }, 1000);
+                });
+                option?.onHadPrimise(addReturnGoodsPromise);
 
                 return product;
               });
 
+              option?.onHadPrimise && option.onHadPrimise(getProductByAccessNumberPromise);
+
               if (!unitId || !product) { // Nếu tem cũ không có unit sequence thì phải lấy thông tin sản phẩm bằng số truy xuất ngay từ đầu
-                await waitForGetProductByAccessNumber;
+                await getProductByAccessNumberPromise;
               }
               if (product) {
                 productId = product.Code;
@@ -1591,6 +1606,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   barcode = '';
   findOrderKeyInput = '';
   searchInputPlaceholder = '';
+  promiseAll = [];
   onKeyboardEvent(event: KeyboardEvent) {
 
     if (this.searchResults && this.searchResults.length > 0) {
@@ -1718,9 +1734,37 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           context: {
             title: 'Thay đổi giá bán',
             onInit: async (form, dialog) => {
+              const priceControl = form.get('Price');
+              const quanityControl = form.get('Quantity');
+              const toMoneyControl = form.get('ToMoney');
+
+              priceControl.valueChanges.pipe(takeUntil(dialog.destroy$)).subscribe(value => {
+                toMoneyControl.setValue(priceControl.value * quanityControl.value);
+              });
+              quanityControl.valueChanges.pipe(takeUntil(dialog.destroy$)).subscribe(value => {
+                toMoneyControl.setValue(priceControl.value * quanityControl.value);
+              });
+              toMoneyControl.valueChanges.pipe(takeUntil(dialog.destroy$)).subscribe(value => {
+                priceControl.setValue(toMoneyControl.value / quanityControl.value, { emitEvent: false });
+              });
+
               return true;
             },
             controls: [
+              {
+                name: 'Description',
+                label: 'Mô tả',
+                placeholder: 'Mô tả thêm cho việc thay đổi giá bán',
+                type: 'text',
+                initValue: activeDetail.get('Description').value,
+              },
+              {
+                name: 'Quantity',
+                label: 'Số lượng',
+                placeholder: 'Số lượng',
+                type: 'number',
+                initValue: activeDetail.get('Quantity').value,
+              },
               {
                 name: 'Price',
                 label: 'Giá thay đổi',
@@ -1730,11 +1774,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 focus: true,
               },
               {
-                name: 'Description',
-                label: 'Mô tả',
-                placeholder: 'Mô tả thêm cho việc thay đổi giá bán',
-                type: 'text',
-                initValue: activeDetail.get('Description').value,
+                name: 'ToMoney',
+                label: 'Thành tiền',
+                placeholder: 'Thành tiền',
+                type: 'currency',
+                initValue: activeDetail.get('ToMoney').value,
               },
             ],
             actions: [
@@ -1752,6 +1796,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 keyShortcut: 'Enter',
                 action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
                   activeDetail.get('Price').setValue(form.get('Price').value);
+                  activeDetail.get('Quantity').setValue(form.get('Quantity').value);
                   activeDetail.get('Description').setValue(form.get('Description').value);
 
                   this.calculateToMoney(activeDetail as FormGroup);
@@ -1938,7 +1983,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if ((/^[0-9a-z]$/i.test(event.key) || ['Enter'].indexOf(event.key) > -1) && (document.activeElement as HTMLElement).tagName == 'BODY') {
 
         this.commonService.barcodeScanDetective(event.key, barcode => {
-          this.barcodeProcess(barcode).then(status => {
+          this.barcodeProcess(barcode, {
+            onHadPrimise: (promise) => {
+              this.promiseAll.push(promise);
+            }
+          }).then(status => {
             console.log('Barcode processed');
           });
         });
@@ -2116,6 +2165,26 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE', skipPrint?: boolean }) {
+    if (this.promiseAll.length > 0) {
+      await new Promise(async resolve => {
+        let isResolved = false;
+        setTimeout(() => {
+          if (!isResolved) {
+            isResolved = true;
+            resolve(true);
+          }
+        }, 30000);
+        this.loading = true;
+        await Promise.all(this.promiseAll);
+        this.promiseAll = [];
+        // await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+        this.loading = false;
+        if (!isResolved) {
+          isResolved = true;
+          resolve(true);
+        }
+      })
+    }
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
       this.commonService.toastService.show('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { status: 'warning', duration: 5000 })
@@ -2155,12 +2224,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           },
           onClose: () => {
           },
-          onAfterInit: (component) => {
+          onAfterInit: (component: CommercePosBillPrintComponent) => {
             if (option?.skipPrint) {
               component?.close();
             } else {
               setTimeout(() => {
-                component?.close();
+                if (!component.isProcessing) {
+                  component?.close();
+                }
               }, 15000);
             }
           }

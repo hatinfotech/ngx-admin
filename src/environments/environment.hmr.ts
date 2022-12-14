@@ -16,7 +16,7 @@ export const environment = {
   version: prodenv.version + '.dev',
   api: {
     // baseUrl: '/v1', // prod
-    baseUrl: 'http://local.namsoftware.com/v2',
+    baseUrl: 'http://local.probox.vn/v2',
   },
   localApp: {
     // enabled: true, // prod
@@ -44,7 +44,7 @@ export const environment = {
 //   },
 //   api: {
 //     // baseUrl: '/v1', // prod
-//     baseUrl: 'http://local.namsoftware.com/v1',
+//     baseUrl: 'http://local.probox.vn/v1',
 //   },
 //   number: {
 //     // replace by system locale

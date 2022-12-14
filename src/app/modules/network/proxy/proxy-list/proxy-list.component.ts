@@ -174,7 +174,7 @@ export class ProxyListComponent extends DataManagerListComponent<NetworkProxyMod
   // executeGet(params: any, success: (resources: NetworkProxyModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: NetworkProxyModel[] | HttpErrorResponse) => void) {
   //   // this.apiService.get<M[]>(this.apiPath, params, success, error, complete);
   //   params['token'] = 'undefined';
-  //   const obs = this._http.get<NetworkProxyModel[]>('https://local.namsoftware.com:3001/wp-sites', {
+  //   const obs = this._http.get<NetworkProxyModel[]>('https://local.probox.vn:3001/wp-sites', {
   //     headers: {
   //       'Content-Type': 'application/json',
   //       'Authorization': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTZkYWE1ODZiM2JjODczMTU1ZmZkZTkiLCJpYXQiOjE1ODQyNDUzMzd9.DWJ9WPxxT3qRwL-vjpsvUNCq4iL9dg__VtHs71yb5hY',

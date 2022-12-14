@@ -1,6 +1,6 @@
 import { Select2Option } from './../../../lib/custom-element/select2/select2.component';
 import { filter, take } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
 import { Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, HostListener } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
@@ -84,7 +84,12 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
+  public destroy$: Subject<void> = new Subject<void>();
   curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
+  numberFormat = this.commonService.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
   formGroup: FormGroup;
   processing = false;
   processingProcess = null;
@@ -156,6 +161,17 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
         this.inited.next(true);
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    // if (!this.ref) {
+      // this.commonService.clearHeaderActionControlList();
+    // }
+    this.destroy$.next();
+    this.destroy$.complete();
+    setTimeout(() => {
+      this.ref = null;
+    }, 500);
   }
 
   @HostListener('document:keydown', ['$event'])
