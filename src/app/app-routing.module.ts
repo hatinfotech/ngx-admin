@@ -389,6 +389,25 @@ const routes: Routes = [
       reuse: true,
     },
   },
+  {
+    path: 'warehouse/report',
+    canActivate: [AuthGuardService],
+    component: AccountingReportComponent,
+    children: [
+      {
+        path: '',
+        redirectTo: 'summary',
+        pathMatch: 'full',
+      },
+      {
+        path: 'summary',
+        component: AccountingSummaryReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+    ],
+  },
 
 
   // Sales routes

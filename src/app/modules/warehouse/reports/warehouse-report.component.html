@@ -1,0 +1,31 @@
+<nb-card style="margin-bottom: 1rem;">
+    <nb-card-body>
+        <div class="row">
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField1" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text" disabled nbInput fullWidth formControlName="GlobalAccField1" placeholder="{{'Chi nhánh' | translate | headtitlecase}}">
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="GlobalAccField2" label="Báo cáo" [index]="0" [allowCopy]="false" [required]="false">
+                    <input type="text" disabled  nbInput fullWidth formControlName="GlobalAccField2" placeholder="{{'BC ngày/tuần/tháng/quý/năm' | translate | headtitlecase}}">
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="FromDate" label="Báo cáo từ ngày" [index]="0" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                    <input type="text" [owlDateTime]="FromDate" [owlDateTimeTrigger]="FromDate" nbInput fullWidth formControlName="FromDate" placeholder="{{'Báo cáo từ ngày' | translate | headtitlecase}}">
+                    <owl-date-time #FromDate [pickerType]="'calendar'"></owl-date-time>
+                </ngx-form-group>
+            </div>
+            <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="ToDate" label="Báo cáo đến ngày" [index]="0" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                    <input type="text" [owlDateTime]="ToDate" [owlDateTimeTrigger]="ToDate" nbInput fullWidth formControlName="ToDate" placeholder="{{'Báo cáo đến ngày' | translate | headtitlecase}}">
+                    <owl-date-time #ToDate [pickerType]="'calendar'"></owl-date-time>
+                </ngx-form-group>
+            </div>
+        </div>
+    </nb-card-body>
+</nb-card>
+<nb-card>
+    <nb-route-tabset [tabs]="tabs" fullWidth></nb-route-tabset>
+</nb-card>

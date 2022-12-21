@@ -286,6 +286,9 @@ import { CollaboratorRebuyStrategyFormComponent } from './modules/collaborator/r
 import { CollaboratorRebuyStrategyPublisherFormComponent } from './modules/collaborator/rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component';
 import { CollaboratorRebuyStrategyProductFormComponent } from './modules/collaborator/rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component';
 import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
+import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-report.component';
+import { WarehouseDetailByGoodsReportComponent } from './modules/warehouse/reports/warehouse-detail-by-goods-report/warehouse-detail-by-goods-report.component';
+import { WarehouseSummaryReportComponent } from './modules/warehouse/reports/summary-report/warehouse-summary-report.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -385,6 +388,10 @@ export class DynamicLocaleId extends String {
     WarehouseBookCommitComponent,
     WarehouseFindOrderTempPrintComponent,
     WarehouseDashboardComponent,
+    WarehouseReportComponent,
+    WarehouseDetailByGoodsReportComponent,
+    WarehouseSummaryReportComponent,
+    
 
     // Accounting components
     CashReceiptVoucherListComponent,
