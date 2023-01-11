@@ -56,7 +56,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     color: #000;
     font-weight: normal;
     overflow: hidden;
-    padding: 2mm;
+    padding: 1mm;
   }
   .blabel .info {
     clear: both;
@@ -68,10 +68,22 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     margin-top: 0.4mm;
     margin-bottom: 0.4mm;
   }
+  .blabel .probox-link {
+    clear: both;
+    overflow: hidden;
+    line-height: 2.2mm;
+    font-size: 2.2mm !important;
+    font-weight: normal;
+    max-height: 6.7mm;
+    margin-top: 0.4mm;
+    margin-bottom: 0.4mm;
+    word-break: break-all;
+    inline-size: 170px;
+  }
   .blabel .register-info {
     line-height: 1.8mm;
-      font-size: 1.9mm !important;
-      font-weight: bold;
+    font-size: 1.9mm !important;
+    font-weight: bold;
   }
   .blabel .access-number {
     line-height: 2.2mm;
@@ -100,7 +112,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     height: 3.7mm;
   }
   .qr-code {
-    height: 10.5mm;
+    height: 9mm;
   }
   .page-break {
     clear: left;

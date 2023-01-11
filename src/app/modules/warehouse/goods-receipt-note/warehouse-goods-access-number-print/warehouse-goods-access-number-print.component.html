@@ -19,7 +19,9 @@
                             <div class="product-price">{{item.value.Unit | objecttext}}({{item.value.Price}})</div>
                         </div>
                     </div>
-                    <img class="bar-code" src="{{item.value.BarCode}}">
+                    <div style="overflow: hidden; height: 2.5mm;">
+                        <img class="bar-code" src="{{item.value.BarCode}}">
+                    </div>
                     <!-- <div style="display: flex; height: 4.5mm; align-items: center; justify-content: center;">
                     </div> -->
                     <div class="info">SKU: {{item.value.Product.Sku}} - {{item.value.Product | objecttext}}</div>
@@ -27,6 +29,7 @@
                         <img class="qr-code" src="{{item.value.QrCode}}" style="margin-right: 0.5mm;">
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>
                     </div>
+                    <div class="probox-link">QRLink: {{item.value.QrCodeDataPreview}}</div>
                 </div>
                 <div style="clear:both"></div>
             </div>

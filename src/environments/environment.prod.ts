@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.2.2.2',
+  version: '6.2.3.3',
+  // 6.2.3:   Update access number tem
   // 6.2.2:   Update POS GUI: revert calcualte Price, await all promise complete on payment
   // 6.2.1:   Update acc report resource
   // 6.2.0:   Collaborator v2: basic, advance, addon, rebuy, commission form config and write to master book demo

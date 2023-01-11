@@ -1985,7 +1985,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.commonService.barcodeScanDetective(event.key, barcode => {
           this.barcodeProcess(barcode, {
             onHadPrimise: (promise) => {
-              this.promiseAll.push(promise);
+              // this.promiseAll.push(promise);
             }
           }).then(status => {
             console.log('Barcode processed');
@@ -2165,26 +2165,26 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async payment(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE', skipPrint?: boolean }) {
-    if (this.promiseAll.length > 0) {
-      await new Promise(async resolve => {
-        let isResolved = false;
-        setTimeout(() => {
-          if (!isResolved) {
-            isResolved = true;
-            resolve(true);
-          }
-        }, 30000);
-        this.loading = true;
-        await Promise.all(this.promiseAll);
-        this.promiseAll = [];
-        // await new Promise(resolve => setTimeout(() => resolve(true), 1000));
-        this.loading = false;
-        if (!isResolved) {
-          isResolved = true;
-          resolve(true);
-        }
-      })
-    }
+    // if (this.promiseAll.length > 0) {
+    //   await new Promise(async resolve => {
+    //     let isResolved = false;
+    //     setTimeout(() => {
+    //       if (!isResolved) {
+    //         isResolved = true;
+    //         resolve(true);
+    //       }
+    //     }, 30000);
+    //     this.loading = true;
+    //     await Promise.all(this.promiseAll);
+    //     this.promiseAll = [];
+    //     // await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+    //     this.loading = false;
+    //     if (!isResolved) {
+    //       isResolved = true;
+    //       resolve(true);
+    //     }
+    //   })
+    // }
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
       this.commonService.toastService.show('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { status: 'warning', duration: 5000 })
