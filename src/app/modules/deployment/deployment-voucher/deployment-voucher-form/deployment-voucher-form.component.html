@@ -193,7 +193,8 @@
                             </div>
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="ShippingCost" label="Phí vận chuyển" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
-                                    <input type="text" nbInput fullWidth formControlName="ShippingCost" placeholder="{{'Phí vận chuyển' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
+                                    <nb-checkbox class="form-group-icon-control" formControlName="IsDebt" nbTooltip="Ghi nợ"></nb-checkbox>
+                                    <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="ShippingCost" placeholder="{{'Phí vận chuyển' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
@@ -306,12 +307,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    <!-- <div class="col-lg-4 col-md-6 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Business" label="Common.type" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
                                                             <ngx-select2 [data]="accountingBusinessList" formControlName="Business" (selectChange)="toMoney(formItem, detail, 'Business', ic)" [select2Option]="select2OptionForAccountingBusiness"></ngx-select2>
                                                         </ngx-form-group>
-                                                    </div>
-                                                    <div class="col-lg-8 col-md-6 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
+                                                    </div> -->
+                                                    <div class="col-lg-12 col-md-6 col-sm-12 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
                                                             <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="1"></textarea>
                                                         </ngx-form-group>

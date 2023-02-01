@@ -1309,7 +1309,7 @@ export class AppModule {
         nextState: 'DEPLOYEMNT',
         nextStates: [
           { ...AppModule.depploymentState, status: 'danger' },
-          AppModule.notJustApprodedState,
+          AppModule.unrecordedState,
         ],
       },
       "DEPLOYMENT": {
@@ -1333,6 +1333,13 @@ export class AppModule {
         nextState: 'NOTJUSTAPPROVED',
         nextStates: [
           AppModule.notJustApprodedState,
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
         ],
       },
       "NOTJUSTAPPROVED": {

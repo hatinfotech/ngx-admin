@@ -13,10 +13,10 @@
                     </div>
                     <div style="display: flex;">
                         <div style="flex: 1;">
-                            <div class="access-number">Số truy xuất: {{item.value.AccessNumber}}</div>
+                            <div class="access-number">Truy xuất: {{item.value.AccessNumber}}</div>
                         </div>
                         <div>
-                            <div class="product-price">{{item.value.Unit | objecttext}}({{item.value.Price}})</div>
+                            <div class="product-price">{{item.value.Price | currency:'VND'}}/{{item.value.Unit | objecttext}}</div>
                         </div>
                     </div>
                     <div style="overflow: hidden; height: 2.5mm;">

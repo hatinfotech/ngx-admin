@@ -703,7 +703,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       ShippingCostPaymentRatio: [100],
       DirectReceiverName: [],
       DirectReceiverPhone: [],
-
+      IsDebt: [false],
 
       Details: this.formBuilder.array([]),
     });
@@ -813,7 +813,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       Image: [[]],
       // Reason: [''],
       // Business: [this.accountingBusinessList.filter(f => f.id === 'SHIPPINGCOSTBYDEBT')],
-      Business: { disabled: true, value: [] },
+      // Business: { disabled: true, value: [] },
     });
 
     if (data) {

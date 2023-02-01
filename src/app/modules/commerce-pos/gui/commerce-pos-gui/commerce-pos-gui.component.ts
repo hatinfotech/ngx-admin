@@ -2536,6 +2536,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         data: [
           {
             ...orderData,
+            IsDebt: false,
             Code: null,
             Title: `Triển khai cho đơn hàng POS ${orderData.Code}, khách hàng: ${orderData.ObjectName}`,
             DeploymentDate: new Date(),
