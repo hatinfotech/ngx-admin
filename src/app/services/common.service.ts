@@ -1349,7 +1349,7 @@ export class CommonService {
     }
   }
 
-  extractGoodsBarcode(barcode: string): { unitSeq: string, productId: string, accessNumber: String } {
+  extractGoodsBarcode(barcode: string): { unitSeq: string, productId: string, accessNumber: string } {
     const coreId = this.systemConfigs$.value.ROOT_CONFIGS.coreEmbedId;
     const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
     let accessNumber = barcode.substring(productIdLength + 2);

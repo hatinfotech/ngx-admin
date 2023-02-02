@@ -410,6 +410,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
+          detail.AccessNumbers = (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '') as any;
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -623,7 +624,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
             AccessNumbers: m?.AccessNumbers,
             // AccessNumbers: m?.AccessNumbers?.map(an => ({ id: an, text: an })),
             id: m.Container,
-            text: `${m.ContainerPath}: ${m.ContainerDescription}`
+            text: `[${m.ContainerFindOrder}] ${m.ContainerShelfName} - ${m.ContainerPath}: ${m.ContainerDescription}`
           }));
         }
         return [];
@@ -638,26 +639,29 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
   async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
     console.log(selectedData);
-    if (selectedData && selectedData['AccessNumbers']) {
-      detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
-        const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
-        const unit = detail.get('Unit').value;
-        const unitSeq = unit?.Sequence || '';
-        let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
-        goodsId = (unitSeq + '').length + unitSeq + goodsId;
-        let an = accessNumber.replace(/^127/, '');
+    // if (selectedData && selectedData['AccessNumbers']) {
+    //   detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
+    //     const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
+    //     const unit = detail.get('Unit').value;
+    //     const unitSeq = unit?.Sequence || '';
+    //     let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
+    //     goodsId = (unitSeq + '').length + unitSeq + goodsId;
+    //     let an = accessNumber.replace(/^127/, '');
 
-        accessNumber = { id: accessNumber, text: (goodsId.length + 10 + '').padStart(2, '0') + `${goodsId}` + an };
-        return accessNumber;
-      });
-    } else {
-      detail['AccessNumberList'] = [];
-    }
+    //     accessNumber = { id: accessNumber, text: (goodsId.length + 10 + '').padStart(2, '0') + `${goodsId}` + an };
+    //     return accessNumber;
+    //   });
+    // } else {
+    //   detail['AccessNumberList'] = [];
+    // }
   }
-  async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
-    console.log(selectedData);
-    if (detail['IsManageByAccessNumber']) {
-      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+  onSelectAccessNumbers(detail: FormGroup, event: any, force?: boolean, element?: any) {
+    // console.log(selectedData);
+    // if (detail['IsManageByAccessNumber']) {
+    //   detail.get('Quantity').setValue(detail.get('AccessNumbers').value.length);
+    // }
+    if (event.key == 'Enter' || force) {
+      detail.get('Quantity').setValue(element.value.trim().split('\n').filter(ac => !!ac).length);
     }
   }
 
@@ -716,7 +720,24 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   // }
 
   getRawFormData() {
-    return super.getRawFormData();
+    const data = super.getRawFormData();
+    for (const item of data.array) {
+      for (const detail of item.Details) {
+        if (typeof detail.AccessNumbers == 'number') {
+          detail.AccessNumbers += '';
+        }
+        if (typeof detail.AccessNumbers == 'string') {
+          detail.AccessNumbers = detail?.AccessNumbers.trim().split('\n').filter(ac => !!ac).map(ac => {
+            if (/^127/.test(ac)) {
+              return { id: ac, text: ac };
+            }
+            const acd = this.commonService.decompileAccessNumber(ac);
+            return { id: acd.accessNumber, text: acd.accessNumber };
+          });
+        }
+      }
+    }
+    return data;
   }
 
   openRelativeVoucherChoosedDialogX(formGroup: FormGroup) {
@@ -920,7 +941,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: [], RelateDetail: `CLBRTORDER/${refVoucher.Code}/${voucherDetail.Id}` });
-                      newDtailFormGroup.get('Business').setValue([{id: 'WHTRANSPORT', text: 'Đang vận chuyển (xuất kho hàng đi đường)', 'type': 'WAREHOUSEDELIVERY'}]);
+                      newDtailFormGroup.get('Business').setValue([{ id: 'WHTRANSPORT', text: 'Đang vận chuyển (xuất kho hàng đi đường)', 'type': 'WAREHOUSEDELIVERY' }]);
                       details.push(newDtailFormGroup);
 
                       this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
@@ -1034,6 +1055,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
     const extracted = this.commonService.extractGoodsBarcode(barcode);
     let accessNumber = parseInt(extracted.accessNumber as any);
+    // let accessNumber: string = extracted.accessNumber + '';
     let productId = extracted.productId;
     let unitSeq = extracted.unitSeq;
     // let unit = this.unitMap[unitSeq];
@@ -1062,10 +1084,13 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       for (const goods of rs) {
 
         if (goods.Containers) {
+          let isNotInStock = true;
           for (const container of goods.Containers) {
+            container.text = '[' + container.ContainerFindOrder + '] ' + container.ContainerShelfName + ' - ' + container.text;
             if (container.AccessNumbers?.indexOf(accessNumber) > -1) {
+              isNotInStock = false;
               // details['IsManageByAccessNumber'] = true;
-              let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
+              let existGoodsIndex = details.controls.findIndex(detail => this.commonService.getObjectId(detail.get('Product').value) == goods.Code && this.commonService.getObjectId(detail.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit) && this.commonService.getObjectId(detail.get('Container').value) == this.commonService.getObjectId(container));
               // let existsGoods = details.controls.find(f => this.commonService.getObjectId(f.get('Product').value) == goods.Code && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(goods.WarehouseUnit));
               let existsGoods = details.controls[existGoodsIndex];
               if (!existsGoods) {
@@ -1076,7 +1101,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                   Product: { Code: goods.Code, id: goods.Code, text: goods.Name },
                   Unit: goods.WarehouseUnit,
                   Container: container,
-                  AccessNumbers: [accessNumber],
+                  AccessNumbers: accessNumber + '',
                   Quantity: 1,
                   Description: goods.Name,
                   Pictures: goods.Pictures,
@@ -1093,14 +1118,15 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               } else {
                 existsGoods['IsManageByAccessNumber'] = true;
                 existsGoods['ContainerList'] = [container];
-                let currentAccessNumbers = existsGoods.get('AccessNumbers').value || [];
+                let currentAccessNumbers: string = (existsGoods.get('AccessNumbers').value + '') || '';
                 this.activeDetailIndex = existGoodsIndex;
                 $('.form-detail-item').eq(this.activeDetailIndex)[0]?.scrollIntoView();
-                if (currentAccessNumbers.indexOf(accessNumber) < 0) {
-                  currentAccessNumbers.push(accessNumber);
+                if (currentAccessNumbers.indexOf(accessNumber + '') < 0) {
+                  // currentAccessNumbers.push(accessNumber);
+                  currentAccessNumbers += '\n' + accessNumber;
                   existsGoods.get('Container').setValue(container);
                   existsGoods.get('AccessNumbers').setValue(currentAccessNumbers);
-                  existsGoods.get('Quantity').setValue(currentAccessNumbers.length);
+                  existsGoods.get('Quantity').setValue(currentAccessNumbers.trim().split('\n').length);
                   this.increaseDetailPipSound.nativeElement.play();
                 } else {
                   this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning' });
@@ -1109,10 +1135,11 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 }
               }
               break;
-            } else {
-              this.commonService.toastService.show(`${goods.Code} - ${goods.Name} không có trong kho !`, 'Hàng hóa không có trong kho !', { status: 'warning' });
-              this.errorSound.nativeElement.play();
             }
+          }
+          if (isNotInStock) {
+            this.commonService.toastService.show(`${goods.Code} - ${goods.Name} không có trong kho !`, 'Hàng hóa không có trong kho !', { status: 'warning' });
+            this.errorSound.nativeElement.play();
           }
         }
 

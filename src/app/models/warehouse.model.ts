@@ -143,7 +143,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   CreaditAccount?: number;
   Tax?: string & TaxModel;
   AccessNumbers?: any;
-  SystemUuid?: string;
+  // SystemUuid?: string;
 }
 
 
@@ -200,6 +200,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   CreaditAccount?: number;
   Tax?: string & TaxModel;
   RelateDetail?: string;
+  AccessNumbers?: any[];
 }
 
 export class WarehouseGoodsContainerModel {
