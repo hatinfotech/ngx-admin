@@ -20,6 +20,9 @@
                 <nb-tab *ngIf="components['SALESRETURNS']" tabTitle="{{components['SALESRETURNS'].title}}">
                     <ngx-sales-returns-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALESRETURNS')"></ngx-sales-returns-voucher-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['PURCHASEORDER']" tabTitle="{{components['PURCHASEORDER'].title}}">
+                    <ngx-purchase-order-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASEORDER')"></ngx-purchase-order-voucher-list>
+                </nb-tab>
                 <nb-tab *ngIf="components['PURCHASE']" tabTitle="{{components['PURCHASE'].title}}">
                     <ngx-purchase-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
                 </nb-tab>
@@ -34,6 +37,9 @@
                 </nb-tab>
                 <nb-tab *ngIf="components['INVENTORYADJUST']" tabTitle="{{components['INVENTORYADJUST'].title}}">
                     <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'INVENTORYADJUST')" [context]="components['INVENTORYADJUST']"></ngx-collaborator-award-list>
+                </nb-tab>
+                <nb-tab *ngIf="components['COMMERCEPOSORDER']" tabTitle="{{components['COMMERCEPOSORDER'].title}}">
+                    <ngx-commerce-pos-order-list (onItemsChoosed)="onDialogChoose($event, 'COMMERCEPOSORDER')" [context]="components['COMMERCEPOSORDER']"></ngx-commerce-pos-order-list>
                 </nb-tab>
             </nb-tabset>
         </nb-card-body>

@@ -290,14 +290,6 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
           title: this.commonService.textTransform(this.commonService.translate.instant('Nợ'), 'head-title'),
           type: 'boolean',
           width: '5%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateRangeFilterComponent,
-          // },
-          // renderComponent: SmartTableDateTimeComponent,
-          // onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-          //   // instance.format$.next('medium');
-          // },
         },
         Copy: {
           title: 'Copy',
@@ -349,7 +341,7 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
             instance.title = this.commonService.translateText('Common.approved');
             instance.label = this.commonService.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.salesVoucher[value || ''];
+              const processMap = AppModule.processMaps.commercePos[value || ''];
               instance.label = this.commonService.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
@@ -376,9 +368,9 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
                   text: 'text',
                 },
                 multiple: true,
-                data: Object.keys(AppModule.processMaps.salesVoucher).map(stateId => ({
+                data: Object.keys(AppModule.processMaps.commercePos).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.salesVoucher[stateId].label)
+                  text: this.commonService.translateText(AppModule.processMaps.commercePos[stateId].label)
                 })).filter(f => f.id != '')
               },
             },

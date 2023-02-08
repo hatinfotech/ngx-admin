@@ -171,6 +171,12 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm.value?.State === 'APPROVED'" status="info" class="pos-business-button" (click)="saveAsPriceReport(orderForm, {printType: 'PRICEREPORT'})">
+                                        <nb-icon icon="file-text-outline"></nb-icon>
+                                        <div class="button-label">Báo giá</div>
+                                    </button>
+                                </div>
+                                <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" status="primary" class="pos-business-button" (click)="makeNewOrder()">
                                         <div>
                                             <nb-icon icon="plus-square-outline"></nb-icon>
@@ -192,12 +198,6 @@
                                     <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
                                         <nb-icon icon="square-outline"></nb-icon>
                                         <div class="button-label">Ghi chú</div>
-                                    </button>
-                                </div>
-                                <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
-                                        <nb-icon icon="square-outline"></nb-icon>
-                                        <div class="button-label">Chiết khấu</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">

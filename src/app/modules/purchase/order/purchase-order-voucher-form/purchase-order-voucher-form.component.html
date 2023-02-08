@@ -126,9 +126,16 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12">
+                            <div class="col-sm-9">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="RelativeVouchers" label="Common.relationVoucher" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <button class="fit-control-button" [outline]="true" nbButton status="primary" fullWidth (click)="openRelativeVoucherChoosedDialog(formItem)" size="medium" hero>
+                                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm chứng từ liên quan
+                                    </button>
                                 </ngx-form-group>
                             </div>
                             <!-- <div class="col-sm-3">

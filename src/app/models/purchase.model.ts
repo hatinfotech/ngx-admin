@@ -141,6 +141,7 @@ export class PurchaseOrderVoucherModel {
 export class PurchaseOrderVoucherDetailModel {
   Id?: string | number;
   No?: number;
+  Voucher?: string;
   Type?: string;
   Order?: PurchaseVoucherModel & string;
   Product?: ProductModel & string;
@@ -150,5 +151,6 @@ export class PurchaseOrderVoucherDetailModel {
   Unit?: UnitModel & string;
   Tax?: TaxModel & string;
   Price?: number;
-  Image?: FileModel[];
+  Image?: any;
+  RelateDetail?: string;
 }

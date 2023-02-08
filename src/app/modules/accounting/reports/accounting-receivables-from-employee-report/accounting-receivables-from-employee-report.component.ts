@@ -14,6 +14,7 @@ import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
+import { AccountingObjectCashFlowReportPrintComponent } from '../print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 
 @Component({
   selector: 'ngx-accounting-receivables-from-employee-report',
@@ -25,7 +26,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
   componentName: string = 'AccountingReceivablesFromEmployeeReportComponent';
   formPath = '/accounting/account/form';
   apiPath = '/accounting/reports';
-  idKey = 'Code';
+  idKey = 'Object';
   formDialog = AccAccountFormComponent;
 
   reuseDialog = true;
@@ -97,6 +98,29 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
         this.refresh();
       });
 
+      this.actionButtonList.unshift({
+        type: 'button',
+        status: 'primary',
+        icon: 'printer',
+        name: 'vouchersReport',
+        label: 'In đối soát công nợ',
+        title: 'In đối soát công nợ',
+        size: 'medium',
+        disabled: () => this.selectedIds.length <= 0,
+        click: () => {
+          this.commonService.openDialog(AccountingObjectCashFlowReportPrintComponent, {
+            context: {
+              showLoadinng: true,
+              // title: 'Xem trước',
+              mode: 'print',
+              id: ['all'],
+              objects: this.selectedIds,
+              accounts: '334'
+            },
+          });
+        }
+      });
+
       return rs;
     });
   }
@@ -154,19 +178,19 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
           width: '10%',
         },
         TailDebit: {
-          title: '[' + this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailDebit'),
+          title: '[Phải thu',
           type: 'acc-currency',
           width: '10%',
           valuePrepareFunction(cell, row) {
-            return -row.TailCredit as any;
+            return row.TailCredit < 0 && (-row.TailCredit) || 0 as any;
           }
         },
         TailCredit: {
-          title: this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.tailCredit') + ']',
+          title:'Phải trả]',
           type: 'acc-currency',
           width: '10%',
           valuePrepareFunction(cell, row) {
-            return -row.TailDebit as any;
+            return row.TailCredit > 0 && (row.TailCredit) || 0 as any;
           }
         },
         Preview: {

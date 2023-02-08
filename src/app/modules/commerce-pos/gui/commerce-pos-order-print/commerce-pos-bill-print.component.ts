@@ -35,6 +35,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   @Input() order: CommercePosOrderModel;
   @Input() instantPayment: boolean;
   @Input() printType: 'PRICEREPORT' | 'RETAILINVOICE' = 'PRICEREPORT';
+  @Input() type: 'PRICEREPORT' | 'COMMERCEPOSORDER' = 'COMMERCEPOSORDER';
 
   style = /*css*/`
   #print-area {
@@ -154,7 +155,11 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     // }
     this.summaryCalculate(this.data);
     if (this.instantPayment) {
-      this.payment(0, { print: false });
+      if (this.type == 'PRICEREPORT') {
+        this.saveAndPrint(0, { print: false });
+      } else {
+        this.payment(0, { print: false });
+      }
     }
     return result;
   }
@@ -322,6 +327,49 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     }
   }
 
+  saveAndPrint(index: number, option?: { print: boolean }) {
+    const params: any = { changeState: 'PRICEREPORT', includeRelativeVouchers: true, includeObject: true };
+    let order = this.data[index];
+    if (order) {
+      // order.State = 'APPROVED';
+      if (order.Code) {
+        // params['id0'] = order.Code;
+        this.isProcessing = true;
+        this.apiService.putPromise('/commerce-pos/orders/' + order.Code, params, [order]).then(rs => {
+          order = this.data[index] = rs[0];
+          setTimeout(async () => {
+            if (option?.print) {
+              await this.print(index, this.printType);
+            }
+            if (this.onSaveAndClose) this.onSaveAndClose(order, this);
+          });
+          this.isProcessing = false;
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
+        });
+      } else {
+        this.isProcessing = true;
+        this.apiService.postPromise('/commerce-pos/orders', params, [order]).then(rs => {
+          this.id = [rs[0].Code];
+          order = this.data[index] = rs[0];
+          setTimeout(async () => {
+            // await this.print(index);
+            if (option?.print) {
+              await this.print(index, this.printType);
+            }
+            if (this.onSaveAndClose) this.onSaveAndClose(order, this);
+          }, 300);
+          this.isProcessing = false;
+        }).catch(err => {
+          this.isProcessing = false;
+          return Promise.reject(err);
+        });
+
+      }
+    }
+  }
+
   onKeyboardEvent(event: KeyboardEvent) {
     if (event.key == 'F9') {
 
@@ -332,7 +380,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.payment(0);
         }
       } else {
-        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED' || this.commonService.getObjectId(this.data[0].State) == 'PRICEREPORT') {
           this.print(0, 'RETAILINVOICE').then(() => {
             this.close();
           });
@@ -340,18 +388,18 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
-      return  false;
+      return false;
     }
     if (event.key == 'Enter') {
 
       if (!this.instantPayment) {
-        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED' || this.commonService.getObjectId(this.data[0].State) == 'PRICEREPORT') {
           this.print(0, 'PRICEREPORT');
         } else {
           this.payment(0);
         }
       } else {
-        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED' || this.commonService.getObjectId(this.data[0].State) == 'PRICEREPORT') {
           this.print(0, 'PRICEREPORT').then(() => {
             this.close();
           });
@@ -359,15 +407,15 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
           this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
-      return  false;
+      return false;
     }
     return true;
   }
 
   async print(index?: number, voucherType?: string) {
-    if(voucherType == 'PRICEREPORT') {
+    if (voucherType == 'PRICEREPORT') {
       this.title = 'PHIẾU BÁO GIÁ';
-    } else if(voucherType == 'RETAILINVOICE') {
+    } else if (voucherType == 'RETAILINVOICE') {
       this.title = 'HÓA ĐƠN BÁN LẺ';
     }
     await new Promise(resolve => setTimeout(() => resolve(true), 300));

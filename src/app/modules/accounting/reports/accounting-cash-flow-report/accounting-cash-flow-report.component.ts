@@ -136,6 +136,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
             mode: 'print',
             id: ['all'],
             objects: this.selectedIds,
+            accounts: '131,331,334'
           },
         });
       };
@@ -287,7 +288,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
     source.prepareParams = (params: any) => {
 
       params['includeColumnHeader'] = true;
-      params['eq_Accounts'] = '131,331';
+      params['eq_Accounts'] = '131,331,3341,3348';
       params['groupBy'] = 'Object';
 
     const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
@@ -340,7 +341,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       context: {
         inputMode: 'dialog',
         object: rowData.Object,
-        accounts: ['131', '331'],
+        accounts: ['131', '331', '334'],
         fromDate: null,
         toDate: null,
         balance: 'both',

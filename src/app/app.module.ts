@@ -751,6 +751,17 @@ export class AppModule {
     responseTitle: 'Common.approved',
     responseText: 'Common.approved',
   };
+  static priceReportState: ProcessMap = {
+    state: 'PRICEREPORT',
+    label: 'Báo giá',
+    confirmLabel: 'Báo giá',
+    status: 'primary',
+    outline: true,
+    confirmTitle: 'Báo giá',
+    confirmText: 'Bạn có muốn báo giá',
+    responseTitle: 'Đã báo giá',
+    responseText: 'Đã báo giá',
+  };
   static proccessingState: ProcessMap = {
     state: 'PROCESSING',
     label: 'Common.processing',
@@ -1305,7 +1316,7 @@ export class AppModule {
     deploymentVoucher: {
       "APPROVED": {
         ...AppModule.approvedState,
-        outline: false,
+        outline: true,
         nextState: 'DEPLOYEMNT',
         nextStates: [
           { ...AppModule.depploymentState, status: 'danger' },
@@ -1665,6 +1676,52 @@ export class AppModule {
         nextState: 'APPROVED',
         nextStates: [
           AppModule.approvedState,
+        ],
+      },
+    },
+    commercePos: {
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          // { ...AppModule.completeState, status: 'success' },
+          AppModule.unrecordedState,
+        ],
+      },
+      "PRICEREPORT": {
+        ...AppModule.priceReportState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.priceReportState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.priceReportState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "": {
+        ...AppModule.notJustApprodedState,
+        state: 'NOTJUSTAPPROVED',
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.unrecordedState,
         ],
       },
     },

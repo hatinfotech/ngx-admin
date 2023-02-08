@@ -1,3 +1,4 @@
+import { FileModel } from './file.model';
 import { UnitModel } from './unit.model';
 import { ProductModel } from './product.model';
 import { Model } from './model';
@@ -41,6 +42,6 @@ export class DeploymentVoucherDetailModel extends Model  {
   Quantity?: number;
   Price?: number & string;
   Unit?: string & UnitModel;
-  Image?: string;
+  Image?: any;
   RelateDetail?: string;
 }

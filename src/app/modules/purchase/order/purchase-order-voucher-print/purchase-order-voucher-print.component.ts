@@ -150,7 +150,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true }).then(data => {
+    return this.apiService.getPromise<PurchaseOrderVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeUnit: true, includeRelativeVouchers: true  }).then(data => {
       this.summaryCalculate(data);
 
       for (const item of data) {

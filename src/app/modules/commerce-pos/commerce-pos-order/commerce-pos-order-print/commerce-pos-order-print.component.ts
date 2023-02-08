@@ -59,7 +59,7 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
     //     for (const detail of data.Details) {
     //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //     }
-    //     this.processMapList[i] = AppModule.processMaps.salesVoucher[data.State || ''];
+    //     this.processMapList[i] = AppModule.processMaps.commercePos[data.State || ''];
     //   }
     // }
     this.summaryCalculate(this.data);
@@ -164,7 +164,7 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.salesVoucher[data.State || ''];
+    const processMap = AppModule.processMaps.commercePos[data.State || ''];
     params['changeState'] = processMap.nextState;
     // let confirmText = '';
     // let responseText = '';
@@ -268,7 +268,7 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<CommercePosOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
       for (const item of rs) {
-        const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
+        const processMap = AppModule.processMaps.commercePos[item.State || ''];
         item.StateLabel = processMap.label;
         if (item && item.Details) {
           this.setDetailsNo(item.Details, (detail: CommercePosOrderDetailModel) => detail.Type !== 'CATEGORY');
@@ -299,7 +299,7 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = AppModule.processMaps.salesVoucher[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.commercePos[item.State || ''];
     }
     return data;
   }

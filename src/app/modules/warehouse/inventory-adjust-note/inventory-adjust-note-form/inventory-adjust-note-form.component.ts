@@ -2383,7 +2383,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       prepareItems.push({
                         No: totalRows + i,
                         Product: goods,
-                        Description: this.commonService.getObjectText(goods),
+                        Description: goodsInContainer.GoodsName,
                         Unit: { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel },
                         Container: container || null,
                         Containers: [container],

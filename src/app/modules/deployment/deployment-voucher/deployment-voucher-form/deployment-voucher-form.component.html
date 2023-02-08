@@ -167,39 +167,39 @@
                         <label class="label label-with-border-below">{{'Thông tin vận chuyển' | translate | headtitlecase}}</label>
                         <div class="row">
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Driver" label="Tài xế" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Driver" label="Người triển khai" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Driver" [select2Option]="select2OptionForContact" (selectChange)="onDriverChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="DriverName" label="Tên tài xế" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <input type="text" nbInput fullWidth formControlName="DriverName" placeholder="{{'Tên tài xế' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DriverName" label="Tên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <input type="text" nbInput fullWidth formControlName="DriverName" placeholder="{{'Tên người triên khai' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DriverPhone" label="SĐT tài xế" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <input type="text" nbInput fullWidth formControlName="DriverPhone" placeholder="{{'SĐT tài xế' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="DriverPhone" label="SĐT" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <input type="text" nbInput fullWidth formControlName="DriverPhone" placeholder="{{'SĐT người triên khai' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Transportation" label="Phương tiện vận chuyển" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Transportation" label="Phương tiện" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Transportation" [select2Option]="select2OptionForTransportation"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="ShippingCostPaymentBy" label="Bên thanh toán phí vận chuyển" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="ShippingCostPaymentBy" label="Bên thanh toán phí triển khai" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="ShippingCostPaymentBy" [select2Option]="select2OptionForShippingCostPaymentBy"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="ShippingCost" label="Phí vận chuyển" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
-                                    <nb-checkbox class="form-group-icon-control" formControlName="IsDebt" nbTooltip="Ghi nợ"></nb-checkbox>
-                                    <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="ShippingCost" placeholder="{{'Phí vận chuyển' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
+                                <ngx-form-group [formGroup]="formItem" name="ShippingCost" label="Phí triển khai" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
+                                    <nb-checkbox class="form-group-icon-control" formControlName="IsDebt" nbTooltip="Tính vào lương"></nb-checkbox>
+                                    <input type="text" class="form-group-input-control" nbInput fullWidth formControlName="ShippingCost" placeholder="{{'Tính vào lương đối với nhân viên' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="ShippingCostPaymentRatio" label="Tỷ lệ thanh toán phí vận chuyển (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
-                                    <input type="text" nbInput fullWidth formControlName="ShippingCostPaymentRatio" placeholder="{{'Tỷ lệ thanh toán phí vận chuyển (%)' | translate | headtitlecase}}" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
+                                <ngx-form-group [formGroup]="formItem" name="ShippingCostPaymentRatio" label="Tỷ lệ thanh toán phí triển khai (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
+                                    <input type="text" nbInput fullWidth formControlName="ShippingCostPaymentRatio" placeholder="{{'Tỷ lệ thanh toán phí triển khai (%)' | translate | headtitlecase}}" currencyMask [options]="quantityFormat" (focus)="currencyMaskFocus($event, quantityFormat)" (keydown)="currencyMastKeydown($event, quantityFormat)" (paste)="onPasteNumber($event, quantityFormat)">
                                 </ngx-form-group>
                             </div>
                         </div>

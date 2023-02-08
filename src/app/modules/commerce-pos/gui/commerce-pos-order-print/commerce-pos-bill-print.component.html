@@ -84,13 +84,16 @@
                 <!-- <button nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="close"></nb-icon>
                 </button> -->
-                <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="data[0].State != 'APPROVED'" status="success" (click)="payment(0)">
+                <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="type == 'PRICEREPORT' && data[0].State != 'PRICEREPORT'" status="primary" (click)="saveAndPrint(0)">
+                    <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'Báo giá (Enter)' | translate | headtitlecase}}
+                </button>
+                <button #paymentBtn nbButton [disabled]="isProcessing" hero *ngIf="data[0].State != 'APPROVED' && type != 'PRICEREPORT'" status="success" (click)="payment(0)">
                     <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In (Enter)' | translate | headtitlecase}}
                 </button>
-                <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="primary" (click)="print(0, 'RETAILINVOICE')">
+                <button #printBtn nbButton hero *ngIf="data[0].State == 'APPROVED' && type != 'PRICEREPORT'" status="primary" (click)="print(0, 'RETAILINVOICE')">
                     <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In HD (F9)' | translate | headtitlecase}}
                 </button>
-                <button #priceReportPrintBtn nbButton hero *ngIf="data[0].State == 'APPROVED'" status="info" (click)="print(0, 'PRICEREPORT')">
+                <button #priceReportPrintBtn nbButton hero *ngIf="data[0].State == 'APPROVED' || data[0].State == 'PRICEREPORT'" status="info" (click)="print(0, 'PRICEREPORT')">
                     <nb-icon pack="eva" icon="printer-outline"></nb-icon>{{'In BG (Enter)' | translate | headtitlecase}}
                 </button>
             </div>

@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
-import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableButtonComponent, SmartTableTagsComponent, SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
@@ -87,10 +87,40 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           width: '5%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
+        Code: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          type: 'string',
+          width: '5%',
+        },
         Object: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
-          width: '20%',
+          width: '10%',
+          valuePrepareFunction: (cell: any, row: DeploymentVoucherModel) => {
+            return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }}),
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
+        },
+        Driver: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Người triển khai'), 'head-title'),
+          type: 'string',
+          width: '10%',
           valuePrepareFunction: (cell: any, row: DeploymentVoucherModel) => {
             return this.commonService.getObjectText(cell);
           },
@@ -123,11 +153,6 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
         //   type: 'string',
         //   width: '20%',
         // },
-        Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '5%',
-        },
         Creator: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
@@ -293,6 +318,23 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             });
           },
         },
+        ShippingCost: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Phí triển khai'), 'head-title'),
+          type: 'custom',
+          class: 'align-right',
+          width: '10%',
+          position: 'right',
+          renderComponent: SmartTableCurrencyComponent,
+          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+            // instance.format$.next('medium');
+            instance.style = 'text-align: right';
+          },
+        },
+        IsDebt: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Nợ'), 'head-title'),
+          type: 'boolean',
+          width: '5%',
+        },
         State: {
           title: this.commonService.translateText('Common.state'),
           type: 'custom',
@@ -427,6 +469,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
       params['includeObject'] = true;
+      params['includeDriver'] = true;
       params['includeCreator'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';

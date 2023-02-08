@@ -1,3 +1,4 @@
+import { FileModel } from './file.model';
 import { IdTextModel } from './common.model';
 import { BusinessModel } from './accounting.model';
 import { TaxModel } from './tax.model';
@@ -55,7 +56,7 @@ export class CommercePosOrderDetailModel extends Model {
   Quantity?: string & number;
   Price?: string & number;
   Tax?: string & TaxModel;
-  Image?: string;
+  Image?: any;
   CurrencyType?: string;
   Unit?: string & UnitModel;
   Business?: string | BusinessModel[];

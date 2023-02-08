@@ -408,6 +408,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   makeNewOrderForm(data?: CommercePosOrderModel) {
     const newForm = this.formBuilder.group({
       Code: [],
+      Title: [],
       BarCode: [],
       Object: [],
       ObjectName: [],
@@ -475,6 +476,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     if (order) {
       newForm = this.formBuilder.group({
         Code: [],
+        Title: [],
         BarCode: [],
         Order: [order.Code || null],
         Object: [order.Object || null],
@@ -2272,6 +2274,64 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
+  async saveAsPriceReport(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE', skipPrint?: boolean }) {
+    orderForm.get('Title').setValue(`Báo giá khách POS: ${orderForm.get('ObjectName').value} - ${this.commonService.datePipe.transform(new Date(), 'short')}`);
+    const data = orderForm.getRawValue();
+    if (!data?.Details?.length) {
+      this.commonService.toastService.show('Bạn phải thêm hàng hóa vào đơn hàng trước khi báo giá !', 'Chưa có hàng hóa nào trong đơn hàng !', { status: 'warning', duration: 5000 })
+      return false;
+    }
+    delete data.DateOfSale;
+    orderForm['isProcessing'] = true;
+    setTimeout(() => {
+      orderForm['isProcessing'] = false;
+    }, 500);
+
+    option = {
+      printType: 'PRICEREPORT',
+      ...option,
+    };
+
+    this.blurAll();
+
+    if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
+
+      this.commonService.openDialog(CommercePosBillPrintComponent, {
+        context: {
+          skipPreview: true,
+          printType: option?.printType,
+          type: 'PRICEREPORT',
+          instantPayment: true,
+          data: [data],
+          onSaveAndClose: (newOrder: CommercePosOrderModel, printComponent) => {
+            if (typeof newOrder.Object == 'string') {
+              newOrder.Object = { id: newOrder.Object, text: `${newOrder.Object} - ${newOrder.ObjectName}` }
+            }
+            newOrder.Object = { ...orderForm.get('Object').value, ...newOrder.Object };
+            orderForm.patchValue(newOrder);
+            this.commonService.toastService.show(option?.skipPrint ? `Đã báo giá cho đơn hàng ${newOrder.Code}` : `Đã báo giá cho đơn hàng ${newOrder.Code}`, 'Đã báo giá', { status: 'success', duration: 8000 })
+            // this.makeNewOrder();
+            console.log(this.historyOrders);
+            // this.playPaymentSound();
+          },
+          onClose: () => {
+          },
+          onAfterInit: (component: CommercePosBillPrintComponent) => {
+            // if (option?.skipPrint) {
+            //   component?.close();
+            // } else {
+            //   setTimeout(() => {
+            //     if (!component.isProcessing) {
+            //       component?.close();
+            //     }
+            //   }, 15000);
+            // }
+          }
+        }
+      });
+    }
+  }
+
   async save(orderForm: FormGroup): Promise<CommercePosOrderModel> {
     // if (orderForm.get('Code').value && !orderForm['modified']) {
     //   console.log('voucher was not modified => not need save');
@@ -2302,6 +2362,48 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             if (rs[0].Details) {
               for (const index in rs[0].Details) {
                 const detailForm = (orderForm.get('Details') as FormArray).controls[index] as FormGroup;
+                detailForm.get('SystemUuid').setValue(rs[0].Details[index].SystemUuid);
+              }
+            }
+            return rs[0];
+          });
+        }
+      });
+    }
+    console.log('Order Form đang khởi tạo => chưa lưu đơn !');
+    return null;
+  }
+
+  async saveAsPriceReportx() {
+    const voucherType = this.orderForm['voucherType'];
+    if (voucherType != 'COMMERCEPOSORDER') {
+      return Promise.reject('Phiếu hiện tại không phải đơn hàng POS');
+    }
+    const apiPath = '/commerce-pos/orders';
+    this.orderForm.get('Title').setValue(`Báo giá khách POS: ${this.commonService.getObjectText(this.orderForm.get('Object').value)}} - ${this.commonService.datePipe.transform(this.orderForm.get('Created').value, 'short')}`);
+    let order = this.orderForm.getRawValue();
+    delete order.BarCode;
+    if (this.orderForm && this.orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
+      return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
+        if (order.Code) {
+          return this.apiService.putPromise(apiPath + '/' + order.Code, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
+            if (rs[0].Details) {
+              for (const index in rs[0].Details) {
+                const detailForm = (this.orderForm.get('Details') as FormArray).controls[index] as FormGroup;
+                detailForm.get('SystemUuid').setValue(rs[0].Details[index].SystemUuid);
+              }
+            }
+            return rs[0];
+          });
+        } else {
+          this.orderForm['isProcessing'] = true;
+          return this.apiService.postPromise(apiPath, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
+            this.orderForm.patchValue(rs[0]);
+            this.orderForm['isProcessing'] = false;
+            // orderForm['modified'] = false;
+            if (rs[0].Details) {
+              for (const index in rs[0].Details) {
+                const detailForm = (this.orderForm.get('Details') as FormArray).controls[index] as FormGroup;
                 detailForm.get('SystemUuid').setValue(rs[0].Details[index].SystemUuid);
               }
             }

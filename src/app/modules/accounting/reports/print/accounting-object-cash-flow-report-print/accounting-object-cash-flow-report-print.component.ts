@@ -31,6 +31,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
   systemConfigs: SystemConfigModel;
   // formDialog = CashPaymentVoucherFormComponent;
   @Input() objects: string[];
+  @Input() accounts: string;
 
 
   constructor(
@@ -159,7 +160,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
     for (const object of this.objects) {
       promiseAll.push(this.apiService.getPromise<any[]>(this.apiPath, {
         reportObjectCashFlow: true,
-        eq_Account: ['131', '331'],
+        eq_Accounts: this.accounts,
         eq_Object: object,
         includeIncrementAmount: true,
         includeObjectInfo: true,

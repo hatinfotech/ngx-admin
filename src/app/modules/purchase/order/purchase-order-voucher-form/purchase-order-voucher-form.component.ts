@@ -22,6 +22,8 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { takeUntil } from 'rxjs/operators';
+import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -234,7 +236,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -272,7 +274,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -884,7 +886,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -906,6 +908,68 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         });
       }
     }];
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+      context: {
+        components: {
+          'COMMERCEPOSORDER': { title: 'Đơn hàng POS' },
+          'SALES': { title: 'Phiếu bán hàng' },
+          'PRICEREPORT': { title: 'Phiếu báo giá' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          this.onProcessing();
+          if (type === 'COMMERCEPOSORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const voucher = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + chooseItems[i].Code, { includeContact: true, includeObject: true, includeDetails: true, includeRelativeVouchers: true, includeUnit: true }).then(rs => rs[0]);
+
+                if (['PRICEREPORT'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.toastService.show(this.commonService.translateText('Đơn đặt POS chưa được báo giá'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                delete voucher.Id;
+                formGroup.patchValue({ ...voucher, Code: null, Id: null, Object: null, ObjectName: null, ObjectPhone: null, PbjectAddress: null, ObjectIdentifiedNumber: null, Details: [] });
+                details.clear();
+                // }
+                insertList.push(chooseItems[i]);
+
+                // Insert order details into voucher details
+                if (voucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Đơn đặt hàng POS: ' + voucher.Code + ' - ' + voucher.Title }));
+                  for (const voucherDetail of voucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Price: null, RelateDetail: `COMMERCEPOSORDER/${voucher.Code}/${voucherDetail.SystemUuid}` });
+                      details.push(newDetailFormGroup);
+                      // const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
+                      // if (selectedUnit) {
+                      // }
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'COMMERCEPOSORDER' }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          }
+          
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
+        },
+      }
+    })
+    return false;
   }
 
 }
