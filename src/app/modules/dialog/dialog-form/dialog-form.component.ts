@@ -81,6 +81,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   @Input() controls: DialogFormControl[];
   @Input() actions: DialogFormAction[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
+  @Input() onClose: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
@@ -169,6 +170,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
     // }
     this.destroy$.next();
     this.destroy$.complete();
+    this.onClose && this.onClose(this.formGroup, this);
     setTimeout(() => {
       this.ref = null;
     }, 500);

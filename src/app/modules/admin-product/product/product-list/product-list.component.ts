@@ -24,6 +24,7 @@ import { _ } from '@ag-grid-community/all-modules';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
 import { defaultMaxListeners } from 'stream';
+import { ImportProductDialogComponent } from '../import-products-dialog/import-products-dialog.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -126,6 +127,37 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                 this.refresh();
               },
             },
+          });
+          return false;
+        },
+      });
+
+      this.actionButtonList.unshift({
+        name: 'importProducts',
+        status: 'primary',
+        label: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
+        icon: 'copy-outline',
+        title: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => false,
+        click: () => {
+          this.commonService.openDialog(ImportProductDialogComponent, {
+            context: {
+              // showLoadinng: true,
+              inputMode: 'dialog',
+              onDialogSave: (newData: ProductModel[]) => {
+                // if (onDialogSave) onDialogSave(row);
+                // this.onClose && this.onClose(newData[0]);
+                // this.onSaveAndClose && this.onSaveAndClose(newData[0]);
+              },
+              onDialogClose: () => {
+                // if (onDialogClose) onDialogClose();
+                this.refresh();
+              },
+            },
+            closeOnEsc: false,
+            closeOnBackdropClick: false,
           });
           return false;
         },

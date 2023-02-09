@@ -289,6 +289,7 @@ import { AccountingContributedCapitalReportComponent } from './modules/accountin
 import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-report.component';
 import { WarehouseDetailByGoodsReportComponent } from './modules/warehouse/reports/warehouse-detail-by-goods-report/warehouse-detail-by-goods-report.component';
 import { WarehouseSummaryReportComponent } from './modules/warehouse/reports/summary-report/warehouse-summary-report.component';
+import { ImportProductDialogComponent } from './modules/admin-product/product/import-products-dialog/import-products-dialog.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -452,6 +453,7 @@ export class DynamicLocaleId extends String {
     ProductUnitListComponent,
     ProductUnitFormComponent,
     AssignCategoriesFormComponent,
+    ImportProductDialogComponent,
     ProductGroupListComponent,
     ProductGroupFormComponent,
     ModulesComponent,
