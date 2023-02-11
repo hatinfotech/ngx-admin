@@ -66,7 +66,7 @@ export class ProductUnitConversoinModel {
   Id?: number & string;
   Product?: string & ProductModel;
   Unit?: string & UnitModel;
-  ConversionRatio?: string & number;
+  ConversionRatio?: any;
   IsDefaultSales?: boolean;
   IsDefaultPrchase?: boolean;
   IsManageByAccessNumber?: boolean;

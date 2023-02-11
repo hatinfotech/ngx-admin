@@ -117,7 +117,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     });
   }
 
-  onKeyboardEvent(event: KeyboardEvent) {
+  onKeyboardEvent(event: KeyboardEvent, component?: BaseComponent) {
     return true;
   }
   onKeyupEvent(event: KeyboardEvent) {

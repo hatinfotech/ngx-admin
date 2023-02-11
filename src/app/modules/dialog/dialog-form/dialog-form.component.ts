@@ -7,6 +7,9 @@ import { NbDialogRef } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../showcase-dialog/showcase-dialog.component';
 import { FormGroup, AbstractControl, FormControl } from '@angular/forms';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { BaseComponent } from '../../../lib/base-component';
+import { Router } from '@angular/router';
+import { ApiService } from '../../../services/api.service';
 
 /**
 this.commonService.openDialog(DialogFormComponent, {
@@ -57,7 +60,8 @@ export interface DialogFormControl {
   disabled?: boolean,
   focus?: boolean,
   option?: any,
-  value?: any
+  value?: any,
+  class?: string,
 }
 export interface DialogFormAction {
   label: string,
@@ -72,18 +76,20 @@ export interface DialogFormAction {
   templateUrl: './dialog-form.component.html',
   styleUrls: ['./dialog-form.component.scss'],
 })
-export class DialogFormComponent implements OnInit, AfterViewInit {
-
+export class DialogFormComponent extends BaseComponent implements OnInit, AfterViewInit {
+  
+  componentName: string = 'DialogFormComponent';
 
   @Input() title: string;
   @Input() cardStyle?: any;
+  @Input() width?: string;
 
   @Input() controls: DialogFormControl[];
   @Input() actions: DialogFormAction[];
   @Input() onInit: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @Input() onClose: (form: FormGroup, dialog: DialogFormComponent) => Promise<boolean>;
   @ViewChild('formEle', { static: true }) formEle: ElementRef;
-  @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
+  // @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
   public destroy$: Subject<void> = new Subject<void>();
   curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
@@ -98,10 +104,12 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   inited = new BehaviorSubject<boolean>(false);
 
   constructor(
-    public ref: NbDialogRef<ShowcaseDialogComponent>,
     public commonService: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public ref: NbDialogRef<DialogFormComponent>,
   ) {
-
+    super(commonService, router, apiService, ref);
     this.formGroup = new FormGroup({});
 
     if (this.actions) {
@@ -136,6 +144,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    super.ngAfterViewInit();
     this.inited.pipe(filter(f => f), take(1)).toPromise().then(rs => {
       this.controls.forEach(control => {
         if (control?.focus) {
@@ -148,6 +157,7 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    super.ngOnInit();
     const fcs: { [key: string]: AbstractControl } = {};
     this.controls.forEach(control => {
       fcs[control.name] = new FormControl();
@@ -165,35 +175,36 @@ export class DialogFormComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy(): void {
+    super.ngOnDestroy();
     // if (!this.ref) {
       // this.commonService.clearHeaderActionControlList();
     // }
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.onClose && this.onClose(this.formGroup, this);
-    setTimeout(() => {
-      this.ref = null;
-    }, 500);
+    // this.destroy$.next();
+    // this.destroy$.complete();
+    // this.onClose && this.onClose(this.formGroup, this);
+    // setTimeout(() => {
+    //   this.ref = null;
+    // }, 500);
   }
 
-  @HostListener('document:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
-      // console.log(event.key + ': listen on show case dialog...');
-      const action = this.actions.find(f => f.keyShortcut == event.key);
-      if (action) {
-        if (action.action(this.formGroup, this)) {
-          this.dismiss();
-        }
+  // @HostListener('document:keydown', ['$event'])
+  // handleKeyboardEvent(event: KeyboardEvent) {
+  //   if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+  //     // console.log(event.key + ': listen on show case dialog...');
+  //     const action = this.actions.find(f => f.keyShortcut == event.key);
+  //     if (action) {
+  //       if (action.action(this.formGroup, this)) {
+  //         this.dismiss();
+  //       }
 
-        return false;
-      }
-      if (this.onKeyboardEvent) {
-        return this.onKeyboardEvent(event, this);
-      }
-    }
-    return true;
-  }
+  //       return false;
+  //     }
+  //     if (this.onKeyboardEvent) {
+  //       return this.onKeyboardEvent(event, this);
+  //     }
+  //   }
+  //   return true;
+  // }
 
   onAction(item: DialogFormAction, form: FormGroup) {
     return item?.action(form, this);
