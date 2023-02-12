@@ -55,7 +55,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
       {
         headerName: 'Import',
-        field: 'import',
+        field: 'IsImport',
         width: 80,
         filter: 'agTextColumnFilter',
         pinned: 'left',
@@ -65,20 +65,51 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             // alert(`${field} was clicked`);
             console.log(params);
 
-            // Remove row
             if (checked) {
-              params.node.setDataValue('Sku', null);
-              params.node.setDataValue('Code', null);
+              //   params.node.setDataValue('Sku', null);
+              //   params.node.setDataValue('Code', null);
+              //   params.data.LastSku = params.data.Sku;
+              //   params.data.LastCode = params.data.Code;
+              // params.node.setDataValue('IsImport', false);
             } else {
-              params.node.setDataValue('Sku', params.data.OldSku);
-              params.node.setDataValue('Code', params.data.OldCode);
+              //   params.node.setDataValue('Sku', params.data.OldSku);
+              //   params.node.setDataValue('Code', params.data.OldCode);
             }
           },
         },
       },
+      // {
+      //   headerName: 'Cập nhật',
+      //   field: 'IsUpdate',
+      //   width: 80,
+      //   filter: 'agTextColumnFilter',
+      //   pinned: 'left',
+      //   cellRenderer: 'ckbCellRenderer',
+      //   cellRendererParams: {
+      //     changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+      //       // alert(`${field} was clicked`);
+      //       console.log(params);
+
+      //       // Remove row
+      //       if (checked) {
+      //         //   // params.node.setDataValue('Sku', null);
+      //         //   // params.node.setDataValue('Code', null);
+      //         //   params.node.setDataValue('Sku', params.data.OldSku);
+      //         //   params.node.setDataValue('Code', params.data.LastCode);
+      //         params.node.setDataValue('IsNew', false);
+      //         if (params.data.OldSku) {
+      //           params.node.setDataValue('Sku', params.data.OldSku);
+      //         }
+      //         if (params.data.OldCode) {
+      //           params.node.setDataValue('Sku', params.data.OldCode);
+      //         }
+      //       }
+      //     },
+      //   },
+      // },
       {
         headerName: 'Nghi vấn trùng',
-        field: 'duplicate',
+        field: 'Status',
         width: 110,
         filter: 'agTextColumnFilter',
         pinned: 'left',
@@ -121,6 +152,66 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
         // pinned: 'right',
+      },
+      {
+        headerName: 'Mặc định bán 0',
+        field: 'IsDefaultSales0',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+          },
+        },
+      },
+      {
+        headerName: 'Mặc định mua 0',
+        field: 'IsDefaultPurchase0',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+          },
+        },
+      },
+      {
+        headerName: 'Số truy xuất 0',
+        field: 'IsManageByAccessNumber0',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+          },
+        },
+      },
+      {
+        headerName: 'Trừ kho tự động 0',
+        field: 'IsAutoAdjustInventory0',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+          },
+        },
+      },
+      {
+        headerName: 'Có hạn sử dụng 0',
+        field: 'IsExpirationGoods0',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+          },
+        },
       },
       {
         headerName: 'ĐVT chuyển đổi 1',
@@ -700,7 +791,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
   public cellDoubleClicked = (params: CellDoubleClickedEvent) => {
     console.log(params);
-    
+
     if (params.colDef.field == 'duplicate') {
       this.commonService.showDialog('Xử lý trùng', 'Bạn có muốn xác nhận lại trạng thái trùng không ?', [
         {
@@ -732,7 +823,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       }
     },
     textRender: (params) => {
-      
+
       if (params.colDef.field == 'duplicate') {
         return params.value && 'Trùng ?' || '';
       }
@@ -756,7 +847,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       }
       return image?.Thumbnail ? '<img style="height: 45px" src="' + image?.Thumbnail + '">' : '';
     },
-    
+
     btnCellRenderer: BtnCellRenderer,
     ckbCellRenderer: CkbCellRenderer
   };
@@ -784,13 +875,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
     if (this.gridApi) {
 
-      
+
       let details: ProductModel[] = (this.array || []).map((detail: ProductModel) => {
-        
+
         return detail;
       });
       this.gridApi.setRowData(details);
-      
+
     }
 
   }
@@ -800,16 +891,16 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       rowCount: null,
       getRows: (getRowParams: IGetRowsParams) => {
         console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
-        
+
         let details: ProductModel[] = (this.array as []).slice(getRowParams.startRow, getRowParams.endRow);
-        
+
         let lastRow = -1;
         if (details.length < this.paginationPageSize) {
           lastRow = getRowParams.startRow + details.length;
         }
         getRowParams.successCallback(details, lastRow);
         this.gridApi.resetRowHeights();
-        
+
       },
     };
   }
@@ -996,7 +1087,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           return initial;
         }, {});
         this.processing = false;
-        
+
         this.sheets = Object.keys(this.jsonData);
         if (this.sheets.length > 1) {
           this.sheet = await new Promise((resove, reject) => {
@@ -1076,7 +1167,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         // const productList: any[] = sheet;
 
         // Confirm mapping
-        const columnList = Object.keys(this.sheet[0]).map(m => {
+        const tmpSheet: string[][] = XLSX.utils.sheet_to_json(this.workBook.Sheets[this.chooseSheet], { header: 1 });
+        const columnList = tmpSheet[0].map((m: string) => {
           const id = m.split('/')[0];
           const text = m;
           return { id, text };
@@ -1093,13 +1185,35 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             },
             controls: [
               {
+                name: 'Code',
+                label: 'Code',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Code'),
+                // focus: true,
+                class: 'col-md-1',
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn cột ID sản phẩm...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
                 name: 'Sku',
                 label: 'Sku',
                 placeholder: '',
                 type: 'select2',
                 initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Sku'),
                 // focus: true,
-                class: 'col-md-3',
+                class: 'col-md-2',
                 option: {
                   data: columnList,
                   placeholder: 'Chọn sku...',
@@ -1226,11 +1340,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   try {
                     this.mapping = {
                       ...form.value,
+                      // UnitConversionName0: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName0'),
                       UnitConversionName1: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName1'),
                       UnitConversionName2: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName2'),
                       UnitConversionName3: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName3'),
                       UnitConversionName4: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName4'),
                       UnitConversionName5: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName5'),
+                      // UnitConversionName5: columnList.find(f => this.commonService.getObjectId(f) == 'UnitConversionName5'),
                     };
                     for (const i in this.mapping) {
                       this.mapping[i] = this.commonService.getObjectText(this.mapping[i]);
@@ -1249,14 +1365,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                         WarehouseUnitName: row[this.mapping['WarehouseUnitName']],
 
                         UnitConversion1: row[this.mapping['UnitConversion1']],
-                        UnitConversion1Name: row[this.mapping['UnitConversion1Name']],
+                        UnitConversionName1: row[this.mapping['UnitConversionName1']],
                         ConversionRatio1: row[this.mapping['ConversionRatio1']],
                         IsDefaultSales1: row[this.mapping['IsDefaultSales1']] && true || false,
                         IsDefaultPurchase1: row[this.mapping['IsDefaultPurchase1']] && true || false,
                         IsManageByAccessNumber1: row[this.mapping['IsManageByAccessNumber1']] && true || false,
                         IsAutoAdjustInventory1: row[this.mapping['IsAutoAdjustInventory1']] && true || false,
                         IsExpirationGoods1: row[this.mapping['IsExpirationGoods1']] && true || false,
-
 
                         UnitConversion2: row[this.mapping['UnitConversion2']],
                         UnitConversionName2: row[this.mapping['UnitConversionName2']],
@@ -1313,6 +1428,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                       ...this.array.map(m => m.UnitConversionName1),
                       ...this.array.map(m => m.UnitConversionName2),
                       ...this.array.map(m => m.UnitConversionName3),
+                      ...this.array.map(m => m.UnitConversionName4),
+                      ...this.array.map(m => m.UnitConversionName5),
                     ]);
                     let importUnitMapping: { [key: string]: any[] } = {};
                     for (const unit of importUnitsUnique) {
@@ -1328,7 +1445,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                     const currentProductList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' });
                     for (const newProduct of this.array) {
                       let duplicate = false;
-                      newProduct.import = false;
+                      newProduct.IsNew = false;
                       newProduct.WarehouseUnit = newProduct.WarehouseUnit && unitMapping[newProduct.WarehouseUnit] || importUnitMapping[newProduct['WarehouseUnitName']][0];
                       newProduct.WarehouseUnitName = this.commonService.getObjectText(newProduct.WarehouseUnit);
 
@@ -1338,6 +1455,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                       newProduct.UnitConversion4 = newProduct.UnitConversion4 && unitMapping[newProduct.UnitConversion4] || importUnitMapping[newProduct['UnitConversionName4']][0];
                       newProduct.UnitConversion5 = newProduct.UnitConversion5 && unitMapping[newProduct.UnitConversion5] || importUnitMapping[newProduct['UnitConversionName5']][0];
 
+                      // newProduct.UnitConversionName0 = this.commonService.getObjectText(newProduct.WarehouseUnit);
                       newProduct.UnitConversionName1 = this.commonService.getObjectText(newProduct.UnitConversion1);
                       newProduct.UnitConversionName2 = this.commonService.getObjectText(newProduct.UnitConversion2);
                       newProduct.UnitConversionName3 = this.commonService.getObjectText(newProduct.UnitConversion3);
@@ -1346,18 +1464,22 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
                       for (const oldProduct of currentProductList) {
                         if (newProduct.Sku) {
-                          if (oldProduct.Sku == newProduct.Sku) {
+                          if (oldProduct.Sku?.toLowerCase() == newProduct.Sku?.toLowerCase()) {
                             newProduct.Code = oldProduct.Code;
                             newProduct.duplicate = true;
                             newProduct.OldName = oldProduct.Name;
                             newProduct.FeaturePicture = oldProduct.FeaturePicture;
                             duplicate = true
+                            // newProduct.IsImport = true;
+                            // newProduct.IsUpdate = true;
+                            // newProduct.IsNew = false;
                             break;
                           }
                         } else {
-                          if (oldProduct.Name && newProduct.Name && (this.commonService.smartFilter(oldProduct.Name, newProduct.Name) || this.commonService.smartFilter(newProduct.Name, oldProduct.Name))) {
+                          // if (oldProduct.Name && newProduct.Name && (this.commonService.smartFilter(oldProduct.Name, newProduct.Name) || this.commonService.smartFilter(newProduct.Name, oldProduct.Name))) {
+                          if (oldProduct.Name && newProduct.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(newProduct.Name).toLowerCase()) {
                             newProduct.duplicate = true;
-                            newProduct.import = false;
+                            newProduct.IsNew = false;
                             newProduct.OldName = oldProduct.Name;
                             newProduct.Sku = oldProduct.Sku;
                             newProduct.Code = oldProduct.Code;
@@ -1371,9 +1493,12 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                       }
                       if (!duplicate) {
                         newProduct.duplicate = false;
+                        newProduct.Status = 'Mới';
                         if (this.commonService.getObjectId(newProduct.WarehouseUnit)) {
-                          newProduct.import = true;
+                          newProduct.IsImport = true;
                         }
+                      } else {
+                        newProduct.Status = 'Trùng ?';
                       }
                     }
 
@@ -1412,16 +1537,31 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         allProductList.push(newProduct);
         if (newProduct.WarehouseUnit && this.commonService.getObjectId(newProduct.WarehouseUnit)) {
           newProduct.UnitConversions = [];
-          newProduct.UnitConversions.push({
-            Unit: newProduct.WarehouseUnit,
-            ConversionRatio: 1,
-            IsManageByAccessNumber: newProduct.IsManageByAccessNumber,
-          });
+          // newProduct.UnitConversions.push({
+          //   Unit: newProduct.WarehouseUnit,
+          //   ConversionRatio: 1,
+          //   IsManageByAccessNumber: newProduct.IsManageByAccessNumber,
+          // });
+          // if (newProduct.WarehouseUnit) {
+          //   newProduct.UnitConversions.push({
+          //     Unit: newProduct.WarehouseUnit,
+          //     ConversionRatio: 1,
+          //     IsManageByAccessNumber: newProduct.IsManageByAccessNumber0 || false,
+          //     IsDefaultSales: newProduct.IsDefaultSales0 || false,
+          //     IsDefaultPurchase: newProduct.IsDefaultPurchase0 || false,
+          //     IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory0 || false,
+          //     IsExpirationGoods: newProduct.IsExpirationGoods0 || false,
+          //   });
+          // }
           if (newProduct.UnitConversion1) {
             newProduct.UnitConversions.push({
               Unit: newProduct.UnitConversion1,
               ConversionRatio: newProduct.ConversionRatio1,
               IsManageByAccessNumber: newProduct.IsManageByAccessNumber1 || false,
+              IsDefaultSales: newProduct.IsDefaultSales1 || false,
+              IsDefaultPurchase: newProduct.IsDefaultPurchase1 || false,
+              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory1 || false,
+              IsExpirationGoods: newProduct.IsExpirationGoods1 || false,
             });
           }
           if (newProduct.UnitConversion2) {
@@ -1429,6 +1569,10 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               Unit: newProduct.UnitConversion2,
               ConversionRatio: newProduct.ConversionRatio2,
               IsManageByAccessNumber: newProduct.IsManageByAccessNumber2 || false,
+              IsDefaultSales: newProduct.IsDefaultSales2 || false,
+              IsDefaultPurchase: newProduct.IsDefaultPurchase2 || false,
+              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory2 || false,
+              IsExpirationGoods: newProduct.IsExpirationGoods2 || false,
             });
           }
           if (newProduct.UnitConversion3) {
@@ -1436,20 +1580,44 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               Unit: newProduct.UnitConversion3,
               ConversionRatio: newProduct.ConversionRatio3,
               IsManageByAccessNumber: newProduct.IsManageByAccessNumber3 || false,
+              IsDefaultSales: newProduct.IsDefaultSales3 || false,
+              IsDefaultPurchase: newProduct.IsDefaultPurchase3 || false,
+              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory3 || false,
+              IsExpirationGoods: newProduct.IsExpirationGoods3 || false,
             });
           }
-          if (newProduct.import) {
+          if (newProduct.UnitConversion4) {
+            newProduct.UnitConversions.push({
+              Unit: newProduct.UnitConversion4,
+              ConversionRatio: newProduct.ConversionRatio4,
+              IsManageByAccessNumber: newProduct.IsManageByAccessNumber4 || false,
+              IsDefaultSales: newProduct.IsDefaultSales4 || false,
+              IsDefaultPurchase: newProduct.IsDefaultPurchase4 || false,
+              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory4 || false,
+              IsExpirationGoods: newProduct.IsExpirationGoods4 || false,
+            });
+          }
+          if (newProduct.UnitConversion5) {
+            newProduct.UnitConversions.push({
+              Unit: newProduct.UnitConversion5,
+              ConversionRatio: newProduct.ConversionRatio5,
+              IsManageByAccessNumber: newProduct.IsManageByAccessNumber5 || false,
+              IsDefaultSales: newProduct.IsDefaultSales5 || false,
+              IsDefaultPurchase: newProduct.IsDefaultPurchase5 || false,
+              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory5 || false,
+              IsExpirationGoods: newProduct.IsExpirationGoods5 || false,
+            });
+          }
+          if (newProduct.IsImport) {
             // console.log(newProduct);
-            delete newProduct.UnitConversion1;
-            delete newProduct.UnitConversion2;
-            delete newProduct.UnitConversion3;
-            delete newProduct.ConversionRatio1;
-            delete newProduct.ConversionRatio2;
-            delete newProduct.ConversionRatio3;
+            // delete newProduct.UnitConversion1;
+            // delete newProduct.UnitConversion2;
+            // delete newProduct.UnitConversion3;
+            // delete newProduct.ConversionRatio1;
+            // delete newProduct.ConversionRatio2;
+            // delete newProduct.ConversionRatio3;
             newProduct.index = index;
             newProductList.push(newProduct);
-          } else {
-
           }
         }
 
@@ -1467,7 +1635,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           const node = this.gridApi.getDisplayedRowAtIndex(newProductList[i].index);
           node.setDataValue('Sku', createdProducts[i].Sku);
           node.setDataValue('Code', createdProducts[i].Code);
-          node.setDataValue('import', false);
+          node.setDataValue('IsImport', false);
         }
         this.commonService.toastService.show('Đã import thông tin sản phẩm', 'Import thành công', { status: 'success' });
         console.log(newProductList);
@@ -1494,8 +1662,17 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         this.sheet[i][this.mapping['WarehouseUnit']] = this.commonService.getObjectId(allProductList[i].WarehouseUnit);
         this.sheet[i][this.mapping['WarehouseUnitName']] = allProductList[i].WarehouseUnitName;
 
+        // this.sheet[i][this.mapping['UnitConversion0']] = this.commonService.getObjectId(allProductList[i].UnitConversion0);
+        // this.sheet[i][this.mapping['UnitConversionName0']] = allProductList[i].UnitConversionName0;
+        // this.sheet[i][this.mapping['ConversionRatio0']] = allProductList[i].ConversionRatio0;
+        // this.sheet[i][this.mapping['IsDefaultSales0']] = allProductList[i].IsDefaultSales0 && 1 || 0;
+        // this.sheet[i][this.mapping['IsDefaultPurchase0']] = allProductList[i].IsDefaultPurchase0 && 1 || 0;
+        // this.sheet[i][this.mapping['IsManageByAccessNumber0']] = allProductList[i].IsManageByAccessNumber0 && 1 || 0;
+        // this.sheet[i][this.mapping['IsAutoAdjustInventory0']] = allProductList[i].IsAutoAdjustInventory0 && 1 || 0;
+        // this.sheet[i][this.mapping['IsExpirationGoods0']] = allProductList[i].IsExpirationGoods0 && 1 || 0;
+
         this.sheet[i][this.mapping['UnitConversion1']] = this.commonService.getObjectId(allProductList[i].UnitConversion1);
-        this.sheet[i][this.mapping['UnitConversionName1']] = allProductList[i].UnitConversion1Name;
+        this.sheet[i][this.mapping['UnitConversionName1']] = allProductList[i].UnitConversionName1;
         this.sheet[i][this.mapping['ConversionRatio1']] = allProductList[i].ConversionRatio1;
         this.sheet[i][this.mapping['IsDefaultSales1']] = allProductList[i].IsDefaultSales1 && 1 || 0;
         this.sheet[i][this.mapping['IsDefaultPurchase1']] = allProductList[i].IsDefaultPurchase1 && 1 || 0;
@@ -1550,6 +1727,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       this.processing = false;
     } catch (err) {
       this.processing = false;
+      console.error(err);
       this.commonService.toastService.show('Đã xảy ra lỗi trong quá trình import', 'Lỗi import', { status: 'danger' });
     }
   }

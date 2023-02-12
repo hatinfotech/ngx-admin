@@ -290,6 +290,10 @@ import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-
 import { WarehouseDetailByGoodsReportComponent } from './modules/warehouse/reports/warehouse-detail-by-goods-report/warehouse-detail-by-goods-report.component';
 import { WarehouseSummaryReportComponent } from './modules/warehouse/reports/summary-report/warehouse-summary-report.component';
 import { ImportProductDialogComponent } from './modules/admin-product/product/import-products-dialog/import-products-dialog.component';
+import { ProductBrandListComponent } from './modules/admin-product/brand/product-brand-list/product-brand-list.component';
+import { ProductBrandFormComponent } from './modules/admin-product/brand/product-brand-form/product-brand-form.component';
+import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
+import { ProductPropertyFormComponent } from './modules/admin-product/property/product-property-form/product-property-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -457,6 +461,10 @@ export class DynamicLocaleId extends String {
     ProductGroupListComponent,
     ProductGroupFormComponent,
     ModulesComponent,
+    ProductBrandListComponent,
+    ProductBrandFormComponent,
+    ProductPropertyListComponent,
+    ProductPropertyFormComponent,
 
     // Commerce service by cycle components
     CommerceServiceByCycleListComponent,

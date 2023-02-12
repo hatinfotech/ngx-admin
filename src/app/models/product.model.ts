@@ -123,3 +123,19 @@ export interface ProductSearchIndexModel {
   LastUpdate?: string;
   IsNotBusiness?: string;
 }
+
+export class ProductBrandModel {
+  [key: string]: any;
+  id?: StaticRange; text?: string;
+  Code?: string | number;
+  Name?: string;
+  Description?: string;
+}
+
+export class ProductPeropertyModel {
+  [key: string]: any;
+  id?: StaticRange; text?: string;
+  Code?: string | number;
+  Name?: string;
+  Description?: string;
+}

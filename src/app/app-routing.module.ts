@@ -118,6 +118,8 @@ import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/a
 import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
 import { CollaboratorOrderFormComponent } from './modules/collaborator/order/collaborator-order-form/collaborator-order-form.component';
 import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
+import { ProductBrandListComponent } from './modules/admin-product/brand/product-brand-list/product-brand-list.component';
+import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -862,6 +864,22 @@ const routes: Routes = [
     path: 'admin-product/category/list',
     canActivate: [AuthGuardService],
     component: ProductCategoryListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/brand/list',
+    canActivate: [AuthGuardService],
+    component: ProductBrandListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/property/list',
+    canActivate: [AuthGuardService],
+    component: ProductPropertyListComponent,
     data: {
       reuse: true,
     },
