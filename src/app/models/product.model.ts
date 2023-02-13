@@ -126,8 +126,8 @@ export interface ProductSearchIndexModel {
 
 export class ProductBrandModel {
   [key: string]: any;
-  id?: StaticRange; text?: string;
-  Code?: string | number;
+  id?: string; text?: string;
+  Code?: string;
   Name?: string;
   Description?: string;
 }
@@ -138,4 +138,30 @@ export class ProductPeropertyModel {
   Code?: string | number;
   Name?: string;
   Description?: string;
+}
+
+export interface ProductPropertyModel {
+  id?: string;
+  text?: string;
+  Name?: string;
+  Description?: string;
+  Parent?: string;
+  Values?: any[],
+}
+export interface ProductInPropertyModel {
+  Property?: ProductPropertyModel;
+  PropertyName?: string;
+  Product?: string;
+  ProductName?: string;
+  PropertyValues?: any[];
+}
+export interface ProductPropertyValueModel {
+  id?: string;
+  text?: string;
+  Name?: string;
+}
+
+export class ProductTagModel {
+  [key: string]: any;
+  Tag?: string;
 }

@@ -82,7 +82,7 @@
                         <div class="form-group">
                           <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
                           <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
-                          <input type="hidden" formControlName="Id">
+                          <!-- <input type="hidden" formControlName="Id"> -->
                         </div>
                       </div>
                       <div class="row fit-content-column">
@@ -166,6 +166,87 @@
                     <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                       <nb-checkbox class="form-group-icon-control" formControlName="RequireVatTax"></nb-checkbox>
                       <input class="form-group-input-control" type="text" nbInput fullWidth formControlName="VatTax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" [inputMask]="towDigitsInputMask">
+                    </ngx-form-group>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+
+                <!-- Begin properties form -->
+                <label class="label">{{'Thuộc tính' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Properties')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
+                <div class="row fit-row form-detail-header">
+                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                  <div class="row fit-content-column">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="col-lg-4 label column">{{'Thuộc tính' | translate | headtitlecase}}</div>
+                        <div class="col-lg-8 label column align-rightX">{{'Giá trị' | translate | headtitlecase}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col column">
+                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addPropertyFormGroup(formItem)" size="medium" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <hr>
+                <div formArrayName="Properties" class="form-details" [sortablejs]="getProperties(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <div class="form-detail-item" *ngFor="let property of getProperties(formItem).controls; let ie=index" [formGroup]="property">
+                    <div class="row fit-row">
+                      <div class="fit-fist-col label">
+                        <div class="form-group">
+                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                          <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ie + 1 }}">
+                          <!-- <input type="hidden" formControlName="Id"> -->
+                        </div>
+                      </div>
+                      <div class="row fit-content-column">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="Property" label="Thuộc tính" [array]="getProperties(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Property" [data]="propertyList" [select2Option]="select2OptionForProperty"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-8">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="PropertyValues" label="Giá trị" [array]="getProperties(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="PropertyValues" [select2Option]="select2OptionForPropertyValue" [data]="property.dataList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fit-last-col">
+                        <div class="form-group" style="text-align: right;">
+                          <label class="label">CM</label>
+                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removePropertyGroup(formItem, unitConversion, ie)">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End Detail form -->
+              </div>
+              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                      <ngx-select2 formControlName="Brand" [select2Option]="select2OptionForBrand" [data]="brandList"></ngx-select2>
+                    </ngx-form-group>
+                  </div>
+                  <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="Tags" label="Thẻ" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                      <ngx-select2 formControlName="Tags" [select2Option]="select2OptionForTags" [data]="tagList"></ngx-select2>
                     </ngx-form-group>
                   </div>
                 </div>
