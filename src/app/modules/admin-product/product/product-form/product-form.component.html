@@ -29,8 +29,8 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-6">
-                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
-                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList"></ngx-select2>
+                <ngx-form-group [formGroup]="formItem" name="TaxName" label="Tên báo cáo thuế" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="TaxName" placeholder="Tên báo cáo thuế">
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
@@ -42,6 +42,21 @@
                 <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Brand" [select2Option]="select2OptionForBrand" [data]="brandList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="Keywords" label="Keywords" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Keywords" [select2Option]="select2OptionForKeywords" [data]="keywordList"></ngx-select2>
                 </ngx-form-group>
               </div>
 
@@ -238,18 +253,8 @@
                 <!-- End Detail form -->
               </div>
               <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                      <ngx-select2 formControlName="Brand" [select2Option]="select2OptionForBrand" [data]="brandList"></ngx-select2>
-                    </ngx-form-group>
-                  </div>
-                  <div class="col-sm-12">
-                    <ngx-form-group [formGroup]="formItem" name="Tags" label="Thẻ" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                      <ngx-select2 formControlName="Tags" [select2Option]="select2OptionForTags" [data]="tagList"></ngx-select2>
-                    </ngx-form-group>
-                  </div>
-                </div>
+                <!-- <div class="row">
+                </div> -->
               </div>
 
             </div>

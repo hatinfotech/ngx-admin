@@ -139,7 +139,7 @@ export class ProductBrandFormComponent extends DataManagerFormComponent<ProductC
 
   async save(): Promise<ProductCategoryModel[]> {
     return super.save().then(rs => {
-      this.adminProductService.updateCategoryList();
+      this.adminProductService.updateBrandList();
       return rs;
     });
   };

@@ -767,7 +767,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       // if (tax) {
       //   price = price / (1 + parseFloat(tax.Tax) / 100);
       // }
-      console.log(detail.value);
+      // console.log(detail.value);
       return price;
     } else {
       let toMoney = detail.get('Quantity').value * detail.get('Price').value;
@@ -778,7 +778,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       //   }
       //   toMoney += toMoney * tax.Tax / 100;
       // }
-      console.log(detail.value);
+      // console.log(detail.value);
       return toMoney;
     }
   }

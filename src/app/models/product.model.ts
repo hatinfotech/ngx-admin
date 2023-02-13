@@ -161,7 +161,7 @@ export interface ProductPropertyValueModel {
   Name?: string;
 }
 
-export class ProductTagModel {
+export class ProductKeywordModel {
   [key: string]: any;
   Tag?: string;
 }

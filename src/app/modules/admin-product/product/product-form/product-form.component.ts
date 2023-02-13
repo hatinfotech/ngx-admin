@@ -2,7 +2,7 @@ import { take, takeUntil, filter } from 'rxjs/operators';
 import { UnitModel } from './../../../../models/unit.model';
 import { ProductUnitFormComponent } from './../../unit/product-unit-form/product-unit-form.component';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
-import { ProductBrandModel, ProductGroupModel, ProductInPropertyModel, ProductPropertyModel, ProductPropertyValueModel, ProductTagModel } from './../../../../models/product.model';
+import { ProductBrandModel, ProductGroupModel, ProductInPropertyModel, ProductPropertyModel, ProductPropertyValueModel, ProductKeywordModel } from './../../../../models/product.model';
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { DataManagerFormComponent, MyUploadAdapter } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
@@ -53,7 +53,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   // Group list for select2
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
   brandList: (ProductBrandModel & { id?: string, text?: string })[] = [];
-  tagList: (ProductTagModel & { id?: string, text?: string })[] = [];
+  keywordList: (ProductKeywordModel & { id?: string, text?: string })[] = [];
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -97,7 +97,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       this.adminProductService.categoryList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.categoryList = list),
       this.adminProductService.groupList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.groupList = list),
       this.adminProductService.brandList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.brandList = list),
-      this.adminProductService.tagList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.tagList = list),
+      this.adminProductService.keywordList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.keywordList = list),
     ]);
   }
 
@@ -142,8 +142,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     multiple: true,
     // tags: true,
   };
-  select2OptionForTags: Select2Option = {
-    placeholder: 'Chọn thẻ...',
+  select2OptionForKeywords: Select2Option = {
+    placeholder: 'Chọn từ khóa...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -342,6 +342,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         return null;
       }],
       Name: ['', Validators.required],
+      TaxName: [''],
       FeaturePicture: [''],
       Description: [''],
       Technical: [''],
@@ -357,6 +358,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       VatTax: [''],
       Brand: [null],
       Tags: [[]],
+      Keywords: [[]],
       RequireVatTax: [false],
       UnitConversions: this.formBuilder.array([]),
       Properties: this.formBuilder.array([]),
@@ -524,8 +526,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   makeNewPropertyFormGroup(data?: ProductInPropertyModel, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
-      Property: [null],
-      PropertyValues: [[]],
+      Property: [null, Validators.required],
+      PropertyValues: [[], Validators.required],
     });
 
     if (data) {

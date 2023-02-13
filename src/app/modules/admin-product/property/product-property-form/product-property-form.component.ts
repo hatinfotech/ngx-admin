@@ -8,6 +8,7 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminProductService } from '../../admin-product.service';
 import { ProductCategoryModel } from '../../../../models/product.model';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-product-property-form',
@@ -92,6 +93,20 @@ export class ProductPropertyFormComponent extends DataManagerFormComponent<Produ
     },
   };
 
+  select2OptionForValues: Select2Option = {
+    placeholder: 'Chọn từ khóa...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    multiple: true,
+    tags: true,
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -109,6 +124,7 @@ export class ProductPropertyFormComponent extends DataManagerFormComponent<Produ
       Parent: [''],
       Name: ['', Validators.required],
       Description: [''],
+      Values: [[]],
     });
     if (data) {
       data['Code_old'] = data['Code'];
@@ -139,7 +155,7 @@ export class ProductPropertyFormComponent extends DataManagerFormComponent<Produ
 
   async save(): Promise<ProductCategoryModel[]> {
     return super.save().then(rs => {
-      this.adminProductService.updateCategoryList();
+      this.adminProductService.updatePropertyList();
       return rs;
     });
   };

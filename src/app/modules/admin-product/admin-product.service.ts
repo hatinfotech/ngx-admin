@@ -3,7 +3,7 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './../../services/api.service';
 import { UnitModel } from './../../models/unit.model';
 import { BehaviorSubject } from 'rxjs';
-import { ProductGroupModel, ProductCategoryModel, ProductUnitModel, ProductPropertyModel, ProductPropertyValueModel, ProductBrandModel, ProductTagModel } from './../../models/product.model';
+import { ProductGroupModel, ProductCategoryModel, ProductUnitModel, ProductPropertyModel, ProductPropertyValueModel, ProductBrandModel, ProductKeywordModel } from './../../models/product.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class AdminProductService {
   propertyList$ = new BehaviorSubject<ProductPropertyModel[]>(null);
   propertyValueList$ = new BehaviorSubject<ProductPropertyValueModel[]>(null);
   brandList$ = new BehaviorSubject<ProductBrandModel[]>(null);
-  tagList$ = new BehaviorSubject<ProductTagModel[]>(null);
+  keywordList$ = new BehaviorSubject<ProductKeywordModel[]>(null);
 
   constructor(
     public authService: NbAuthService,
@@ -29,15 +29,55 @@ export class AdminProductService {
   }
 
   async updateAllCache() {
-    return Promise.all([
-      this.updateUnitList(),
-      this.updateCategoryList(),
-      this.updateGroupList(),
-      this.updatePropertyList(),
-      this.updatePropertyValueList(),
-      this.updateBrandList(),
-      this.updateTagList(),
-    ]);
+    // return Promise.all([
+    //   this.updateUnitList(),
+    //   this.updateCategoryList(),
+    //   this.updateGroupList(),
+    //   this.updatePropertyList(),
+    //   this.updatePropertyValueList(),
+    //   this.updateBrandList(),
+    //   this.updateKeywordList(),
+    // ]);
+    return this.apiService.postPromise<any[]>('/utility/multi-resources', { onlyIdText: true, limit: 'nolimit' }, [
+      {
+        path: 'admin-product/units',
+        params: {}
+      },
+      {
+        path: 'admin-product/properties',
+        params: {}
+      },
+      {
+        path: 'admin-product/property-values',
+        params: {}
+      },
+      {
+        path: 'admin-product/categories',
+        params: {}
+      },
+      {
+        path: 'admin-product/groups',
+        params: {}
+      },
+      {
+        path: 'admin-product/brands',
+        params: {}
+      },
+      {
+        path: 'admin-product/keywords',
+        params: {}
+      },
+    ]).then(rs => {
+      console.log(rs);
+      this.unitList$.next(rs[0]);
+      this.propertyList$.next(rs[1]);
+      this.propertyValueList$.next(rs[2]);
+      this.categoryList$.next(rs[3]);
+      this.groupList$.next(rs[4]);
+      this.brandList$.next(rs[5]);
+      this.keywordList$.next(rs[6]);
+      return rs;
+    });
   }
 
 
@@ -81,9 +121,9 @@ export class AdminProductService {
       return rs;
     });
   }
-  async updateTagList() {
-    return this.apiService.getPromise<ProductBrandModel[]>('/admin-product/tags', { limit: 'nolimit', onlyIdText: true }).then(rs => {
-      this.tagList$.next(rs);
+  async updateKeywordList() {
+    return this.apiService.getPromise<ProductBrandModel[]>('/admin-product/keywords', { limit: 'nolimit', onlyIdText: true }).then(rs => {
+      this.keywordList$.next(rs);
       return rs;
     });
   }
