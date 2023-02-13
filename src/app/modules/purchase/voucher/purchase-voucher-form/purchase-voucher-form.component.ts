@@ -26,6 +26,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { CurrencyPipe } from '@angular/common';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { Observable, forkJoin, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -86,6 +87,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       },
     });
   }
+
+  previousDebt: number = 0;
 
   /** Tax list */
   static _taxList: (TaxModel & { id?: string, text?: string })[];
@@ -173,7 +176,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -198,7 +201,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -294,7 +297,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -332,7 +335,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -496,6 +499,30 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         this.commonService.lastVoucherDate = dateOfPurchase;
       }
     });
+
+    const objectControl = newForm.get('Object');
+    const dateOfPurchaseControl = newForm.get('DateOfPurchase');
+
+    const onObjectOrDateChange = async () => {
+      const object = this.commonService.getObjectId(objectControl.value);
+      const dateOfPurchase = new Date(new Date(dateOfPurchaseControl.value || new Date().toISOString()).getTime()-60000).toISOString();
+      if (object) {
+        const report = await this.apiService.getPromise('/accounting/reports', {
+          eq_Accounts: '331',
+          groupBy: 'Object',
+          toDate: dateOfPurchase,
+          eq_Object: '[' + object + ']'
+        }).then(rs => rs[0]);
+        console.log(report);
+        if (report) {
+          this.previousDebt = parseFloat(report.TailCredit);
+        }
+      }
+    }
+    onObjectOrDateChange();
+    objectControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(onObjectOrDateChange);
+    dateOfPurchaseControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(onObjectOrDateChange);
+
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PurchaseVoucherModel): void {
@@ -715,7 +742,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
         }
         detail.get('Description').setValue(selectedData.Name);
 
-        if(selectedData.Pictures && selectedData.Pictures.length > 0) {
+        if (selectedData.Pictures && selectedData.Pictures.length > 0) {
           detail.get('Image').setValue(selectedData.Pictures);
         } else {
           detail.get('Image').setValue([]);
@@ -848,7 +875,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                     delete orderDetail.Id;
                     // delete orderDetail.Order;
                     delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {...orderDetail, Id: null});
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...orderDetail, Id: null });
                     details.push(newDtailFormGroup);
                     await new Promise(resolve => setTimeout(() => resolve(true), 300));
                     this.toMoney(formGroup, newDtailFormGroup);

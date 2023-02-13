@@ -330,7 +330,7 @@
                                                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                                         <ngx-form-group [hideLabel]="true" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'" [formGroup]="detail" name="No" label="Common.no" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
-                                                            <input type="hidden" formControlName="Id">
+                                                            <!-- <input type="hidden" formControlName="Id"> -->
                                                         </ngx-form-group>
                                                         <div class="form-group">
                                                             <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
@@ -426,8 +426,21 @@
                                                 <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                                 <div class="col-md-2 col-sm-4 col-xs-4"></div>
                                                 <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Voucher.total' | translate | headtitlecase}}</div>
-                                                <!-- <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND':'':'1.2-2'}}</div> -->
                                                 <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{formItem.get('_total').value | currency:'VND'}}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Nợ cũ' | translate | headtitlecase}}</div>
+                                                <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{previousDebt | currency:'VND'}}</div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-2 col-sm-4 col-xs-4"></div>
+                                                <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">{{'Tổng nợ' | translate | headtitlecase}}</div>
+                                                <div class="col-md-3 col-sm-8 col-xs-8" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">{{(previousDebt + formItem.get('_total').value) | currency:'VND'}}</div>
                                             </div>
                                         </div>
                                     </div>
