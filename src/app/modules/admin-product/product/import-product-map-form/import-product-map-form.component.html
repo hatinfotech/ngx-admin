@@ -1,0 +1,291 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Product.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Tên sản phẩm" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Name" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Sku" label="Sku" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Sku" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons" [touchedValidate]="false">
+                  <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="Id Sản phẩm" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Code" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="TaxName" label="Tên báo cáo thuế" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="TaxName" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Type" label="Loại" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Type" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-2">
+                <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Brand" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-4">
+                <ngx-form-group [formGroup]="formItem" name="Keywords" label="Keywords" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Keywords" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+
+              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <!-- Detail form -->
+                <label class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'UnitConversions')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
+                <div class="row fit-row form-detail-header">
+                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                  <div class="row fit-content-column">
+                    <div class="col-lg-4">
+                      <div class="row">
+                        <div class="col-lg-6 label column">{{'Product.unit' | translate | headtitlecase}}</div>
+                        <div class="col-lg-6 label column align-right">{{'AdminProduct.conversionRatio' | translate | headtitlecase}}</div>
+                      </div>
+                    </div>
+                    <div class="col-lg-8">
+                      <div class="row">
+                        <div class="col-sm-2 label column">{{'AdminProduct.defaultSales' | translate | headtitlecase}}</div>
+                        <div class="col-sm-2 label column">{{'AdminProduct.defaultPurchase' | translate | headtitlecase}}</div>
+                        <div class="col-sm-2 label column">{{'Số truy xuất' | translate | headtitlecase}}</div>
+                        <div class="col-sm-2 label column">{{'Tự động trừ kho' | translate | headtitlecase}}</div>
+                        <div class="col-sm-4 label column">{{'Có hạn sử dụng' | translate | headtitlecase}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col column">
+                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addUnitConversionFormGroup(formItem)" size="medium" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <hr>
+                <div formArrayName="UnitConversions" class="form-details" [sortablejs]="getUnitConversions(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <div class="form-detail-item" *ngFor="let unitConversion of getUnitConversions(formItem).controls; let ic=index" [formGroup]="unitConversion">
+                    <div class="row fit-row">
+                      <div class="fit-fist-col label">
+                        <div class="form-group">
+                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                          <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ic + 1 }}">
+                          <!-- <input type="hidden" formControlName="Id"> -->
+                        </div>
+                      </div>
+                      <div class="row fit-content-column">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-4">
+                              <div class="row">
+                                <div class="col-sm-6">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="Unit" label="AdminProduct.unit" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Unit" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-6">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="ConversionRatio" label="AdminProduct.conversionRatio" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="ConversionRatio" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-lg-8">
+                              <div class="row">
+                                <div class="col-sm-2">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsDefaultSales" label="AdminProduct.defaultSales" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="IsDefaultSales" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-2">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsDefaultPurchase" label="AdminProduct.defaultPurchase" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="IsDefaultPurchase" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-2">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsManageByAccessNumber" label="Dùng số truy xuất" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="IsManageByAccessNumber" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-2">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsAutoAdjustInventory" label="Tự động trừ kho" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="IsAutoAdjustInventory" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-4">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="IsExpirationGoods" label="Có hạng sử dụng" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                    <ngx-select2 formControlName="IsExpirationGoods" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fit-last-col">
+                        <div class="form-group" style="text-align: right;">
+                          <label class="label">CM</label>
+                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removeUnitConversionGroup(formItem, unitConversion, ic)">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End Detail form -->
+              </div>
+
+              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <label class="label">{{'Cài đặt tham số' | translate | headtitlecase}}</label>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Áp dụng VAT" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                      <ngx-select2 formControlName="RequireVatTax" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                    </ngx-form-group>
+                    <ngx-form-group [formGroup]="formItem" name="VatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                      <ngx-select2 formControlName="VatTax" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                    </ngx-form-group>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+
+                <!-- Begin properties form -->
+                <label class="label">{{'Thuộc tính' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Properties')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
+                <div class="row fit-row form-detail-header">
+                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                  <div class="row fit-content-column">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="col-lg-4 label column">{{'Thuộc tính' | translate | headtitlecase}}</div>
+                        <div class="col-lg-8 label column align-rightX">{{'Giá trị' | translate | headtitlecase}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col column">
+                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addPropertyFormGroup(formItem)" size="medium" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <hr>
+                <div formArrayName="Properties" class="form-details" [sortablejs]="getProperties(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <div class="form-detail-item" *ngFor="let property of getProperties(formItem).controls; let ie=index" [formGroup]="property">
+                    <div class="row fit-row">
+                      <div class="fit-fist-col label">
+                        <div class="form-group">
+                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                          <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ie + 1 }}">
+                          <!-- <input type="hidden" formControlName="Id"> -->
+                        </div>
+                      </div>
+                      <div class="row fit-content-column">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="row">
+                                <div class="col-sm-4">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="Property" label="Thuộc tính" [array]="getProperties(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="Property" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-8">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="PropertyValues" label="Giá trị" [array]="getProperties(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="PropertyValues" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fit-last-col">
+                        <div class="form-group" style="text-align: right;">
+                          <label class="label">CM</label>
+                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removePropertyGroup(formItem, unitConversion, ie)">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End Detail form -->
+              </div>
+              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+                <!-- <div class="row">
+                </div> -->
+              </div>
+
+            </div>
+            <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
+            <div class="row">
+              <div class="col-xs-12 col-lg-3">
+                <ngx-form-group [formGroup]="formItem" name="FeaturePicture" label="Common.featurePicture" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="FeaturePicture" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Pictures" label="Common.pictureList" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                  <ngx-select2 formControlName="Pictures" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">Mô tả (*)</span><span class="invalid">Mô tả là bắt buộc (*)</span></label>
+                  <ngx-select2 formControlName="Description" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Technical'), 'warning')">
+                  <label class="label"><span class="valid">Thông tin kỹ thuật (*)</span><span class="invalid">Thông tin kỹ thuật là bắt buộc (*)</span></label>
+                  <ngx-select2 formControlName="Technical" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>
