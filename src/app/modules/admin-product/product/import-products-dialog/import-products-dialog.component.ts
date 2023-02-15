@@ -1,5 +1,6 @@
+import { takeUntil } from 'rxjs/operators';
 import { AdminProductService } from './../../admin-product.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
@@ -12,8 +13,6 @@ import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ImportProductMapFormComponent } from '../import-product-map-form/import-product-map-form.component';
-import { take, delay } from 'rxjs/operators';
-// import {CryptoJS} from 'crypto-js';
 var CryptoJS = require("crypto-js");
 
 @Component({
@@ -41,668 +40,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     super(commonService, router, apiService);
 
     /** AG-Grid */
-    this.columnDefs = [
-      {
-        headerName: '#',
-        width: 52,
-        valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: false,
-        pinned: 'left',
-      },
-      {
-        headerName: 'Hình',
-        field: 'FeaturePicture',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
-      },
-      {
-        headerName: 'Import',
-        field: 'IsImport',
-        width: 80,
-        filter: 'agTextColumnFilter',
-        pinned: 'left',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
-
-            if (checked) {
-              //   params.node.setDataValue('Sku', null);
-              //   params.node.setDataValue('Code', null);
-              //   params.data.LastSku = params.data.Sku;
-              //   params.data.LastCode = params.data.Code;
-              // params.node.setDataValue('IsImport', false);
-            } else {
-              //   params.node.setDataValue('Sku', params.data.OldSku);
-              //   params.node.setDataValue('Code', params.data.OldCode);
-            }
-          },
-        },
-        headerComponentParams: { enabledCheckbox: true }
-      },
-      // {
-      //   headerName: 'Cập nhật',
-      //   field: 'IsUpdate',
-      //   width: 80,
-      //   filter: 'agTextColumnFilter',
-      //   pinned: 'left',
-      //   cellRenderer: 'ckbCellRenderer',
-      //   cellRendererParams: {
-      //     changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-      //       // alert(`${field} was clicked`);
-      //       console.log(params);
-
-      //       // Remove row
-      //       if (checked) {
-      //         //   // params.node.setDataValue('Sku', null);
-      //         //   // params.node.setDataValue('Code', null);
-      //         //   params.node.setDataValue('Sku', params.data.OldSku);
-      //         //   params.node.setDataValue('Code', params.data.LastCode);
-      //         params.node.setDataValue('IsNew', false);
-      //         if (params.data.OldSku) {
-      //           params.node.setDataValue('Sku', params.data.OldSku);
-      //         }
-      //         if (params.data.OldCode) {
-      //           params.node.setDataValue('Sku', params.data.OldCode);
-      //         }
-      //       }
-      //     },
-      //   },
-      // },
-      {
-        headerName: 'Nghi vấn trùng',
-        field: 'Status',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        pinned: 'left',
-        cellRenderer: 'textRender',
-      },
-      {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        pinned: 'left',
-      },
-      // {
-      //   headerName: 'Old Sku',
-      //   field: 'OldSku',
-      //   width: 100,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: 'textRender',
-      //   pinned: 'left',
-      // },
-      {
-        headerName: 'Tên sản phẩm',
-        field: 'Name',
-        width: 400,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-      },
-      {
-        headerName: 'Tên cũ',
-        field: 'OldName',
-        width: 400,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-      },
-      {
-        headerName: 'Thương hiệu',
-        field: 'Brand',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'ĐVT cơ bản',
-        field: 'WarehouseUnit',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'ĐVT 1',
-        field: 'Unit1',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Mặc định bán 1',
-        field: 'IsDefaultSales1',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 1',
-        field: 'IsDefaultPurchase1',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 1',
-        field: 'IsManageByAccessNumber1',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 1',
-        field: 'IsAutoAdjustInventory1',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 1',
-        field: 'IsExpirationGoods1',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'ĐVT chuyển đổi 2',
-        field: 'Unit2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Tỷ lệ chuyển đổi 2',
-        field: 'ConversionRatio2',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Mặc định bán 2',
-        field: 'IsDefaultSales2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 2',
-        field: 'IsDefaultPurchase2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 2',
-        field: 'IsManageByAccessNumber2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 2',
-        field: 'IsAutoAdjustInventory2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 2',
-        field: 'IsExpirationGoods2',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'ĐVT chuyển đổi 3',
-        field: 'Unit3',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Tỷ lệ chuyển đổi 3',
-        field: 'ConversionRatio3',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Mặc định bán 3',
-        field: 'IsDefaultSales3',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 3',
-        field: 'IsDefaultPurchase3',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 3',
-        field: 'IsManageByAccessNumber3',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 3',
-        field: 'IsAutoAdjustInventory3',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 3',
-        field: 'IsExpirationGoods3',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'ĐVT chuyển đổi 4',
-        field: 'Unit4',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Tỷ lệ chuyển đổi 4',
-        field: 'ConversionRatio4',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Mặc định bán 4',
-        field: 'IsDefaultSales4',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 4',
-        field: 'IsDefaultPurchase4',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 4',
-        field: 'IsManageByAccessNumber4',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 4',
-        field: 'IsAutoAdjustInventory4',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 4',
-        field: 'IsExpirationGoods4',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'ĐVT chuyển đổi 5',
-        field: 'Unit5',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Tỷ lệ chuyển đổi 5',
-        field: 'ConversionRatio5',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Mặc định bán 5',
-        field: 'IsDefaultSales5',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 5',
-        field: 'IsDefaultPurchase5',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 5',
-        field: 'IsManageByAccessNumber5',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 5',
-        field: 'IsAutoAdjustInventory5',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 5',
-        field: 'IsExpirationGoods5',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Thuộc tính 1',
-        field: 'Property1',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Giá trị thuộc tính 1',
-        field: 'PropertyValues1',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Thuộc tính 2',
-        field: 'Property2',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Giá trị thuộc tính 2',
-        field: 'PropertyValues2',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Thuộc tính 3',
-        field: 'Property3',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Giá trị thuộc tính 3',
-        field: 'PropertyValues3',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Thuộc tính 4',
-        field: 'Property4',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Giá trị thuộc tính 4',
-        field: 'PropertyValues4',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Thuộc tính 5',
-        field: 'Property5',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Giá trị thuộc tính 5',
-        field: 'PropertyValues5',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Danh mục',
-        field: 'Categories',
-        width: 200,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'textRender',
-      },
-      {
-        headerName: 'Nhóm',
-        field: 'Groups',
-        width: 200,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'textRender',
-      },
-      {
-        headerName: 'Từ khóa',
-        field: 'Keywords',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'textRender',
-      },
-      {
-        headerName: 'Update giá',
-        field: 'updatePrice',
-        width: 80,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
-
-            // Remove row
-            // params.api.applyTransaction({ remove: [params.node.data] });
-            if (checked) {
-              params.node.setDataValue('Sku', null);
-              params.node.setDataValue('Code', null);
-            } else {
-              params.node.setDataValue('Sku', params.data.OldSku);
-              params.node.setDataValue('Code', params.data.OldCode);
-            }
-          },
-        },
-      },
-      {
-        headerName: 'Giá EU',
-        field: 'SalesPrice',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        pinned: 'right',
-      },
-      {
-        headerName: 'ID',
-        field: 'Code',
-        width: 110,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        cellRenderer: 'idRender',
-      },
-      // {
-      //   headerName: 'Action',
-      //   field: 'id',
-      //   width: 110,
-      //   filter: 'agTextColumnFilter',
-      //   pinned: 'right',
-      //   cellRenderer: 'btnCellRenderer',
-      //   cellRendererParams: {
-      //     clicked: (params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-      //       // alert(`${field} was clicked`);
-      //       console.log(params);
-
-      //       // Remove row
-      //       params.api.applyTransaction({ remove: [params.node.data] });
-
-      //     },
-      //   },
-      // },
-    ];
+    this.updateGridColumn();
 
     this.pagination = false;
     this.maxBlocksInCache = 5;
@@ -713,12 +51,18 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
   }
 
+  configFormGroup: FormGroup = null;
+  config = { IsMapByProductName: false };
   themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
   processing = false;
   array: ProductModel[];
 
   ngOnInit() {
     super.ngOnInit();
+    this.configFormGroup = this.formBuilder.group({
+      IsMapByProductName: [false],
+    });
+    this.configFormGroup.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(config => this.config = config);
   }
 
   ngAfterViewInit(): void {
@@ -1095,111 +439,114 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
     ];
 
-    if (this.mapping['UnitConversions'] && this.mapping['UnitConversions'].length > 0) {
-
+    if (this.mapping && this.mapping['UnitConversions'] && this.mapping['UnitConversions'].length > 0) {
       let extendColumns: ColDef[] = [];
-      for (const i in this.mapping['UnitConversions']) {
-        const no = parseInt(i) + 1;
-        extendColumns = extendColumns.concat([
-          {
-            headerName: 'ĐVT ' + no,
-            field: 'Unit' + no,
-            width: 150,
-            filter: 'agTextColumnFilter',
-            cellRenderer: 'textRender',
-            // pinned: 'right',
-          },
-          {
-            headerName: 'Tỷ lệ chuyển đổi ' + no,
-            field: 'ConversionRatio' + no,
-            width: 150,
-            filter: 'agTextColumnFilter',
-            cellRenderer: 'textRender',
-            // pinned: 'right',
-          },
-          {
-            headerName: 'Mặc định bán ' + no,
-            field: 'IsDefaultSales' + no,
-            width: 100,
-            filter: 'agTextColumnFilter',
-            // pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
-            cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+      if (this.mapping['UnitConversions'] && this.mapping['UnitConversions'].length > 0) {
+        for (const i in this.mapping['UnitConversions']) {
+          const no = parseInt(i) + 1;
+          extendColumns = extendColumns.concat([
+            {
+              headerName: 'ĐVT ' + no,
+              field: 'Unit' + no,
+              width: 150,
+              filter: 'agTextColumnFilter',
+              cellRenderer: 'textRender',
+              // pinned: 'right',
+            },
+            {
+              headerName: 'Tỷ lệ chuyển đổi ' + no,
+              field: 'ConversionRatio' + no,
+              width: 150,
+              filter: 'agTextColumnFilter',
+              cellRenderer: 'textRender',
+              // pinned: 'right',
+            },
+            {
+              headerName: 'Mặc định bán ' + no,
+              field: 'IsDefaultSales' + no,
+              width: 100,
+              filter: 'agTextColumnFilter',
+              // pinned: 'right',
+              cellRenderer: 'ckbCellRenderer',
+              cellRendererParams: {
+                changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                },
               },
             },
-          },
-          {
-            headerName: 'Mặc định mua ' + no,
-            field: 'IsDefaultPurchase' + no,
-            width: 100,
-            filter: 'agTextColumnFilter',
-            // pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
-            cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+            {
+              headerName: 'Mặc định mua ' + no,
+              field: 'IsDefaultPurchase' + no,
+              width: 100,
+              filter: 'agTextColumnFilter',
+              // pinned: 'right',
+              cellRenderer: 'ckbCellRenderer',
+              cellRendererParams: {
+                changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                },
               },
             },
-          },
-          {
-            headerName: 'Số truy xuất ' + no,
-            field: 'IsManageByAccessNumber' + no,
-            width: 100,
-            filter: 'agTextColumnFilter',
-            // pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
-            cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+            {
+              headerName: 'Số truy xuất ' + no,
+              field: 'IsManageByAccessNumber' + no,
+              width: 100,
+              filter: 'agTextColumnFilter',
+              // pinned: 'right',
+              cellRenderer: 'ckbCellRenderer',
+              cellRendererParams: {
+                changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                },
               },
             },
-          },
-          {
-            headerName: 'Trừ kho tự động ' + no,
-            field: 'IsAutoAdjustInventory' + no,
-            width: 100,
-            filter: 'agTextColumnFilter',
-            // pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
-            cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+            {
+              headerName: 'Trừ kho tự động ' + no,
+              field: 'IsAutoAdjustInventory' + no,
+              width: 100,
+              filter: 'agTextColumnFilter',
+              // pinned: 'right',
+              cellRenderer: 'ckbCellRenderer',
+              cellRendererParams: {
+                changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                },
               },
             },
-          },
-          {
-            headerName: 'Có hạn sử dụng ' + no,
-            field: 'IsExpirationGoods' + no,
-            width: 100,
-            filter: 'agTextColumnFilter',
-            // pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
-            cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+            {
+              headerName: 'Có hạn sử dụng ' + no,
+              field: 'IsExpirationGoods' + no,
+              width: 100,
+              filter: 'agTextColumnFilter',
+              // pinned: 'right',
+              cellRenderer: 'ckbCellRenderer',
+              cellRendererParams: {
+                changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                },
               },
             },
-          },
-        ]);
+          ]);
+        }
       }
 
-      for (const i in this.mapping['Properties']) {
-        const no = parseInt(i) + 1;
-        extendColumns = extendColumns.concat([
-          {
-            headerName: 'Thuộc tính ' + no,
-            field: 'Property' + no,
-            width: 150,
-            filter: 'agTextColumnFilter',
-            cellRenderer: 'textRender',
-            // pinned: 'right',
-          },
-          {
-            headerName: 'Giá trị thuộc tính ' + no,
-            field: 'PropertyValues' + no,
-            width: 150,
-            filter: 'agTextColumnFilter',
-            cellRenderer: 'textRender',
-            // pinned: 'right',
-          },
-        ]);
+      if (this.mapping && this.mapping['Properties'] && this.mapping['Properties'].length > 0) {
+        for (const i in this.mapping['Properties']) {
+          const no = parseInt(i) + 1;
+          extendColumns = extendColumns.concat([
+            {
+              headerName: 'Thuộc tính ' + no,
+              field: 'Property' + no,
+              width: 150,
+              filter: 'agTextColumnFilter',
+              cellRenderer: 'textRender',
+              // pinned: 'right',
+            },
+            {
+              headerName: 'Giá trị thuộc tính ' + no,
+              field: 'PropertyValues' + no,
+              width: 150,
+              filter: 'agTextColumnFilter',
+              cellRenderer: 'textRender',
+              // pinned: 'right',
+            },
+          ]);
+        }
       }
 
       this.columnDefs = [
@@ -1221,20 +568,20 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             pinned: 'right',
             cellRenderer: 'ckbCellRenderer',
             cellRendererParams: {
-              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-                // alert(`${field} was clicked`);
-                console.log(params);
+              // changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              //   // alert(`${field} was clicked`);
+              //   console.log(params);
 
-                // Remove row
-                // params.api.applyTransaction({ remove: [params.node.data] });
-                if (checked) {
-                  params.node.setDataValue('Sku', null);
-                  params.node.setDataValue('Code', null);
-                } else {
-                  params.node.setDataValue('Sku', params.data.OldSku);
-                  params.node.setDataValue('Code', params.data.OldCode);
-                }
-              },
+              //   // Remove row
+              //   // params.api.applyTransaction({ remove: [params.node.data] });
+              //   if (checked) {
+              //     params.node.setDataValue('Sku', null);
+              //     params.node.setDataValue('Code', null);
+              //   } else {
+              //     params.node.setDataValue('Sku', params.data.OldSku);
+              //     params.node.setDataValue('Code', params.data.OldCode);
+              //   }
+              // },
             },
             headerComponentParams: { enabledCheckbox: true }
           },
@@ -1253,6 +600,22 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             filter: 'agTextColumnFilter',
             // pinned: 'left',
             cellRenderer: 'idRender',
+          },
+          {
+            headerName: 'Result',
+            field: 'Result',
+            width: 110,
+            filter: 'agTextColumnFilter',
+            pinned: 'right',
+            cellRenderer: 'textRender',
+          },
+          {
+            headerName: 'Message',
+            field: 'Message',
+            width: 150,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'textRender',
           },
         ],
       ];
@@ -1418,6 +781,17 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     ];
   }
 
+  compareProduct(oldProduct: ProductModel, newProduct: ProductModel) {
+    if (this.config.IsMapByProductName) {
+      return newProduct.Sku &&
+        (oldProduct.Sku?.toLowerCase() == newProduct.Sku?.toLowerCase())
+        || (oldProduct.Name && newProduct.Name
+          && (this.commonService.smartFilter(oldProduct.Name, newProduct.Name) || this.commonService.smartFilter(newProduct.Name, oldProduct.Name)));
+    } else {
+      return (oldProduct.Sku && newProduct.Sku) ? (oldProduct.Sku.trim().toLowerCase() == newProduct.Sku.trim().toLowerCase()) : (!oldProduct.Name && newProduct.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(newProduct.Name).toLowerCase());
+    }
+  }
+
   workBook: XLSX.WorkBook = null;
   jsonData = null;
   sheets: string[] = null;
@@ -1570,7 +944,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                 this.array = this.sheet.map((row: any, index: number) => {
                   const mappedRow: any = {
                     No: index + 1,
-                    updatePrice: true,
+                    updatePrice: false,
                   };
 
                   for (const column in this.mapping) {
@@ -1621,13 +995,17 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
                   let duplicate = false;
                   mappedRow.IsNew = false;
+                  mappedRow.IsImport = true;
                   mappedRow.Pictures = new String(mappedRow.Pictures || '').replace('\r\n', '\n').split('\n').filter(f => !!f);
+                  mappedRow.SameProducts = []
                   for (const oldProduct of currentProductList) {
                     // if (mappedRow.Sku) {
-                    if (mappedRow.Sku && (oldProduct.Sku?.toLowerCase() == mappedRow.Sku?.toLowerCase()) || (oldProduct.Name && mappedRow.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(mappedRow.Name).toLowerCase())) {
+                    // if (mappedRow.Sku && (oldProduct.Sku?.toLowerCase() == mappedRow.Sku?.toLowerCase()) || (oldProduct.Name && mappedRow.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(mappedRow.Name).toLowerCase())) {
+                    if (this.compareProduct(oldProduct, mappedRow)) {
                       mappedRow.Code = oldProduct.Code;
+                      mappedRow.Sku = oldProduct.Sku;
                       mappedRow.duplicate = true;
-                      mappedRow.OldName = oldProduct.Name;
+                      mappedRow.OldName = ((oldProduct.OldName && (oldProduct.OldName + '\n') || '') + oldProduct.Name);
                       if (oldProduct.FeaturePicture) {
                         if (!mappedRow.FeaturePicture) {
                           mappedRow.FeaturePicture = oldProduct.FeaturePicture;
@@ -1645,7 +1023,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                         } else {
                           for (const p in mappedRow.Pictures) {
                             const tag = CryptoJS.MD5(mappedRow.Pictures[p] as any).toString();
-                            const samePicture = oldProduct.Pictures.find(f => f.Tag == tag);
+                            const samePicture = (Array.isArray(oldProduct.Pictures) && oldProduct.Pictures || []).find(f => f.Tag == tag);
                             if (samePicture) {
                               mappedRow.Pictures[p] = samePicture;
                             }
@@ -1653,10 +1031,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                         }
                       }
                       duplicate = true
+                      mappedRow.IsImport = false;
+                      mappedRow.SameProducts.push(oldProduct);
+
                       // newProduct.IsImport = true;
                       // newProduct.IsUpdate = true;
                       // newProduct.IsNew = false;
-                      break;
+                      // break;
                     }
                     // }
                     // else {
@@ -1683,11 +1064,11 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   if (!duplicate) {
                     mappedRow.duplicate = false;
                     mappedRow.Status = 'Mới';
-                    if (this.commonService.getObjectId(mappedRow.WarehouseUnit)) {
-                      mappedRow.IsImport = true;
-                    } else {
-                      mappedRow.IsImport = false;
-                    }
+                    // if (this.commonService.getObjectId(mappedRow.WarehouseUnit)) {
+                    //   mappedRow.IsImport = true;
+                    // } else {
+                    //   mappedRow.IsImport = false;
+                    // }
                   } else {
                     mappedRow.Status = 'Trùng ?';
                     if (!mappedRow.FeaturePicture && mappedRow.Pictures.length > 0) {
@@ -2075,6 +1456,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       this.gridApi.forEachNode(async (rowNode, index) => {
         // console.log(rowNode, index);
         const newProduct: ProductModel = rowNode.data;
+        newProduct.index = index;
         allProductList.push(newProduct);
         if (newProduct.WarehouseUnit && this.commonService.getObjectId(newProduct.WarehouseUnit)) {
           newProduct.UnitConversions = [];
@@ -2107,7 +1489,6 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             }
           }
           if (newProduct.IsImport) {
-            newProduct.index = index;
             newProductList.push(newProduct);
           }
         }
@@ -2125,23 +1506,15 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           if (newProduct.FeaturePicture) {
             try {
               if (typeof newProduct.FeaturePicture == 'string') {
-                this.commonService.toastService.show(`Cho ${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
+                this.commonService.toastService.show(`${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
                 const tag = CryptoJS.MD5(newProduct.FeaturePicture as any).toString();
                 const file = await this.apiService.uploadFileByLink(newProduct.FeaturePicture);
                 file.Tag = tag;
-                // await this.commonService.downloadAsBlob(newProduct.FeaturePicture as any).pipe(take(1)).toPromise().then(
-                //   async imgData => {
-                //     console.log(imgData);
-                //     const file = await this.commonService.uploadBlobData(imgData);
-                //     console.log('File uploaded info: ', file);
-                //     newProduct.FeaturePicture = file;
-                //     return file;
-                //   }
-                // );
+
                 newProduct.FeaturePicture = file;
               }
               if (!newProduct.Pictures) newProduct.Pictures = [];
-              if(newProduct.Pictures.findIndex(f => f.Tag == newProduct.FeaturePicture.Tag) < 0) {
+              if (newProduct.Pictures.findIndex(f => f.Tag == newProduct.FeaturePicture.Tag) < 0) {
                 newProduct.Pictures.unshift(newProduct.FeaturePicture);
               }
             } catch (err) {
@@ -2153,21 +1526,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           if (newProduct.Pictures && newProduct.Pictures.length > 0) {
             for (let i = 0; i < newProduct.Pictures.length; i++) {
               if (typeof newProduct.Pictures[i] == 'string') {
-                this.commonService.toastService.show(`Cho ${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
+                this.commonService.toastService.show(`${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
                 try {
                   const tag = CryptoJS.MD5(newProduct.Pictures[i] as any).toString();
                   const file = await this.apiService.uploadFileByLink(newProduct.Pictures[i] as any);
                   file.Tag = tag;
                   console.log(file);
-                  // await this.commonService.downloadAsBlob(newProduct.Pictures[i] as any).pipe(take(1)).toPromise().then(
-                  //   async imgData => {
-                  //     console.log(imgData);
-                  //     const file = await this.commonService.uploadBlobData(imgData);
-                  //     console.log('File uploaded info: ', file);
-                  //     newProduct.Pictures[i] = file;
-                  //     return file;
-                  //   }
-                  // );
+
                   newProduct.Pictures[i] = file;
                 } catch (err) {
                   console.error(err);
@@ -2179,26 +1544,47 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               newProduct.FeaturePicture = newProduct.Pictures[0];
             }
           }
+          const node = this.gridApi.getDisplayedRowAtIndex(newProduct.index);
+          try {
+            const createdProducts = await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, [newProduct]);
+            // for (const i in createdProducts) {
+            newProduct.Code = createdProducts[0].Code;
+            newProduct.Sku = createdProducts[0].Sku;
+            node.setDataValue('Code', newProduct.Code);
+            node.setDataValue('Sku', newProduct.Sku);
+            node.setDataValue('IsImport', false);
+            node.setDataValue('Result', 'Success');
+            // }
+            this.commonService.toastService.show(newProduct.Name, 'Import thành công', { status: 'success' });
+            console.log(createdProducts[0]);
+          } catch (err) {
+            console.error(err);
+            node.setDataValue('Result', 'Error');
+            node.setDataValue('Message', err.error.logs[0] || err);
+            this.commonService.toastService.show(newProduct.Name + (err.error.logs[0] || err), 'Import thất bại', { status: 'danger', duration: 60000 });
+          }
         }
+
       }
 
       // console.log(newProductList);
       if (newProductList.length > 0) {
-        const createdProducts = await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, newProductList);
-        for (const i in createdProducts) {
-          newProductList[i].Code = createdProducts[i].Code;
-          newProductList[i].Sku = createdProducts[i].Sku;
-          const node = this.gridApi.getDisplayedRowAtIndex(newProductList[i].index);
-          node.setDataValue('Sku', createdProducts[i].Sku);
-          node.setDataValue('Code', createdProducts[i].Code);
-          node.setDataValue('IsImport', false);
-        }
-        this.commonService.toastService.show('Đã import thông tin sản phẩm', 'Import thành công', { status: 'success' });
-        console.log(newProductList);
+        // const createdProducts = await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, newProductList);
+        // for (const i in createdProducts) {
+        //   newProductList[i].Code = createdProducts[i].Code;
+        //   newProductList[i].Sku = createdProducts[i].Sku;
+        //   const node = this.gridApi.getDisplayedRowAtIndex(newProductList[i].index);
+        //   node.setDataValue('Sku', createdProducts[i].Sku);
+        //   node.setDataValue('Code', createdProducts[i].Code);
+        //   node.setDataValue('IsImport', false);
+        // }
+        // this.commonService.toastService.show('Đã import thông tin sản phẩm', 'Import thành công', { status: 'success' });
+        // console.log(newProductList);
       }
 
       // Update price
       if (updatePriceProductList.length > 0) {
+        this.commonService.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
         await this.apiService.putPromise('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
           return {
             MasterPriceTable: 'default',
@@ -2207,6 +1593,10 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             Price: m.SalesPrice,
           };
         }));
+        for(const updatePriceProduct of updatePriceProductList) {
+          const node = this.gridApi.getDisplayedRowAtIndex(updatePriceProduct.index);
+          if(node) node.setDataValue('updatePrice', false);
+        }
         this.commonService.toastService.show('Đã cập nhật giá mới', 'Cập nhật giá', { status: 'success' });
       }
 

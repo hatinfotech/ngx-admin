@@ -10,8 +10,8 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableTagComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeComponent, SmartTableTagComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateRangeFilterComponent, SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AssignCategoriesFormComponent } from '../assign-categories-form/assign-categories-form.component';
 import { FormGroup } from '@angular/forms';
 import { FileModel } from '../../../../models/file.model';
@@ -236,12 +236,12 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         Name: {
           title: 'Tên',
           type: 'string',
-          width: '25%',
+          width: '15%',
         },
         Categories: {
           title: 'Danh mục',
           type: 'html',
-          width: '20%',
+          width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -280,7 +280,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         Groups: {
           title: 'Nhóm',
           type: 'html',
-          width: '20%',
+          width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
             return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
           },
@@ -508,6 +508,132 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           type: 'string',
           width: '15%',
         },
+        Creator: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người tạo...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
+          },
+        },
+        Created: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          type: 'custom',
+          width: '5%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
+        LastUpdateBy: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Người cập nhật'), 'head-title'),
+          type: 'string',
+          width: '5%',
+          valuePrepareFunction: (cell: string, row?: any) => {
+            return this.commonService.getObjectText(cell);
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                logic: 'OR',
+                placeholder: 'Chọn người cập nhật...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                multiple: true,
+                ajax: {
+                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+                    console.log(settings);
+                    const params = settings.data;
+                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+                      success(rs);
+                    }).catch(err => {
+                      console.error(err);
+                      failure();
+                    });
+                  },
+                  delay: 300,
+                  processResults: (data: any, params: any) => {
+                    // console.info(data, params);
+                    return {
+                      results: data.map(item => {
+                        return item;
+                      }),
+                    };
+                  },
+                },
+              },
+            },
+          },
+        },
+        LastUpdate: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Cập nhật'), 'head-title'),
+          type: 'custom',
+          width: '5%',
+          filter: {
+            type: 'custom',
+            component: SmartTableDateRangeFilterComponent,
+          },
+          renderComponent: SmartTableDateTimeComponent,
+          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+            // instance.format$.next('medium');
+          },
+        },
       },
     });
   }
@@ -553,11 +679,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeCategories'] = true;
       params['includeGroups'] = true;
       params['includeWarehouseUnit'] = true;
-      // params['includeFeaturePicture'] = true;
-      // params['includeUnitConversions'] = true;
       params['includeUnits'] = true;
-      // params['includeUnitContainer'] = true;
-
+      params['includeCreator'] = true;
+      params['includeLastUpdateBy'] = true;
+      
       params['sort_Id'] = 'desc';
       return params;
     };

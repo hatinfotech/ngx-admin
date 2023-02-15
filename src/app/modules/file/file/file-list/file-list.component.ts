@@ -113,6 +113,14 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
 
   editing = {};
   rows = [];
+  
+  /** Config for paging */
+  protected configPaging() {
+    return {
+      display: true,
+      perPage: 40,
+    };
+  }
 
   loadListSetting(): SmartTableSetting {
     return this.configSetting({

@@ -14,12 +14,21 @@
       <div class="row">
         <div class="col-sm-12">
           <div class="form-group">
-            <button type="button" nbButton status="danger" hero size="small"
-              (click)="chooseFile.click() && false" [disabled]="processing"
-              title="{{'Common.choose' | translate | headtitlecase}}" style="float: right; margin-bottom: 1rem;">
-              <nb-icon pack="eva" icon="file"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
-            </button>
-            <input type="file" #chooseFile (change)="onFileChange($event)" style="display: none">
+            <div class="row">
+              <div class="col-sm-6">
+                <ngx-form-group [hideLabel]="true" [formGroup]="configFormGroup" name="IsMapByProductName" [allowCopy]="false" [required]="false">
+                  <nb-checkbox formControlName="IsMapByProductName">Kiểm tra trùng bằng tên sản phẩm</nb-checkbox>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <button type="button" nbButton status="danger" hero size="small"
+                  (click)="chooseFile.click() && false" [disabled]="processing"
+                  title="{{'Common.choose' | translate | headtitlecase}}" style="float: right; margin-bottom: 1rem;">
+                  <nb-icon pack="eva" icon="file"></nb-icon>{{'Common.upload' | translate | headtitlecase}}
+                </button>
+                <input type="file" #chooseFile (change)="onFileChange($event)" style="display: none">
+              </div>
+            </div>
             <label class="label">{{'Danh sách sản phẩm sẽ được import' | translate | headtitlecase}}</label>
             <div class="ag-grid-wrap" style="height: 500px;">
               <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination" [getRowStyle]="getRowStyle" (cellDoubleClicked)="cellDoubleClicked($event)">
