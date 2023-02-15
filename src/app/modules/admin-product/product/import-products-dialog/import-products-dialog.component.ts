@@ -1,3 +1,4 @@
+import { AdminProductService } from './../../admin-product.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbThemeService } from '@nebular/theme';
@@ -6,10 +7,14 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams } from '@ag-grid-community/all-modules';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { BtnCellRenderer, CkbCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { ImportProductMapFormComponent } from '../import-product-map-form/import-product-map-form.component';
+import { take, delay } from 'rxjs/operators';
+// import {CryptoJS} from 'crypto-js';
+var CryptoJS = require("crypto-js");
 
 @Component({
   selector: 'ngx-import-products-dialog',
@@ -30,6 +35,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     public apiService: ApiService,
     public themeService: NbThemeService,
     public formBuilder: FormBuilder,
+    public adminProductService: AdminProductService,
     public ref?: NbDialogRef<ImportProductDialogComponent>,
   ) {
     super(commonService, router, apiService);
@@ -77,6 +83,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             }
           },
         },
+        headerComponentParams: { enabledCheckbox: true }
       },
       // {
       //   headerName: 'Cập nhật',
@@ -146,6 +153,14 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         // pinned: 'left',
       },
       {
+        headerName: 'Thương hiệu',
+        field: 'Brand',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
         headerName: 'ĐVT cơ bản',
         field: 'WarehouseUnit',
         width: 150,
@@ -154,76 +169,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         // pinned: 'right',
       },
       {
-        headerName: 'Mặc định bán 0',
-        field: 'IsDefaultSales0',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Mặc định mua 0',
-        field: 'IsDefaultPurchase0',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Số truy xuất 0',
-        field: 'IsManageByAccessNumber0',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Trừ kho tự động 0',
-        field: 'IsAutoAdjustInventory0',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'Có hạn sử dụng 0',
-        field: 'IsExpirationGoods0',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'right',
-        cellRenderer: 'ckbCellRenderer',
-        cellRendererParams: {
-          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
-          },
-        },
-      },
-      {
-        headerName: 'ĐVT chuyển đổi 1',
-        field: 'UnitConversion1',
-        width: 150,
-        filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
-        // pinned: 'right',
-      },
-      {
-        headerName: 'Tỷ lệ chuyển đổi 1',
-        field: 'ConversionRatio1',
+        headerName: 'ĐVT 1',
+        field: 'Unit1',
         width: 150,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
@@ -291,7 +238,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
       {
         headerName: 'ĐVT chuyển đổi 2',
-        field: 'UnitConversion2',
+        field: 'Unit2',
         width: 100,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
@@ -367,7 +314,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
       {
         headerName: 'ĐVT chuyển đổi 3',
-        field: 'UnitConversion3',
+        field: 'Unit3',
         width: 150,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
@@ -443,7 +390,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
       {
         headerName: 'ĐVT chuyển đổi 4',
-        field: 'UnitConversion4',
+        field: 'Unit4',
         width: 150,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
@@ -519,7 +466,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       },
       {
         headerName: 'ĐVT chuyển đổi 5',
-        field: 'UnitConversion5',
+        field: 'Unit5',
         width: 150,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
@@ -592,6 +539,110 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
           },
         },
+      },
+      {
+        headerName: 'Thuộc tính 1',
+        field: 'Property1',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Giá trị thuộc tính 1',
+        field: 'PropertyValues1',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Thuộc tính 2',
+        field: 'Property2',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Giá trị thuộc tính 2',
+        field: 'PropertyValues2',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Thuộc tính 3',
+        field: 'Property3',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Giá trị thuộc tính 3',
+        field: 'PropertyValues3',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Thuộc tính 4',
+        field: 'Property4',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Giá trị thuộc tính 4',
+        field: 'PropertyValues4',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Thuộc tính 5',
+        field: 'Property5',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Giá trị thuộc tính 5',
+        field: 'PropertyValues5',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Danh mục',
+        field: 'Categories',
+        width: 200,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Nhóm',
+        field: 'Groups',
+        width: 200,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Từ khóa',
+        field: 'Keywords',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
       },
       {
         headerName: 'Update giá',
@@ -827,6 +878,9 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       if (params.colDef.field == 'duplicate') {
         return params.value && 'Trùng ?' || '';
       }
+      if (Array.isArray(params.value)) {
+        return params.value.map(m => this.commonService.getObjectText(m)).join(', ');
+      }
       return this.commonService.getObjectText(params.value);
       // }
     },
@@ -845,11 +899,15 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       if (Array.isArray(params.value)) {
         image = params.value[0];
       }
-      return image?.Thumbnail ? '<img style="height: 45px" src="' + image?.Thumbnail + '">' : '';
+      if (typeof image == 'string') {
+        return '<img style="height: 45px" src="' + image + '">';
+      }
+      return image && image?.Thumbnail ? ('<img style="height: 45px" src="' + image?.Thumbnail + '">') : '';
     },
 
     btnCellRenderer: BtnCellRenderer,
-    ckbCellRenderer: CkbCellRenderer
+    ckbCellRenderer: CkbCellRenderer,
+    agColumnHeader: CustomHeader,
   };
   onGridReady(params) {
     this.gridParams = params;
@@ -871,6 +929,16 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   getSelectedRows() {
     return this.gridApi.getSelectedRows();
   }
+
+  autoSizeAll(skipHeader: boolean) {
+    const allColumnIds: string[] = [];
+    this.gridColumnApi.getAllColumns()!.forEach((column) => {
+      allColumnIds.push(column.getId());
+    });
+
+    this.gridColumnApi!.autoSizeColumns(allColumnIds, skipHeader);
+  }
+
   loadList(callback?: (list: ProductModel[]) => void) {
 
     if (this.gridApi) {
@@ -881,6 +949,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         return detail;
       });
       this.gridApi.setRowData(details);
+
+      this.autoSizeAll(false)
 
     }
 
@@ -905,6 +975,289 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     };
   }
   /** End AG-Grid */
+
+  updateGridColumn() {
+    this.columnDefs = [
+      {
+        headerName: '#',
+        width: 52,
+        valueGetter: 'node.data.No',
+        cellRenderer: 'loadingCellRenderer',
+        sortable: false,
+        pinned: 'left',
+      },
+      {
+        headerName: 'Hình',
+        field: 'FeaturePicture',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+        cellRenderer: 'imageRender',
+      },
+      {
+        headerName: 'DS Hình',
+        field: 'Pictures',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+        autoHeight: true,
+        cellRenderer: 'imageRender',
+      },
+      {
+        headerName: 'Import',
+        field: 'IsImport',
+        width: 90,
+        filter: 'agTextColumnFilter',
+        pinned: 'left',
+        cellRenderer: 'ckbCellRenderer',
+        cellRendererParams: {
+          changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+            // alert(`${field} was clicked`);
+            console.log(params);
+
+            if (checked) {
+            } else {
+            }
+          },
+        },
+        headerComponentParams: { enabledCheckbox: true }
+      },
+      {
+        headerName: 'Nghi vấn trùng',
+        field: 'Status',
+        width: 110,
+        filter: 'agTextColumnFilter',
+        pinned: 'left',
+        cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Sku',
+        field: 'Sku',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        pinned: 'left',
+      },
+      {
+        headerName: 'Tên sản phẩm',
+        field: 'Name',
+        width: 400,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'Tên cũ',
+        field: 'OldName',
+        width: 400,
+        filter: 'agTextColumnFilter',
+        // pinned: 'left',
+      },
+      {
+        headerName: 'Thương hiệu',
+        field: 'Brand',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'ĐVT cơ bản',
+        field: 'WarehouseUnit',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
+      {
+        headerName: 'Danh mục',
+        field: 'Categories',
+        width: 200,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Nhóm',
+        field: 'Groups',
+        width: 200,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Từ khóa',
+        field: 'Keywords',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        // pinned: 'right',
+        cellRenderer: 'textRender',
+      },
+    ];
+
+    if (this.mapping['UnitConversions'] && this.mapping['UnitConversions'].length > 0) {
+
+      let extendColumns: ColDef[] = [];
+      for (const i in this.mapping['UnitConversions']) {
+        const no = parseInt(i) + 1;
+        extendColumns = extendColumns.concat([
+          {
+            headerName: 'ĐVT ' + no,
+            field: 'Unit' + no,
+            width: 150,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'textRender',
+            // pinned: 'right',
+          },
+          {
+            headerName: 'Tỷ lệ chuyển đổi ' + no,
+            field: 'ConversionRatio' + no,
+            width: 150,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'textRender',
+            // pinned: 'right',
+          },
+          {
+            headerName: 'Mặc định bán ' + no,
+            field: 'IsDefaultSales' + no,
+            width: 100,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              },
+            },
+          },
+          {
+            headerName: 'Mặc định mua ' + no,
+            field: 'IsDefaultPurchase' + no,
+            width: 100,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              },
+            },
+          },
+          {
+            headerName: 'Số truy xuất ' + no,
+            field: 'IsManageByAccessNumber' + no,
+            width: 100,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              },
+            },
+          },
+          {
+            headerName: 'Trừ kho tự động ' + no,
+            field: 'IsAutoAdjustInventory' + no,
+            width: 100,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              },
+            },
+          },
+          {
+            headerName: 'Có hạn sử dụng ' + no,
+            field: 'IsExpirationGoods' + no,
+            width: 100,
+            filter: 'agTextColumnFilter',
+            // pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+              },
+            },
+          },
+        ]);
+      }
+
+      for (const i in this.mapping['Properties']) {
+        const no = parseInt(i) + 1;
+        extendColumns = extendColumns.concat([
+          {
+            headerName: 'Thuộc tính ' + no,
+            field: 'Property' + no,
+            width: 150,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'textRender',
+            // pinned: 'right',
+          },
+          {
+            headerName: 'Giá trị thuộc tính ' + no,
+            field: 'PropertyValues' + no,
+            width: 150,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'textRender',
+            // pinned: 'right',
+          },
+        ]);
+      }
+
+      this.columnDefs = [
+        ...this.columnDefs,
+        ...extendColumns,
+        ...[
+          {
+            headerName: 'Ngừng kinh doanh',
+            field: 'IsStopBusiness',
+            width: 110,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'ckbCellRenderer',
+          },
+          {
+            headerName: 'Update giá',
+            field: 'updatePrice',
+            width: 80,
+            filter: 'agTextColumnFilter',
+            pinned: 'right',
+            cellRenderer: 'ckbCellRenderer',
+            cellRendererParams: {
+              changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
+                // alert(`${field} was clicked`);
+                console.log(params);
+
+                // Remove row
+                // params.api.applyTransaction({ remove: [params.node.data] });
+                if (checked) {
+                  params.node.setDataValue('Sku', null);
+                  params.node.setDataValue('Code', null);
+                } else {
+                  params.node.setDataValue('Sku', params.data.OldSku);
+                  params.node.setDataValue('Code', params.data.OldCode);
+                }
+              },
+            },
+            headerComponentParams: { enabledCheckbox: true }
+          },
+          {
+            headerName: 'Giá EU',
+            field: 'SalesPrice',
+            width: 110,
+            filter: 'agTextColumnFilter',
+            cellRenderer: 'textRender',
+            pinned: 'right',
+          },
+          {
+            headerName: 'ID',
+            field: 'Code',
+            width: 110,
+            filter: 'agTextColumnFilter',
+            // pinned: 'left',
+            cellRenderer: 'idRender',
+          },
+        ],
+      ];
+    }
+  }
 
   generateUnitConversionControls(index: number, columnList: any[]) {
     return [
@@ -1071,7 +1424,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   sheet: any[] = null;
   chooseSheet: string = null;
   fileName: string;
-  mapping: { [key: string]: string };
+  mapping: { [key: string]: any };
   onFileChange(ev: any) {
     const reader = new FileReader();
     const file = ev.target.files[0];
@@ -1173,7 +1526,195 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           const text = m;
           return { id, text };
         });
-        this.commonService.openDialog(DialogFormComponent, {
+
+        this.commonService.openDialog(ImportProductMapFormComponent, {
+          context: {
+            columnList: columnList,
+            onDialogSave: async dataMappiing => {
+              try {
+
+                this.mapping = dataMappiing[0];
+                for (const i in this.mapping) {
+                  this.mapping[i] = this.commonService.getObjectText(this.mapping[i]);
+                  if (this.mapping['UnitConversions']) {
+                    for (const unitConverion of this.mapping['UnitConversions']) {
+                      for (const r in unitConverion) {
+                        unitConverion[r] = this.commonService.getObjectText(unitConverion[r]);
+                      }
+                    }
+                  }
+                  if (this.mapping['Properties']) {
+                    for (const property of this.mapping['Properties']) {
+                      for (const r in property) {
+                        property[r] = this.commonService.getObjectText(property[r]);
+                      }
+                    }
+                  }
+                }
+
+                console.log(dataMappiing[0]);
+
+                this.processing = true;
+
+                // Confirm unit mapping
+                const unitList = await this.apiService.getPromise<any[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' });
+                const unitMapping = {};
+                for (const unit of unitList) {
+                  unitMapping[unit.Code] = unit;
+                }
+                const propertyMapping = {};
+                for (const property of this.adminProductService.propertyList$?.value) {
+                  propertyMapping[property.Code] = property;
+                }
+                const currentProductList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' });
+                this.array = this.sheet.map((row: any, index: number) => {
+                  const mappedRow: any = {
+                    No: index + 1,
+                    updatePrice: true,
+                  };
+
+                  for (const column in this.mapping) {
+                    mappedRow[column] = row[this.mapping[column]] || null;
+                    if (typeof mappedRow[column] == 'string') {
+                      mappedRow[column] = mappedRow[column].trim();
+                    }
+                  }
+                  mappedRow['Type'] = mappedRow['Type'] || 'PRODUCT';
+                  if (mappedRow['Brand']) {
+                    mappedRow['Brand'] = this.adminProductService.brandList$.value.find(f => this.commonService.getObjectId(f) == mappedRow['Brand']);
+                  }
+                  if (mappedRow['Categories']) {
+                    mappedRow['Categories'] = new String(mappedRow['Categories'] || '').split(',').map(m => {
+                      return this.adminProductService.categoryList$.value.find(f => this.commonService.getObjectId(f) == m.trim());
+                    });
+                  }
+                  if (mappedRow['Groups']) {
+                    mappedRow['Groups'] = new String(mappedRow['Groups'] || '').split(',').map(m => {
+                      return this.adminProductService.groupList$.value.find(f => this.commonService.getObjectId(f) == m.trim());
+                    });
+                  }
+                  if (mappedRow['Keywords']) {
+                    mappedRow['Keywords'] = new String(mappedRow['Keywords'] || '').split(',').map(m => m.trim());
+                  }
+
+                  mappedRow['WarehouseUnit'] = mappedRow.WarehouseUnit && unitMapping[mappedRow.WarehouseUnit]
+                  mappedRow['WarehouseUnitName'] = this.commonService.getObjectText(mappedRow['WarehouseUnit']);
+                  if (this.mapping['UnitConversions']) {
+                    for (let index = 0; index < this.mapping['UnitConversions'].length; index++) {
+                      for (const r in this.mapping['UnitConversions'][index]) {
+                        mappedRow[r + (index + 1)] = row[this.mapping['UnitConversions'][index][r]];
+                      }
+                      mappedRow['Unit' + (index + 1)] = mappedRow['Unit' + (index + 1)] && unitMapping[mappedRow['Unit' + (index + 1)]];
+                      mappedRow['UnitName' + (index + 1)] = this.commonService.getObjectText(mappedRow['Unit' + (index + 1)]);
+                    }
+                  }
+                  if (this.mapping['Properties']) {
+                    for (let index = 0; index < this.mapping['Properties'].length; index++) {
+                      for (const r in this.mapping['Properties'][index]) {
+                        mappedRow[r + (index + 1)] = row[this.mapping['Properties'][index][r]] || null;
+                      }
+                      if (mappedRow['Property' + (index + 1)]) mappedRow['Property' + (index + 1)] = mappedRow['Property' + (index + 1)] && propertyMapping[mappedRow['Property' + (index + 1)]];
+                      if (mappedRow['PropertyValues' + (index + 1)]) mappedRow['PropertyValues' + (index + 1)] = (mappedRow['PropertyValues' + new String(index + 1)]).split(',').map(m => new String(m).trim());
+                    }
+                  }
+
+
+                  let duplicate = false;
+                  mappedRow.IsNew = false;
+                  mappedRow.Pictures = new String(mappedRow.Pictures || '').replace('\r\n', '\n').split('\n').filter(f => !!f);
+                  for (const oldProduct of currentProductList) {
+                    // if (mappedRow.Sku) {
+                    if (mappedRow.Sku && (oldProduct.Sku?.toLowerCase() == mappedRow.Sku?.toLowerCase()) || (oldProduct.Name && mappedRow.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(mappedRow.Name).toLowerCase())) {
+                      mappedRow.Code = oldProduct.Code;
+                      mappedRow.duplicate = true;
+                      mappedRow.OldName = oldProduct.Name;
+                      if (oldProduct.FeaturePicture) {
+                        if (!mappedRow.FeaturePicture) {
+                          mappedRow.FeaturePicture = oldProduct.FeaturePicture;
+                        } else {
+                          const tag = CryptoJS.MD5(mappedRow.FeaturePicture as any).toString();
+                          if (oldProduct.FeaturePicture.Tag == tag) {
+                            mappedRow.FeaturePicture = oldProduct.FeaturePicture;
+                          }
+                        }
+                      }
+
+                      if (oldProduct.Pictures) {
+                        if ((!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
+                          mappedRow.Pictures = oldProduct.Pictures;
+                        } else {
+                          for (const p in mappedRow.Pictures) {
+                            const tag = CryptoJS.MD5(mappedRow.Pictures[p] as any).toString();
+                            const samePicture = oldProduct.Pictures.find(f => f.Tag == tag);
+                            if (samePicture) {
+                              mappedRow.Pictures[p] = samePicture;
+                            }
+                          }
+                        }
+                      }
+                      duplicate = true
+                      // newProduct.IsImport = true;
+                      // newProduct.IsUpdate = true;
+                      // newProduct.IsNew = false;
+                      break;
+                    }
+                    // }
+                    // else {
+                    //   // if (oldProduct.Name && newProduct.Name && (this.commonService.smartFilter(oldProduct.Name, newProduct.Name) || this.commonService.smartFilter(newProduct.Name, oldProduct.Name))) {
+                    //   if (oldProduct.Name && mappedRow.Name && this.commonService.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.commonService.convertUnicodeToNormal(mappedRow.Name).toLowerCase()) {
+                    //     mappedRow.duplicate = true;
+                    //     mappedRow.IsNew = false;
+                    //     mappedRow.OldName = oldProduct.Name;
+                    //     mappedRow.Sku = oldProduct.Sku;
+                    //     mappedRow.Code = oldProduct.Code;
+                    //     mappedRow.OldSku = oldProduct.Sku;
+                    //     mappedRow.OldCode = oldProduct.Code;
+                    //     if (oldProduct.FeaturePicture && !mappedRow.FeaturePicture) {
+                    //       mappedRow.FeaturePicture = oldProduct.FeaturePicture;
+                    //     }
+                    //     if (oldProduct.Pictures && (!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
+                    //       mappedRow.Pictures = oldProduct.Pictures;
+                    //     }
+                    //     duplicate = true;
+                    //     break;
+                    //   }
+                    // }
+                  }
+                  if (!duplicate) {
+                    mappedRow.duplicate = false;
+                    mappedRow.Status = 'Mới';
+                    if (this.commonService.getObjectId(mappedRow.WarehouseUnit)) {
+                      mappedRow.IsImport = true;
+                    } else {
+                      mappedRow.IsImport = false;
+                    }
+                  } else {
+                    mappedRow.Status = 'Trùng ?';
+                    if (!mappedRow.FeaturePicture && mappedRow.Pictures.length > 0) {
+                      mappedRow.FeaturePicture = mappedRow.Pictures[0];
+                    }
+                  }
+
+                  return mappedRow;
+
+                });
+
+                console.log(this.array);
+                this.updateGridColumn();
+                setTimeout(() => {
+                  this.loadList();
+                }, 300);
+
+                this.processing = false;
+              } catch (err) {
+                console.error(err);
+                this.processing = false;
+              }
+            }
+          },
+        });
+
+        if (false) this.commonService.openDialog(DialogFormComponent, {
           context: {
             cardStyle: { width: '100%' },
             width: '99w',
@@ -1528,94 +2069,44 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   async importProducts() {
     this.processing = true;
     try {
-      const newProductList = [];
-      const updatePriceProductList = [];
-      const allProductList = [];
-      this.gridApi.forEachNode((rowNode, index) => {
+      const newProductList: ProductModel[] = [];
+      const updatePriceProductList: ProductModel[] = [];
+      const allProductList: ProductModel[] = [];
+      this.gridApi.forEachNode(async (rowNode, index) => {
         // console.log(rowNode, index);
-        const newProduct = rowNode.data;
+        const newProduct: ProductModel = rowNode.data;
         allProductList.push(newProduct);
         if (newProduct.WarehouseUnit && this.commonService.getObjectId(newProduct.WarehouseUnit)) {
           newProduct.UnitConversions = [];
-          // newProduct.UnitConversions.push({
-          //   Unit: newProduct.WarehouseUnit,
-          //   ConversionRatio: 1,
-          //   IsManageByAccessNumber: newProduct.IsManageByAccessNumber,
-          // });
-          // if (newProduct.WarehouseUnit) {
-          //   newProduct.UnitConversions.push({
-          //     Unit: newProduct.WarehouseUnit,
-          //     ConversionRatio: 1,
-          //     IsManageByAccessNumber: newProduct.IsManageByAccessNumber0 || false,
-          //     IsDefaultSales: newProduct.IsDefaultSales0 || false,
-          //     IsDefaultPurchase: newProduct.IsDefaultPurchase0 || false,
-          //     IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory0 || false,
-          //     IsExpirationGoods: newProduct.IsExpirationGoods0 || false,
-          //   });
-          // }
-          if (newProduct.UnitConversion1) {
-            newProduct.UnitConversions.push({
-              Unit: newProduct.UnitConversion1,
-              ConversionRatio: newProduct.ConversionRatio1,
-              IsManageByAccessNumber: newProduct.IsManageByAccessNumber1 || false,
-              IsDefaultSales: newProduct.IsDefaultSales1 || false,
-              IsDefaultPurchase: newProduct.IsDefaultPurchase1 || false,
-              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory1 || false,
-              IsExpirationGoods: newProduct.IsExpirationGoods1 || false,
-            });
+          newProduct.Properties = [];
+
+          if (this.mapping['UnitConversions']) {
+            for (let r = 0; r < this.mapping['UnitConversions'].length; r++) {
+              if (this.commonService.getObjectId(newProduct['Unit' + (r + 1)])) {
+                newProduct.UnitConversions.push({
+                  Unit: newProduct['Unit' + (r + 1)],
+                  ConversionRatio: newProduct['ConversionRatio' + (r + 1)],
+                  IsManageByAccessNumber: newProduct['IsManageByAccessNumber' + (r + 1)] && true || false,
+                  IsDefaultSales: newProduct['IsDefaultSales' + (r + 1)] && true || false,
+                  IsDefaultPurchase: newProduct['IsDefaultPurchase' + (r + 1)] && true || false,
+                  IsAutoAdjustInventory: newProduct['IsAutoAdjustInventory' + (r + 1)] && true || false,
+                  IsExpirationGoods: newProduct['IsExpirationGoods' + (r + 1)] && true || false,
+                });
+              }
+            }
           }
-          if (newProduct.UnitConversion2) {
-            newProduct.UnitConversions.push({
-              Unit: newProduct.UnitConversion2,
-              ConversionRatio: newProduct.ConversionRatio2,
-              IsManageByAccessNumber: newProduct.IsManageByAccessNumber2 || false,
-              IsDefaultSales: newProduct.IsDefaultSales2 || false,
-              IsDefaultPurchase: newProduct.IsDefaultPurchase2 || false,
-              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory2 || false,
-              IsExpirationGoods: newProduct.IsExpirationGoods2 || false,
-            });
-          }
-          if (newProduct.UnitConversion3) {
-            newProduct.UnitConversions.push({
-              Unit: newProduct.UnitConversion3,
-              ConversionRatio: newProduct.ConversionRatio3,
-              IsManageByAccessNumber: newProduct.IsManageByAccessNumber3 || false,
-              IsDefaultSales: newProduct.IsDefaultSales3 || false,
-              IsDefaultPurchase: newProduct.IsDefaultPurchase3 || false,
-              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory3 || false,
-              IsExpirationGoods: newProduct.IsExpirationGoods3 || false,
-            });
-          }
-          if (newProduct.UnitConversion4) {
-            newProduct.UnitConversions.push({
-              Unit: newProduct.UnitConversion4,
-              ConversionRatio: newProduct.ConversionRatio4,
-              IsManageByAccessNumber: newProduct.IsManageByAccessNumber4 || false,
-              IsDefaultSales: newProduct.IsDefaultSales4 || false,
-              IsDefaultPurchase: newProduct.IsDefaultPurchase4 || false,
-              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory4 || false,
-              IsExpirationGoods: newProduct.IsExpirationGoods4 || false,
-            });
-          }
-          if (newProduct.UnitConversion5) {
-            newProduct.UnitConversions.push({
-              Unit: newProduct.UnitConversion5,
-              ConversionRatio: newProduct.ConversionRatio5,
-              IsManageByAccessNumber: newProduct.IsManageByAccessNumber5 || false,
-              IsDefaultSales: newProduct.IsDefaultSales5 || false,
-              IsDefaultPurchase: newProduct.IsDefaultPurchase5 || false,
-              IsAutoAdjustInventory: newProduct.IsAutoAdjustInventory5 || false,
-              IsExpirationGoods: newProduct.IsExpirationGoods5 || false,
-            });
+
+          if (this.mapping['Properties']) {
+            for (let r = 0; r < this.mapping['Properties'].length; r++) {
+              if (this.commonService.getObjectId(newProduct['Property' + (r + 1)]) && newProduct['PropertyValues' + (r + 1)]) {
+                newProduct.Properties.push({
+                  Property: newProduct['Property' + (r + 1)],
+                  PropertyValues: newProduct['PropertyValues' + (r + 1)],
+                });
+              }
+            }
           }
           if (newProduct.IsImport) {
-            // console.log(newProduct);
-            // delete newProduct.UnitConversion1;
-            // delete newProduct.UnitConversion2;
-            // delete newProduct.UnitConversion3;
-            // delete newProduct.ConversionRatio1;
-            // delete newProduct.ConversionRatio2;
-            // delete newProduct.ConversionRatio3;
             newProduct.index = index;
             newProductList.push(newProduct);
           }
@@ -1625,6 +2116,71 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           updatePriceProductList.push(newProduct);
         }
       });
+
+      for (const newProduct of allProductList) {
+
+        if (newProduct.IsImport) {
+          // var CryptoJS = require("crypto-js");
+          // Download iamges
+          if (newProduct.FeaturePicture) {
+            try {
+              if (typeof newProduct.FeaturePicture == 'string') {
+                this.commonService.toastService.show(`Cho ${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
+                const tag = CryptoJS.MD5(newProduct.FeaturePicture as any).toString();
+                const file = await this.apiService.uploadFileByLink(newProduct.FeaturePicture);
+                file.Tag = tag;
+                // await this.commonService.downloadAsBlob(newProduct.FeaturePicture as any).pipe(take(1)).toPromise().then(
+                //   async imgData => {
+                //     console.log(imgData);
+                //     const file = await this.commonService.uploadBlobData(imgData);
+                //     console.log('File uploaded info: ', file);
+                //     newProduct.FeaturePicture = file;
+                //     return file;
+                //   }
+                // );
+                newProduct.FeaturePicture = file;
+              }
+              if (!newProduct.Pictures) newProduct.Pictures = [];
+              if(newProduct.Pictures.findIndex(f => f.Tag == newProduct.FeaturePicture.Tag) < 0) {
+                newProduct.Pictures.unshift(newProduct.FeaturePicture);
+              }
+            } catch (err) {
+              console.error(err);
+              delete newProduct.FeaturePicture;
+            }
+          }
+
+          if (newProduct.Pictures && newProduct.Pictures.length > 0) {
+            for (let i = 0; i < newProduct.Pictures.length; i++) {
+              if (typeof newProduct.Pictures[i] == 'string') {
+                this.commonService.toastService.show(`Cho ${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
+                try {
+                  const tag = CryptoJS.MD5(newProduct.Pictures[i] as any).toString();
+                  const file = await this.apiService.uploadFileByLink(newProduct.Pictures[i] as any);
+                  file.Tag = tag;
+                  console.log(file);
+                  // await this.commonService.downloadAsBlob(newProduct.Pictures[i] as any).pipe(take(1)).toPromise().then(
+                  //   async imgData => {
+                  //     console.log(imgData);
+                  //     const file = await this.commonService.uploadBlobData(imgData);
+                  //     console.log('File uploaded info: ', file);
+                  //     newProduct.Pictures[i] = file;
+                  //     return file;
+                  //   }
+                  // );
+                  newProduct.Pictures[i] = file;
+                } catch (err) {
+                  console.error(err);
+                  newProduct.Pictures.splice(i, 1);
+                }
+              }
+            }
+            if (!newProduct.FeaturePicture) {
+              newProduct.FeaturePicture = newProduct.Pictures[0];
+            }
+          }
+        }
+      }
 
       // console.log(newProductList);
       if (newProductList.length > 0) {
@@ -1662,63 +2218,20 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         this.sheet[i][this.mapping['WarehouseUnit']] = this.commonService.getObjectId(allProductList[i].WarehouseUnit);
         this.sheet[i][this.mapping['WarehouseUnitName']] = allProductList[i].WarehouseUnitName;
 
-        // this.sheet[i][this.mapping['UnitConversion0']] = this.commonService.getObjectId(allProductList[i].UnitConversion0);
-        // this.sheet[i][this.mapping['UnitConversionName0']] = allProductList[i].UnitConversionName0;
-        // this.sheet[i][this.mapping['ConversionRatio0']] = allProductList[i].ConversionRatio0;
-        // this.sheet[i][this.mapping['IsDefaultSales0']] = allProductList[i].IsDefaultSales0 && 1 || 0;
-        // this.sheet[i][this.mapping['IsDefaultPurchase0']] = allProductList[i].IsDefaultPurchase0 && 1 || 0;
-        // this.sheet[i][this.mapping['IsManageByAccessNumber0']] = allProductList[i].IsManageByAccessNumber0 && 1 || 0;
-        // this.sheet[i][this.mapping['IsAutoAdjustInventory0']] = allProductList[i].IsAutoAdjustInventory0 && 1 || 0;
-        // this.sheet[i][this.mapping['IsExpirationGoods0']] = allProductList[i].IsExpirationGoods0 && 1 || 0;
-
-        this.sheet[i][this.mapping['UnitConversion1']] = this.commonService.getObjectId(allProductList[i].UnitConversion1);
-        this.sheet[i][this.mapping['UnitConversionName1']] = allProductList[i].UnitConversionName1;
-        this.sheet[i][this.mapping['ConversionRatio1']] = allProductList[i].ConversionRatio1;
-        this.sheet[i][this.mapping['IsDefaultSales1']] = allProductList[i].IsDefaultSales1 && 1 || 0;
-        this.sheet[i][this.mapping['IsDefaultPurchase1']] = allProductList[i].IsDefaultPurchase1 && 1 || 0;
-        this.sheet[i][this.mapping['IsManageByAccessNumber1']] = allProductList[i].IsManageByAccessNumber1 && 1 || 0;
-        this.sheet[i][this.mapping['IsAutoAdjustInventory1']] = allProductList[i].IsAutoAdjustInventory1 && 1 || 0;
-        this.sheet[i][this.mapping['IsExpirationGoods1']] = allProductList[i].IsExpirationGoods1 && 1 || 0;
-
-        this.sheet[i][this.mapping['UnitConversion2']] = this.commonService.getObjectId(allProductList[i].UnitConversion2);
-        this.sheet[i][this.mapping['UnitConversionName2']] = allProductList[i].UnitConversionName2;
-        this.sheet[i][this.mapping['ConversionRatio2']] = allProductList[i].ConversionRatio2;
-        this.sheet[i][this.mapping['IsDefaultSales2']] = allProductList[i].IsDefaultSales2 && 1 || 0;
-        this.sheet[i][this.mapping['IsDefaultPurchase2']] = allProductList[i].IsDefaultPurchase2 && 1 || 0;
-        this.sheet[i][this.mapping['IsManageByAccessNumber2']] = allProductList[i].IsManageByAccessNumber2 && 1 || 0;
-        this.sheet[i][this.mapping['IsAutoAdjustInventory2']] = allProductList[i].IsAutoAdjustInventory2 && 1 || 0;
-        this.sheet[i][this.mapping['IsExpirationGoods2']] = allProductList[i].IsExpirationGoods2 && 1 || 0;
-
-        this.sheet[i][this.mapping['UnitConversion3']] = this.commonService.getObjectId(allProductList[i].UnitConversion3);
-        this.sheet[i][this.mapping['UnitConversionName3']] = allProductList[i].UnitConversionName3;
-        this.sheet[i][this.mapping['ConversionRatio3']] = allProductList[i].ConversionRatio3;
-        this.sheet[i][this.mapping['IsDefaultSales3']] = allProductList[i].IsDefaultSales3 && 1 || 0;
-        this.sheet[i][this.mapping['IsDefaultPurchase3']] = allProductList[i].IsDefaultPurchase3 && 1 || 0;
-        this.sheet[i][this.mapping['IsManageByAccessNumber3']] = allProductList[i].IsManageByAccessNumber3 && 1 || 0;
-        this.sheet[i][this.mapping['IsAutoAdjustInventory3']] = allProductList[i].IsAutoAdjustInventory3 && 1 || 0;
-        this.sheet[i][this.mapping['IsExpirationGoods3']] = allProductList[i].IsExpirationGoods3 && 1 || 0;
-
-        this.sheet[i][this.mapping['UnitConversion4']] = this.commonService.getObjectId(allProductList[i].UnitConversion4);
-        this.sheet[i][this.mapping['UnitConversionName4']] = allProductList[i].UnitConversionName4;
-        this.sheet[i][this.mapping['ConversionRatio4']] = allProductList[i].ConversionRatio4;
-        this.sheet[i][this.mapping['IsDefaultSales4']] = allProductList[i].IsDefaultSales4 && 1 || 0;
-        this.sheet[i][this.mapping['IsDefaultPurchase4']] = allProductList[i].IsDefaultPurchase4 && 1 || 0;
-        this.sheet[i][this.mapping['IsManageByAccessNumber4']] = allProductList[i].IsManageByAccessNumber4 && 1 || 0;
-        this.sheet[i][this.mapping['IsAutoAdjustInventory4']] = allProductList[i].IsAutoAdjustInventory4 && 1 || 0;
-        this.sheet[i][this.mapping['IsExpirationGoods4']] = allProductList[i].IsExpirationGoods4 && 1 || 0;
-
-        this.sheet[i][this.mapping['UnitConversion5']] = this.commonService.getObjectId(allProductList[i].UnitConversion5);
-        this.sheet[i][this.mapping['UnitConversionName5']] = allProductList[i].UnitConversionName5;
-        this.sheet[i][this.mapping['ConversionRatio5']] = allProductList[i].ConversionRatio5;
-        this.sheet[i][this.mapping['IsDefaultSales5']] = allProductList[i].IsDefaultSales5 && 1 || 0;
-        this.sheet[i][this.mapping['IsDefaultPurchase5']] = allProductList[i].IsDefaultPurchase5 && 1 || 0;
-        this.sheet[i][this.mapping['IsManageByAccessNumber5']] = allProductList[i].IsManageByAccessNumber5 && 1 || 0;
-        this.sheet[i][this.mapping['IsAutoAdjustInventory5']] = allProductList[i].IsAutoAdjustInventory5 && 1 || 0;
-        this.sheet[i][this.mapping['IsExpirationGoods5']] = allProductList[i].IsExpirationGoods5 && 1 || 0;
+        if (this.mapping['UnitConversions']) {
+          for (let r = 0; r < this.mapping['UnitConversions'].length; r++) {
+            this.sheet[i][this.mapping['UnitConversions'][r]['Unit']] = this.commonService.getObjectId(allProductList[i]['Unit' + (r + 1)]);
+          }
+        }
+        if (this.mapping['Properties']) {
+          for (let r = 0; r < this.mapping['Properties'].length; r++) {
+            if (this.sheet[i][this.mapping['Properties'][r]['Property']]) this.sheet[i][this.mapping['Properties'][r]['Property']] = this.commonService.getObjectId(allProductList[i]['Property' + (r + 1)]);
+            if (allProductList[i]['PropertyValues' + (r + 1)]) this.sheet[i][this.mapping['Properties'][r]['PropertyValues']] = allProductList[i]['PropertyValues' + (r + 1)].map(m => this.commonService.getObjectId(m)).join(', ');
+          }
+        }
       }
 
       // Include column name into header
-
       // Export mapping file
       this.workBook.Sheets[this.chooseSheet] = XLSX.utils.json_to_sheet(this.sheet);
       XLSX.writeFile(this.workBook, this.fileName);

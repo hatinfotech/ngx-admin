@@ -294,6 +294,7 @@ import { ProductBrandListComponent } from './modules/admin-product/brand/product
 import { ProductBrandFormComponent } from './modules/admin-product/brand/product-brand-form/product-brand-form.component';
 import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
 import { ProductPropertyFormComponent } from './modules/admin-product/property/product-property-form/product-property-form.component';
+import { ImportProductMapFormComponent } from './modules/admin-product/product/import-product-map-form/import-product-map-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -465,7 +466,8 @@ export class DynamicLocaleId extends String {
     ProductBrandFormComponent,
     ProductPropertyListComponent,
     ProductPropertyFormComponent,
-
+    ImportProductMapFormComponent,
+    
     // Commerce service by cycle components
     CommerceServiceByCycleListComponent,
     CommerceServiceByCycleFormComponent,

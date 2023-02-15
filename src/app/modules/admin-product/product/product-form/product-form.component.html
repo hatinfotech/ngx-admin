@@ -184,6 +184,13 @@
                     </ngx-form-group>
                   </div>
                 </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="IsStopBusiness" label="Ngừng kinh doanh" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                      <nb-checkbox formControlName="IsStopBusiness"></nb-checkbox>
+                    </ngx-form-group>
+                  </div>
+                </div>
               </div>
 
               <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">

@@ -21,7 +21,7 @@
             </button>
             <input type="file" #chooseFile (change)="onFileChange($event)" style="display: none">
             <label class="label">{{'Danh sách sản phẩm sẽ được import' | translate | headtitlecase}}</label>
-            <div class="ag-grid-wrap" style="height: 500px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+            <div class="ag-grid-wrap" style="height: 500px;">
               <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination" [getRowStyle]="getRowStyle" (cellDoubleClicked)="cellDoubleClicked($event)">
               </ag-grid-angular>
             </div>

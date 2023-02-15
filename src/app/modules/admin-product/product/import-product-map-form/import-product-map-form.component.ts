@@ -32,7 +32,7 @@ function MyCustomUploadAdapterPlugin(editor) {
   templateUrl: './import-product-map-form.component.html',
   styleUrls: ['./import-product-map-form.component.scss'],
 })
-export class ImportProductMapFormComponent extends DataManagerFormComponent<ProductModel> implements OnInit {
+export class ImportProductMapFormComponent extends DataManagerFormComponent<any> implements OnInit {
 
   componentName: string = 'ImportProductMapFormComponent';
   idKey = 'Code';
@@ -345,22 +345,24 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<Prod
     let newForm = null;
     newForm = this.formBuilder.group({
       Code: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Sku: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      WarehouseUnit: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Name: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code'), Validators.required],
-      TaxName: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      FeaturePicture: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Description: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Technical: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Categories: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Type: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Groups: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Pictures: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      VatTax: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Brand: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Tags: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      Keywords: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      RequireVatTax: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
+      Sku: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Sku')],
+      WarehouseUnit: [this.columnList.find(f => this.commonService.getObjectId(f) == 'WarehouseUnit')],
+      Name: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Name'), Validators.required],
+      TaxName: [this.columnList.find(f => this.commonService.getObjectId(f) == 'TaxName')],
+      FeaturePicture: [this.columnList.find(f => this.commonService.getObjectId(f) == 'FeaturePicture')],
+      Description: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Description')],
+      Technical: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Technical')],
+      Categories: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Categories')],
+      Type: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Type')],
+      Groups: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Groups')],
+      Pictures: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Pictures')],
+      VatTax: [this.columnList.find(f => this.commonService.getObjectId(f) == 'VatTax')],
+      Brand: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Brand')],
+      Tags: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Tags')],
+      Keywords: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Keywords')],
+      RequireVatTax: [this.columnList.find(f => this.commonService.getObjectId(f) == 'RequireVatTax')],
+      IsStopBusiness: [this.columnList.find(f => this.commonService.getObjectId(f) == 'IsStopBusiness')],
+      SalesPrice: [this.columnList.find(f => this.commonService.getObjectId(f) == 'SalesPrice')],
       UnitConversions: this.formBuilder.array([]),
       Properties: this.formBuilder.array([]),
     });
@@ -370,13 +372,56 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<Prod
       // data['Code_old'] = data['Code'];
       newForm.patchValue(data);
     } else {
-      const newUnitConversion = this.makeNewUnitConversionFormGroup({}, newForm);
-      unitConversions.push(newUnitConversion);
-      this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
 
-      const newProperty = this.makeNewPropertyFormGroup({}, newForm);
-      properties.push(newProperty);
-      this.onAddPropertyFormGroup(newForm, 0, newProperty);
+      let unitConversionList = this.columnList.filter(f => /^Unit\d+/.test(this.commonService.getObjectId(f)));
+      let propertiesList = this.columnList.filter(f => /^Property\d+/.test(this.commonService.getObjectId(f)));
+      // let conversionRatioList = this.columnList.filter(f => /^ConversionRatio\d+/.test(this.commonService.getObjectId(f)));
+      // let isDefaultSalesList = this.columnList.filter(f => /^IsDefaultSalesList\d+/.test(this.commonService.getObjectId(f)));
+      // let isDefaultPurchaseList = this.columnList.filter(f => /^IsDefaultPurchaseList\d+/.test(this.commonService.getObjectId(f)));
+      // let isManageByAccessNumber = this.columnList.filter(f => /^IsManageByAccessNumber\d+/.test(this.commonService.getObjectId(f)));
+      // let isAutoAdjustInventory = this.columnList.filter(f => /^IsAutoAdjustInventory\d+/.test(this.commonService.getObjectId(f)));
+      // let isExpirationGoods = this.columnList.filter(f => /^IsExpirationGoods\d+/.test(this.commonService.getObjectId(f)));
+      unitConversionList = unitConversionList.sort();
+      propertiesList = propertiesList.sort();
+      // conversionRatioList = conversionRatioList.sort();
+      // isDefaultSalesList = isDefaultSalesList.sort();
+      // isDefaultPurchaseList = isDefaultPurchaseList.sort();
+      // isManageByAccessNumber = isManageByAccessNumber.sort();
+      // isAutoAdjustInventory = isAutoAdjustInventory.sort();
+      // isExpirationGoods = isExpirationGoods.sort();
+
+      if (unitConversionList.length > 0) {
+        for (const i in unitConversionList) {
+          const index = this.commonService.getObjectId(unitConversionList[i]).replace(/.*(\d+)/, "$1");
+          const newUnitConversion = this.makeNewUnitConversionFormGroup({
+            Unit: unitConversionList[i],
+            ConversionRatio: this.columnList.find(f => this.commonService.getObjectId(f) == 'ConversionRatio' + index),
+            IsDefaultSales: this.columnList.find(f => this.commonService.getObjectId(f) == 'IsDefaultSales' + index),
+            IsDefaultPurchase: this.columnList.find(f => this.commonService.getObjectId(f) == 'IsDefaultPurchase' + index),
+            IsManageByAccessNumber: this.columnList.find(f => this.commonService.getObjectId(f) == 'IsManageByAccessNumber' + index),
+            IsAutoAdjustInventory: this.columnList.find(f => this.commonService.getObjectId(f) == 'IsAutoAdjustInventory' + index),
+            IsExpirationGoods: this.columnList.find(f => this.commonService.getObjectId(f) == 'IsExpirationGoods' + index),
+          }, newForm);
+          unitConversions.push(newUnitConversion);
+          this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
+        }
+      }
+      if (propertiesList.length > 0) {
+        for (const i in propertiesList) {
+          const index = this.commonService.getObjectId(propertiesList[i]).replace(/.*(\d+)/, "$1");
+          const newProperty = this.makeNewPropertyFormGroup({
+            Property: propertiesList[i],
+            PropertyValues: this.columnList.find(f => this.commonService.getObjectId(f) == 'PropertyValues' + index),
+          }, newForm);
+          properties.push(newProperty);
+          this.onAddPropertyFormGroup(newForm, 0, newProperty);
+        }
+      }
+
+
+      // const newProperty = this.makeNewPropertyFormGroup({}, newForm);
+      // properties.push(newProperty);
+      // this.onAddPropertyFormGroup(newForm, 0, newProperty);
     }
 
     newForm.get('WarehouseUnit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
@@ -486,15 +531,15 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<Prod
   /** End Picture Form */
 
   /** Picture Form */
-  makeNewUnitConversionFormGroup(data?: ProductUnitConversoinModel, formItem?: FormGroup): FormGroup {
+  makeNewUnitConversionFormGroup(data?: any, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
-      Unit: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      ConversionRatio: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      IsDefaultSales: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      IsDefaultPurchase: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      IsManageByAccessNumber: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      IsAutoAdjustInventory: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      IsExpirationGoods: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
+      Unit: [null],
+      ConversionRatio: [null],
+      IsDefaultSales: [null],
+      IsDefaultPurchase: [null],
+      IsManageByAccessNumber: [null],
+      IsAutoAdjustInventory: [null],
+      IsExpirationGoods: [null],
     });
 
     if (data) {
@@ -525,21 +570,15 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<Prod
     // this.componentList[mainIndex].splice(index, 1);
   }
 
-  makeNewPropertyFormGroup(data?: ProductInPropertyModel, formItem?: FormGroup): FormGroup {
+  makeNewPropertyFormGroup(data?: any, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
-      Property: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
-      PropertyValues: [this.columnList.find(f => this.commonService.getObjectId(f) == 'Code')],
+      Property: [null],
+      PropertyValues: [null],
     });
 
     if (data) {
       newForm.patchValue(data);
-      setTimeout(() => {
-        newForm['dataList'] = this.propertyList.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(data.Property))?.Values || [];
-      }, 300);
     }
-    newForm.get('Property').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      newForm['dataList'] = this.propertyList.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(value))?.Values || [];
-    })
     return newForm;
   }
   getProperties(formItem: FormGroup) {
@@ -772,5 +811,12 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<Prod
     if (this.mode === 'dialog' && this.onDialogSave) {
       this.onDialogSave(newFormData);
     }
+  }
+
+  saveAndClose() {
+    const dataMapping = this.getRawFormData();
+    this.onDialogSave(dataMapping.array);
+    this.close();
+    return true;
   }
 }

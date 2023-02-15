@@ -855,7 +855,7 @@ body
   ~ .layout-container
   nb-sidebar.chat-sidebar
   .main-container {
-  width: 20rem;
+  width: 24rem;
 }
 
 body nb-sidebar.chat-sidebar nb-chat .messages {
@@ -866,7 +866,7 @@ body nb-sidebar.chat-sidebar,
 body nb-sidebar.chat-sidebar .main-container,
 body nb-sidebar.chat-sidebar.expanded,
 body nb-sidebar.chat-sidebar.expanded .main-container {
-  width: 20rem;
+  width: 24rem;
 }
 
 body nb-sidebar.chat-sidebar.collapsed,
@@ -1564,8 +1564,8 @@ nb-card.ag-grid-card nb-card-body {
 }
 
 .ag-grid-wrap {
-  border: #ccc 1px solid;
-  border-radius: 3px;
+  border: var(--ck-color-shadow-inner) 1px solid;
+  border-radius: 5px;
   overflow: hidden;
 }
 

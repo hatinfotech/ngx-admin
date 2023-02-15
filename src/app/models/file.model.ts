@@ -1,5 +1,6 @@
+import { Model } from "./model";
 
-export class FileModel {
+export class FileModel extends Model {
   [key: string]: any;
   Id?: number;
   Name?: string;
@@ -15,6 +16,8 @@ export class FileModel {
   Thumbnail?: string;
   DownloadLink?: string;
   OriginImage?: string;
+
+  constructor(properties?: any) { super(properties); }
 }
 
 export class FileStoreModel {
@@ -27,6 +30,7 @@ export class FileStoreModel {
   Host?: string;
   Port?: number;
   Path?: string;
+  UploadToken?:string;
   DirPath?: string;
   requestCookieUrl?: string;
   Token?: string;

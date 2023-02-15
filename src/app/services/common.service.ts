@@ -27,13 +27,13 @@ import { LocaleConfigModel } from '../models/system.model';
 import { environment } from '../../environments/environment';
 import { MySocket } from '../lib/nam-socket/my-socket';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { filter, map, take } from 'rxjs/operators';
+import { filter, map, switchMap, take } from 'rxjs/operators';
 import { DeviceModel } from '../models/device.model';
 import { v4 as uuidv4 } from 'uuid';
 import { NotificationService } from './notification.service';
 import { MobileAppService } from '../modules/mobile-app/mobile-app.service';
 import * as moment from 'moment';
-import { FileStoreModel } from '../models/file.model';
+import { FileModel, FileStoreModel } from '../models/file.model';
 import { createMask } from '@ngneat/input-mask';
 import { DateTimeAdapter } from 'ng-pick-datetime';
 import { CashPaymentVoucherPrintComponent } from '../modules/accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
@@ -62,6 +62,7 @@ import { CommercePosReturnPrintComponent } from '../modules/commerce-pos/commerc
 import { DataManagerPrintComponent } from '../lib/data-manager/data-manager-print.component';
 import { CommercePosDeploymentVoucherPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
+import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 
 interface ClipboardItem {
   readonly types: string[];
@@ -155,6 +156,21 @@ export class CommonService {
   timezones$ = new BehaviorSubject<any>(null);
   systemConfigs$ = new BehaviorSubject<SystemConfigModel>(null);
 
+  mimeTypeMap: { [key: string]: { ext: string } } = {
+    'image/jpeg': {
+      ext: 'jpg',
+    },
+    'image/png': {
+      ext: 'png',
+    },
+    'image/bmp': {
+      ext: 'bmp',
+    },
+    'image/gif': {
+      ext: 'gif',
+    },
+  };
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -174,6 +190,7 @@ export class CommonService {
     public activeRoute: ActivatedRoute,
     public dateTimeAdapter: DateTimeAdapter<any>,
     public notificationService: NotificationService,
+    private httpClient: HttpClient
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {
@@ -1370,4 +1387,51 @@ export class CommonService {
 
     return { unitSeq, productId, accessNumber };
   }
+
+  download(url: string): Observable<string | ArrayBuffer> {
+    return this.httpClient.get(url, { responseType: 'blob' })
+      .pipe(
+        switchMap(response => this.readFile(response))
+      );
+  }
+  downloadAsBlob(url: string): Observable<Blob> {
+    const headers = new HttpHeaders();
+    headers.set('Referrer Policy', 'strict-origin-when-cross-origin');
+
+    return this.httpClient.get(url, { responseType: 'blob', headers: headers });
+  }
+
+  private readFile(blob: Blob): Observable<string | ArrayBuffer> {
+    return new Observable(obs => {
+      const reader = new FileReader();
+
+      reader.onerror = err => obs.error(err);
+      reader.onabort = err => obs.error(err);
+      reader.onload = () => obs.next(reader.result);
+      reader.onloadend = () => obs.complete();
+
+      return reader.readAsDataURL(blob);
+    });
+  }
+
+  convertBase64ToByteArray(base64Data: string) {
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    return new Uint8Array(byteNumbers);
+  }
+
+  async uploadBlobData(data: Blob, fileName?: string, progress?: (event: HttpEvent<any>) => void, option?: { Type?: string, MimeType?: string }): Promise<FileModel> {
+    const formData = new FormData();
+    const fileExt = this.mimeTypeMap[data.type]?.ext || data.type.split('/').pop();
+    formData.append('file', data, fileName || ('probox-one-file-' + (Date.now())) + '.' + fileExt);
+    return this.apiService.uploadFileData(formData, progress).then(async (fileInfo) => {
+      const fileModel = new FileModel(fileInfo);
+      fileModel.MimeType = option?.MimeType;
+      return fileModel;
+    });
+  }
+
 }

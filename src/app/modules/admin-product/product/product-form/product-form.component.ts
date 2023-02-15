@@ -360,6 +360,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Tags: [[]],
       Keywords: [[]],
       RequireVatTax: [false],
+      IsStopBusiness: [false],
       UnitConversions: this.formBuilder.array([]),
       Properties: this.formBuilder.array([]),
     });

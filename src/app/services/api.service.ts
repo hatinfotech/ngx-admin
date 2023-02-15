@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   HttpClient, HttpResponse, HttpErrorResponse,
-  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent,
+  HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpEventType,
 } from '@angular/common/http';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
@@ -14,6 +14,7 @@ import { EmployeeModel } from '../models/employee.model';
 import { LoginDialogComponent } from '../modules/auth/login/login-dialog.component';
 import { TranslateService } from '@ngx-translate/core';
 import { ToasterService } from 'angular2-toaster';
+import { FileModel, FileStoreModel } from '../models/file.model';
 export class ApiToken {
   access_token?: string;
   refresh_token?: string;
@@ -728,6 +729,56 @@ export class ApiService {
         return text.replace(/^./, text.charAt(0).toUpperCase());
       default: return text;
     }
+  }
+
+  async getAvailableFileStores(option?: { weight?: number, limit?: number }) {
+    return this.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight: option?.weight, limit: option?.limit || 1 });
+  }
+
+  uploadPromise(enpoint: string, params: any, resource: FormData): Observable<HttpEvent<any>> {
+
+    const req = new HttpRequest('POST', this.buildApiUrl(enpoint, params), resource, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this._http.request(req).pipe(catchError(e => {
+      return this.handleError(e, params.silent);
+    }));
+  }
+
+  async uploadFileByLink(link: string, fileName?: string, tag?: string, option?: { weight: number }): Promise<FileModel> {
+    return this.getAvailableFileStores({ weight: option?.weight || 0 }).then(rs => rs[0]).then(fileStore => {
+      return this.postPromise(fileStore.Path + '/v3/file/files', { token: fileStore.UploadToken, createFromLink: true }, [
+        {
+          RemoteLink: link,
+          FileName: fileName,
+          Tag: tag,
+        }
+      ]).then(rs => rs[0]);
+    });
+  };
+
+  async uploadFileData(formData: FormData, progress?: (event: HttpEvent<any>) => void, option?: { weight: number }): Promise<FileModel> {
+    return new Promise<FileModel>((resolve, reject) => {
+      this.getAvailableFileStores({ weight: option?.weight || 0 }).then(rs => rs[0]).then(fileStore => {
+
+        this.uploadPromise(fileStore.Path + '/v3/file/files', { token: fileStore.UploadToken }, formData).subscribe(
+          event => {
+            console.log('Upload prgress', event);
+            if (progress) progress(event);
+            if (event.type === HttpEventType.UploadProgress) {
+            } else if (event instanceof HttpResponse) {
+              resolve(new FileModel(event.body[0]));
+            }
+          },
+          err => {
+            console.log('Upload error', err);
+          },
+        );
+      });
+
+    });
   }
 }
 

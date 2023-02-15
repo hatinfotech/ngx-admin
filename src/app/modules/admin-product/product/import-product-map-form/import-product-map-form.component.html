@@ -167,11 +167,16 @@
                 <label class="label">{{'Cài đặt tham số' | translate | headtitlecase}}</label>
                 <div class="row">
                   <div class="col-sm-12">
-                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Áp dụng VAT" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Áp dụng VAT" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                       <ngx-select2 formControlName="RequireVatTax" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
                     </ngx-form-group>
-                    <ngx-form-group [formGroup]="formItem" name="VatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <ngx-form-group [formGroup]="formItem" name="VatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                       <ngx-select2 formControlName="VatTax" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                    </ngx-form-group>
+                  </div>
+                  <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="IsStopBusiness" label="Ngừng kinh doanh" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                      <ngx-select2 formControlName="IsStopBusiness" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
                     </ngx-form-group>
                   </div>
                 </div>
@@ -273,15 +278,19 @@
                   <ngx-select2 formControlName="Technical" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
                 </div>
               </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="SalesPrice" label="Giá EU" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                  <ngx-select2 formControlName="SalesPrice" [select2Option]="select2OptionForColumns" [data]="columnList"></ngx-select2>
+                </ngx-form-group>
+              </div>
             </div>
 
           </div>
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button>
-            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
-            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+            <button nbButton status="basic" (click)="goback()" hero>Trở về</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">Xác nhận</button>
           </div>
         </nb-card-footer>
       </nb-card>

@@ -325,10 +325,10 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           // },
           onComponentInitFunction: (component: SmartTableTagsComponent) => {
             component.labelAsText = (tag) => {
-              return tag.text;
+              return tag.text + ' (' + tag.ConversionRatio + ')';
             };
             component.renderToolTip = (tag) => {
-              return tag.tip || tag.text;
+              return (tag.tip || tag.text) + ((tag.id != this.commonService.getObjectId(component.rowData?.WarehouseUnit)) && (', tỷ lệ chuyển đổi: ' + tag.ConversionRatio + ' ' + this.commonService.getObjectText(component.rowData?.WarehouseUnit)) || ' ,ĐVT Cơ bản') + (tag.IsAutoAdjustInventory && ', Trừ kho tự động' || '') + (tag.IsExpirationGoods && ', Có hạn sử dụng' || '') + (tag.IsDefaultSales && ', Mặc định mua' || '') + (tag.IsDefaultPurchase && ', Mặc định bán' || '');
             };
             // component.labelAsText = (tag) => {
             //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
@@ -357,7 +357,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                             ...udpateItem.UnitConversions.map(m => ({
                               type: m.type,
                               id: m.id,
-                              text: m.text,
+                              text: m.text + ' (' + m.ConversionRatio + ')',
                               Container: m.id == tag.id ? newContainer : m.Container,
                             })),
                             { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]

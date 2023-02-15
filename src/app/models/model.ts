@@ -1,10 +1,22 @@
 import { ExecFileSyncOptionsWithBufferEncoding } from "child_process";
 
-export abstract class Model {
+export class Model {
     [key: string]: any;
     id?: string;
     text?: string;
     RelativeVouchers?: { id: string, text: string, type: string }[];
+
+    constructor(properties?: Model) {
+        if (properties) {
+            for (const name of Object.keys(properties)) {
+                this[name] = properties[name];
+            }
+        }
+    }
+
+    static getInstance() {
+        return new Model();
+    }
 }
 
 export interface RootConfigModel {

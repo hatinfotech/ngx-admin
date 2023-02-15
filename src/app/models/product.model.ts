@@ -23,7 +23,7 @@ export class ProductModel {
   // References
   Categories?: ProductCategoryModel[];
   Groups?: ProductGroupModel[];
-  Pictures?: ProductPictureModel[];
+  Pictures?: FileModel[];
   UnitConversions?: (ProductUnitConversoinModel & { Name?: string, Symbol?: string })[];
 
   constructor() { }
@@ -62,6 +62,7 @@ export class ProductPictureModel {
 }
 
 export class ProductUnitConversoinModel {
+  [key: string]: any;
   id?: string; text?: string;
   Id?: number & string;
   Product?: string & ProductModel;
@@ -143,6 +144,7 @@ export class ProductPeropertyModel {
 export interface ProductPropertyModel {
   id?: string;
   text?: string;
+  Code?: string;
   Name?: string;
   Description?: string;
   Parent?: string;
