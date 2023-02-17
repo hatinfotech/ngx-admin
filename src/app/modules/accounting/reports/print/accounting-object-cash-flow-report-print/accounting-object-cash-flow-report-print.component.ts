@@ -163,6 +163,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
         eq_Accounts: this.accounts,
         eq_Object: object,
         includeIncrementAmount: true,
+        includeRowHeader: true,
         includeObjectInfo: true,
         balance: 'both',
         fromDate: fromDate.toISOString(),

@@ -39,6 +39,8 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   // accountCreditList: AccountModel[] = [];
   accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
+  previewAfterCreate = true;
+  printDialog = AccountingOtherBusinessVoucherPrintComponent;
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -484,23 +486,23 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   }
 
 
-  async preview(formItem: FormGroup) {
-    const data: OtherBusinessVoucherModel = formItem.value;
-    this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
-      context: {
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (rs: OtherBusinessVoucherModel) => {
-          this.saveAndClose();
-        },
-        onSaveAndPrint: (rs: OtherBusinessVoucherModel) => {
-          this.save();
-        },
-      },
-    });
-    return false;
-  }
+  // async preview(formItem: FormGroup) {
+  //   const data: OtherBusinessVoucherModel = formItem.value;
+  //   this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+  //     context: {
+  //       title: 'Xem trước',
+  //       data: [data],
+  //       idKey: ['Code'],
+  //       onSaveAndClose: (rs: OtherBusinessVoucherModel) => {
+  //         this.saveAndClose();
+  //       },
+  //       onSaveAndPrint: (rs: OtherBusinessVoucherModel) => {
+  //         this.save();
+  //       },
+  //     },
+  //   });
+  //   return false;
+  // }
 
   onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
     if (!this.isProcessing) {

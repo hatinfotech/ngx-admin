@@ -361,7 +361,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     if (Array.isArray(this.idKey)) {
       return this.idKey.map(key => this.encodeId(item[key])).join('-');
     }
-    return item[this.idKey];
+  return item[this.idKey];
   }
 
   /** After main form create event */

@@ -173,6 +173,12 @@ export class ContactListComponent extends ServerDataManagerListComponent<Contact
           width: '20%',
           filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
         },
+        Phone: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.phone'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         Groups: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.groups'), 'head-title'),
           type: 'html',

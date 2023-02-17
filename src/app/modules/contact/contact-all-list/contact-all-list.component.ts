@@ -146,6 +146,12 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
             },
           },
         },
+        Phone: {
+          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.phone'), 'head-title'),
+          type: 'string',
+          width: '10%',
+          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        },
         Email: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
           type: 'string',

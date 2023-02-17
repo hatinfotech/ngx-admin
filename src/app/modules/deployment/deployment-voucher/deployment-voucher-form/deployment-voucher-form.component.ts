@@ -1,3 +1,4 @@
+import { getTestBed } from '@angular/core/testing';
 import { ProductUnitModel } from './../../../../models/product.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit, Type } from '@angular/core';
@@ -311,6 +312,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       { id: 'XEBEN', text: 'Xe ben' },
       { id: 'XEMAY', text: 'Xe máy' },
       { id: 'XETAI', text: 'Xe tải' },
+      { id: 'BOCXEP', text: 'Bóc xếp' },
     ],
   };
 
@@ -646,12 +648,14 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         }
         // itemFormData.Details.forEach(detail => {
         // });
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
       }
+
       return;
     });
 
@@ -729,7 +733,31 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
         this.commonService.lastVoucherDate = dateOfSate;
       }
     });
+
+    newForm.get('Transportation').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(driver => {
+      this.generateTitle(newForm);
+    });
+    newForm.get('Transportation').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(driver => {
+      this.generateTitle(newForm);
+    });
+    newForm.get('DeliveryAddress').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(driver => {
+      this.generateTitle(newForm);
+    });
+
     return newForm;
+  }
+
+  generateTitle(form: FormGroup) {
+    const formData: DeploymentVoucherModel = form.getRawValue();
+    if (formData.State != 'APPROVED') {
+      let relativeVouchers = Array.isArray(formData.RelativeVouchers) && formData.RelativeVouchers.length > 0 ? ('cho ' + formData.RelativeVouchers.map(m => `${m.text} (${m.id})`).join(', ')) : '';
+      let address = formData.DeliveryAddress ? ('ĐC: ' + formData.DeliveryAddress) : '';
+      let goodsName = '';
+      if (Array.isArray(formData.Details)) {
+        goodsName = formData.Details.map(detail => `${detail.Quantity} ${this.commonService.getObjectText(detail.Unit)} ${this.commonService.getObjectText(detail.Product)}`).join(', ')
+      }
+      form.get('Title').setValue(`${this.commonService.getObjectText(formData.Transportation) || 'Triển khai'}: ${goodsName} ${relativeVouchers} ${address}`);
+    }
   }
 
   patchFormGroupValue = (formGroup: FormGroup, data: DeploymentVoucherModel) => {
@@ -839,6 +867,14 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       }
     });
 
+
+    newForm.get('Quantity').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(driver => {
+      this.generateTitle(parentFormGroup);
+    });
+    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(driver => {
+      this.generateTitle(parentFormGroup);
+    });
+
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -863,8 +899,10 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.updateInitialFormPropertiesCache(newChildFormGroup);
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
+    this.generateTitle(parentFormGroup);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
+    this.generateTitle(parentFormGroup);
   }
   /** End Detail Form */
 

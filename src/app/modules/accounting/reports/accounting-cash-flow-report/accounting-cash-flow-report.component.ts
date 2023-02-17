@@ -346,6 +346,8 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
         toDate: null,
         balance: 'both',
         report: 'reportObjectCashFlow',
+        // groupBy: '',
+        // includeRowHeader: false,
       },
       closeOnEsc: false,
     })

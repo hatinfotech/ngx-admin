@@ -44,6 +44,9 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
   @Input() toDate?: Date;
   @Input() filter?: any;
   @Input() report?: string;
+  @Input() groupBy?: string;
+  @Input() includeRowHeader?: boolean;
+  @Input() includeIncrementAmount?: boolean;
   @Input() balance?: 'debt' | 'credit' | 'both';
   @Input() reportComponent: Type<any> | TemplateRef<any>;
 
@@ -337,9 +340,25 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
       } else {
         // params['reportDetailByObject'] = true;
       }
-      params['groupBy'] = 'Voucher,WriteNo';
-      params['includeRowHeader'] = true;
-      params['includeIncrementAmount'] = true;
+      if (typeof this.groupBy != 'undefined') {
+        if (this.groupBy !== '') {
+          params['groupBy'] = this.groupBy;
+        }
+      } else {
+        params['groupBy'] = 'Voucher,WriteNo';
+      }
+      // params['groupBy'] = typeof this.groupBy != 'undefined' ? this.groupBy : 'Voucher,WriteNo';
+      if (typeof this.includeRowHeader != 'undefined') {
+        params['includeRowHeader'] = this.includeRowHeader;
+      } else {
+        params['includeRowHeader'] = true;
+      }
+      // params['includeRowHeader'] = true;
+      if (typeof this.includeIncrementAmount != 'undefined') {
+        params['includeIncrementAmount'] = this.includeIncrementAmount;
+      } else {
+        params['includeIncrementAmount'] = true;
+      }
 
       // if (this.accountingService?.reportToDate$?.value) {
       const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();

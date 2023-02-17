@@ -27,6 +27,31 @@ export class DeploymentVoucherModel extends Model  {
   ObjectBankCode?: string;
   ObjectBankName?: string;
 
+  ObjectIdentifiedNumber?: string;
+  Contact?: string;
+  ContactName?: string;
+  ContactPhone?: string;
+  ContactEmail?: string;
+  ContactAddress?: string;
+  ContactIdentifiedNumber?: string;
+  SubNote?: string;
+  DeploymentDate?: any;
+  Transportation?: string;
+  TransportationName?: string;
+  DeliveryAddress?: string;
+  MapUrl?: string;
+  Driver?: string;
+  DriverName?: string;
+  DriverPhone?: string;
+  ShippingCost?: string;
+  ShippingCostPaymentBy?: string;
+  ShippingCostPaymentRatio?: string;
+  DirectReceiverName?: string;
+  DirectReceiverPhone?: string;
+  Employee?: string;
+  IsDebt?: boolean;
+  Permission?: string;
+
   // References
   Details?: DeploymentVoucherDetailModel[];
 
