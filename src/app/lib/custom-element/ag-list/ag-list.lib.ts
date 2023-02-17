@@ -181,7 +181,7 @@ export class CustomHeader implements IHeaderAngularComp {
         let checked = event.target.checked;
         console.log('Select all: ', checked);
         this.params.api.forEachNode((node, index) => {
-            node.setDataValue('IsImport', checked);
+            node.setDataValue(this.params.column.getColId(), checked);
         });
     }
 

@@ -562,7 +562,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           },
           {
             headerName: 'Update giá',
-            field: 'updatePrice',
+            field: 'IsUpdatePrice',
             width: 80,
             filter: 'agTextColumnFilter',
             pinned: 'right',
@@ -944,7 +944,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                 this.array = this.sheet.map((row: any, index: number) => {
                   const mappedRow: any = {
                     No: index + 1,
-                    updatePrice: false,
+                    IsUpdatePrice: false,
                   };
 
                   for (const column in this.mapping) {
@@ -1332,7 +1332,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                         IsExpirationGoods5: row[this.mapping['IsExpirationGoods5']] && true || false,
 
                         SalesPrice: row[this.mapping['SalesPrice']],
-                        updatePrice: true,
+                        IsUpdatePrice: true,
                       };
 
                       return mappedRow;
@@ -1493,7 +1493,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           }
         }
 
-        if (newProduct.updatePrice) {
+        if (newProduct.IsUpdatePrice) {
           updatePriceProductList.push(newProduct);
         }
       });
@@ -1559,9 +1559,10 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             console.log(createdProducts[0]);
           } catch (err) {
             console.error(err);
+            const message = Array.isArray(err?.error?.logs) && err.error.logs.join(',') || err;
             node.setDataValue('Result', 'Error');
-            node.setDataValue('Message', err.error.logs[0] || err);
-            this.commonService.toastService.show(newProduct.Name + (err.error.logs[0] || err), 'Import thất bại', { status: 'danger', duration: 60000 });
+            node.setDataValue('Message', message);
+            this.commonService.toastService.show(newProduct.Name + message, 'Import thất bại', { status: 'danger', duration: 60000 });
           }
         }
 
@@ -1595,7 +1596,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         }));
         for(const updatePriceProduct of updatePriceProductList) {
           const node = this.gridApi.getDisplayedRowAtIndex(updatePriceProduct.index);
-          if(node) node.setDataValue('updatePrice', false);
+          if(node) node.setDataValue('IsUpdatePrice', false);
         }
         this.commonService.toastService.show('Đã cập nhật giá mới', 'Cập nhật giá', { status: 'success' });
       }
