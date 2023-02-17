@@ -198,7 +198,7 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
                   //       action: () => {
                   //         this.apiService.putPromise<CommerceServiceByCycleModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
                   //           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                  //             this.commonService.showToast(this.commonService.translateText('đã tạo task cho báo giá'),
+                  //             this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
                   //               this.commonService.translateText('Common.notification'), {
                   //               status: 'success',
                   //             });
@@ -354,7 +354,7 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
             this.loading = true;
             return this.apiService.putPromise<CommerceServiceByCycleModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

@@ -48,15 +48,16 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
     const result = await super.init();
     // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    // for (const i in this.data) {
-    //   const data = this.data[i];
-    //   data['Total'] = 0;
-    //   data['Title'] = this.renderTitle(data);
-    //   for (const detail of data.Details) {
-    //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-    //   }
-    //   this.processMapList[i] = AppModule.processMaps.purchaseVoucher[data.State || ''];
-    // }
+    for (const i in this.data) {
+      const data = this.data[i];
+      //   data['Total'] = 0;
+      //   data['Title'] = this.renderTitle(data);
+      //   for (const detail of data.Details) {
+      //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      //   }
+      this.processMapList[i] = AppModule.processMaps.deploymentVoucher[data.State || ''];
+    }
+
     this.summaryCalculate(this.data);
 
     return result;
@@ -181,7 +182,7 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
               status: 'success',
             });
             // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [

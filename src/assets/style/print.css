@@ -284,3 +284,23 @@
 .print-voucher-detail-table thead td {
   border-bottom: 1px solid #ccc;
 }
+.bill-state {
+  color: red;
+  font-weight: bold;
+}
+.bill-mark {
+  width: 44mm;
+  height: 16mm;
+  font-size: 8mm !important;
+  border: red 1px solid;
+  color: red;
+  border-radius: 2mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  /* transform: rotate(-32deg); */
+  /* position: absolute; */
+  /* top: 10.8cm; */
+  /* right: 0.4cm; */
+}

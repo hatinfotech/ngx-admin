@@ -17,7 +17,7 @@
                             <div class="bill-register-address" *ngIf="registerInfo.address">ĐC: {{registerInfo.address}}</div>
                         </div>
                         <div class="bill-title">{{title}}</div>
-                        <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}}</div>
+                        <div class="bill-info">{{order.Code}} - {{order.DateOfSale | date:'short'}} - <span class="bill-state" *ngIf="order.State == 'APPROVED'">đã duyệt</span></div>
                         <div class="barcode" style="text-align: center;">
                             <img src="{{order.BarCode}}">
                         </div>

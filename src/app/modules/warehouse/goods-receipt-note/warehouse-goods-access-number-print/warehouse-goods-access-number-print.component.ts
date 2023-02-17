@@ -322,7 +322,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     const currentForm = this.choosedForms.controls;
     this.choosedForms.controls = this.choosedForms.controls.filter(f => f.value?.Choosed);
     if (this.choosedForms.controls.length === 0) {
-      this.commonService.showToast('Không có tem nào được chọn !', 'In barcode', { status: 'warning' })
+      this.commonService.toastService.show('Không có tem nào được chọn !', 'In barcode', { status: 'warning' })
       this.choosedForms.controls = [...currentForm];
     } else {
       if (oldLength != this.choosedForms.controls.length) {

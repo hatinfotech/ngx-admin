@@ -934,7 +934,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                 const voucher = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + chooseItems[i].Code, { includeContact: true, includeObject: true, includeDetails: true, includeRelativeVouchers: true, includeUnit: true }).then(rs => rs[0]);
 
                 if (['PRICEREPORT'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.showToast(this.commonService.translateText('Đơn đặt POS chưa được báo giá'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Đơn đặt POS chưa được báo giá'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 delete voucher.Id;

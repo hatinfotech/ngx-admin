@@ -134,7 +134,7 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
               status: 'success',
             });
           }).catch(err => {
@@ -168,7 +168,7 @@ export class CollaboratorAwardPrintComponent extends DataManagerPrintComponent<C
   //           this.onChange && this.onChange(data);
   //           this.onClose && this.onClose(data);
   //           this.close();
-  //           this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+  //           this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
   //             status: 'success',
   //           });
   //         }).catch(err => {

@@ -16,11 +16,12 @@ import { CommonService } from '../../../../../services/common.service';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { Select2SelectionObject } from '../../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { PurchaseVoucherListComponent } from '../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
-import { PurchaseVoucherModel } from '../../../../../models/purchase.model';
+import { PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../../models/purchase.model';
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 import { takeUntil } from 'rxjs/operators';
+import { ReferenceChoosingDialogComponent } from '../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -608,7 +609,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     }
   }
 
-  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+  openRelativeVoucherChoosedDialogx(formGroup: FormGroup) {
     this.commonService.openDialog(PurchaseVoucherListComponent, {
       context: {
         inputMode: 'dialog',
@@ -627,12 +628,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   const purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
             //   if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-            //     this.commonService.showToast(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //     this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
             //     continue;
             //   }
             //   if (this.commonService.getObjectId(formGroup.get('Object').value)) {
             //     if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-            //       this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //       this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
             //       continue;
             //     }
             //   } else {
@@ -679,6 +680,92 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     return false;
   }
 
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+      context: {
+        components: {
+          'PURCHASEORDER': { title: 'Đơn đặt mua hàng' },
+          'PURCHASE': { title: 'Phiếu mua hàng' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          this.onProcessing();
+          if (type === 'PURCHASEORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const voucher = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeRelativeVouchers: true, includeIdText: true }).then(rs => rs[0]);
+
+                // Check purchase order state
+                if (['APPROVED'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.showToast(this.commonService.translateText('Phiếu đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu chi'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
+                  // details.clear();
+                }
+                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASEORDER' });
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          }
+          if (type === 'PURCHASE') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const voucher = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeRelativeVouchers: true, includeIdText: true }).then(rs => rs[0]);
+
+                // Check purchase order state
+                if (['APPROVED'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
+                  this.commonService.showToast(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+
+                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu chi'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
+                  // details.clear();
+                }
+                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASE' });
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          }
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
+        },
+      }
+    })
+    return false;
+  }
+
+
   async addRelativeVoucher(relativeVoucher: any, relativeVoucherType: string, formGroup?: FormGroup) {
     if (!formGroup) {
       formGroup = this.array.controls[0] as FormGroup;
@@ -687,7 +774,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     const relativeVouchers = formGroup.get('RelativeVouchers');
     const relationVoucherValue: any[] = (relativeVouchers.value || []);
     if (relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
-      this.commonService.showToast('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
+      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
       return;
     }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
@@ -704,12 +791,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       }
 
       if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-        this.commonService.showToast(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+        this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
         return false;
       }
       if (this.commonService.getObjectId(formGroup.get('Object').value)) {
         if (this.commonService.getObjectId(this.commonService.getObjectId(purchaseVoucher.Object), 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-          this.commonService.showToast(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+          this.commonService.toastService.show(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {

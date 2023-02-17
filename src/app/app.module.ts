@@ -1329,35 +1329,34 @@ export class AppModule {
       "APPROVED": {
         ...AppModule.approvedState,
         outline: true,
-        nextState: 'DEPLOYEMNT',
+        nextState: 'UNRECORDED',
         nextStates: [
-          { ...AppModule.depploymentState, status: 'danger' },
           AppModule.unrecordedState,
         ],
       },
-      "DEPLOYMENT": {
-        ...AppModule.depploymentState,
-        nextState: 'COMPLETE',
-        nextStates: [
-          { ...AppModule.completeState, status: 'success' },
-          AppModule.notJustApprodedState,
-        ],
-      },
-      "ACCEPTANCE": {
-        ...AppModule.acceptanceState,
-        nextState: 'COMPLETE',
-        nextStates: [
-          { ...AppModule.completeState, status: 'success' },
-          AppModule.notJustApprodedState,
-        ],
-      },
-      "COMPLETE": {
-        ...AppModule.completeState,
-        nextState: 'NOTJUSTAPPROVED',
-        nextStates: [
-          AppModule.notJustApprodedState,
-        ],
-      },
+      // "DEPLOYMENT": {
+      //   ...AppModule.depploymentState,
+      //   nextState: 'COMPLETE',
+      //   nextStates: [
+      //     { ...AppModule.completeState, status: 'success' },
+      //     AppModule.notJustApprodedState,
+      //   ],
+      // },
+      // "ACCEPTANCE": {
+      //   ...AppModule.acceptanceState,
+      //   nextState: 'COMPLETE',
+      //   nextStates: [
+      //     { ...AppModule.completeState, status: 'success' },
+      //     AppModule.notJustApprodedState,
+      //   ],
+      // },
+      // "COMPLETE": {
+      //   ...AppModule.completeState,
+      //   nextState: 'NOTJUSTAPPROVED',
+      //   nextStates: [
+      //     AppModule.notJustApprodedState,
+      //   ],
+      // },
       "UNRECORDED": {
         ...AppModule.unrecordedState,
         nextState: 'APPROVED',

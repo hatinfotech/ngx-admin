@@ -185,13 +185,13 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
                         dialog.setLoading(true);
                         try {
                           await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
-                            this.commonService.showToast(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Page.pushProductSuccessText'), {
+                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Page.pushProductSuccessText'), {
                               status: 'success',
                             });
                           });
                         } catch (err) {
                           dialog.setLoading(false);
-                          this.commonService.showToast('Lỗi đồng bộ', err?.logs?.join(', '), { status: 'dander' });
+                          this.commonService.toastService.show('Lỗi đồng bộ', err?.logs?.join(', '), { status: 'dander' });
                         }
                         dialog.setLoading(false);
                         this.refresh();
@@ -368,7 +368,7 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

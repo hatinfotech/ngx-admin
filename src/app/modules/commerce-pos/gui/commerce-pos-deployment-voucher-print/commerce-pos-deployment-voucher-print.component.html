@@ -1,7 +1,7 @@
 <div class="dialog-wrap" #dialogWrap>
     <nb-card [nbSpinner]="loading" *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 92mm;" class="small-header">
         <nb-card-header>
-            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Deployment.Voucher.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="'PTK'" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
@@ -17,7 +17,7 @@
                             <div class="bill-register-address" *ngIf="registerInfo.address">ĐC: {{registerInfo.address}}</div>
                         </div>
                         <div class="bill-title">PHIẾU TRIỂN KHAI<br>KIÊM PHIẾU GIAO HÀNG</div>
-                        <div class="bill-info">{{data.Code}} - {{data.DeploymentDate | date:'short'}}</div>
+                        <div class="bill-info">{{data.Code}} - {{data.DeploymentDate | date:'short'}} - <span class="bill-state" *ngIf="data.State == 'APPROVED'">đã duyệt</span></div>
                         <div class="barcode" style="text-align: center;">
                             <img src="{{data.BarCode}}">
                         </div>
@@ -133,18 +133,11 @@
                 <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
                     <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
                 </button>
-                <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="prepareCopy(data);" style="float: left">
-                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
-                </button>
-                <!-- <button *ngIf="mode === 'print'" nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
 
                 <!--State process buttons-->
                 <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward-outline'}}"></nb-icon></button>
                 <!--End State process buttons-->
 
-                <button *ngIf="mode === 'print' && data.State === 'APPROVED'" nbButton hero status="success" (click)="receipt(data);">
-                    {{'Sales.receipt' | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward-outline"></nb-icon>
-                </button>
                 <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
                 </button>

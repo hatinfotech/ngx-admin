@@ -109,7 +109,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         try {
           this.data = await this.getFormData(this.id);
           if (!this.data || this.data.length === 0) {
-            this.commonService.showToast('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
+            this.commonService.toastService.show('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
             this.close();
           }
         } catch (err) {
@@ -176,7 +176,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         data = this.data[index];
         // Todo: restrict only print created voucher  
         // if(!data['Id']) {
-        //   this.commonService.showToast('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+        //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
         //   console.error('voucher not just created');
         //   return false;
         // }
@@ -252,7 +252,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       data = this.data[index];
       // Todo: restrict only print created voucher  
       // if(!data['Id']) {
-      //   this.commonService.showToast('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+      //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
       //   console.error('voucher not just created');
       //   return false;
       // }
@@ -408,7 +408,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             if (this.closeAfterStateActionConfirm) {
               this.close();
             }
-            this.commonService.showToast(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
+            this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
               status: 'success',
             });
           }).catch(err => {

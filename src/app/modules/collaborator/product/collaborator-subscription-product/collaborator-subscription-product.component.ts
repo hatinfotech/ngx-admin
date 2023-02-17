@@ -128,7 +128,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
                         status: 'danger',
                         action: () => {
                           this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code, WarehouseUnit: product.WarehouseUnit }))).then(rs => {
-                            this.commonService.showToast(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
                               status: 'success',
                             })
                             this.refresh();
@@ -218,7 +218,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
             //     this.uploadForProduct = row;
             //     this.uploadBtn.nativeElement.click();
             //   } else {
-            //     this.commonService.showToast(
+            //     this.commonService.toastService.show(
             //       this.commonService.translateText('Common.uploadInProcess'),
             //       this.commonService.translateText('Common.upload'),
             //       {

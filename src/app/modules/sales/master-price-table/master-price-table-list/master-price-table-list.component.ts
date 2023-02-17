@@ -136,7 +136,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
                       status: 'primary',
                       action: () => {
                         this.apiService.putPromise(this.apiPath + '/' + instance.rowData?.Code, { changeState: instance.rowData.State != 'APPROVED' ? 'APPROVED' : 'NOTJUSTAPPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                          this.commonService.showToast('Đã thay đổi trạng thái bảng giá: ' + instance.rowData.State != 'APPROVED' ? 'Duyetej' : 'Bỏ duyệt', 'Đã thay đổi trạng thái bảng giá', {status: 'success'});
+                          this.commonService.toastService.show('Đã thay đổi trạng thái bảng giá: ' + instance.rowData.State != 'APPROVED' ? 'Duyetej' : 'Bỏ duyệt', 'Đã thay đổi trạng thái bảng giá', {status: 'success'});
                           this.refresh();
                         });
                         return true;

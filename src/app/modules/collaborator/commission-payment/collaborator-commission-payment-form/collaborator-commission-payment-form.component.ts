@@ -604,12 +604,12 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 const commissionVoucher = await this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>('/collaborator/commission-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
 
                 if (this.commonService.getObjectId(commissionVoucher.State) != 'APPROVED') {
-                  this.commonService.showToast(this.commonService.translateText('Phiếu kết chuyển chiết khấu chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu kết chuyển chiết khấu chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(commissionVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.showToast(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -648,12 +648,12 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 const awardVoucher = await this.apiService.getPromise<CollaboratorAwardVoucherModel[]>('/collaborator/award-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
 
                 if (this.commonService.getObjectId(awardVoucher.State) != 'APPROVED') {
-                  this.commonService.showToast(this.commonService.translateText('Phiếu thưởng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.toastService.show(this.commonService.translateText('Phiếu thưởng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(awardVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.showToast(this.commonService.translateText('Cộng tác viên trong phiếu thưởng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu thưởng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {

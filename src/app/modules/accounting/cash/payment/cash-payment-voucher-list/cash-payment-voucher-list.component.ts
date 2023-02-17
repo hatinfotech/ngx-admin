@@ -84,7 +84,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.showToast('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
+                  this.commonService.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -117,7 +117,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.showToast('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
+                  this.commonService.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
                   this.refresh();
                 });
               }

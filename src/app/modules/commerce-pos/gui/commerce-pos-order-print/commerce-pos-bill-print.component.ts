@@ -226,39 +226,15 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
     return this.apiService.getPromise<WarehouseGoodsContainerModel[]>(this.apiPath, {
       includeWarehouse: true,
       renderBarCode: true,
-      // masterPriceTable: this.priceTable,
       includeGroups: true,
       includeUnit: true,
       includeFeaturePicture: true,
       group_Unit: true,
-      // eq_Type: this.printForType,
       includeContainers: true,
       id: this.id,
       limit: 'nolimit',
-
       includeDetails: true, includeObject: true, includeRelativeVouchers: true
-      // eq_Product: this.product,
-      // eq_WarehouseUnit: this.unit,
-      // eq_Container: this.container,
     }).then(rs => {
-      // rs.map(item => {
-      //   if (item.Path) {
-      //     const parts = item.Path.split('/');
-      //     parts.shift();
-      //     item.Path = parts.join('/');
-      //   }
-      //   return item;
-      // });
-      // const table = [];
-      // let row = [];
-      // for (let i = 0; i < rs.length; i++) {
-      //   row.push(rs[i]);
-      //   if ((i+1) % 4 === 0) {
-      //     table.push(row);
-      //     row = [];
-      //   }
-      // }
-      // return table;
       return rs;
     });
   }
@@ -385,7 +361,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             this.close();
           });
         } else {
-          this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;
@@ -404,7 +380,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             this.close();
           });
         } else {
-          this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;
@@ -413,9 +389,11 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
   }
 
   async print(index?: number, voucherType?: string) {
-    if (voucherType == 'PRICEREPORT') {
+    // if (voucherType == 'PRICEREPORT') {
+    if (this.commonService.getObjectId(this.data[0].State) == 'PRICEREPORT') {
       this.title = 'PHIẾU BÁO GIÁ';
-    } else if (voucherType == 'RETAILINVOICE') {
+    // } else if (voucherType == 'RETAILINVOICE') {
+    } else if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED' ) {
       this.title = 'HÓA ĐƠN BÁN LẺ';
     }
     await new Promise(resolve => setTimeout(() => resolve(true), 300));

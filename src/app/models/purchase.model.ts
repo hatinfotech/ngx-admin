@@ -1,8 +1,10 @@
+import { IdTextModel } from './common.model';
 import { FileModel } from './file.model';
 import { TaxModel } from './tax.model';
 import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
 import { UnitModel } from './unit.model';
+import { Model } from './model';
 
 export class PurchasePriceTableModel {
   Id?: string & number;
@@ -104,9 +106,11 @@ export class PurchaseVoucherDetailModel {
   Tax?: TaxModel & string;
   Price?: number;
   ImageThumbnail?: string;
+  Business?: IdTextModel[];
+  RelateDetail?: string;
 }
 
-export class PurchaseOrderVoucherModel {
+export class PurchaseOrderVoucherModel extends Model {
   Id?: string | number;
   Code?: string;
   Object?: string | ContactModel;
@@ -153,4 +157,5 @@ export class PurchaseOrderVoucherDetailModel {
   Price?: number;
   Image?: any;
   RelateDetail?: string;
+  SystemUuid?: string;
 }

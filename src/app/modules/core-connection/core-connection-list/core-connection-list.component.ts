@@ -152,7 +152,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
                   action: async (form: FormGroup) => {
                     const connectionString = form.get('ConnectionString').value;
                     return this.apiService.postPromise(this.apiPath, { connectByConnectionString: true }, [{ ConnectionString: connectionString }]).then(rs => {
-                      this.commonService.showToast('Đã kết nối với core xxx', 'Kết nối core thành công', { status: 'success' });
+                      this.commonService.toastService.show('Đã kết nối với core xxx', 'Kết nối core thành công', { status: 'success' });
                     }).catch(err => {
                       console.error(err);
                       return false;
@@ -335,7 +335,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

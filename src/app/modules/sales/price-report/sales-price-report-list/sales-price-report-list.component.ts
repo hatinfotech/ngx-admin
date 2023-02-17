@@ -284,7 +284,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
                         action: () => {
                           this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
                             if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                              this.commonService.showToast(this.commonService.translateText('đã tạo task cho báo giá'),
+                              this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
                                 this.commonService.translateText('Common.notification'), {
                                 status: 'success',
                               });
