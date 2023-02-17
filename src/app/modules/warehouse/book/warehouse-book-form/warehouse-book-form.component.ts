@@ -221,7 +221,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
           //     this.uploadForProduct = row;
           //     this.uploadBtn.nativeElement.click();
           //   } else {
-          //     this.commonService.toastService.show(
+          //     this.commonService.showToast(
           //       this.commonService.translateText('Common.uploadInProcess'),
           //       this.commonService.translateText('Common.upload'),
           //       {
@@ -775,7 +775,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
                 }
               });
             } else {
-              this.commonService.toastService.show('Chưa có số truy xuất tồn đầu', 'Sổ kho', { status: 'warning' });
+              this.commonService.showToast('Chưa có số truy xuất tồn đầu', 'Sổ kho', { status: 'warning' });
             }
           });
         },

@@ -1261,12 +1261,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.showToast(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    this.commonService.showToast(this.commonService.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -1305,12 +1305,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.showToast(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                    this.commonService.showToast(this.commonService.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {

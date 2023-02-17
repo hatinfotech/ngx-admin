@@ -601,7 +601,7 @@ export class CollaboratorRebuyStrategyProductFormComponent extends DataManagerFo
 
   async save(): Promise<ProductModel[]> {
     // if (!this.collaboratorService?.currentpage$?.value) {
-    // this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+    // this.commonService.showToast(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
     //   status: 'danger',
     //   // });
     // }

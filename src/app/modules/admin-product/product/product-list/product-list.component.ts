@@ -216,7 +216,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();
               } else {
-                this.commonService.toastService.show(
+                this.commonService.showToast(
                   this.commonService.translateText('Common.uploadInProcess'),
                   this.commonService.translateText('Common.upload'),
                   {
@@ -758,7 +758,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             };
             this.uploadInput.emit(event);
           } else {
-            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+            this.commonService.showToast('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
           }
         });
         break;

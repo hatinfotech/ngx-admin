@@ -1189,7 +1189,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   // async save(): Promise<ProductModel[]> {
   //   if (!this.collaboratorService?.currentpage$?.value) {
-  //     this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+  //     this.commonService.showToast(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
   //       status: 'danger',
   //     });
   //   }
@@ -1220,7 +1220,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           status: 'success',
           action: () => {
             this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
-              this.commonService.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
+              this.commonService.showToast(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
               this.goback();
             });
           }

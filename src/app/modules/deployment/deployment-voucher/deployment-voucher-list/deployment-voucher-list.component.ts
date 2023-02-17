@@ -281,7 +281,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                       action: () => {
                         this.apiService.putPromise<DeploymentVoucherModel[]>('/deployment/vouchers', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
                           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                            this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
+                            this.commonService.showToast(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
                               this.commonService.translateText('Common.notification'), {
                               status: 'success',
                             });
@@ -292,7 +292,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                     },
                   ]);
 
-                  // this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
+                  // this.commonService.showToast(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
                   //   status: 'warning',
                   // })
                 }

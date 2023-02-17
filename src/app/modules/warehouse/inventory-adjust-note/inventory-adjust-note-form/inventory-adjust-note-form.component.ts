@@ -634,7 +634,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       } else {
         this.openCreateOfPreviewContainersDialog(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectText(params.data.Product), this.commonService.getObjectId(params.data.Unit), params.data.Containers.map(m => this.commonService.getObjectId(m))).then(container => {
           if (this.commonService.getObjectId(shelf) && container.Shelf != this.commonService.getObjectId(shelf)) {
-            this.commonService.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
+            this.commonService.showToast(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
           } else {
             params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
             params.node.setDataValue('Warehouse', container.Warehouse);
@@ -1080,7 +1080,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           this.unitMap[unit['Sequence']] = unit;
         }
         console.log(this.unitMap);
-        // this.commonService.toastService.show('Đã tải danh sách đơn vị tính', 'POS Thương mại', { status: 'success' });
+        // this.commonService.showToast('Đã tải danh sách đơn vị tính', 'POS Thương mại', { status: 'success' });
         return true;
       });
 
@@ -1534,14 +1534,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       container.selected = true;
                       this.playNewPipSound();
                     } else {
-                      this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
+                      this.commonService.showToast(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
                       this.playErrorPipSound();
                     }
                   } else {
                     if (accessNumber) {
                       container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
                       if (!container) {
-                        this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
+                        this.commonService.showToast(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
                         this.playErrorPipSound();
                       } else {
                         container.selected = true;
@@ -1551,7 +1551,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                   }
                 } else {
                   this.playErrorPipSound();
-                  this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
+                  this.commonService.showToast(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
                 }
                 const newRowNodeTrans = this.gridApi.applyTransaction({
                   add: [
@@ -1756,7 +1756,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     // console.log(selectedData);
     const selectedShelf = parentForm && this.commonService.getObjectId(parentForm.get('Shelf').value) || null;
     if (selectedShelf && selectedData?.ContainerShelf && selectedData?.ContainerShelf != selectedShelf) {
-      this.commonService.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning', duration: 10000 });
+      this.commonService.showToast('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning', duration: 10000 });
       // this.errorSound.nativeElement.pause();
       // this.errorSound.nativeElement.currentTime = 0;
       this.playErrorPipSound();
@@ -1923,12 +1923,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                  this.commonService.showToast(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                    this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                     continue;
                   }
                 } else {
@@ -1967,12 +1967,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                  this.commonService.showToast(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                   continue;
                 }
                 if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                   if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                    this.commonService.showToast(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                     continue;
                   }
                 } else {
@@ -2052,7 +2052,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   //       }
   //       // this.findOrderKeyInput = '';
   //     } catch (err) {
-  //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+  //       this.commonService.showToast(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
   //     }
   //     this.barcode = '';
   //   }
@@ -2071,7 +2071,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     //         this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
     //       }
     //     } catch (err) {
-    //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+    //       this.commonService.showToast(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
     //     }
     //     this.barcode = '';
     //   }
@@ -2167,14 +2167,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               container.selected = true;
               this.playNewPipSound();
             } else {
-              this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
+              this.commonService.showToast(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
               this.playErrorPipSound();
             }
           } else {
             if (accessNumber) {
               container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
               if (!container) {
-                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
+                this.commonService.showToast(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
                 this.playErrorPipSound();
               } else {
                 container.selected = true;
@@ -2184,7 +2184,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           }
         } else {
           this.playErrorPipSound();
-          this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
+          this.commonService.showToast(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
         }
         const newRowNodeTrans = this.gridApi.applyTransaction({
           add: [
@@ -2245,7 +2245,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           existsGoods.setDataValue('Quantity', currentAccessNumbers.length);
           this.playIncreasePipSound();
         } else {
-          this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning', duration: 10000 });
+          this.commonService.showToast(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning', duration: 10000 });
           this.playErrorPipSound();
         }
       } else {
@@ -2490,12 +2490,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   createAlternateAdjustVoucher(formItem: FormGroup) {
     if (!formItem.get('Code').value) {
-      this.commonService.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning', duration: 10000 });
+      this.commonService.showToast(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning', duration: 10000 });
       this.playErrorPipSound();
       return false;
     }
     if (!formItem.get('Title').value) {
-      this.commonService.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning', duration: 10000 });
+      this.commonService.showToast(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning', duration: 10000 });
       this.playErrorPipSound();
       return false;
     }
@@ -2642,7 +2642,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
                         } else {
                           if (detail.Quantity > 0) {
-                            this.commonService.toastService.show(`Phát hiện trùng hàng hóa ${detail.Description}, hệ thống tự động hợp nhất dữ liệu !`, 'Phát hiện trùng hàng hóa', { status: 'warning', duration: 15000 });
+                            this.commonService.showToast(`Phát hiện trùng hàng hóa ${detail.Description}, hệ thống tự động hợp nhất dữ liệu !`, 'Phát hiện trùng hàng hóa', { status: 'warning', duration: 15000 });
                             if (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0) {
                               let currentAccessNumbers: string[] = existsGoods.data.AccessNumbers || [];
                               for (const ac of detail.AccessNumbers) {
@@ -2676,7 +2676,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           },
         ])
       } catch (err) {
-        this.commonService.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning', duration: 10000 });
+        this.commonService.showToast(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning', duration: 10000 });
       }
     }
   }

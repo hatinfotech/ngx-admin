@@ -196,7 +196,7 @@ export class CollaboratorRebuyStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu tái mua !', { status: 'success' });
+                        this.commonService.showToast(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu tái mua !', { status: 'success' });
                       });
                     }
                   }
@@ -216,7 +216,7 @@ export class CollaboratorRebuyStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu tái mua !', { status: 'success' });
+                        this.commonService.showToast(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu tái mua !', { status: 'success' });
                       });
                     }
                   },
@@ -227,13 +227,13 @@ export class CollaboratorRebuyStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu tái mua !', { status: 'success' });
+                        this.commonService.showToast(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu tái mua !', { status: 'success' });
                       });
                     }
                   },
                 ]);
               } else {
-                this.commonService.toastService.show(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
+                this.commonService.showToast(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
               }
             });
           },

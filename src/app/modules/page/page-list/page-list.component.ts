@@ -112,7 +112,7 @@ export class PageListComponent extends ServerDataManagerListComponent<PageModel>
       //                   status: 'danger',
       //                   action: () => {
       //                     this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
-      //                       this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+      //                       this.commonService.showToast(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
       //                         status: 'success',
       //                       })
       //                       this.refresh();
@@ -211,7 +211,7 @@ export class PageListComponent extends ServerDataManagerListComponent<PageModel>
                       action: async (item, dialog) => {
                         dialog.setLoading(true);
                         await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
-                          this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                          this.commonService.showToast(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
                             status: 'success',
                           })
                         });
@@ -398,7 +398,7 @@ export class PageListComponent extends ServerDataManagerListComponent<PageModel>
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

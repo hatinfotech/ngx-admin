@@ -100,7 +100,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();
               } else {
-                this.commonService.toastService.show(
+                this.commonService.showToast(
                   this.commonService.translateText('Common.uploadInProcess'),
                   this.commonService.translateText('Common.upload'),
                   {
@@ -554,7 +554,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   }
                 });
               } else {
-                this.commonService.toastService.show('Hàng hóa chứa được cài đặt vị trí', 'In tem nhận thức', { status: 'warning' })
+                this.commonService.showToast('Hàng hóa chứa được cài đặt vị trí', 'In tem nhận thức', { status: 'warning' })
               }
             });
           },

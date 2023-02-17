@@ -133,7 +133,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
             };
             this.uploadInput.emit(event);
           } else {
-            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+            this.commonService.showToast('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
           }
         });
 
@@ -176,7 +176,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
           this.value[imageIndex] = respFile;
         } else {
           this.value.splice(imageIndex, 1);
-          this.commonService.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', { status: 'danger', duration: 5000 });
+          this.commonService.showToast(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', { status: 'danger', duration: 5000 });
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
 

@@ -308,7 +308,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
             this.loading = true;
             return this.apiService.putPromise<CollaboratorPublisherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

@@ -107,7 +107,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         //     },
         //   ],
         // });
-        // this.commonService.toastService.show('Bạn không có quyền truy cập ' + this.componentName + ' !', 'Quyền truy cập', {
+        // this.commonService.showToast('Bạn không có quyền truy cập ' + this.componentName + ' !', 'Quyền truy cập', {
         //   status: 'warning',
         // })
         console.warn('Bạn không có quyền truy cập ' + this.componentName + ' !!! tạm thời vẫn cho vào component nhưng sẽ phải fix lại là không cho vào component khi không có quyền');

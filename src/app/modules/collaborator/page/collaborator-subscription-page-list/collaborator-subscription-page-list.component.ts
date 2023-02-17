@@ -113,7 +113,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
       //                   status: 'danger',
       //                   action: () => {
       //                     this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
-      //                       this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+      //                       this.commonService.showToast(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
       //                         status: 'success',
       //                       })
       //                       this.refresh();
@@ -260,7 +260,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.commonService.showToast(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

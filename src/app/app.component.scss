@@ -2113,3 +2113,18 @@ body{
 .cdk-global-overlay-wrapper.dialog {
   display: flex !important;
 }
+
+.toastr-overlay-container {
+  &::-webkit-scrollbar {
+    width: 0.3125rem;
+    height: 0.3125rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    cursor: pointer;
+    border-radius: 0.15625rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

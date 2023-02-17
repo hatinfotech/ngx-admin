@@ -319,7 +319,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
         this.continueOrder(0);
         this.close();
       } else {
-        this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong phiếu trả hàng này !', 'Chưa thể tiếp tục mua hàng !', { status: 'warning' });
+        this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong phiếu trả hàng này !', 'Chưa thể tiếp tục mua hàng !', { status: 'warning' });
       }
       return false;
     }
@@ -334,7 +334,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
           this.print(0);
           this.close();
         } else {
-          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;

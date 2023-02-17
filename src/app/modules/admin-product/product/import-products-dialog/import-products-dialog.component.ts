@@ -1506,7 +1506,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           if (newProduct.FeaturePicture) {
             try {
               if (typeof newProduct.FeaturePicture == 'string') {
-                this.commonService.toastService.show(`${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
+                this.commonService.showToast(`${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
                 const tag = CryptoJS.MD5(newProduct.FeaturePicture as any).toString();
                 const file = await this.apiService.uploadFileByLink(newProduct.FeaturePicture);
                 file.Tag = tag;
@@ -1526,7 +1526,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           if (newProduct.Pictures && newProduct.Pictures.length > 0) {
             for (let i = 0; i < newProduct.Pictures.length; i++) {
               if (typeof newProduct.Pictures[i] == 'string') {
-                this.commonService.toastService.show(`${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
+                this.commonService.showToast(`${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
                 try {
                   const tag = CryptoJS.MD5(newProduct.Pictures[i] as any).toString();
                   const file = await this.apiService.uploadFileByLink(newProduct.Pictures[i] as any);
@@ -1555,14 +1555,14 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             node.setDataValue('IsImport', false);
             node.setDataValue('Result', 'Success');
             // }
-            this.commonService.toastService.show(newProduct.Name, 'Import thành công', { status: 'success' });
+            this.commonService.showToast(newProduct.Name, 'Import thành công', { status: 'success' });
             console.log(createdProducts[0]);
           } catch (err) {
             console.error(err);
             const message = Array.isArray(err?.error?.logs) && err.error.logs.join(',') || err;
             node.setDataValue('Result', 'Error');
             node.setDataValue('Message', message);
-            this.commonService.toastService.show(newProduct.Name + message, 'Import thất bại', { status: 'danger', duration: 60000 });
+            this.commonService.showToast(newProduct.Name + message, 'Import thất bại', { status: 'danger', duration: 60000 });
           }
         }
 
@@ -1579,13 +1579,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         //   node.setDataValue('Code', createdProducts[i].Code);
         //   node.setDataValue('IsImport', false);
         // }
-        // this.commonService.toastService.show('Đã import thông tin sản phẩm', 'Import thành công', { status: 'success' });
+        // this.commonService.showToast('Đã import thông tin sản phẩm', 'Import thành công', { status: 'success' });
         // console.log(newProductList);
       }
 
       // Update price
       if (updatePriceProductList.length > 0) {
-        this.commonService.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
+        this.commonService.showToast('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
         await this.apiService.putPromise('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
           return {
             MasterPriceTable: 'default',
@@ -1598,7 +1598,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           const node = this.gridApi.getDisplayedRowAtIndex(updatePriceProduct.index);
           if(node) node.setDataValue('IsUpdatePrice', false);
         }
-        this.commonService.toastService.show('Đã cập nhật giá mới', 'Cập nhật giá', { status: 'success' });
+        this.commonService.showToast('Đã cập nhật giá mới', 'Cập nhật giá', { status: 'success' });
       }
 
       // Export update data
@@ -1632,7 +1632,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     } catch (err) {
       this.processing = false;
       console.error(err);
-      this.commonService.toastService.show('Đã xảy ra lỗi trong quá trình import', 'Lỗi import', { status: 'danger' });
+      this.commonService.showToast('Đã xảy ra lỗi trong quá trình import', 'Lỗi import', { status: 'danger' });
     }
   }
 

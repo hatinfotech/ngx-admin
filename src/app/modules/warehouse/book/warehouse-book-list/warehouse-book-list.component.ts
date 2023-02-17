@@ -179,7 +179,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã chốt sổ kho đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.commonService.showToast('Đã chốt sổ kho đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -199,7 +199,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã mở chốt sổ kho !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.commonService.showToast('Đã mở chốt sổ kho !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {

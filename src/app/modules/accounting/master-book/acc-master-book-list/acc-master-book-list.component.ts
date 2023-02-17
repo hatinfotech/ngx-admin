@@ -171,7 +171,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã chốt sổ kế toán đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.commonService.showToast('Đã chốt sổ kế toán đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -191,7 +191,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã mở chốt sổ kế toán !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.commonService.showToast('Đã mở chốt sổ kế toán !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {

@@ -627,12 +627,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   const purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
             //   if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-            //     this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //     this.commonService.showToast(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
             //     continue;
             //   }
             //   if (this.commonService.getObjectId(formGroup.get('Object').value)) {
             //     if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-            //       this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+            //       this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
             //       continue;
             //     }
             //   } else {
@@ -687,7 +687,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     const relativeVouchers = formGroup.get('RelativeVouchers');
     const relationVoucherValue: any[] = (relativeVouchers.value || []);
     if (relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
-      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
+      this.commonService.showToast('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
       return;
     }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
@@ -704,12 +704,12 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       }
 
       if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-        this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+        this.commonService.showToast(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
         return false;
       }
       if (this.commonService.getObjectId(formGroup.get('Object').value)) {
         if (this.commonService.getObjectId(this.commonService.getObjectId(purchaseVoucher.Object), 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-          this.commonService.toastService.show(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+          this.commonService.showToast(this.commonService.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {

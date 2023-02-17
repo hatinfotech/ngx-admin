@@ -851,12 +851,12 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
               const purchaseOrder = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
               if (this.commonService.getObjectId(purchaseOrder.State) != 'APPROVED') {
-                this.commonService.toastService.show(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                this.commonService.showToast(this.commonService.translateText('Đơn đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }
               if (this.commonService.getObjectId(formGroup.get('Object').value)) {
                 if (this.commonService.getObjectId(purchaseOrder.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong đơn đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong đơn đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
               } else {

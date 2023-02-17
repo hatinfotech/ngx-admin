@@ -158,7 +158,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
             //     this.uploadForProduct = row;
             //     this.uploadBtn.nativeElement.click();
             //   } else {
-            //     this.commonService.toastService.show(
+            //     this.commonService.showToast(
             //       this.commonService.translateText('Common.uploadInProcess'),
             //       this.commonService.translateText('Common.upload'),
             //       {

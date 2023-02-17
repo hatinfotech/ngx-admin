@@ -385,7 +385,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             this.close();
           });
         } else {
-          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;
@@ -404,7 +404,7 @@ export class CommercePosBillPrintComponent extends DataManagerPrintComponent<any
             this.close();
           });
         } else {
-          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.commonService.showToast('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;

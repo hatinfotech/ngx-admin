@@ -13,7 +13,7 @@ import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './api.service';
 import {
   NbDialogService, NbMenuItem, NbToastrService, NbSidebarService,
-  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService, NbGlobalPhysicalPosition,
+  NbSidebarComponent, NbDialogRef, NbDialogConfig, NbIconLibraries, NbThemeService, NbGlobalPhysicalPosition, NbToastrConfig, NbToastRef,
 } from '@nebular/theme';
 import { DialogActionButton, ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Location, getCurrencySymbol, CurrencyPipe, DatePipe } from '@angular/common';
@@ -64,6 +64,7 @@ import { CommercePosDeploymentVoucherPrintComponent } from '../modules/commerce-
 import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 
+declare var $: any;
 interface ClipboardItem {
   readonly types: string[];
   readonly presentationStyle: "unspecified" | "inline" | "attachment";
@@ -1440,6 +1441,11 @@ export class CommonService {
       fileModel.MimeType = option?.MimeType;
       return fileModel;
     });
+  }
+
+  // toastContainer = null;
+  showToast(message: any, title?: any, userConfig?: Partial<NbToastrConfig>): NbToastRef {
+    return this.toastService.show(message, title, userConfig);
   }
 
 }
