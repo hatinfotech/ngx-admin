@@ -143,17 +143,20 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
                   label: 'Trở về',
                   icon: 'back',
                   status: 'info',
-                  action: () => { },
+                  action: async () => { return true },
                 },
                 {
                   label: 'Kết nối',
                   icon: 'generate',
                   status: 'danger',
-                  action: (form: FormGroup) => {
+                  action: async (form: FormGroup) => {
                     const connectionString = form.get('ConnectionString').value;
-                    this.apiService.postPromise(this.apiPath, { connectByConnectionString: true }, [{ConnectionString: connectionString}]).then(rs => {
+                    return this.apiService.postPromise(this.apiPath, { connectByConnectionString: true }, [{ ConnectionString: connectionString }]).then(rs => {
                       this.commonService.toastService.show('Đã kết nối với core xxx', 'Kết nối core thành công', { status: 'success' });
-                    });
+                    }).catch(err => {
+                      console.error(err);
+                      return false;
+                    }).then(rs => true);
                   },
                 },
               ],

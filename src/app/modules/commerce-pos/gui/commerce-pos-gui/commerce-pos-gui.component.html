@@ -388,7 +388,7 @@
                                     </div>
                                 </div>
                                 <div class="col-xxxl-8">
-                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm, {printType: 'PRICEREPORT'})">
+                                    <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm, {printType: 'RETAILINVOICE'})">
                                         <div>
                                             <nb-icon icon="flash-outline"></nb-icon>
                                             <span style="font-weight: bold; font-size: 1rem">F9</span>

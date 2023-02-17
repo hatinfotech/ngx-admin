@@ -210,13 +210,13 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
             label: 'Trở về',
             icon: 'back',
             status: 'info',
-            action: () => { return true; },
+            action: async () => { return true; },
           },
           {
             label: 'Tạo tự động',
             icon: 'generate',
             status: 'success',
-            action: (form: FormGroup) => {
+            action: async (form: FormGroup) => {
               const length = +form.value['Length'];
               const currentValue = this.array.controls[index].value;
               let startExt = +currentValue['extension'];

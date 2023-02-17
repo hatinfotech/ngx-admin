@@ -139,6 +139,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   handleKeyupEvent(event: KeyboardEvent) {
     if (this.ref instanceof NbDialogRef) {
       if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+        if(event.key == 'Escape' && this.ref['originalCloseOnEsc'] === true) {
+          this.ref.close();
+        }
         return this.onKeyupEvent(event);
       }
     } else {

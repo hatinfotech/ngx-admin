@@ -1104,13 +1104,13 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
                 label: 'Trở về',
                 icon: 'back',
                 status: 'basic',
-                action: () => { return true; },
+                action: async () => { return true; },
               },
               {
                 label: 'Tính doanh thu bán lẻ',
                 icon: 'generate',
                 status: 'success',
-                action: (form: FormGroup) => {
+                action: async (form: FormGroup) => {
                   console.log(rs);
                   detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
                   this.toMoney(parentForm, detail, 'Product');

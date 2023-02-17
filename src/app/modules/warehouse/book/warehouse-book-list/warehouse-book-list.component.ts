@@ -158,7 +158,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
                       icon: 'back',
                       status: 'basic',
                       keyShortcut: 'Escape',
-                      action: () => { return true; },
+                      action: async () => { return true; },
                     },
                     {
                       label: 'Chốt sổ',

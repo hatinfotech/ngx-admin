@@ -150,7 +150,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                       icon: 'back',
                       status: 'basic',
                       keyShortcut: 'Escape',
-                      action: () => { return true; },
+                      action: async () => { return true; },
                     },
                     {
                       label: 'Chốt sổ',

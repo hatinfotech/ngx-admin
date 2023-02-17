@@ -1104,7 +1104,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 label: 'Trở về',
                 icon: 'back',
                 status: 'basic',
-                action: () => {
+                action: async () => {
                   return true;
                 },
               },
@@ -1112,7 +1112,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                 label: 'Tính doanh thu bán lẻ',
                 icon: 'generate',
                 status: 'success',
-                action: (form: FormGroup) => {
+                action: async (form: FormGroup) => {
                   console.log(rs);
                   detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
                   this.toMoney(parentForm, detail, 'Product');

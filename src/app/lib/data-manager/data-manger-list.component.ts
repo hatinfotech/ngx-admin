@@ -829,6 +829,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       return false;
     };
     this.commonService.openDialog(this.printDialog, {
+      // closeOnEsc: false,
       context: {
         showLoadinng: true,
         title: 'Xem trước',

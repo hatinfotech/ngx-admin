@@ -293,13 +293,13 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
                 label: 'Trở về',
                 icon: 'back',
                 status: 'info',
-                action: () => { return true; },
+                action: async () => { return true; },
               },
               {
                 label: 'Tải lên',
                 icon: 'generate',
                 status: 'success',
-                action: (form: FormGroup) => {
+                action: async (form: FormGroup) => {
 
                   this.array.controls[0].get('ImportEmailIndex').setValue(form.value['ImportEmailIndex']);
                   this.array.controls[0].get('ImportNameIndex').setValue(form.value['ImportNameIndex']);

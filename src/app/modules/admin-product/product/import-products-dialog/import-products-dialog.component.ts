@@ -862,14 +862,14 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                     icon: 'back',
                     status: 'basic',
                     keyShortcut: 'Escape',
-                    action: () => { return true; },
+                    action: async () => { return true; },
                   },
                   {
                     label: 'Chọn',
                     icon: 'generate',
                     status: 'success',
                     // keyShortcut: 'Enter',
-                    action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                    action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
 
                       console.log(form.value);
                       this.chooseSheet = this.commonService.getObjectId(form.get('Sheet').value);
@@ -1251,7 +1251,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                 icon: 'back',
                 status: 'basic',
                 keyShortcut: 'Escape',
-                action: () => { return true; },
+                action: async () => { return true; },
               },
               {
                 label: 'Xác nhận',

@@ -27,7 +27,7 @@
     </nb-card-body>
     <nb-card-footer>
       <div class="buttons-row">
-        <button *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="onAction(item, formGroup) && dismiss()" [disabled]="checkButtonDisabled(item, formGroup)">{{ item?.label }}</button>
+        <button [disabled]="processing" *ngFor="let item of actions" nbButton hero [status]="item?.status" (click)="onAction(item, formGroup) && dismiss()" [disabled]="checkButtonDisabled(item, formGroup)">{{ item?.label }}</button>
       </div>
     </nb-card-footer>
   </nb-card>

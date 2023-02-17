@@ -1683,9 +1683,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // Payment/re-print
       if (event.key == 'F9') {
         if (this.orderForm.value?.State == 'APPROVED') {
-          this.print(this.orderForm, { printType: 'PRICEREPORT' });
+          this.print(this.orderForm, { printType: 'RETAILINVOICE'});
         } else {
-          this.payment(this.orderForm, { skipPrint: false, printType: 'PRICEREPORT' });
+          this.payment(this.orderForm, { skipPrint: false, printType: 'RETAILINVOICE' });
         }
         event.preventDefault();
         // }
@@ -1789,14 +1789,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 icon: 'back',
                 status: 'basic',
                 keyShortcut: 'Escape',
-                action: () => { return true; },
+                action: async () => { return true; },
               },
               {
                 label: 'Enter - Xác nhận',
                 icon: 'generate',
                 status: 'success',
                 keyShortcut: 'Enter',
-                action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
                   activeDetail.get('Price').setValue(form.get('Price').value);
                   activeDetail.get('Quantity').setValue(form.get('Quantity').value);
                   activeDetail.get('Description').setValue(form.get('Description').value);
@@ -2220,7 +2220,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             newOrder.Object = { ...orderForm.get('Object').value, ...newOrder.Object };
             orderForm.patchValue(newOrder);
             this.commonService.toastService.show(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Đã thanh toán', { status: 'success', duration: 8000 })
-            this.makeNewOrder();
+            if(this.historyOrders[this.historyOrders.length-1] == orderForm) {
+              this.makeNewOrder();
+            }
             console.log(this.historyOrders);
             this.playPaymentSound();
           },
@@ -2274,7 +2276,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
   }
 
-  async saveAsPriceReport(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE', skipPrint?: boolean }) {
+  async saveAsPriceReport(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT', skipPrint?: boolean }) {
     orderForm.get('Title').setValue(`Báo giá khách POS: ${orderForm.get('ObjectName').value} - ${this.commonService.datePipe.transform(new Date(), 'short')}`);
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {

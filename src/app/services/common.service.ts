@@ -580,6 +580,11 @@ export class CommonService {
       }
     }
 
+    let originalCloseOnEsc = userConfig.closeOnEsc;
+    if (typeof userConfig?.closeOnEsc == 'undefined') {
+      userConfig.closeOnEsc = false;
+      originalCloseOnEsc = true;
+    }
     if (userConfig?.context) {
       if (!userConfig?.context['inputMode']) {
         userConfig.context['inputMode'] = 'dialog';
@@ -587,6 +592,9 @@ export class CommonService {
     }
 
     const dialogRef = this.dialogService.open<T>(content, userConfig);
+    // dialogRef.onClose.pipe(this).subscribe(status => {
+    dialogRef['originalCloseOnEsc'] = originalCloseOnEsc;
+    // });
     if (dialogRef['overlayRef'] && dialogRef['overlayRef']['_pane'] && userConfig.context['showLoadinng']) {
 
       const panel = $(dialogRef['overlayRef']['_pane']);

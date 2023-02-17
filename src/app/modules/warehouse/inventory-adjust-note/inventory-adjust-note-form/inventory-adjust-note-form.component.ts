@@ -1496,14 +1496,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             icon: 'back',
             status: 'basic',
             keyShortcut: 'Escape',
-            action: () => { return true; },
+            action: async () => { return true; },
           },
           {
             label: 'Thêm',
             icon: 'generate',
             status: 'success',
             // keyShortcut: 'Enter',
-            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+            action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
 
               console.log(form.value);
 
@@ -2315,14 +2315,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             icon: 'back',
             status: 'basic',
             keyShortcut: 'Escape',
-            action: () => { return true; },
+            action: async () => { return true; },
           },
           {
             label: 'Chọn',
             icon: 'generate',
             status: 'success',
             // keyShortcut: 'Enter',
-            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+            action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
 
               console.log(form.value);
 
@@ -2464,14 +2464,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             icon: 'back',
             status: 'basic',
             keyShortcut: 'Escape',
-            action: () => { return true; },
+            action: async () => { return true; },
           },
           {
             label: 'Enter',
             icon: 'generate',
             status: 'success',
             keyShortcut: 'Enter',
-            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+            action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
 
               const barCodeField = form.get('BarCode');
               const barCode = barCodeField.value.replace(/\n/, '');
@@ -2528,14 +2528,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             icon: 'back',
             status: 'basic',
             keyShortcut: 'Escape',
-            action: () => { return true; },
+            action: async () => { return true; },
           },
           {
             label: 'Tạo',
             icon: 'generate',
             status: 'success',
             // keyShortcut: 'Enter',
-            action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+            action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
 
               console.log(form.value);
               const object = form.get('Object').value;

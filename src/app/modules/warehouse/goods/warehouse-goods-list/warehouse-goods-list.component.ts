@@ -718,13 +718,13 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
                   label: 'Trở về',
                   icon: 'back',
                   status: 'info',
-                  action: () => true,
+                  action: async () => true,
                 },
                 {
                   label: 'In',
                   icon: 'printer-outline',
                   status: 'success',
-                  action: (form: FormGroup) => {
+                  action: async (form: FormGroup) => {
 
                     let accessNumbersText: string = form.get('AccessNumbers').value;
                     accessNumbersText = accessNumbersText.trim();

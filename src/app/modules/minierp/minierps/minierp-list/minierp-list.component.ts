@@ -127,13 +127,13 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                   label: 'Trở về',
                   icon: 'back',
                   status: 'info',
-                  action: () => { return true; },
+                  action: async () => { return true; },
                 },
                 {
                   label: 'Cập nhật',
                   icon: 'generate',
                   status: 'success',
-                  action: (form: FormGroup) => {
+                  action: async (form: FormGroup) => {
                     this.apiService.putPromise(this.apiPath + '/settings', {}, [{
                       Name: 'MINIERP_RELEASE_VERSION',
                       Value: form.value['Version'],

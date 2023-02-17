@@ -1455,12 +1455,31 @@ nb-card-footer [nbButton]:first-child {
   }
 }
 
+form.dialog-wrap.popup {
+  max-width: 99vw;
+}
+@media (min-width: 1920px) {
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
+    max-width: 50vw;
+    .smart-table {
+      min-height: 95vh;
+    }
+  }
+}
 @media (max-width: 1920px) {
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
+    max-width: 50vw;
+    .smart-table {
+      min-height: 95vh;
+    }
+  }
 }
 @media (max-width: 1600px) {
-  .dialog-wrap.dialog,
-  .dialog-wrap.popup {
-    max-width: 95vw;
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
+    max-width: 60vw;
     .smart-table {
       min-height: 95vh;
     }
@@ -1469,17 +1488,17 @@ nb-card-footer [nbButton]:first-child {
 @media (max-width: 1400px) {
 }
 @media (max-width: 1368px) {
-  .dialog-wrap.dialog,
-  .dialog-wrap.popup {
-    max-width: 97vw;
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
+    max-width: 70vw;
     .smart-table {
       min-height: 97vh;
     }
   }
 }
 @media (max-width: 1024px) {
-  .dialog-wrap.dialog,
-  .dialog-wrap.popup {
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
     max-width: 97vw;
     .smart-table {
       min-height: 97vh;
@@ -1487,8 +1506,8 @@ nb-card-footer [nbButton]:first-child {
   }
 }
 @media (max-width: 768px) {
-  .dialog-wrap.dialog,
-  .dialog-wrap.popup {
+  div.dialog-wrap.dialog,
+  div.dialog-wrap.popup {
     padding-bottom: 2rem;
 
     max-width: 99vw;
@@ -2089,4 +2108,8 @@ body{
     }
     
   }
+}
+
+.cdk-global-overlay-wrapper.dialog {
+  display: flex !important;
 }

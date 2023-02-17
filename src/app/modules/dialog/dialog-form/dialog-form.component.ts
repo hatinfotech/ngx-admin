@@ -69,7 +69,7 @@ export interface DialogFormAction {
   status?: string,
   keyShortcut?: string,
   disabled?: (actionParamrs: DialogFormAction, form: FormGroup, dialog?: DialogFormComponent) => boolean,
-  action?: (form: FormGroup, dialog?: DialogFormComponent) => any
+  action?: (form: FormGroup, dialog?: DialogFormComponent) => Promise<boolean>
 }
 @Component({
   selector: 'ngx-dialog-form',
@@ -77,7 +77,7 @@ export interface DialogFormAction {
   styleUrls: ['./dialog-form.component.scss'],
 })
 export class DialogFormComponent extends BaseComponent implements OnInit, AfterViewInit {
-  
+
   componentName: string = 'DialogFormComponent';
 
   @Input() title: string;
@@ -116,7 +116,7 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
       this.actions.forEach(element => {
         if (!element.action) {
           element.action = () => {
-            return true;
+            return Promise.resolve(true);
           };
         }
         if (!element.status) {
@@ -168,7 +168,9 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
     });
     this.formGroup = new FormGroup(fcs);
     if (this.onInit) {
+      this.processing = true;
       this.onInit(this.formGroup, this).then(rs => {
+        this.processing = false;
         this.inited.next(true);
       });
     }
@@ -177,7 +179,7 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   ngOnDestroy(): void {
     super.ngOnDestroy();
     // if (!this.ref) {
-      // this.commonService.clearHeaderActionControlList();
+    // this.commonService.clearHeaderActionControlList();
     // }
     // this.destroy$.next();
     // this.destroy$.complete();
@@ -205,6 +207,25 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   //   }
   //   return true;
   // }
+
+  onKeyboardEvent(event: KeyboardEvent, component?: BaseComponent) {
+    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+      if (!this.processing) {
+        const action = this.actions.find(f => f.keyShortcut == event.key);
+        if (action) {
+          if (action.action(this.formGroup, this)) {
+            this.dismiss();
+          }
+          return false;
+        }
+      }
+      // if (this.onKeyboardEvent) {
+      //   return this.onKeyboardEvent(event, this);
+      // }
+    }
+    super.onKeyboardEvent(event, component);
+    return true;
+  }
 
   onAction(item: DialogFormAction, form: FormGroup) {
     return item?.action(form, this);
