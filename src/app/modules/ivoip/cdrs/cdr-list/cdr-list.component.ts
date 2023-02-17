@@ -139,24 +139,24 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
           title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.callerNumber'), 'head-title'),
           type: 'html',
           width: '20%',
-          valuePrepareFunction: (cell: string) => {
-            return `<span class="nowrap">${cell ? cell : ''}</span>`;
+          valuePrepareFunction: (cell: string, row: any) => {
+            return `<span class="nowrap">${row['CallerNumberName'] ? (row['CallerNumberName']+'<br>') : ''}${cell ? cell : ''}</span>`;
           },
         },
         CallerDestination: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.receivedNumber'), 'head-title'),
           type: 'html',
           width: '15%',
-          valuePrepareFunction: (cell: string) => {
-            return `<span class="nowrap">${cell ? cell : ''}</span>`;
+          valuePrepareFunction: (cell: string, row: any) => {
+            return `<span class="nowrap">${row['CallerDestinationName'] ? (row['CallerDestinationName']+'<br>') : ''}${cell ? cell : ''}</span>`;
           },
         },
         DestinationNumber: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Ivoip.forwardTo'), 'head-title'),
           type: 'html',
           width: '15%',
-          valuePrepareFunction: (cell: string) => {
-            return `<span class="nowrap">${cell ? cell : ''}</span>`;
+          valuePrepareFunction: (cell: string, row: any) => {
+            return `<span class="nowrap">${row['DestinationNumberName'] ? (row['DestinationNumberName']+'<br>') : ''}${cell ? cell : ''}</span>`;
           },
         },
         Start: {
