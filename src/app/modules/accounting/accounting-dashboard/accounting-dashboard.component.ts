@@ -37,6 +37,7 @@ export class AccountingDashboardComponent implements OnDestroy {
 
   costAndRevenueStatisticsData: {};
   goodsStatisticsData: {};
+  debtCompareStatisticsData: {};
   cashFlowStatisticsData: {};
   debtStatisticsData: {};
   investStatisticsData: {};
@@ -539,21 +540,9 @@ export class AccountingDashboardComponent implements OnDestroy {
     });
 
 
-    this.cashFlowStatisticsData = {
+    this.debtCompareStatisticsData = {
       labels: labels,
       datasets: [
-        // {
-        //   label: 'Voucher',
-        //   // data: voucherFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
-        //   data: mergeData.map(point => point.Line1['Value']),
-        //   borderColor: this.colors.primary,
-        //   // backgroundColor: colors.danger,
-        //   backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
-        //   // fill: true,
-        //   // borderDash: [5, 5],
-        //   pointRadius: pointRadius,
-        //   pointHoverRadius: 10,
-        // },
         {
           label: 'Tiền mặt',
           // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
@@ -604,6 +593,82 @@ export class AccountingDashboardComponent implements OnDestroy {
         },
       ],
     };
+    /** End */
+
+    /** Prepare data */
+    const businessCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[511,515,521,632,641,642,811,331,131,334,3334]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const envestmentCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[128]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const financyCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", eq_ContraAccount: "[1111,1121]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+
+    // line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line2Data = businessCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value =  statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line3Data = envestmentCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line4Data = financyCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    timeline = [...new Set([
+      // ...line1Data.map(item => item['Timeline']),
+      ...line2Data.map(item => item['Timeline']),
+      ...line3Data.map(item => item['Timeline']),
+      ...line4Data.map(item => item['Timeline']),
+    ].sort())];
+    labels = [];
+    mergeData = timeline.map(t => {
+      // const point1 = line1Data.find(f => f.Timeline == t);
+      const point2 = line2Data.find(f => f.Timeline == t);
+      const point3 = line3Data.find(f => f.Timeline == t);
+      const point4 = line4Data.find(f => f.Timeline == t);
+      labels.push(point2?.Label || point3?.Label || point4?.Label);
+      return {
+        Label: t,
+        // Line1: point1 || { Value: 0 },
+        Line2: point2 || { Value: 0 },
+        Line3: point3 || { Value: 0 },
+        Line4: point4 || { Value: 0 },
+      };
+    });
+
+
+    this.cashFlowStatisticsData = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Kinh doanh',
+          // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line2['Value']),
+          borderColor: this.colors.danger,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Đầu tư',
+          // data: cashInBankFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line3['Value']),
+          borderColor: this.colors.info,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
+          label: 'Tài chính',
+          // data: goldFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line4['Value']),
+          borderColor: this.colors.warning,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.1),
+          // fill: true,
+          // borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+      ],
+    };
+    /** End */
 
     const customerReceivableStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[131]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const liabilitiesStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[331]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
