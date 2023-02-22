@@ -26,11 +26,13 @@ import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../
 import { AssignNewContainerFormComponent } from '../assign-new-containers-form/assign-new-containers-form.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
   templateUrl: './warehouse-goods-list.component.html',
   styleUrls: ['./warehouse-goods-list.component.scss'],
+  providers: [DecimalPipe]
 })
 export class WarehouseGoodsListComponent extends ProductListComponent implements OnInit {
 
@@ -51,6 +53,7 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseGoodsListComponent>,
     public adminProductService: AdminProductService,
+    public decimalPipe: DecimalPipe,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
   }
@@ -412,6 +415,9 @@ export class WarehouseGoodsListComponent extends ProductListComponent implements
             component.renderToolTip = (tag) => {
               return component.rowData?.AccessNumbers?.join(', ') || '';
             };
+            component.labelAsText = (tag) => {
+              return this.decimalPipe.transform(tag.id);
+            }
             component.click.pipe(takeUntil(this.destroy$)).subscribe(tag => {
               const filter = { eq_AccessNumber: '[' + component.rowData?.AccessNumbers?.join(',') + ']' };
               this.commonService.openDialog(DynamicListDialogComponent, {

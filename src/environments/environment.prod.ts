@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.2.9.4',
+  version: '6.2.11.3',
+  // 6.2.11.1:   hotfix assign product categories, contra account report
+  // 6.2.10.1:   Hotupdate: optimize report query
   // 6.2.9.2:   Hotupdate: re write order => goods receipt => purchase processing, payment relative to purchase order
   // 6.2.9.1:   Hotupdate: re write order => goods receipt => purchase processing
   // 6.2.8.1:   Hotupdate: fix pos auto update contact, fix dialog keyevent, dialog close by esc only top dialog

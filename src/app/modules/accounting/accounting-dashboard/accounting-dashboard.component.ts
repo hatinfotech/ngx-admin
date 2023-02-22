@@ -162,10 +162,10 @@ export class AccountingDashboardComponent implements OnDestroy {
       Page: [[]],
       ProductGroup: { value: '', disabled: true },
     });
-    this.formItem.get('DateReport').valueChanges.subscribe(value => {
-      console.log(value);
-      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
-    });
+    // this.formItem.get('DateReport').valueChanges.subscribe(value => {
+    //   console.log(value);
+    //   this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
+    // });
 
     setTimeout(() => {
       this.refresh();
@@ -200,10 +200,14 @@ export class AccountingDashboardComponent implements OnDestroy {
         let fromDate = new Date(this.masterBook.DateOfBeginning);
         this.dateReportList = [
           { id: 'DAY', text: 'Phân tích theo ngày', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds())] },
-          { id: 'MONTH', text: 'Phân tích theo tháng', range: [new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()), new Date(new Date().getFullYear(), 11, 31)] },
+          { id: 'MONTH', text: 'Phân tích theo tháng', range: [new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate()), new Date()] },
           { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
           { id: 'HOUR', text: 'Phân tích theo giờ', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
         ];
+      });
+      this.formItem.get('DateReport').valueChanges.subscribe(value => {
+        console.log(value);
+        this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
       });
     });
   }
@@ -235,7 +239,7 @@ export class AccountingDashboardComponent implements OnDestroy {
 
   dateReportList = [
     { id: 'DAY', text: 'Phân tích theo ngày', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23, 59, 59)] },
-    { id: 'MONTH', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), 0, 1), new Date(new Date().getFullYear(), 11, 31)] },
+    { id: 'MONTH', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), 0, 1), new Date()] },
     { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
     { id: 'HOUR', text: 'Phân tích theo giờ', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
   ];

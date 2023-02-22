@@ -43,6 +43,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
     public _http: HttpClient,
     public ref: NbDialogRef<PurchaseGoodsListComponent>,
     public adminProductService: AdminProductService,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
     // this.actionButtonList.map(button => {
@@ -276,8 +277,11 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
           renderComponent: SmartTableTagComponent,
           onComponentInitFunction: (component: SmartTableTagComponent) => {
             component.renderToolTip = (tag) => {
-              return component.rowData?.AccessNumbers?.join(', ') || '';
+              return 'Xem chi tiết các lần mua hàng';
             };
+            component.labelAsText = (tag) => {
+              return this.currencyPipe.transform(tag.id, 'VND');
+            }
             component.click.pipe(takeUntil(this.destroy$)).subscribe(tag => {
               const filter = { id: component.rowData?.AccessNumbers };
               this.commonService.openDialog(DynamicListDialogComponent, {
@@ -393,7 +397,7 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
             })
           },
           valuePrepareFunction: (cell: any, row: any) => {
-            return { id: cell, text: cell, type: 'Giá nhập' } as any;
+            return { icon: '', id: cell, text: cell, type: 'Giá nhập' } as any;
           }
         },
         // InventoryCost: {
@@ -495,22 +499,41 @@ export class PurchaseGoodsListComponent extends ProductListComponent implements 
       {
         label: this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'),
         status: 'danger',
-        action: () => {
+        action: async () => {
           this.toastService.show(
             this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
             this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
             status: 'warning',
             duration: 5000
-          })
-          this.apiService.putPromise(this.apiPath, { calculateCostOfGoodsSold: true }, []).then(rs => {
-            this.refresh();
-            this.toastService.show(
-              this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
-              this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
-              status: 'success',
-              duration: 4000
-            })
           });
+
+          let offset = 9;
+          while (true) {
+            const productList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { includeUnitConversions: true, eq_IsStopBusiness: false, limit: 40, offset: offset });
+            for (const product of productList) {
+              for (const unit of product.UnitConversions) {
+                await this.apiService.putPromise(this.apiPath, { calculateCostOfGoodsSoldForProduct: true }, [{ Code: product.Code, Unit: this.commonService.getObjectId(unit.Unit) }]).then(rs => {
+                  // this.refresh();
+                  this.toastService.show(
+                    'đã tính xong giá vốn',
+                    product.Name, {
+                    status: 'success',
+                    // duration: 4000
+                  });
+                  console.log(rs);
+                }).catch(err => {
+                  console.error(err);
+                  return null;
+                });
+                // break;
+              }
+            }
+            if (productList.length < 40) {
+              break;
+            }
+            offset += 40;
+          }
+
         }
       },
     ])

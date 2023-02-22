@@ -120,6 +120,7 @@ import { CollaboratorOrderFormComponent } from './modules/collaborator/order/col
 import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
 import { ProductBrandListComponent } from './modules/admin-product/brand/product-brand-list/product-brand-list.component';
 import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
+import { AccountingContraAccountReportComponent } from './modules/accounting/reports/contra-account-report/accounting-contra-account-report.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -689,6 +690,13 @@ const routes: Routes = [
       {
         path: 'summary',
         component: AccountingSummaryReportComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'contra-account',
+        component: AccountingContraAccountReportComponent,
         data: {
           reuse: true,
         },

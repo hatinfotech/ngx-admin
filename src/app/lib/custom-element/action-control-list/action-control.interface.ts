@@ -10,8 +10,8 @@ export interface ActionControl {
   icon?: string;
   title: string;
   size: string;
-  select2?: { data: any[], option: Select2Option };
-  value?: () => string;
+  select2?: { data?: any[], option?: Select2Option };
+  value?: () => any;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
   click: (event?: any, option?: any) => void;

@@ -77,7 +77,8 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', { action: this.commonService.translateText('Common.choose'), definition: '' }), 'head-title'),
           size: 'medium',
           select2: {
-            data: pageList, option: {
+            data: pageList, 
+            option: {
               placeholder: 'Chọn trang...',
               allowClear: true,
               width: '100%',

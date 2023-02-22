@@ -593,6 +593,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
       //   value: this.accountingBusinessList.filter(f => f.id === 'PURCHASEWAREHOUSE' || f.id === 'NETREVENUE'),
       //   disabled: false,
       // },
+      RelateDetail: [''],
       Business: [null, (control: FormControl) => {
         if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -952,7 +953,6 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                   }
                 } else {
                   delete voucher.Id;
-                  // delete voucher.Code;
                   formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
@@ -963,17 +963,8 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
-                      // delete orderDetail.Id;
-                      // delete orderDetail.Voucher;
-                      // delete orderDetail.No;
                       const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` });
-                      // newDetailFormGroup.get('Business').disable();
                       details.push(newDetailFormGroup);
-                      // this.onSelectProduct(newDetailFormGroup, voucherDetail.Product);
-                      // const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
-                      // if (selectedUnit) {
-                      // this.onSelectUnit(newDetailFormGroup, selectedUnit);
-                      // }
                       await new Promise(resolve => setTimeout(() => resolve(true), 300));
                       this.toMoney(formGroup, newDetailFormGroup);
                     }
@@ -985,7 +976,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
-          if (type === 'GOODSRECEIPT') {
+          if (type === 'GOODSRECEIPT') {// Code mẫu chưa xử lý
             // 
             const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {

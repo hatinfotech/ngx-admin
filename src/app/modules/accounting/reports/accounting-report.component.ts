@@ -85,6 +85,12 @@ export class AccountingReportComponent extends BaseComponent {
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
+        title: this.commonService.translateText('Lưu chuyển tiền tệ'),
+        route: '/accounting/report/contra-account',
+        // icon: 'pie-chart',
+        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
+      },
+      {
         title: this.commonService.translateText('Đối soát công nợ'),
         route: '/accounting/report/cash-flow',
         // icon: 'pie-chart',

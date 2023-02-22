@@ -170,6 +170,33 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
             },
           },
         },
+        Product: {
+          title: this.commonService.translateText('Sản phẩm'),
+          type: 'string',
+          width: '13%',
+          valuePrepareFunction: (cell: any, row: any) => {
+            return row.Description;
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
+                  placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
+                    // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                    return item;
+                  }
+                }),
+                multiple: true,
+                logic: 'OR',
+                allowClear: true,
+              },
+            },
+          },
+        },
         Description: {
           title: this.commonService.translateText('Common.description'),
           type: 'string',
@@ -184,13 +211,18 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
           },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
-              this.refresh();
+              // this.refresh();
             }));
           },
           width: '10%',
         },
         Account: {
           title: this.commonService.translateText('Accounting.account'),
+          type: 'string',
+          width: '5%',
+        },
+        ContraAccount: {
+          title: this.commonService.translateText('Đối ứng'),
           type: 'string',
           width: '5%',
         },

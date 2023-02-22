@@ -1,7 +1,7 @@
 <div class="dialog-wrap {{inputMode}}">
     <nb-card class="small-header smart-table no-border">
         <nb-card-header>
-            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Bảng báo cáo chi tiết tài khoản kế toán' | translate:{action: '', definition: commonService.translate.instant('Common.table')} | headtitlecase) )" [controls]="actionButtonList"></ngx-card-header>
+            <ngx-card-header [size]="size" [icon]="favicon" [title]="tabTitle + ' = ' + (summaryAmount >= 0 ? (summaryAmount | currency:'VND') : ('('+(-summaryAmount | currency:'VND')+')'))" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
 
         <nb-card-body>

@@ -295,6 +295,7 @@ import { ProductBrandFormComponent } from './modules/admin-product/brand/product
 import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
 import { ProductPropertyFormComponent } from './modules/admin-product/property/product-property-form/product-property-form.component';
 import { ImportProductMapFormComponent } from './modules/admin-product/product/import-product-map-form/import-product-map-form.component';
+import { AccountingContraAccountReportComponent } from './modules/accounting/reports/contra-account-report/accounting-contra-account-report.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -416,6 +417,7 @@ export class DynamicLocaleId extends String {
     AccountingLiabilitiesReportComponent,
     AccountingReceivablesReportComponent,
     AccountingSummaryReportComponent,
+    AccountingContraAccountReportComponent,
     AccountingReceivablesFromCustomersReportComponent,
     AccountingReceivablesFromEmployeeReportComponent,
     AccountingProfitReportComponent,

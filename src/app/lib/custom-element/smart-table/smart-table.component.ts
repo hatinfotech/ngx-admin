@@ -1,6 +1,6 @@
 import { Select2Option } from './../select2/select2.component';
 import { Select2Component } from '../../../../vendor/ng2select2.copy/lib/ng2-select2.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit, Input, EventEmitter, Output, ViewChild, AfterViewInit, ElementRef, Type } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
@@ -378,6 +378,7 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
   template: `<div [style]="style" [class]="class">
     <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(value)}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText(value) || value.id}}</a>
   </div>`,
+  providers: [CurrencyPipe]
 })
 export class SmartTableTagComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
 
@@ -398,7 +399,7 @@ export class SmartTableTagComponent extends SmartTableBaseComponent implements V
 
   ngOnInit() {
     // this.renderValue = this.value;
-    // console.log(123);
+    console.log(123);
   }
 
   public onClick(tag: { id: string, text: string, type: string }) {

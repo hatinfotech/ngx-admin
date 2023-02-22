@@ -12,6 +12,7 @@ export class AccountingService {
   reportToDate$ = new BehaviorSubject<Date>(null);
   reportFromDate$ = new BehaviorSubject<Date>(null);
   accountList$ = new BehaviorSubject<AccountModel[]>(null);
+  accountMap$ = new BehaviorSubject<{ [key: string]: AccountModel }>(null);
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -36,8 +37,13 @@ export class AccountingService {
     });
 
     this.authService.isAuthenticated().pipe(filter(f => f === true), take(1)).toPromise().then(status => {
-      this.apiService.getPromise<AccountModel[]>('/accounting/accounts', {limit: 'nolimit'}).then(accounts => {
+      this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(accounts => {
         this.accountList$.next(accounts);
+        const accountMap = {};
+        for (const account of accounts) {
+          accountMap[account.Code] = account;
+        }
+        this.accountMap$.next(accountMap);
       });
     });
   }

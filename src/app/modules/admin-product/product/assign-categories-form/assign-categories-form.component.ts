@@ -71,7 +71,7 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   }
 
   async init() {
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', {limit: 'nolimit'})).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     return super.init();
   }
 
@@ -87,6 +87,9 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
         ids.push(product.Code);
         for (let c = 0; c < choosedCategories.length; c++) {
           const choosed = choosedCategories[c];
+          if (!Array.isArray(product.Categories)) {
+            product.Categories = [];
+          }
           if (!product.Categories.some(cate => choosed['id'] === cate['id'])) {
             product.Categories.push({ id: choosed.id, text: choosed.text, Category: choosed.Code, Product: product.Code } as any);
           }
@@ -110,6 +113,9 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
       for (let p = 0; p < this.inputProducts.length; p++) {
         const product: ProductModel = { Code: this.inputProducts[p].Code, Categories: this.inputProducts[p].Categories };
         ids.push(product.Code);
+        if (!Array.isArray(product.Categories)) {
+          product.Categories = [];
+        }
         product.Categories = product.Categories.filter(cate => !choosedCategories.some(choosed => choosed.id === cate['id']));
 
         updateList.push(product);
