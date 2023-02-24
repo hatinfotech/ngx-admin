@@ -878,7 +878,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                     delete orderDetail.Id;
                     // delete orderDetail.Order;
                     delete orderDetail.No;
-                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...orderDetail, Id: null });
+                    const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...orderDetail, Id: null } as any);
                     details.push(newDtailFormGroup);
                     await new Promise(resolve => setTimeout(() => resolve(true), 300));
                     this.toMoney(formGroup, newDtailFormGroup);
@@ -963,7 +963,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     if (voucherDetail.Type !== 'CATEGORY') {
-                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` });
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` } as any);
                       details.push(newDetailFormGroup);
                       await new Promise(resolve => setTimeout(() => resolve(true), 300));
                       this.toMoney(formGroup, newDetailFormGroup);

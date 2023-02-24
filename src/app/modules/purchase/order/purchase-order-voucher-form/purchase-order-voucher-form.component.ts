@@ -1,3 +1,5 @@
+import { ProductUnitModel } from './../../../../models/product.model';
+import { AdminProductService } from './../../../admin-product/admin-product.service';
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
@@ -24,6 +26,10 @@ import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsC
 import { takeUntil } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
+import * as XLSX from 'xlsx';
+import { defaultAuthOptions } from '@nebular/auth';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { _ } from 'ag-grid-community';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -111,6 +117,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public commonService: CommonService,
+    public adminProductService: AdminProductService,
     public ref: NbDialogRef<PurchaseOrderVoucherFormComponent>,
     // public changeDirectorRef: ChangeDetectorRef,
   ) {
@@ -455,6 +462,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
+      ProductTaxName: [''],
+      Tax: [''],
     });
 
     if (data) {
@@ -495,6 +504,25 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
+    // Load product name    
+    newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
+      const productNames = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
+
+      if (productNames) {
+        for (const productName of productNames) {
+          if (productName.Type == 'SUPPLIERPRODUCT') {
+            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Description').value) {
+              newChildFormGroup.get('Description').setValue(productName.Name);
+            }
+          }
+          if (productName.Type == 'SUPPLIERPRODUCTTAX') {
+            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
+              newChildFormGroup.get('ProductTaxName').setValue(productName.Name);
+            }
+          }
+        }
+      }
+    });
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -523,7 +551,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           const productList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: '[' + productIds.join(',') + ']', select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true });
           const details = this.getDetails(parentFormGroup);
           for (const product of productList) {
-            const chooseItem = choosedItems.find(f => f.Product == product.Code);
+            const chooseItem = choosedItems.find(f => f.Product as any == product.Code);
             const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, {
               Product: product as any,
               Price: chooseItem?.Price,
@@ -741,7 +769,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     console.log(selectedData);
     if (!this.isProcessing) {
       if (selectedData) {
-        detail.get('Description').setValue(selectedData.Name);
+        if (!detail['IsImport'] || !detail.get('Description').value) {
+          detail.get('Description').setValue(selectedData.Name);
+        }
         if (selectedData.Units) {
           const unitControl = detail.get('Unit');
           detail['UnitList'] = selectedData.Units;
@@ -753,7 +783,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           detail.get('Image').setValue([]);
         }
       } else {
-        detail.get('Description').setValue('');
+        if (!detail['IsImport'] || !detail.get('Description').value) {
+          detail.get('Description').setValue('');
+        }
         detail.get('Unit').setValue('');
       }
     }
@@ -962,7 +994,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'COMMERCEPOSORDER' }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);
@@ -970,6 +1002,517 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       }
     })
     return false;
+  }
+
+  exportDetails(formItem: FormGroup) {
+    const data = this.getRawFormData();
+    const details = [];
+    let no = 0;
+    for (const detail of data.array[0].Details) {
+      no++;
+      details.push({
+        STT: no,
+        Sku: detail['Product']['Sku'],
+        Product: this.commonService.getObjectId(detail['Product']),
+        ProductName: detail['Description'],
+        ProductTaxName: detail['ProductTaxName'],
+        Tax: detail['Tax'],
+        Unit: this.commonService.getObjectId(detail['Unit']),
+        UnitName: this.commonService.getObjectText(detail['Unit']),
+        Price: detail['Price'],
+        Quantity: detail['Quantity'],
+        ToMoney: detail['ToMoney'],
+      });
+    }
+    const sheet = XLSX.utils.json_to_sheet(details);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Chi tiết đơn đặt mua hàng');
+    XLSX.writeFile(workbook, 'DDMH-' + data.array[0].Code + ' - ' + data.array[0].Title + ' - NCC: ' + this.commonService.getObjectId(data.array[0].Object) + ' - ' + data.array[0].ObjectName + '.xlsx');
+
+  }
+
+  fileName: string;
+  importDetails(formItem: FormGroup, ev: any) {
+    const reader = new FileReader();
+    const file = ev.target.files[0];
+    if (!file) return;
+    this.fileName = file.name;
+    reader.onload = async (event) => {
+      try {
+        this.isProcessing = true;
+        let chooseSheet = null;
+        const data = reader.result;
+        const workBook = XLSX.read(data, { type: 'binary' });
+        let sheet = null;
+        const jsonData = workBook.SheetNames.reduce((initial, name) => {
+          sheet = workBook.Sheets[name];
+          initial[name] = XLSX.utils.sheet_to_json(sheet);
+          return initial;
+        }, {});
+        this.isProcessing = false;
+
+        const sheets = Object.keys(jsonData);
+        if (sheets.length > 1) {
+          sheet = await new Promise((resove, reject) => {
+            this.commonService.openDialog(DialogFormComponent, {
+              context: {
+                cardStyle: { width: '500px' },
+                title: 'File excel có nhiều hơn 1 sheet, mời bạn chọn sheet cần import',
+                onInit: async (form, dialog) => {
+                  // const sheet = form.get('Sheet');
+                  // const description = form.get('Description');
+                  // sheet.setValue(null);
+                  // description.setValue(parseFloat(activeDetail.get('Description').value));
+                  return true;
+                },
+                onClose: async (form, dialog) => {
+                  // ev.target.
+                  return true;
+                },
+                controls: [
+                  {
+                    name: 'Sheet',
+                    label: 'Sheet',
+                    placeholder: 'Chọn sheet...',
+                    type: 'select2',
+                    initValue: sheets[0],
+                    // focus: true,
+                    option: {
+                      data: sheets.map(m => ({ id: m, text: m })),
+                      placeholder: 'Chọn sheet...',
+                      allowClear: true,
+                      width: '100%',
+                      dropdownAutoWidth: true,
+                      minimumInputLength: 0,
+                      withThumbnail: false,
+                      keyMap: {
+                        id: 'id',
+                        text: 'text',
+                      },
+                    }
+                  },
+                ],
+                actions: [
+                  {
+                    label: 'Esc - Trở về',
+                    icon: 'back',
+                    status: 'basic',
+                    keyShortcut: 'Escape',
+                    action: async () => { return true; },
+                  },
+                  {
+                    label: 'Chọn',
+                    icon: 'generate',
+                    status: 'success',
+                    // keyShortcut: 'Enter',
+                    action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+                      console.log(form.value);
+                      chooseSheet = this.commonService.getObjectId(form.get('Sheet').value);
+                      resove(jsonData[chooseSheet]);
+
+                      // formDialogConpoent.dismiss();
+
+                      return true;
+                    },
+                  },
+                ],
+              },
+              closeOnEsc: false,
+              closeOnBackdropClick: false,
+            });
+
+          });
+        } else {
+          sheet = jsonData[sheets[0]];
+          chooseSheet = sheets[0];
+        }
+
+        // const productList: any[] = sheet;
+
+        // Confirm mapping
+        const tmpSheet: string[][] = XLSX.utils.sheet_to_json(workBook.Sheets[chooseSheet], { header: 1 });
+        const columnList = tmpSheet[0].map((m: string) => {
+          const id = m.split('/')[0];
+          const text = m;
+          return { id, text };
+        });
+
+        // Confirm mapping
+        // const columnList = Object.keys(sheet[0]).map(m => ({ id: m, text: m }));
+        let details = [];
+        this.commonService.openDialog(DialogFormComponent, {
+          context: {
+            cardStyle: { width: '500px' },
+            title: 'Mời bạn chọn cột tương ứng với các trường thông tin sản phẩm',
+            onInit: async (form, dialog) => {
+              // const sku = form.get('Sku');
+              // sheet.setValue('Sku');
+              return true;
+            },
+            controls: [
+              {
+                name: 'Sku',
+                label: 'Sku',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Sku'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn sku...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'Product',
+                label: 'Sản phẩm',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Product'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn sản phẩm...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'ProductName',
+                label: 'Tên sản phẩm',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'ProductName'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn tên sản phẩm...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'Unit',
+                label: 'ĐVT',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Unit'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn ĐVT...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'UnitName',
+                label: 'Tên ĐVT',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'UnitName'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn tên ĐVT...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'Price',
+                label: 'Đơn giá',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Price'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn đơn giá...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'Quantity',
+                label: 'Số lượng',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Quantity'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn số lượng...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'ProductTaxName',
+                label: 'Tên thuế',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'ProductTaxName'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn tên thuế',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+              {
+                name: 'Tax',
+                label: 'Thuế NCC',
+                placeholder: '',
+                type: 'select2',
+                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Tax'),
+                // focus: true,
+                option: {
+                  data: columnList,
+                  placeholder: 'Chọn thuế NCC...',
+                  allowClear: true,
+                  width: '100%',
+                  dropdownAutoWidth: true,
+                  minimumInputLength: 0,
+                  withThumbnail: false,
+                  keyMap: {
+                    id: 'id',
+                    text: 'text',
+                  },
+                }
+              },
+            ],
+            actions: [
+              {
+                label: 'Esc - Trở về',
+                icon: 'back',
+                status: 'basic',
+                keyShortcut: 'Escape',
+                action: async () => { return true; },
+              },
+              {
+                label: 'Xác nhận',
+                icon: 'generate',
+                status: 'success',
+                // keyShortcut: 'Enter',
+                action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                  this.onProcessing();
+                  try {
+                    const mapping = form.getRawValue();
+                    for (const i in mapping) {
+                      mapping[i] = this.commonService.getObjectText(mapping[i]);
+                    }
+
+                    console.log(form.value);
+
+
+                    // details = [];
+                    // let index = 0;
+                    const details = this.getDetails(formItem);
+                    if (details.length == 1 && !this.commonService.getObjectId(details.controls[0].get('Product').value)) {
+                      details.clear();
+                    }
+
+                    const productIds = [];
+                    const detailsData: PurchaseOrderVoucherDetailModel[] = [];
+
+                    for (const row of sheet) {
+                      //  = sheet.map(async (row: any, index: number) => {
+
+                      let product: ProductModel = null;
+                      if (row[mapping['Sku']]) {
+                        product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: row[mapping['Sku']], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+                      } else if (row[mapping['Product']]) {
+                        product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: row[mapping['Product']] }).then(rs => rs[0]);
+                      } else if (row[mapping['ProductName']]) {// Load product by product name map by supplier
+                        const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCT', eq_Name: row[mapping['ProductName']], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+                        if (productName) {
+                          product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+                        } else {
+                          product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Name: row[mapping['ProductName']], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+                        }
+                      }
+
+                      let unit = null;
+                      if (row[mapping['Unit']]) {
+                        unit = this.adminProductService.unitMap$?.value[row[mapping['Unit']]?.trim()];
+                      }
+                      if (!unit && product) {
+                        unit = product.UnitConversions?.find(f => f.Name == row[mapping['UnitName']]?.trim());
+                      }
+
+                      if (product) productIds.push(this.commonService.getObjectId(product));
+
+                      const detail = {
+                        Image: product?.Pictures,
+                        Product: product,
+                        Description: product && product.Name || row[mapping['ProductName']],
+                        Unit: unit,
+                        Price: row[mapping['Price']],
+                        Quantity: row[mapping['Quantity']],
+                        ProductTaxName: row[mapping['ProductTaxName']],
+                        Tax: row[mapping['Tax']],
+                        UnitList: product?.UnitConversions || [],
+                      };
+                      detailsData.push(detail);
+                    }
+
+                    const tmpRs = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Product: '[' + productIds.join(',') + ']', eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'asc' });
+                    const productNameMap = {
+                      SUPPLIERPRODUCT: {},
+                      SUPPLIERPRODUCTTAX: {},
+                    };
+                    for (const tmp of tmpRs) {
+                      if (productNameMap[tmp.Type]) productNameMap[tmp.Type][tmp.Product] = tmp;
+                    }
+
+                    for (const detail of detailsData) {
+                      const supplierProductName = productNameMap['SUPPLIERPRODUCT'][this.commonService.getObjectId(detail.Product)];
+                      const supplierProductTaxName = productNameMap['SUPPLIERPRODUCTTAX'][this.commonService.getObjectId(detail.Product)];
+                      if (supplierProductName) {
+                        detail.Description = supplierProductName.Name;
+                      }
+                      if (supplierProductTaxName) {
+                        detail.ProductTaxName = supplierProductTaxName.Name;
+                      }
+                      const newDetailFormGroup = this.makeNewDetailFormGroup(formItem, detail);
+                      newDetailFormGroup['UnitList'] = detail['UnitList'];
+                      newDetailFormGroup['IsImport'] = true;
+                      details.push(newDetailFormGroup);
+                      // newDetailFormGroup.get('Unit').setValue(product.UnitConversions.find(f => f['DefaultImport']));
+                      this.onAddDetailFormGroup(formItem, newDetailFormGroup, details.length - 1);
+                      this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+                    }
+                    this.onProcessed();
+                  } catch (err) {
+                    this.onProcessed();
+                  }
+                  return true;
+                }
+              }
+            ]
+          }
+        });
+      } catch (err) {
+        this.isProcessing = false;
+      }
+    };
+    reader.readAsBinaryString(file);
+
+
+    // this.commonService.openDialog(DialogFormComponent, {
+    //   context: {
+    //     cardStyle: { width: '500px' },
+    //     title: 'Mời bạn chọn đơn vị tính cho khớp và xác nhận',
+    //     onInit: async (form, dialog) => {
+    //       // const sku = form.get('Sku');
+    //       // sheet.setValue('Sku');
+    //       return true;
+    //     },
+    //     controls: [
+    //       {
+    //         name: 'Sku',
+    //         label: 'Sku',
+    //         placeholder: 'Chọn sku...',
+    //         type: 'select2',
+    //         initValue: 'Sku',
+    //         // focus: true,
+    //         option: {
+    //           data: columnList,
+    //           placeholder: 'Chọn sku...',
+    //           allowClear: true,
+    //           width: '100%',
+    //           dropdownAutoWidth: true,
+    //           minimumInputLength: 0,
+    //           withThumbnail: false,
+    //           keyMap: {
+    //             id: 'id',
+    //             text: 'text',
+    //           },
+    //         }
+    //       },
+    //     ],
+    //     actions: [
+    //       {
+    //         label: 'Esc - Trở về',
+    //         icon: 'back',
+    //         status: 'basic',
+    //         keyShortcut: 'Escape',
+    //         action: () => { return true; },
+    //       },
+    //       {
+    //         label: 'Xác nhận',
+    //         icon: 'generate',
+    //         status: 'success',
+    //         // keyShortcut: 'Enter',
+    //         action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+    //           return true;
+    //         },
+    //       },
+    //     ],
+    //   },
+    //   closeOnEsc: false,
+    //   closeOnBackdropClick: false,
+    // });
   }
 
 }

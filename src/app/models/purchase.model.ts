@@ -148,13 +148,15 @@ export class PurchaseOrderVoucherDetailModel {
   Voucher?: string;
   Type?: string;
   Order?: PurchaseVoucherModel & string;
-  Product?: ProductModel & string;
+  Product?: ProductModel;
   ProductName?: string;
+  ProductTaxName?: string;
   Description?: string;
   Quantity?: number;
   Unit?: UnitModel & string;
-  Tax?: TaxModel & string;
+  // Tax?: TaxModel & string;
   Price?: number;
+  Tax?: any;
   Image?: any;
   RelateDetail?: string;
   SystemUuid?: string;

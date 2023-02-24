@@ -21,7 +21,7 @@ import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-pr
   templateUrl: './purchase-order-voucher-list.component.html',
   styleUrls: ['./purchase-order-voucher-list.component.scss']
 })
-export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComponent<PurchaseVoucherModel> implements OnInit {
+export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComponent<PurchaseOrderVoucherModel> implements OnInit {
 
   componentName: string = 'PurchaseVoucherListComponent';
   formPath = '/purchase/order-vouchers/form';
@@ -371,7 +371,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
     super.ngOnInit();
   }
 
-  getList(callback: (list: PurchaseVoucherModel[]) => void) {
+  getList(callback: (list: PurchaseOrderVoucherModel[]) => void) {
     super.getList((rs) => {
       if (callback) callback(rs);
     });

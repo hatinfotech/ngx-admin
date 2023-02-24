@@ -1,4 +1,3 @@
-import { PurchaseOrderVoucherDetailModel } from './../../../../models/purchase.model';
 import { PurchaseOrderVoucherFormComponent } from './../purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -8,13 +7,13 @@ import { environment } from '../../../../../environments/environment';
 import { AppModule } from '../../../../app.module';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { ProcessMap } from '../../../../models/process-map.model';
-import { PurchaseOrderVoucherModel, PurchaseVoucherDetailModel } from '../../../../models/purchase.model';
+import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel, } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
 import { base64 } from '@firebase/util';
-// import { PurchaseModule } from '../../purchase.module';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
@@ -63,7 +62,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
         }
       });
       this.actionButtonList.unshift({
-        name: 'showPicture',
+        name: 'downloadPdf',
         label: 'PDF',
         title: 'Download PDF',
         status: 'danger',
@@ -71,6 +70,18 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
         icon: 'download-outline',
         click: () => {
           this.downloadPdf(this.id);
+          return true;
+        }
+      });
+      this.actionButtonList.unshift({
+        name: 'downaloExcel',
+        label: 'Excel',
+        title: 'Download Excel',
+        status: 'primary',
+        size: 'medium',
+        icon: 'download-outline',
+        click: (event, option) => {
+          this.downloadExcel(option?.index);
           return true;
         }
       });
@@ -107,7 +118,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     return value;
   }
 
-  toMoney(detail: PurchaseVoucherDetailModel) {
+  toMoney(detail: PurchaseOrderVoucherDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
       detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
@@ -154,7 +165,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       this.summaryCalculate(data);
 
       for (const item of data) {
-        this.setDetailsNo(item.Details, (detail: PurchaseVoucherDetailModel) => detail.Type !== 'CATEGORY');
+        this.setDetailsNo(item.Details, (detail: PurchaseOrderVoucherDetailModel) => detail.Type !== 'CATEGORY');
       }
 
       return data;
@@ -331,6 +342,34 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     //   this.saveBlobAsFile('output.pdf', rs[0]['Pdf']);
     // });
   }
+
+  downloadExcel(index: number) {
+    // for (const index in ids) {
+    const data = this.data[index];
+    const details = [];
+    let no = 0;
+    for (const detail of data.Details) {
+      no++;
+      details.push({
+        STT: no,
+        Sku: detail['Product']['Sku'],
+        Product: this.commonService.getObjectId(detail['Product']),
+        ProductName: detail['Description'],
+        ProductTaxName: detail['ProductTaxName'],
+        Tax: detail['Tax'],
+        Unit: this.commonService.getObjectId(detail['Unit']),
+        UnitName: this.commonService.getObjectText(detail['Unit']),
+        Price: detail['Price'],
+        Quantity: detail['Quantity'],
+        ToMoney: detail['ToMoney'],
+      });
+    }
+    const sheet = XLSX.utils.json_to_sheet(details);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Chi tiết đơn đặt mua hàng');
+    XLSX.writeFile(workbook, 'DDMH-' + data.Code + ' - ' + data.Title + ' - NCC: ' + this.commonService.getObjectId(data.Object) + ' - ' + data.ObjectName + '.xlsx');
+  }
+  // }
 
   /**
  * Save a text as file using HTML <a> temporary element and Blob
