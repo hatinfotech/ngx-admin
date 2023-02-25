@@ -1217,9 +1217,28 @@ nb-card nb-tabset nb-tab {
 
 /* Form */
 
-.form-details .form-group > label {
-  display: none !important;
+.form-group > label {
+  // display: none !important;
+  // position: absolute;
+  // z-index: 1;
+  // top: -10px;
+  // left: 8px;
+  // padding: 1px;
+  // display: flex;
+  // align-items: center;
+
+  // &span{
+  //   border-radius: 0.25rem;
+
+  // }
+  margin-bottom: 0rem;
+  display: flex;
+  align-items: center;
+  height: 22px;
 }
+// .form-detail-item [class*="col-"] {
+//   // padding-bottom: 7px;
+// }
 
 // .form-details .form-detail-item {
 //   /* padding: 3px; */
@@ -1270,7 +1289,7 @@ body .form-group[state="warning"] span.valid {
   font-style: italic;
 } */
 
-.form-group label {
+.fel {
   width: 100%;
 }
 

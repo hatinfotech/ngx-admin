@@ -1,7 +1,6 @@
 import { take, filter } from 'rxjs/operators';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './../../services/api.service';
-import { UnitModel } from './../../models/unit.model';
 import { BehaviorSubject } from 'rxjs';
 import { ProductGroupModel, ProductCategoryModel, ProductUnitModel, ProductPropertyModel, ProductPropertyValueModel, ProductBrandModel, ProductKeywordModel } from './../../models/product.model';
 import { Injectable } from '@angular/core';
@@ -14,6 +13,7 @@ export class AdminProductService {
   groupList$ = new BehaviorSubject<ProductGroupModel[]>(null);
   categoryList$ = new BehaviorSubject<ProductCategoryModel[]>(null);
   unitList$ = new BehaviorSubject<ProductUnitModel[]>(null);
+  unitMap$ = new BehaviorSubject<{ [key: string]: ProductUnitModel }>(null);
   propertyList$ = new BehaviorSubject<ProductPropertyModel[]>(null);
   propertyValueList$ = new BehaviorSubject<ProductPropertyValueModel[]>(null);
   brandList$ = new BehaviorSubject<ProductBrandModel[]>(null);
@@ -69,12 +69,27 @@ export class AdminProductService {
       },
     ]).then(rs => {
       console.log(rs);
+
+      // Update unit list & map
       this.unitList$.next(rs[0]);
+      this.updateUnitMap(rs[0]);
+
+      // Update attribuite list
       this.propertyList$.next(rs[1]);
+
+      // Update attribuite value list
       this.propertyValueList$.next(rs[2]);
+
+      // Update category list
       this.categoryList$.next(rs[3]);
+
+      // Update group list
       this.groupList$.next(rs[4]);
+
+      // Update brand list
       this.brandList$.next(rs[5]);
+
+      // Update keyboard list
       this.keywordList$.next(rs[6]);
       return rs;
     });
@@ -84,8 +99,17 @@ export class AdminProductService {
   async updateUnitList() {
     return this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { onlyIdText: true, limit: 'nolimit' }).then(rs => {
       this.unitList$.next(rs);
+      this.updateUnitMap(rs);
       return rs;
     });
+  }
+
+  updateUnitMap(unitList: ProductUnitModel[]) {
+    const unitMap = {};
+    for (const unit of unitList) {
+      unitMap[unit.Code] = unit;
+    }
+    this.unitMap$.next(unitMap);
   }
 
   async updatePropertyList() {

@@ -35,6 +35,7 @@ export class FormGroupComponent implements OnInit, OnDestroy {
   @Input() index?: number;
   @Input() label?: string;
   @Input() hideLabel?: boolean = false;
+  @Input() hideTooltip?: boolean = false;
   @Input() required?: boolean;
   @Input() align = 'left';
   @Input() customIcons?: CustomIcon[];
