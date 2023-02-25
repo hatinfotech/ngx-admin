@@ -233,7 +233,7 @@ export class SmartTableThumbnailComponent extends SmartTableBaseComponent implem
   }
 
   onClick() {
-    // this.click.emit(this.rowData);
+    this.click.emit(this.rowData);
     return false;
   }
 

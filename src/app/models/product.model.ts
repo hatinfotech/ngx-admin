@@ -157,6 +157,18 @@ export interface ProductInPropertyModel {
   ProductName?: string;
   PropertyValues?: any[];
 }
+export interface ProductObjectReferenceModel {
+  Product?: string;
+  FeaturePicture?: FileModel;
+  Pictures?: FileModel[];
+  ProductOriginName?: string;
+  Object?: string;
+  ObjectName?: string;
+  Type?: string;
+  ReferenceValue?: string;
+  LastUpdate?: string;
+  ReferenceCode?: string;
+}
 export interface ProductPropertyValueModel {
   id?: string;
   text?: string;

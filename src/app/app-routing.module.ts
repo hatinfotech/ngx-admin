@@ -1,3 +1,4 @@
+import { ProductObjectReferenceListComponent } from './modules/admin-product/product-object-reference/product-object-reference-list/product-object-reference-list.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
 import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
@@ -893,6 +894,14 @@ const routes: Routes = [
     },
   },
   {
+    path: 'admin-product/product-object-reference/list',
+    canActivate: [AuthGuardService],
+    component: ProductObjectReferenceListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
     path: 'admin-product/category/form',
     canActivate: [AuthGuardService],
     component: ProductCategoryFormComponent,
@@ -940,8 +949,6 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     component: ProductGroupFormComponent,
   },
-
-
 
   // Commmerce service by cycle routes
   {

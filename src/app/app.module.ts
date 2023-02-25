@@ -296,6 +296,8 @@ import { ProductPropertyListComponent } from './modules/admin-product/property/p
 import { ProductPropertyFormComponent } from './modules/admin-product/property/product-property-form/product-property-form.component';
 import { ImportProductMapFormComponent } from './modules/admin-product/product/import-product-map-form/import-product-map-form.component';
 import { AccountingContraAccountReportComponent } from './modules/accounting/reports/contra-account-report/accounting-contra-account-report.component';
+import { ProductObjectReferenceListComponent } from './modules/admin-product/product-object-reference/product-object-reference-list/product-object-reference-list.component';
+import { ProductObjectReferenceFormComponent } from './modules/admin-product/product-object-reference/product-object-reference-form/product-object-reference-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -469,6 +471,8 @@ export class DynamicLocaleId extends String {
     ProductPropertyListComponent,
     ProductPropertyFormComponent,
     ImportProductMapFormComponent,
+    ProductObjectReferenceListComponent,
+    ProductObjectReferenceFormComponent,
     
     // Commerce service by cycle components
     CommerceServiceByCycleListComponent,

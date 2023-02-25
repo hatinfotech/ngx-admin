@@ -11,7 +11,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel } from '../../../../models/product.model';
+import { ProductModel, ProductObjectReferenceModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
@@ -505,28 +505,28 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
-      const productNames = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX,SUPPLIERPRODUCTSKU,SUPPLIERPRODUCTAXVALUE]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
+      const productNames = await this.apiService.getPromise<ProductObjectReferenceModel[]>('/admin-product/product-object-references', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX,SUPPLIERPRODUCTSKU,SUPPLIERPRODUCTAXVALUE]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
 
       if (productNames) {
-        for (const productName of productNames) {
-          if (productName.Type == 'SUPPLIERPRODUCT') {
+        for (const productObjectReference of productNames) {
+          if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
             if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Description').value) {
-              newChildFormGroup.get('Description').setValue(productName.Name);
+              newChildFormGroup.get('Description').setValue(productObjectReference.ReferenceValue);
             }
           }
-          if (productName.Type == 'SUPPLIERPRODUCTTAX') {
+          if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
             if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
-              newChildFormGroup.get('ProductTaxName').setValue(productName.Name);
+              newChildFormGroup.get('ProductTaxName').setValue(productObjectReference.ReferenceValue);
             }
           }
-          if (productName.Type == 'SUPPLIERPRODUCTSKU') {
+          if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
             if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
-              newChildFormGroup.get('SupplierSku').setValue(productName.Name);
+              newChildFormGroup.get('SupplierSku').setValue(productObjectReference.ReferenceValue);
             }
           }
-          if (productName.Type == 'SUPPLIERPRODUCTAXVALUE') {
+          if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
             if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
-              newChildFormGroup.get('Tax').setValue(productName.Name);
+              newChildFormGroup.get('Tax').setValue(productObjectReference.ReferenceValue);
             }
           }
         }
@@ -689,14 +689,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       },
     });
 
-    // const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    // const detailsFormArray = this.getDetails(parentFormGroup);
-    // detailsFormArray.push(newChildFormGroup);
-    // const noFormControl = newChildFormGroup.get('No');
-    // if (!noFormControl.value) {
-    //   noFormControl.setValue(detailsFormArray.length);
-    // }
-    // this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   /** End Detail Form */
@@ -743,7 +735,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     if (!this.isProcessing) {
       if (selectedData && !selectedData['doNotAutoFill']) {
 
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ObjectName').setValue(selectedData.Name);
           formGroup.get('ObjectPhone').setValue(selectedData.Phone);
@@ -758,12 +749,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   }
 
   onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-    // console.info(item);
 
     if (!this.isProcessing) {
       if (selectedData && !selectedData['doNotAutoFill']) {
 
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ContactName').setValue(selectedData.Name);
           formGroup.get('ContactPhone').setValue(selectedData.Phone);
@@ -801,17 +790,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     return false;
   }
 
-  // calculatToMoney(detail: FormGroup) {
-  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-  //   // let tax = detail.get('Tax').value;
-  //   // if (tax) {
-  //   //   if (typeof tax === 'string') {
-  //   //     tax = this.taxList.filter(t => t.Code === tax)[0];
-  //   //   }
-  //   //   toMoney += toMoney * tax.Tax / 100;
-  //   // }
-  //   return toMoney;
-  // }
   calculatToMoney(detail: FormGroup, source?: string) {
     if (source === 'ToMoney') {
       const price = detail.get('ToMoney').value / detail.get('Quantity').value;
@@ -821,20 +799,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       return toMoney;
     }
   }
-
-  // toMoney(formItem: FormGroup, detail: FormGroup) {
-  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-
-  //   // Call culate total
-  //   const details = this.getDetails(formItem);
-  //   let total = 0;
-  //   for (let i = 0; i < details.controls.length; i++) {
-  //     total += this.calculatToMoney(details.controls[i] as FormGroup);
-  //   }
-  //   formItem.get('_total').setValue(total);
-  //   return false;
-  // }
-
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
     this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
@@ -857,14 +821,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   async preview(formItem: FormGroup) {
     const data: PurchaseOrderVoucherModel = formItem.value;
-    // data.Details.forEach(detail => {
-    //   if (typeof detail['Tax'] === 'string') {
-    //     detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
-    //     if (this.unitList) {
-    //       detail['Unit'] = (detail['Unit'] && detail['Unit'].Name) || this.unitList.filter(t => t.Code === detail['Unit'])[0] as any;
-    //     }
-    //   }
-    // });
     this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
       context: {
         showLoadinng: true,
@@ -888,23 +844,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
-    // if (relativeVocher) {
-    //   if (relativeVocher.type == 'PURCHASE') {
-    //     this.commonService.openDialog(PurchaseVoucherPrintComponent, {
-    //       context: {
-    //         showLoadinng: true,
-    //         title: 'Xem trước',
-    //         id: [this.commonService.getObjectId(relativeVocher)],
-    //         // data: data,
-    //         idKey: ['Code'],
-    //         // approvedConfirm: true,
-    //         onClose: (data: PurchaseVoucherModel) => {
-    //           this.refresh();
-    //         },
-    //       },
-    //     });
-    //   }
-    // }
     return false;
   }
 
@@ -981,7 +920,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                 delete voucher.Id;
                 formGroup.patchValue({ ...voucher, Code: null, Id: null, Object: null, ObjectName: null, ObjectPhone: null, PbjectAddress: null, ObjectIdentifiedNumber: null, Details: [] });
                 details.clear();
-                // }
                 insertList.push(chooseItems[i]);
 
                 // Insert order details into voucher details
@@ -991,9 +929,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                     if (voucherDetail.Type === 'PRODUCT') {
                       const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Price: null, RelateDetail: `COMMERCEPOSORDER/${voucher.Code}/${voucherDetail.SystemUuid}` });
                       details.push(newDetailFormGroup);
-                      // const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
-                      // if (selectedUnit) {
-                      // }
                     }
                   }
                 }
@@ -1068,10 +1003,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                 cardStyle: { width: '500px' },
                 title: 'File excel có nhiều hơn 1 sheet, mời bạn chọn sheet cần import',
                 onInit: async (form, dialog) => {
-                  // const sheet = form.get('Sheet');
-                  // const description = form.get('Description');
-                  // sheet.setValue(null);
-                  // description.setValue(parseFloat(activeDetail.get('Description').value));
                   return true;
                 },
                 onClose: async (form, dialog) => {
@@ -1120,8 +1051,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                       chooseSheet = this.commonService.getObjectId(form.get('Sheet').value);
                       resove(jsonData[chooseSheet]);
 
-                      // formDialogConpoent.dismiss();
-
                       return true;
                     },
                   },
@@ -1137,8 +1066,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           chooseSheet = sheets[0];
         }
 
-        // const productList: any[] = sheet;
-
         // Confirm mapping
         const tmpSheet: string[][] = XLSX.utils.sheet_to_json(workBook.Sheets[chooseSheet], { header: 1 });
         const columnList = tmpSheet[0].map((m: string) => {
@@ -1148,41 +1075,12 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         });
 
         // Auto mapping
-
         const details = this.getDetails(formItem);
         if (details.controls.length != sheet.length) {
           this.commonService.showToast('Số dòng trên file excel không khớp với số dòng trên đơn đặt hàng!', 'Không khớp số dòng!', { duration: 60000, status: 'warning' });
         }
-        // if (details.length == 1 && !this.commonService.getObjectId(details.controls[0].get('Product').value)) {
-        //   details.clear();
-        // }
-
-        // const productIds = [];
-        // const detailsData: PurchaseOrderVoucherDetailModel[] = [];
 
         for (const row of sheet) {
-
-          // let product: ProductModel = null;
-          // if (row['Sku']) {
-          //   product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: row['Sku'], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-          // } else if (row['SupplierSku']) {
-          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCTSKU', eq_Name: row['SupplierSku'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
-          //   if (productName) {
-          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-          //   }
-          // } else if (row['ProductName']) {// Load product by product name map by supplier
-          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCT', eq_Name: row['ProductName'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
-          //   if (productName) {
-          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-          //   } else {
-          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Name: row['ProductName'], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-          //   }
-          // } else if (row['ProductTaxName']) {// Load product by product name map by supplier
-          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCTTAX', eq_Name: row['ProductTaxName'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
-          //   if (productName) {
-          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-          //   }
-          // }
           let detailForm: FormGroup = null;
           if (row['Sku']) {
             detailForm = details.controls.find(f => f.get('Product')?.value?.Sku == row['Sku']) as FormGroup;
@@ -1222,382 +1120,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           } else {
             detailForm['IsImport'] = true;
           }
-
-          // if (product) {
-          //   productIds.push(this.commonService.getObjectId(product));
-          // }
-
-          // const detail = {
-          //   Image: product?.Pictures,
-          //   Product: product,
-          //   Description: product && product.Name || row['ProductName'],
-          //   Unit: unit,
-          //   Price: row['Price'],
-          //   Quantity: row['Quantity'],
-          //   ProductTaxName: row['ProductTaxName'],
-          //   Tax: row['Tax'],
-          //   UnitList: product?.UnitConversions || [],
-          // };
-          // detailsData.push(detail);
         }
-
-        // const tmpRs = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Product: '[' + productIds.join(',') + ']', eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'asc' });
-        // const productNameMap = {
-        //   SUPPLIERPRODUCT: {},
-        //   SUPPLIERPRODUCTTAX: {},
-        // };
-        // for (const tmp of tmpRs) {
-        //   if (productNameMap[tmp.Type]) productNameMap[tmp.Type][tmp.Product] = tmp;
-        // }
-
-        // for (const detail of detailsData) {
-
-        //   if (!detail.Product) {
-        //     this.commonService.showToast(detail['Description'] + ' Không có trên đơn đặt hàng', 'Sản phẩm không có trên đơn đặt hàng !', { duration: 15000, status: 'warning' });
-        //   }
-
-        //   const supplierProductName = productNameMap['SUPPLIERPRODUCT'][this.commonService.getObjectId(detail.Product)];
-        //   const supplierProductTaxName = productNameMap['SUPPLIERPRODUCTTAX'][this.commonService.getObjectId(detail.Product)];
-        //   const supplierProductSku = productNameMap['SUPPLIERPRODUCTSKU'][this.commonService.getObjectId(detail.Product)];
-        //   if (supplierProductName) {
-        //     detail.Description = supplierProductName.Name;
-        //   }
-        //   if (supplierProductTaxName) {
-        //     detail.ProductTaxName = supplierProductTaxName.Name;
-        //   }
-        //   if (supplierProductTaxName) {
-        //     detail.ProductTaxName = supplierProductTaxName.Name;
-        //   }
-        //   if (supplierProductSku) {
-        //     detail.SupplierSku = supplierProductSku.Name;
-        //   }
-
-        //   const newDetailFormGroup = details.controls.find(f => f.get('Product')?.value?.Sku == detail['Sku']);
-        //   newDetailFormGroup['UnitList'] = detail['UnitList'];
-        //   newDetailFormGroup['IsImport'] = true;
-        //   details.push(newDetailFormGroup);
-        //   this.onAddDetailFormGroup(formItem, newDetailFormGroup, details.length - 1);
-        //   this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-        // }
+        
         this.onProcessed();
         this.commonService.showToast('Nhập chi tiết từ thành công', 'Hệ thống đã nhập các thông tin chi tiết trên file excel vào chi tiết tương ứng trên phiếu !', { duration: 15000, status: 'success' });
         return true;
-
-
-        // Confirm mapping
-        // const columnList = Object.keys(sheet[0]).map(m => ({ id: m, text: m }));
-        // let details = [];
-        if (false) this.commonService.openDialog(DialogFormComponent, {
-          context: {
-            cardStyle: { width: '500px' },
-            title: 'Mời bạn chọn cột tương ứng với các trường thông tin sản phẩm',
-            onInit: async (form, dialog) => {
-              // const sku = form.get('Sku');
-              // sheet.setValue('Sku');
-              return true;
-            },
-            controls: [
-              {
-                name: 'Sku',
-                label: 'Sku',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Sku'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn sku...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'Product',
-                label: 'Sản phẩm',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Product'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn sản phẩm...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'ProductName',
-                label: 'Tên sản phẩm',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'ProductName'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn tên sản phẩm...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'Unit',
-                label: 'ĐVT',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Unit'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn ĐVT...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'UnitName',
-                label: 'Tên ĐVT',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'UnitName'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn tên ĐVT...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'Price',
-                label: 'Đơn giá',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Price'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn đơn giá...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'Quantity',
-                label: 'Số lượng',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Quantity'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn số lượng...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'ProductTaxName',
-                label: 'Tên thuế',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'ProductTaxName'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn tên thuế',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-              {
-                name: 'Tax',
-                label: 'Thuế NCC',
-                placeholder: '',
-                type: 'select2',
-                initValue: columnList.find(f => this.commonService.getObjectId(f) == 'Tax'),
-                // focus: true,
-                option: {
-                  data: columnList,
-                  placeholder: 'Chọn thuế NCC...',
-                  allowClear: true,
-                  width: '100%',
-                  dropdownAutoWidth: true,
-                  minimumInputLength: 0,
-                  withThumbnail: false,
-                  keyMap: {
-                    id: 'id',
-                    text: 'text',
-                  },
-                }
-              },
-            ],
-            actions: [
-              {
-                label: 'Esc - Trở về',
-                icon: 'back',
-                status: 'basic',
-                keyShortcut: 'Escape',
-                action: async () => { return true; },
-              },
-              {
-                label: 'Xác nhận',
-                icon: 'generate',
-                status: 'success',
-                // keyShortcut: 'Enter',
-                action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
-                  this.onProcessing();
-                  try {
-                    const mapping = form.getRawValue();
-                    for (const i in mapping) {
-                      mapping[i] = this.commonService.getObjectText(mapping[i]);
-                    }
-
-                    console.log(form.value);
-
-
-                    // details = [];
-                    // let index = 0;
-                    const details = this.getDetails(formItem);
-                    if (details.length == 1 && !this.commonService.getObjectId(details.controls[0].get('Product').value)) {
-                      details.clear();
-                    }
-
-                    const productIds = [];
-                    const detailsData: PurchaseOrderVoucherDetailModel[] = [];
-
-                    for (const row of sheet) {
-                      //  = sheet.map(async (row: any, index: number) => {
-
-                      let product: ProductModel = null;
-                      if (row[mapping['Sku']]) {
-                        product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: row[mapping['Sku']], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-                      } else if (row[mapping['Product']]) {
-                        product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: row[mapping['Product']] }).then(rs => rs[0]);
-                      } else if (row[mapping['ProductName']]) {// Load product by product name map by supplier
-                        const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCT', eq_Name: row[mapping['ProductName']], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
-                        if (productName) {
-                          product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-                        } else {
-                          product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Name: row[mapping['ProductName']], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
-                        }
-                      }
-
-                      let unit = null;
-                      if (row[mapping['Unit']]) {
-                        unit = this.adminProductService.unitMap$?.value[row[mapping['Unit']]?.trim()];
-                      }
-                      if (!unit && product) {
-                        unit = product.UnitConversions?.find(f => f.Name == row[mapping['UnitName']]?.trim());
-                      }
-
-                      if (product) productIds.push(this.commonService.getObjectId(product));
-
-                      const detail = {
-                        Image: product?.Pictures,
-                        Product: product,
-                        Description: product && product.Name || row[mapping['ProductName']],
-                        Unit: unit,
-                        Price: row[mapping['Price']],
-                        Quantity: row[mapping['Quantity']],
-                        ProductTaxName: row[mapping['ProductTaxName']],
-                        Tax: row[mapping['Tax']],
-                        UnitList: product?.UnitConversions || [],
-                      };
-                      detailsData.push(detail);
-                    }
-
-                    const tmpRs = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Product: '[' + productIds.join(',') + ']', eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'asc' });
-                    const productNameMap = {
-                      SUPPLIERPRODUCT: {},
-                      SUPPLIERPRODUCTTAX: {},
-                    };
-                    for (const tmp of tmpRs) {
-                      if (productNameMap[tmp.Type]) productNameMap[tmp.Type][tmp.Product] = tmp;
-                    }
-
-                    for (const detail of detailsData) {
-                      const supplierProductName = productNameMap['SUPPLIERPRODUCT'][this.commonService.getObjectId(detail.Product)];
-                      const supplierProductTaxName = productNameMap['SUPPLIERPRODUCTTAX'][this.commonService.getObjectId(detail.Product)];
-                      if (supplierProductName) {
-                        detail.Description = supplierProductName.Name;
-                      }
-                      if (supplierProductTaxName) {
-                        detail.ProductTaxName = supplierProductTaxName.Name;
-                      }
-                      const newDetailFormGroup = this.makeNewDetailFormGroup(formItem, detail);
-                      newDetailFormGroup['UnitList'] = detail['UnitList'];
-                      newDetailFormGroup['IsImport'] = true;
-                      details.push(newDetailFormGroup);
-                      // newDetailFormGroup.get('Unit').setValue(product.UnitConversions.find(f => f['DefaultImport']));
-                      this.onAddDetailFormGroup(formItem, newDetailFormGroup, details.length - 1);
-                      this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-                    }
-                    this.onProcessed();
-                  } catch (err) {
-                    this.onProcessed();
-                  }
-                  return true;
-                }
-              }
-            ]
-          }
-        });
       } catch (err) {
         console.error(err);
         this.onProcessed();
@@ -1605,62 +1132,6 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       }
     };
     reader.readAsBinaryString(file);
-
-
-    // this.commonService.openDialog(DialogFormComponent, {
-    //   context: {
-    //     cardStyle: { width: '500px' },
-    //     title: 'Mời bạn chọn đơn vị tính cho khớp và xác nhận',
-    //     onInit: async (form, dialog) => {
-    //       // const sku = form.get('Sku');
-    //       // sheet.setValue('Sku');
-    //       return true;
-    //     },
-    //     controls: [
-    //       {
-    //         name: 'Sku',
-    //         label: 'Sku',
-    //         placeholder: 'Chọn sku...',
-    //         type: 'select2',
-    //         initValue: 'Sku',
-    //         // focus: true,
-    //         option: {
-    //           data: columnList,
-    //           placeholder: 'Chọn sku...',
-    //           allowClear: true,
-    //           width: '100%',
-    //           dropdownAutoWidth: true,
-    //           minimumInputLength: 0,
-    //           withThumbnail: false,
-    //           keyMap: {
-    //             id: 'id',
-    //             text: 'text',
-    //           },
-    //         }
-    //       },
-    //     ],
-    //     actions: [
-    //       {
-    //         label: 'Esc - Trở về',
-    //         icon: 'back',
-    //         status: 'basic',
-    //         keyShortcut: 'Escape',
-    //         action: () => { return true; },
-    //       },
-    //       {
-    //         label: 'Xác nhận',
-    //         icon: 'generate',
-    //         status: 'success',
-    //         // keyShortcut: 'Enter',
-    //         action: (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
-    //           return true;
-    //         },
-    //       },
-    //     ],
-    //   },
-    //   closeOnEsc: false,
-    //   closeOnBackdropClick: false,
-    // });
   }
 
 }

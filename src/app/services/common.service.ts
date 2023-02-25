@@ -995,9 +995,61 @@ export class CommonService {
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
   };
+  voucherPrintConponentTypeIndexByPrefix = {
+    '104': SalesVoucherPrintComponent,
+    '126': SalesReturnsVoucherPrintComponent,
+    '107': PurchaseVoucherPrintComponent,
+    '108': PurchaseOrderVoucherPrintComponent,
+    '111': WarehouseGoodsDeliveryNotePrintComponent,
+    '110': WarehouseGoodsReceiptNotePrintComponent,
+    '124': WarehouseInventoryAdjustNotePrintComponent,
+    '100': CashReceiptVoucherPrintComponent,
+    '101': CashPaymentVoucherPrintComponent,
+    '106': SalesPriceReportPrintComponent,
+    '113': DeploymentVoucherPrintComponent,
+    '103': AccountingOtherBusinessVoucherPrintComponent,
+    'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
+    '114': CollaboratorOrderPrintComponent,
+    'CLBRTCOMMISSION': CollaboratorCommissionPrintComponent,
+    'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,
+    'COLLABORATORORDER': CollaboratorOrderPrintComponent,
+    'CLBRTAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTWEEKLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTMONTHLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
+    'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
+    'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
+    'COMMERCEPOSORDER80': CommercePosBillPrintComponent,
+    'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,
+    'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
+    'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
+  };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
     if (this.voucherPrintConponentTypeIndex[type]) {
       this.openDialog(this.voucherPrintConponentTypeIndex[type], {
+        context: {
+          showLoadinng: true,
+          title: 'Xem trước',
+          id: [this.getObjectId(relativeVocher)],
+          inputMode: 'dialog',
+          mode: 'print',
+          inputId: [this.getObjectId(relativeVocher)],
+          // data: data,
+          idKey: ['Code'],
+          // approvedConfirm: true,
+          sourceOfDialog: 'any',
+          onClose: (data: M) => {
+            onClose && onClose(data);
+          },
+          onChange: (data: M, instance: DataManagerPrintComponent<M>) => {
+            onChange && onChange(data, instance);
+          }
+        },
+      });
+      return true;
+    } else if (this.voucherPrintConponentTypeIndexByPrefix[type]) {
+      this.openDialog(this.voucherPrintConponentTypeIndexByPrefix[type], {
         context: {
           showLoadinng: true,
           title: 'Xem trước',
