@@ -149,6 +149,7 @@ export class PurchaseOrderVoucherDetailModel {
   Type?: string;
   Order?: PurchaseVoucherModel & string;
   Product?: ProductModel;
+  SupplierSku?: string;
   ProductName?: string;
   ProductTaxName?: string;
   Description?: string;

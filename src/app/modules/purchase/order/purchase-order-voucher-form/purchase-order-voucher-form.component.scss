@@ -2,6 +2,13 @@
 [name="Description"] [formcontrolname="Description"]{
   border-right: 4px solid var(--danger);
 }
+[name="ToMoney"] [formcontrolname="ToMoney"],
+[name="Description"] [formcontrolname="Description"]{
+  border-right: 4px solid var(--danger);
+  &.imported {
+      border-right: 4px solid var(--success);
+  }
+}
 
 [name="Note"] .scrollable-container {
     height: 10rem;
@@ -26,4 +33,8 @@
 nb-card nb-tabset nb-tab {
     padding-left: 9px !important;
     padding-right: 9px !important;
+}
+
+#print-area{
+    width: 22cm !important;
 }

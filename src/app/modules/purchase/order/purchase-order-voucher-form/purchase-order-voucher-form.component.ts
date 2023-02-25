@@ -1,8 +1,7 @@
-import { ProductUnitModel } from './../../../../models/product.model';
 import { AdminProductService } from './../../../admin-product/admin-product.service';
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -27,7 +26,6 @@ import { takeUntil } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
-import { defaultAuthOptions } from '@nebular/auth';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { _ } from 'ag-grid-community';
 
@@ -463,6 +461,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       Image: [[]],
       Reason: [''],
       ProductTaxName: [''],
+      SupplierSku: [''],
       Tax: [''],
     });
 
@@ -506,7 +505,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
-      const productNames = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
+      const productNames = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX,SUPPLIERPRODUCTSKU,SUPPLIERPRODUCTAXVALUE]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
 
       if (productNames) {
         for (const productName of productNames) {
@@ -518,6 +517,16 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           if (productName.Type == 'SUPPLIERPRODUCTTAX') {
             if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
               newChildFormGroup.get('ProductTaxName').setValue(productName.Name);
+            }
+          }
+          if (productName.Type == 'SUPPLIERPRODUCTSKU') {
+            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
+              newChildFormGroup.get('SupplierSku').setValue(productName.Name);
+            }
+          }
+          if (productName.Type == 'SUPPLIERPRODUCTAXVALUE') {
+            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
+              newChildFormGroup.get('Tax').setValue(productName.Name);
             }
           }
         }
@@ -1049,7 +1058,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           initial[name] = XLSX.utils.sheet_to_json(sheet);
           return initial;
         }, {});
-        this.isProcessing = false;
+        this.onProcessing();
 
         const sheets = Object.keys(jsonData);
         if (sheets.length > 1) {
@@ -1138,10 +1147,147 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           return { id, text };
         });
 
+        // Auto mapping
+
+        const details = this.getDetails(formItem);
+        if (details.controls.length != sheet.length) {
+          this.commonService.showToast('Số dòng trên file excel không khớp với số dòng trên đơn đặt hàng!', 'Không khớp số dòng!', { duration: 60000, status: 'warning' });
+        }
+        // if (details.length == 1 && !this.commonService.getObjectId(details.controls[0].get('Product').value)) {
+        //   details.clear();
+        // }
+
+        // const productIds = [];
+        // const detailsData: PurchaseOrderVoucherDetailModel[] = [];
+
+        for (const row of sheet) {
+
+          // let product: ProductModel = null;
+          // if (row['Sku']) {
+          //   product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: row['Sku'], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+          // } else if (row['SupplierSku']) {
+          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCTSKU', eq_Name: row['SupplierSku'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+          //   if (productName) {
+          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+          //   }
+          // } else if (row['ProductName']) {// Load product by product name map by supplier
+          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCT', eq_Name: row['ProductName'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+          //   if (productName) {
+          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+          //   } else {
+          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Name: row['ProductName'], includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+          //   }
+          // } else if (row['ProductTaxName']) {// Load product by product name map by supplier
+          //   const productName = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Type: 'SUPPLIERPRODUCTTAX', eq_Name: row['ProductTaxName'], eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+          //   if (productName) {
+          //     product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Code: productName.Product, includeIdText: true, includeUnitConversions: true }).then(rs => rs[0]);
+          //   }
+          // }
+          let detailForm: FormGroup = null;
+          if (row['Sku']) {
+            detailForm = details.controls.find(f => f.get('Product')?.value?.Sku == row['Sku']) as FormGroup;
+            if (detailForm) {
+              if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+              if (row['ProductName']) detailForm.get('Description').setValue(row['ProductName']);
+              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
+              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+            }
+          } else if (row['SupplierSku']) {
+            detailForm = details.controls.find(f => f.get('SupplierSku')?.value == row['SupplierSku']) as FormGroup;
+            if (detailForm) {
+              if (row['ProductName']) detailForm.get('Description').setValue(row['ProductName']);
+              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
+              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+            }
+          } else if (row['ProductName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('Description')?.value == row['ProductName']) as FormGroup;
+            if (detailForm) {
+              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
+              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+            }
+          } else if (row['ProductTaxName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('ProductTaxName')?.value == row['ProductTaxName']) as FormGroup;
+          }
+
+          // let unit = null;
+          // if (row['Unit']) {
+          //   unit = this.adminProductService.unitMap$?.value[row['Unit']?.trim()];
+          // }
+          // if (!unit && product) {
+          //   unit = product.UnitConversions?.find(f => f.Name == row['UnitName']?.trim());
+          // }
+
+          if (!detailForm) {
+            this.commonService.showToast(row['ProductName'] + ' Không có trên đơn đặt hàng', 'Sản phẩm không có trên đơn đặt hàng !', { duration: 15000, status: 'warning', duplicatesBehaviour: 'previous', limit: 1 });
+          } else {
+            detailForm['IsImport'] = true;
+          }
+
+          // if (product) {
+          //   productIds.push(this.commonService.getObjectId(product));
+          // }
+
+          // const detail = {
+          //   Image: product?.Pictures,
+          //   Product: product,
+          //   Description: product && product.Name || row['ProductName'],
+          //   Unit: unit,
+          //   Price: row['Price'],
+          //   Quantity: row['Quantity'],
+          //   ProductTaxName: row['ProductTaxName'],
+          //   Tax: row['Tax'],
+          //   UnitList: product?.UnitConversions || [],
+          // };
+          // detailsData.push(detail);
+        }
+
+        // const tmpRs = await this.apiService.getPromise<any[]>('/admin-product/names', { eq_Product: '[' + productIds.join(',') + ']', eq_Object: this.commonService.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'asc' });
+        // const productNameMap = {
+        //   SUPPLIERPRODUCT: {},
+        //   SUPPLIERPRODUCTTAX: {},
+        // };
+        // for (const tmp of tmpRs) {
+        //   if (productNameMap[tmp.Type]) productNameMap[tmp.Type][tmp.Product] = tmp;
+        // }
+
+        // for (const detail of detailsData) {
+
+        //   if (!detail.Product) {
+        //     this.commonService.showToast(detail['Description'] + ' Không có trên đơn đặt hàng', 'Sản phẩm không có trên đơn đặt hàng !', { duration: 15000, status: 'warning' });
+        //   }
+
+        //   const supplierProductName = productNameMap['SUPPLIERPRODUCT'][this.commonService.getObjectId(detail.Product)];
+        //   const supplierProductTaxName = productNameMap['SUPPLIERPRODUCTTAX'][this.commonService.getObjectId(detail.Product)];
+        //   const supplierProductSku = productNameMap['SUPPLIERPRODUCTSKU'][this.commonService.getObjectId(detail.Product)];
+        //   if (supplierProductName) {
+        //     detail.Description = supplierProductName.Name;
+        //   }
+        //   if (supplierProductTaxName) {
+        //     detail.ProductTaxName = supplierProductTaxName.Name;
+        //   }
+        //   if (supplierProductTaxName) {
+        //     detail.ProductTaxName = supplierProductTaxName.Name;
+        //   }
+        //   if (supplierProductSku) {
+        //     detail.SupplierSku = supplierProductSku.Name;
+        //   }
+
+        //   const newDetailFormGroup = details.controls.find(f => f.get('Product')?.value?.Sku == detail['Sku']);
+        //   newDetailFormGroup['UnitList'] = detail['UnitList'];
+        //   newDetailFormGroup['IsImport'] = true;
+        //   details.push(newDetailFormGroup);
+        //   this.onAddDetailFormGroup(formItem, newDetailFormGroup, details.length - 1);
+        //   this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+        // }
+        this.onProcessed();
+        this.commonService.showToast('Nhập chi tiết từ thành công', 'Hệ thống đã nhập các thông tin chi tiết trên file excel vào chi tiết tương ứng trên phiếu !', { duration: 15000, status: 'success' });
+        return true;
+
+
         // Confirm mapping
         // const columnList = Object.keys(sheet[0]).map(m => ({ id: m, text: m }));
-        let details = [];
-        this.commonService.openDialog(DialogFormComponent, {
+        // let details = [];
+        if (false) this.commonService.openDialog(DialogFormComponent, {
           context: {
             cardStyle: { width: '500px' },
             title: 'Mời bạn chọn cột tương ứng với các trường thông tin sản phẩm',
@@ -1453,7 +1599,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           }
         });
       } catch (err) {
-        this.isProcessing = false;
+        console.error(err);
+        this.onProcessed();
+        this.commonService.showToast(err, 'Có lỗi xảy ra trong quá trình nhập chi tiết!', { duration: 15000, status: 'danger', duplicatesBehaviour: 'previous', limit: 1 });
       }
     };
     reader.readAsBinaryString(file);

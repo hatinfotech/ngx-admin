@@ -172,10 +172,10 @@
                         <!-- Detail form -->
                         <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div class="row">
-                            <div class="col-sm-2 label">
-                                {{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
-                            <div class="col-sm-3 label">{{'Common.productOrService' | translate | headtitlecase}}</div>
-                            <div class="col-sm-7 label">
+                            <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 col-xs-12 label">
+                                {{'Common.noNumber' | translate | headtitlecase}}/{{'Hình ảnh' | translate | headtitlecase}}</div>
+                            <div class="col-xl-2 col-lg-3 col-md-8 col-sm-12 col-xs-12 label">{{'Common.productOrService' | translate | headtitlecase}}</div>
+                            <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12 col-xs-12 label">
                                 <div class="row">
                                     <div class="col-sm-3 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
                                     <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
@@ -193,12 +193,12 @@
                                     <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                                <ngx-form-group [hideLabel]="true" *ngIf="detail.value.Type === 'PRODUCT'" [formGroup]="detail" name="No" label="Common.no" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" *ngIf="detail.value.Type === 'PRODUCT'" [formGroup]="detail" name="No" label="&nbsp;" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                                                     <!-- <input type="hidden" formControlName="Id"> -->
                                                 </ngx-form-group>
                                                 <div class="form-group">
-                                                    <label class="label">{{'Form.cm' | translate | headtitlecase}}</label>
+                                                    <!-- <label class="label">{{'Form.cm' | translate | headtitlecase}}</label> -->
                                                     <button nbButton status="{{detail.value.Type === 'PRODUCT' ? 'danger' : 'primary'}}" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0">
                                                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                     </button>
@@ -206,8 +206,8 @@
                                             </div>
 
                                             <div class="col-md-9 col-sm-9 col-xs-9">
-                                                <ngx-form-group [hideLabel]="true" *ngIf="detail.value.Type === 'PRODUCT'" [formGroup]="detail" name="Image" label="Common.image" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '5.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
+                                                <ngx-form-group [hideLabel]="false" *ngIf="detail.value.Type === 'PRODUCT'" [formGroup]="detail" name="Image" label="Hỉnh ảnh" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: '6.9rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                 </ngx-form-group>
                                                 <div class="form-group" *ngIf="detail.value.Type === 'CATEGORY'">
                                                     <label class="label">Stt</label>
@@ -219,13 +219,18 @@
                                     <div class="col-xl-2 col-lg-3 col-md-8 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-12 col-sm-12 col-xs-12" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false" [customIcons]="getCustomIcons(i + ic)">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false" [customIcons]="getCustomIcons(i + ic)">
                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Type" label="Common.type" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Type" label="Common.type" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail, 'Type', ic)" [select2Option]="select2OptionForType"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="SupplierSku" label="Sku NCC" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="SupplierSku" placeholder="{{'Sku NCC' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
                                         </div>
@@ -233,43 +238,43 @@
                                     <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12 col-xs-12">
                                         <div class="row">
                                             <div class="col-md-3 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" [inputMask]="towDigitsInputMask">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <ngx-select2 formControlName="Unit" [data]="detail['UnitList'] || unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Voucher.price" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Voucher.price" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price', ic)" currencyMask [options]="curencyFormat">
                                                 </ngx-form-group>
                                             </div>
                                             <!-- <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="formItem._details" [index]="ic" [allowCopy]="true" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Tax" label="Voucher.tax" [array]="formItem._details" [index]="ic" [allowCopy]="true" [required]="false">
                                                     <ngx-select2 [data]="taxList" formControlName="Tax" (selectChange)="toMoney(formItem, detail)" [select2Option]="select2OptionForTax"></ngx-select2>
                                                 </ngx-form-group>
                                             </div> -->
                                             <div class="col-md-4 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="curencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" [ngClass]="{'imported': detail?.IsImport}" currencyMask [options]="curencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-3 col-xs-3">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="ProductTaxName" label="Tên thuế NCC" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ProductTaxName" label="Tên thuế NCC" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="ProductTaxName" placeholder="{{'Tên thuế NCC' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-3 col-xs-3">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Tax" label="Thuế VAT" [array]="formItem._details" [index]="ic" [allowCopy]="true" [required]="false">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Tax" label="Thuế VAT" [array]="formItem._details" [index]="ic" [allowCopy]="true" [required]="false">
                                                     <input type="text" nbInput fullWidth formControlName="Tax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" class="align-right">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-7 col-sm-6 col-xs-8">
-                                                <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Description" label="Tên theo nhà cung cấp" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Tên theo nhà cung cấp' | translate | headtitlecase}}"></textarea>
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Description" label="Tên theo nhà cung cấp" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Tên theo nhà cung cấp' | translate | headtitlecase}}" [ngClass]="{'imported': detail?.IsImport}"></textarea>
                                                 </ngx-form-group>
                                             </div>
                                         </div>
