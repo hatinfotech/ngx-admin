@@ -14,13 +14,14 @@ export interface ActionControl {
   value?: () => any;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
-  click: (event?: any, option?: any) => void;
-  change?: (event?: any, option?: any) => void;
-  typing?: (event?: any, option?: any) => void;
+  click: (event?: any, option?: ActionControlListOption) => void;
+  change?: (event?: any, option?: ActionControlListOption) => void;
+  typing?: (event?: any, option?: ActionControlListOption) => void;
 }
 
 export interface ActionControlListOption {
   formIndex: number;
   form: FormGroup;
+  index: number,
   [key: string]: any;
 }

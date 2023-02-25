@@ -133,13 +133,6 @@
               </nb-card-body>
             </nb-card>
           </nb-tab> -->
-          <nb-tab tabTitle="Dòng tiền thuần">
-            <nb-card class="size-giant chart small-header">
-              <nb-card-body class="commission-statistics-wrapper">
-                <chart type="line" [data]="debtCompareStatisticsData" [options]="options"></chart>
-              </nb-card-body>
-            </nb-card>
-          </nb-tab>
           <nb-tab tabTitle="Công nợ">
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
@@ -151,6 +144,13 @@
             <nb-card class="size-giant chart small-header">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="investStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Dòng tiền thuần">
+            <nb-card class="size-giant chart small-header">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="debtCompareStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>

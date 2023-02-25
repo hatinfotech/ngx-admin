@@ -507,7 +507,7 @@ export class AccountingDashboardComponent implements OnDestroy {
     //   ],
     // };
 
-    const cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    let cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const cashInBankFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1121]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const goldFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // const voucherFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1114]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
@@ -596,14 +596,16 @@ export class AccountingDashboardComponent implements OnDestroy {
     /** End */
 
     /** Prepare data */
-    const businessCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[511,515,521,632,641,642,811,331,131,334,3334]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const envestmentCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[128]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const financyCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[3411]", eq_ContraAccount: "[1111,1121]", increment: true, statisticsCost: false, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    // cashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121,1113]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const businessCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[511,521,641,642,627,635,811,331,131,334,3334,242,133,333,141,136,336,821]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const envestmentCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[128,711,211,515,241]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const financyCashFlowStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[1111,1121]", eq_ContraAccount: "[341]", increment: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     // line1Data = voucherFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line2Data = businessCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value =  statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    // line1Data = cashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
+    line2Data = businessCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     line3Data = envestmentCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
-    line4Data = financyCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+    line4Data = financyCashFlowStatistics.map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.SumOfDebit - statistic.SumOfCredit; return statistic; });
     timeline = [...new Set([
       // ...line1Data.map(item => item['Timeline']),
       ...line2Data.map(item => item['Timeline']),
@@ -612,14 +614,14 @@ export class AccountingDashboardComponent implements OnDestroy {
     ].sort())];
     labels = [];
     mergeData = timeline.map(t => {
-      // const point1 = line1Data.find(f => f.Timeline == t);
       const point2 = line2Data.find(f => f.Timeline == t);
       const point3 = line3Data.find(f => f.Timeline == t);
       const point4 = line4Data.find(f => f.Timeline == t);
+      // const point1;
       labels.push(point2?.Label || point3?.Label || point4?.Label);
       return {
         Label: t,
-        // Line1: point1 || { Value: 0 },
+        Line1: { Value: ((point2.Value || 0) + (point3.Value || 0) + (point3.Value + 0) | (point4.Value | 0)) },
         Line2: point2 || { Value: 0 },
         Line3: point3 || { Value: 0 },
         Line4: point4 || { Value: 0 },
@@ -631,12 +633,24 @@ export class AccountingDashboardComponent implements OnDestroy {
       labels: labels,
       datasets: [
         {
+          label: 'Tổng tiền',
+          // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
+          data: mergeData.map(point => point.Line1['Value']),
+          borderColor: this.colors.info,
+          // backgroundColor: colors.danger,
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
+          // fill: true,
+          borderDash: [5, 5],
+          pointRadius: pointRadius,
+          pointHoverRadius: 10,
+        },
+        {
           label: 'Kinh doanh',
           // data: cashFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           data: mergeData.map(point => point.Line2['Value']),
-          borderColor: this.colors.danger,
+          borderColor: this.colors.success,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.danger, 0.1),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: pointRadius,
@@ -646,9 +660,9 @@ export class AccountingDashboardComponent implements OnDestroy {
           label: 'Đầu tư',
           // data: cashInBankFlowStatistics.map(statistic => statistic.SumOfDebit - statistic.SumOfCredit),
           data: mergeData.map(point => point.Line3['Value']),
-          borderColor: this.colors.info,
+          borderColor: this.colors.primary,
           // backgroundColor: colors.danger,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.1),
+          backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.1),
           // fill: true,
           // borderDash: [5, 5],
           pointRadius: pointRadius,
