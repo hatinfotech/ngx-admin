@@ -122,6 +122,7 @@ import { AccountingContributedCapitalReportComponent } from './modules/accountin
 import { ProductBrandListComponent } from './modules/admin-product/brand/product-brand-list/product-brand-list.component';
 import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
 import { AccountingContraAccountReportComponent } from './modules/accounting/reports/contra-account-report/accounting-contra-account-report.component';
+import { ProductKeywordListComponent } from './modules/admin-product/keyword/product-keyword-list/product-keyword-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -897,6 +898,14 @@ const routes: Routes = [
     path: 'admin-product/product-object-reference/list',
     canActivate: [AuthGuardService],
     component: ProductObjectReferenceListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'admin-product/product-keywords/list',
+    canActivate: [AuthGuardService],
+    component: ProductKeywordListComponent,
     data: {
       reuse: true,
     },
