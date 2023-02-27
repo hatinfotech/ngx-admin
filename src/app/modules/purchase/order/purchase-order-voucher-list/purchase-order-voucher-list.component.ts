@@ -30,7 +30,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
 
   printDialog = PurchaseOrderVoucherPrintComponent;
   formDialog = PurchaseOrderVoucherFormComponent;
-  reuseDialog = true;
+  reuseDialog = false;
   static _dialog: NbDialogRef<PurchaseOrderVoucherListComponent>;
 
   constructor(
