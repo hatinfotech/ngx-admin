@@ -111,8 +111,9 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   .bar-code {
     height: 3.7mm;
   }
-  .qr-code {
+  .qr-code img {
     height: 9mm;
+    width: 9mm;
   }
   .page-break {
     clear: left;
@@ -278,8 +279,8 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
         includeContainer: true,
         includeProduct: true,
         includeUnit: true,
-        renderBarCode: true,
-        renderQrCode: true,
+        // renderBarCode: true,
+        // renderQrCode: true,
         includePrice: true,
         // eq_Type: this.printForType,
         // id: this.id,

@@ -20,13 +20,15 @@
                         </div>
                     </div>
                     <div style="overflow: hidden; height: 2.5mm;">
-                        <img class="bar-code" src="{{item.value.BarCode}}">
+                        <!-- <img class="bar-code" src="{{item.value.BarCode}}"> -->
+                        <ngx-barcode [bc-value]="item.value.BarCodeData" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="10" [bc-width]="0.7" [bc-margin]="0" bc-margin-top="0" bc-margin-bottom="0" bc-margin-left="0" bc-margin-right="0"></ngx-barcode>
                     </div>
                     <!-- <div style="display: flex; height: 4.5mm; align-items: center; justify-content: center;">
                     </div> -->
                     <div class="info">SKU: {{item.value.Product.Sku}} - {{item.value.Product | objecttext}}</div>
                     <div style="display: flex; clear: both;">
-                        <img class="qr-code" src="{{item.value.QrCode}}" style="margin-right: 0.5mm;">
+                        <!-- <img class="qr-code" src="{{item.value.QrCode}}"> -->
+                        <ngx-qrcode [elementType]="'url'" [value]="item.value.QrCodeData" cssClass="qr-code" errorCorrectionLevel="L" [margin]="0" [width]="'9mm'" style="margin-right: 0.5mm;"></ngx-qrcode>
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>
                     </div>
                     <div class="probox-link">QRLink: {{item.value.QrCodeDataPreview}}</div>

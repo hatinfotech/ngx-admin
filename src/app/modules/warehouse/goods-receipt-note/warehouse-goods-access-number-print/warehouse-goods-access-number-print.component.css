@@ -74,6 +74,7 @@
 }
 .qr-code {
   height: 9mm;
+  width: 9mm;
 }
 .page-break {
   clear: left;
