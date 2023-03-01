@@ -1,3 +1,5 @@
+import { SalesMasterPriceTableDetailModel } from './../../../../models/sales.model';
+import { ProductUnitConversoinModel, ProductModel } from './../../../../models/product.model';
 import { PurchaseOrderVoucherFormComponent } from './../purchase-order-voucher-form/purchase-order-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
@@ -14,6 +16,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { FormGroup } from '@angular/forms';
 import { base64 } from '@firebase/util';
 import * as XLSX from 'xlsx';
+import { runInThisContext } from 'vm';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
@@ -263,30 +266,45 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     return data;
   }
 
-  updateSalePrice(detail: PurchaseOrderVoucherDetailModel) {
+  async updateSalePrice(detail: PurchaseOrderVoucherDetailModel) {
+    const unitPriceControls = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
+      masterPriceTable: 'default',
+      eq_Code: this.commonService.getObjectId(detail?.Product),
+      // eq_Unit: this.commonService.getObjectId(detail?.Unit) 
+      group_Unit: true,
+    }).then(rs => {
+      return rs.map(unitPrice => {
+        return {
+          name: this.commonService.getObjectId(unitPrice.Unit),
+          label: 'Giá thay đổi cho ĐVT: ' + this.commonService.getObjectText(unitPrice.Unit),
+          placeholder: 'Giá thay đổi cho ĐVT: ' + this.commonService.getObjectText(unitPrice.Unit),
+          type: 'currency',
+          initValue: unitPrice.Price,
+          focus: this.commonService.getObjectId(detail.Unit) == this.commonService.getObjectId(unitPrice.Unit),
+          masterPriceTable: unitPrice.MasterPriceTable || 'default',
+        };
+      });
+    });
+
     this.commonService.openDialog(DialogFormComponent, {
       context: {
         width: '500px',
         title: 'Cập nhật giá bán',
         onInit: async (form, dialog) => {
-          const price = form.get('Price');
-          await this.apiService.getPromise('/sales/master-price-table-details', { masterPriceTable: 'default', eq_Code: this.commonService.getObjectId(detail?.Product), eq_Unit: this.commonService.getObjectId(detail?.Unit) }).then(rs => {
-            console.log(rs);
-            price.setValue(rs[0]?.Price);
-            dialog['CurrentPrice'] = rs[0]?.Price;
-            dialog['MasterPriceTable'] = rs[0].MasterPriceTable;
-          });
+          // const price = form.get('Price');
+          // await this.apiService.getPromise('/sales/master-price-table-details', {
+          //   masterPriceTable: 'default',
+          //   eq_Code: this.commonService.getObjectId(detail?.Product),
+          //   // eq_Unit: this.commonService.getObjectId(detail?.Unit) 
+          // }).then(rs => {
+          //   console.log(rs);
+          //   price.setValue(rs[0]?.Price);
+          //   dialog['CurrentPrice'] = rs[0]?.Price;
+          //   dialog['MasterPriceTable'] = rs[0].MasterPriceTable;
+          // });
           return true;
         },
         controls: [
-          {
-            name: 'Price',
-            label: 'Giá thay đổi',
-            placeholder: 'Giá thay đổi',
-            type: 'currency',
-            initValue: 0,
-            focus: true,
-          },
           {
             name: 'Description',
             label: 'Mô tả',
@@ -295,6 +313,15 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
             disabled: true,
             initValue: detail.Description,
           },
+          // {
+          //   name: 'Price',
+          //   label: 'Giá thay đổi',
+          //   placeholder: 'Giá thay đổi',
+          //   type: 'currency',
+          //   initValue: 0,
+          //   focus: true,
+          // },
+          ...unitPriceControls,
         ],
         actions: [
           {
@@ -310,14 +337,20 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
             status: 'success',
             keyShortcut: 'Enter',
             action: async (form, dialog) => {
-              const newPrice = form.get('Price').value;
-              if (dialog['CurrentPrice'] != newPrice) {
-                await this.apiService.putPromise('/sales/master-price-table-details', {}, [{
-                  MasterPriceTable: dialog['MasterPriceTable'],
-                  Product: this.commonService.getObjectId(detail.Product),
-                  Unit: this.commonService.getObjectId(detail.Unit),
-                  Price: form.get('Price').value
-                }]);
+              const updatePrice = [];
+              for (const unitPriceControl of unitPriceControls) {
+                const newPrice = form.get(unitPriceControl.name).value;
+                if (unitPriceControl.initValue != newPrice) {
+                  updatePrice.push({
+                    MasterPriceTable: unitPriceControl.masterPriceTable,
+                    Product: this.commonService.getObjectId(detail.Product),
+                    Unit: unitPriceControl.name,
+                    Price: newPrice
+                  });
+                }
+              }
+              if (updatePrice.length > 0) {
+                await this.apiService.putPromise('/sales/master-price-table-details', {}, updatePrice);
               }
               // formDialogConpoent.dismiss();
               return true;
