@@ -225,7 +225,7 @@
                                             </div>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
                                                 <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Type" label="Common.type" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" (selectChange)="toMoney(formItem, detail, 'Type', ic)" [select2Option]="select2OptionForType"></ngx-select2>
+                                                    <ngx-select2 [data]="select2DataForType" formControlName="Type" [select2Option]="select2OptionForType"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-6 col-sm-6 col-xs-12">
@@ -239,7 +239,7 @@
                                         <div class="row">
                                             <div class="col-md-3 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" [inputMask]="towDigitsInputMask">
+                                                    <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" [inputMask]="towDigitsInputMask">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-2 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
@@ -249,7 +249,7 @@
                                             </div>
                                             <div class="col-md-3 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Voucher.price" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price', ic)" currencyMask [options]="curencyFormat">
+                                                    <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" currencyMask [options]="curencyFormat">
                                                 </ngx-form-group>
                                             </div>
                                             <!-- <div class="col-md-3 col-sm-4 col-xs-4" *ngIf="detail.value.Type === 'PRODUCT'">
@@ -259,7 +259,7 @@
                                             </div> -->
                                             <div class="col-md-4 col-sm-3 col-xs-3" *ngIf="detail.value.Type === 'PRODUCT'">
                                                 <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" [ngClass]="{'imported': detail?.IsImport}" currencyMask [options]="curencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)">
+                                                    <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" [ngClass]="{'imported': detail?.IsImport}" currencyMask [options]="curencyFormat">
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-3 col-sm-3 col-xs-3">

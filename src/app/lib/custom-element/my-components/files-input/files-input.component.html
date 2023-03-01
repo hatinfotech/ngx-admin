@@ -9,7 +9,8 @@
     </div>
     <!-- </div> -->
     <div class="upload-btn-wrap zcol-md-{{config.colSize || 6}}">
-      <button class="upload-btn" nbButton size="tiny" (click)="chooseFile()">upload</button>
+      <button [disabled]="isProcessing" class="upload-btn" nbButton size="tiny" (click)="chooseFile()">upload</button><br>
+      <button [disabled]="isProcessing" class="upload-btn" nbButton size="tiny" (click)="uploadByLinks()">upload by links</button>
     </div>
   </div>
 </div>

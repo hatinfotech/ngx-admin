@@ -1,11 +1,12 @@
 import { delay } from 'rxjs/operators';
 import { FileModel, FileStoreModel } from './../../../../models/file.model';
 import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ImagesViewerComponent } from '../images-viewer/images-viewer.component';
+import { DialogFormComponent } from '../../../../modules/dialog/dialog-form/dialog-form.component';
 
 @Component({
   selector: 'ngx-files-input',
@@ -36,6 +37,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   thumbnail: string;
   value?: FileModel[];
   fileStoreList: FileStoreModel[];
+  isProcessing = false;
 
   @Input() config?: {
     style?: any,
@@ -219,6 +221,66 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   chooseFile() {
     this.uploadButton.nativeElement.click();
     return false;
+  }
+
+  uploadByLinks() {
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Upload hình bằng link',
+        width: '600px',
+        onInit: async (form, dialog) => {
+
+          return true;
+        },
+        controls: [
+          {
+            name: 'Link',
+            label: 'Link hình',
+            placeholder: 'Link hình, mỗi link trên 1 dòng',
+            type: 'textarea',
+            // initValue: 0,
+          },
+        ],
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'basic',
+            action: async () => { return true; },
+          },
+          {
+            label: 'Upload',
+            icon: 'cloud-upload-outline',
+            status: 'primary',
+            action: async (form: FormGroup) => {
+
+              const links: string[] = form.get('Link').value?.split('\n');
+
+              if (links && links.length > 0) {
+                try {
+                  this.isProcessing = true;
+                  for (const link of links) {
+                    // const values = [];
+                    const file = await this.apiService.uploadFileByLink(link);
+                    if (file) {
+                      this.value.push(file);
+                      this.onChange && this.onChange(this.value);
+                    }
+                  }
+                  this.isProcessing = false;
+                } catch (err) {
+                  console.error(err);
+                  this.isProcessing = false;
+                }
+              }
+
+
+              return true;
+            },
+          },
+        ],
+      },
+    });
   }
 
   onFileClick(file: FileModel) {

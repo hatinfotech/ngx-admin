@@ -1,10 +1,11 @@
 import { CommonService } from './../../../../services/common.service';
 import { FileModel, FileStoreModel } from './../../../../models/file.model';
 import { AfterViewInit, Component, EventEmitter, OnChanges, OnInit, SimpleChanges, Input, ViewChild, ElementRef, forwardRef } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormGroup, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ApiService } from '../../../../services/api.service';
 import { ImagesViewerComponent } from '../images-viewer/images-viewer.component';
+import { DialogFormComponent } from '../../../../modules/dialog/dialog-form/dialog-form.component';
 
 @Component({
   selector: 'ngx-file-input',
@@ -41,6 +42,8 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
   apiPath = '/file/files';
   style?: any = {};
   previewStyle: any = {};
+
+  isProcessing = false;
 
   onChange: (item: any) => void;
 
@@ -204,13 +207,73 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
     return false;
   }
 
+  uploadByLink() {
+    this.commonService.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Upload hình bằng link',
+        width: '600px',
+        onInit: async (form, dialog) => {
+
+          return true;
+        },
+        controls: [
+          {
+            name: 'Link',
+            label: 'Link hình',
+            placeholder: 'Link hình',
+            type: 'text',
+            // initValue: 0,
+          },
+        ],
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'basic',
+            action: async () => { return true; },
+          },
+          {
+            label: 'Upload',
+            icon: 'cloud-upload-outline',
+            status: 'primary',
+            action: async (form: FormGroup) => {
+
+              const link = form.get('Link').value;
+
+              if (link) {
+                try {
+                  this.isProcessing = true;
+                  const file = await this.apiService.uploadFileByLink(link);
+                  this.isProcessing = false;
+                  if (file) {
+                    this.value = file;
+                    this.previewStyle.backgroundImage = 'url(' + this.value.Thumbnail + ')';
+                    this.onChange && this.onChange(this.value);
+                  }
+                } catch (err) {
+                  console.error(err);
+                  this.isProcessing = false;
+                }
+              }
+
+
+              return true;
+            },
+          },
+        ],
+      },
+    });
+  }
+
   preview() {
     // window.open(this.value.OriginImage, '_blank');
     // Open photo browser
-    this.commonService.openDialog(ImagesViewerComponent, {context: {
-      images: [this.value?.OriginImage],
-      imageIndex: 0
-    }});
+    this.commonService.openDialog(ImagesViewerComponent, {
+      context: {
+        images: [this.value?.OriginImage],
+        imageIndex: 0
+      }
+    });
     return false;
   }
 

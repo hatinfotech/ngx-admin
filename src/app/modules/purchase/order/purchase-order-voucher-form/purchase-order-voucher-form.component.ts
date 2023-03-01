@@ -503,7 +503,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     return false;
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
-    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
+    newChildFormGroup.get('Quantity').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Quantity', index));
+    newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Price', index));
+    newChildFormGroup.get('ToMoney').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'ToMoney', index));
+    newChildFormGroup.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Type', index));
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
       const purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: this.commonService.getObjectId(value), eq_Supplier: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
@@ -1089,28 +1092,45 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           let detailForm: FormGroup = null;
           if (row['Sku']) {
             detailForm = details.controls.find(f => f.get('Product')?.value?.Sku == row['Sku']) as FormGroup;
-            if (detailForm) {
-              if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
-              if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
-              if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
-              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
-            }
+            // if (detailForm) {
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
           } else if (row['SupplierSku']) {
             detailForm = details.controls.find(f => f.get('SupplierSku')?.value == row['SupplierSku']) as FormGroup;
-            if (detailForm) {
-              if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
-              if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
-              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
-            }
+            // if (detailForm) {
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
           } else if (row['SupplierProductName']) {// Load product by product name map by supplier
             detailForm = details.controls.find(f => f.get('SupplierProductName')?.value == row['SupplierProductName']) as FormGroup;
-            if (detailForm) {
-              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
-              if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
-              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
-            }
+            // if (detailForm) {
+            //   if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
           } else if (row['SupplierProductTaxName']) {// Load product by product name map by supplier
             detailForm = details.controls.find(f => f.get('ProductTaxName')?.value == row['SupplierProductTaxName']) as FormGroup;
+            // if (detailForm) {
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
+          }
+          if (detailForm) {
+            if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // this.toMoney(formItem, detailForm);
           }
 
           // let unit = null;

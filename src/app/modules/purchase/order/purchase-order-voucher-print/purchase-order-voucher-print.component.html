@@ -88,8 +88,8 @@
                     
                   </td>
                   <td>
-                    <span class="description" style="cursor: pointer" (click)="updateSalePrice(detail)">{{renderValue(detail.Description)}}</span><br>
-                    <span class="description">Tên theo NCC: {{renderValue(detail.SupplierProductName)}}</span>
+                    <span class="description" (click)="updateSalePrice(detail)">{{renderValue(detail.Description)}}</span><br>
+                    <span>Tên theo NCC: {{renderValue(detail.SupplierProductName)}}</span>
                   </td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>

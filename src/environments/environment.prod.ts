@@ -5,7 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.2.14.2',
+  version: '6.2.16.1',
+  // 6.2.15.1:   support upload by link
   // 6.2.14.1:   dev auto collect purchase product info
   // 6.2.13.1:   dev export/import purchase order to/from excel
   // 6.2.12.1:   dev cash flow report and statistics
