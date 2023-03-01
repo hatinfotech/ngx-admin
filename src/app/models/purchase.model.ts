@@ -162,3 +162,20 @@ export class PurchaseOrderVoucherDetailModel {
   RelateDetail?: string;
   SystemUuid?: string;
 }
+
+export interface PurchaseProductModel {
+  Id?: string;
+  Product?: string;
+  OriginalName?: string;
+  OriginSku?: string;
+  Supplier?: string;
+  SupplierName?: string;
+  Name?: string;
+  TaxName?: string;
+  TaxValue?: string;
+  Sku?: string;
+  ReferenceVoucher?: string;
+  LastUpdate?: string;
+  FeaturePicture?: FileModel;
+  Pictures?: FileModel[];
+}
