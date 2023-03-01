@@ -41,6 +41,7 @@
                 <button nbButton hero status="primary" (click)="print(0)">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                 </button>
+                <ngx-pagination-control [total]="totalPage" [page]="page" (pageChange)="onPageChange($event)" [isProcessing]="loading"></ngx-pagination-control>
                 <button nbButton hero status="danger" (click)="close()">
                     <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
                 </button>

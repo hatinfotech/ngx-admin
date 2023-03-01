@@ -3,7 +3,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { SortablejsModule } from 'ngx-sortablejs';
-import { NbCardModule, NbRouteTabsetModule, NbIconModule, NbSpinnerModule, NbAccordionModule, NbActionsModule, NbButtonModule, NbCheckboxModule, NbInputModule, NbListModule, NbProgressBarModule, NbRadioModule, NbSelectModule, NbStepperModule, NbTabsetModule, NbUserModule, NbDialogRef, NbTagModule, NbTooltipModule, NbBadgeModule } from '@nebular/theme';
+import { NbCardModule, NbRouteTabsetModule, NbIconModule, NbSpinnerModule, NbAccordionModule, NbActionsModule, NbButtonModule, NbCheckboxModule, NbInputModule, NbListModule, NbProgressBarModule, NbRadioModule, NbSelectModule, NbStepperModule, NbTabsetModule, NbUserModule, NbDialogRef, NbTagModule, NbTooltipModule, NbBadgeModule, NbButtonGroupModule } from '@nebular/theme';
 /**
  * @license
  * Copyright Akveo. All Rights Reserved.
@@ -664,6 +664,7 @@ export class DynamicLocaleId extends String {
     NbCheckboxModule,
     NbStepperModule,
     NbButtonModule,
+    NbButtonGroupModule,
     NbListModule,
     NbAccordionModule,
     NbUserModule,

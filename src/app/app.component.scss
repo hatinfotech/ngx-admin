@@ -1262,6 +1262,10 @@ nb-card-footer .buttons-row {
 }
 
 .buttons-row button[nbButton].size-medium {
+  margin-top: 0.3rem !important;
+  margin-bottom: 0.3rem !important;
+}
+.buttons-row > button[nbButton].size-medium {
   margin: 0.3rem !important;
 }
 

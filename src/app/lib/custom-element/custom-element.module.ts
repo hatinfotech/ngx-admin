@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent } from './smart-table/smart-table.component';
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule } from '@nebular/theme';
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule, NbButtonGroupModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
@@ -29,6 +29,7 @@ import { ImagesViewerComponent } from './my-components/images-viewer/images-view
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { InputMaskModule } from '@ngneat/input-mask';
 import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from './ag-list/ag-list.lib';
+import { PaginationControlComponent } from './my-components/pagination-control/pagination-control.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -70,6 +71,7 @@ import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from './ag-list/ag-lis
     BtnCellRenderer,
     CkbCellRenderer,
     CustomHeader,
+    PaginationControlComponent,
   ],
   imports: [
     CommonModule,
@@ -120,6 +122,7 @@ import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from './ag-list/ag-lis
         prev: true
       }
     }),
+    NbButtonGroupModule,
   ],
   exports: [
     Select2Component,
@@ -152,6 +155,7 @@ import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from './ag-list/ag-lis
     FilesInputComponent,
     PrintHeaderComponent,
     SmartTableAccCurrencyComponent,
+    PaginationControlComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

@@ -1,4 +1,4 @@
-import { takeUntil, filter } from 'rxjs/operators';
+import { takeUntil, filter, map } from 'rxjs/operators';
 import { FormControl, FormBuilder, FormArray } from '@angular/forms';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
@@ -263,35 +263,73 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     return '';
   }
 
+  lastRequestCount = 0;
+  page = 1;
+  perPage = 100;
+  totalPage = 0;
   async getFormData(ids: string[]) {
+    this.loading = true;
     const params: any = {};
     if (this.voucher) {
       params.eq_Voucher = this.voucher;
     } else if (this.id) {
       params.id = this.id;
     }
+    params.limit = this.perPage;
+    params.offset = (this.page - 1) * this.perPage;
     let rs;
     if (this.data) {
       rs = this.data;
     } else {
-      rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-        includeWarehouse: true,
-        includeContainer: true,
-        includeProduct: true,
-        includeUnit: true,
-        // renderBarCode: true,
-        // renderQrCode: true,
-        includePrice: true,
-        // eq_Type: this.printForType,
-        // id: this.id,
-        // eq_Voucher: this.voucher,
-        sort_No: 'asc',
-        sort_AccessNumberNo: 'asc',
-        limit: 'nolimit',
-        ...params
-      }).then(rs => {
-        return rs;
-      });
+      try {
+        rs = await this.apiService.getObservable<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+          includeWarehouse: true,
+          includeContainer: true,
+          includeProduct: true,
+          includeUnit: true,
+          // renderBarCode: true,
+          // renderQrCode: true,
+          includePrice: true,
+          sort_No: 'asc',
+          sort_AccessNumberNo: 'asc',
+          ...params
+        }).pipe(
+          map((res) => {
+            this.lastRequestCount = +res.headers.get('x-total-count');
+            this.totalPage = Math.floor(this.lastRequestCount / this.perPage);
+            let data = res.body;
+            // Auto add no
+            // data = data.map((item: WarehouseGoodsReceiptNoteDetailAccessNumberModel, index: number) => {
+            //   // const paging = this.getPaging();
+            //   // item['No'] = (this.page - 1) * this.perPage + index + 1;
+            //   return item;
+            // });
+            // this.data = data;
+            return data;
+          }),
+        ).toPromise();
+      } catch (err) {
+        console.error(err);
+        this.loading = false;
+      }
+      // rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+      //   includeWarehouse: true,
+      //   includeContainer: true,
+      //   includeProduct: true,
+      //   includeUnit: true,
+      //   // renderBarCode: true,
+      //   // renderQrCode: true,
+      //   includePrice: true,
+      //   // eq_Type: this.printForType,
+      //   // id: this.id,
+      //   // eq_Voucher: this.voucher,
+      //   sort_No: 'asc',
+      //   sort_AccessNumberNo: 'asc',
+      //   limit: 'nolimit',
+      //   ...params
+      // }).then(rs => {
+      //   return rs;
+      // });
     }
     this.choosedForms.controls = [];
     for (const item of rs) {
@@ -310,6 +348,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
         console.log(value);
       });
     }
+    this.loading = false;
     return rs;
   }
 
@@ -335,6 +374,13 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       }
     }
     return true;
+  }
+
+  async onPageChange(page: number) {
+    console.log(page);
+    this.page = page;
+    this.data = null;
+    this.data = await this.getFormData(this.id);
   }
 
 }

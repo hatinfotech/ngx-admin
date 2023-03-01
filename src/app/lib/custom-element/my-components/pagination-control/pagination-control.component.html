@@ -1,0 +1,7 @@
+<nb-button-group>
+  <button nbButton (click)="change('FIRST')">&#60;&#60;</button>
+  <button nbButton (click)="change('PREVIOUS')">&#60;</button>
+  <button *ngFor="let p of pages" nbButton value="{{page}}" [status]="page == p && 'primary' || 'basic'" (click)="change(p)">{{p}}</button>
+  <button nbButton (click)="change('NEXT')">&#62;</button>
+  <button nbButton (click)="change('LAST')">&#62;&#62;</button>
+</nb-button-group>
