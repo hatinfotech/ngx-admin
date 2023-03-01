@@ -13,7 +13,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel, ProductObjectReferenceModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel } from '../../../../models/purchase.model';
+import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel, PurchaseProductModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -460,8 +460,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       ToMoney: [0],
       Image: [[]],
       Reason: [''],
-      ProductTaxName: [''],
       SupplierSku: [''],
+      SupplierProductName: [''],
+      ProductTaxName: [''],
       Tax: [''],
     });
 
@@ -505,32 +506,32 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.toMoney(parentFormGroup, newChildFormGroup, null, index);
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
-      const productNames = await this.apiService.getPromise<ProductObjectReferenceModel[]>('/admin-product/product-object-references', { eq_Type: '[SUPPLIERPRODUCT,SUPPLIERPRODUCTTAX,SUPPLIERPRODUCTSKU,SUPPLIERPRODUCTAXVALUE]', eq_product: this.commonService.getObjectId(value), eq_Object: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'asc' });
+      const purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: this.commonService.getObjectId(value), eq_Supplier: this.commonService.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
 
-      if (productNames) {
-        for (const productObjectReference of productNames) {
-          if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
-            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Description').value) {
-              newChildFormGroup.get('Description').setValue(productObjectReference.ReferenceValue);
-            }
-          }
-          if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
-            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
-              newChildFormGroup.get('ProductTaxName').setValue(productObjectReference.ReferenceValue);
-            }
-          }
-          if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
-            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
-              newChildFormGroup.get('SupplierSku').setValue(productObjectReference.ReferenceValue);
-            }
-          }
-          if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
-            if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
-              newChildFormGroup.get('Tax').setValue(productObjectReference.ReferenceValue);
-            }
-          }
+      if (purchaseProduct) {
+        // for (const productObjectReference of purchaseProduct) {
+        // if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
+        if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierProductName').value) {
+          newChildFormGroup.get('SupplierProductName').setValue(purchaseProduct.Name);
         }
+        // }
+        // if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
+        if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
+          newChildFormGroup.get('ProductTaxName').setValue(purchaseProduct.TaxName);
+        }
+        // }
+        // if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
+        if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
+          newChildFormGroup.get('SupplierSku').setValue(purchaseProduct.Sku);
+        }
+        // }
+        // if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
+        if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
+          newChildFormGroup.get('Tax').setValue(purchaseProduct.TaxValue);
+        }
+        // }
       }
+      // }
     });
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
@@ -767,9 +768,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     console.log(selectedData);
     if (!this.isProcessing) {
       if (selectedData) {
-        if (!detail['IsImport'] || !detail.get('Description').value) {
-          detail.get('Description').setValue(selectedData.Name);
-        }
+        // if (!detail['IsImport'] || !detail.get('Description').value) {
+        detail.get('Description').setValue(selectedData.Name);
+        // }
         if (selectedData.Units) {
           const unitControl = detail.get('Unit');
           detail['UnitList'] = selectedData.Units;
@@ -781,9 +782,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           detail.get('Image').setValue([]);
         }
       } else {
-        if (!detail['IsImport'] || !detail.get('Description').value) {
-          detail.get('Description').setValue('');
-        }
+        // if (!detail['IsImport'] || !detail.get('Description').value) {
+        detail.get('Description').setValue('');
+        // }
         detail.get('Unit').setValue('');
       }
     }
@@ -1081,30 +1082,35 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         }
 
         for (const row of sheet) {
+          for (const colName in row) {
+            const logicColName = colName.split('/')[0];
+            row[logicColName] = row[colName];
+          }
           let detailForm: FormGroup = null;
           if (row['Sku']) {
             detailForm = details.controls.find(f => f.get('Product')?.value?.Sku == row['Sku']) as FormGroup;
             if (detailForm) {
               if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
-              if (row['ProductName']) detailForm.get('Description').setValue(row['ProductName']);
-              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
-              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+              if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+              if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
             }
           } else if (row['SupplierSku']) {
             detailForm = details.controls.find(f => f.get('SupplierSku')?.value == row['SupplierSku']) as FormGroup;
             if (detailForm) {
-              if (row['ProductName']) detailForm.get('Description').setValue(row['ProductName']);
-              if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
-              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+              if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+              if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
             }
-          } else if (row['ProductName']) {// Load product by product name map by supplier
-            detailForm = details.controls.find(f => f.get('Description')?.value == row['ProductName']) as FormGroup;
+          } else if (row['SupplierProductName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('SupplierProductName')?.value == row['SupplierProductName']) as FormGroup;
             if (detailForm) {
               if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['ProductTaxName']);
-              if (row['Tax']) detailForm.get('Tax').setValue(row['Tax']);
+              if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+              if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
             }
-          } else if (row['ProductTaxName']) {// Load product by product name map by supplier
-            detailForm = details.controls.find(f => f.get('ProductTaxName')?.value == row['ProductTaxName']) as FormGroup;
+          } else if (row['SupplierProductTaxName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('ProductTaxName')?.value == row['SupplierProductTaxName']) as FormGroup;
           }
 
           // let unit = null;
@@ -1121,7 +1127,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             detailForm['IsImport'] = true;
           }
         }
-        
+
         this.onProcessed();
         this.commonService.showToast('Nhập chi tiết từ thành công', 'Hệ thống đã nhập các thông tin chi tiết trên file excel vào chi tiết tương ứng trên phiếu !', { duration: 15000, status: 'success' });
         return true;

@@ -352,16 +352,19 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
       no++;
       details.push({
         STT: no,
-        Sku: detail['Product']['Sku'],
-        Product: this.commonService.getObjectId(detail['Product']),
-        ProductName: detail['Description'],
-        ProductTaxName: detail['ProductTaxName'],
-        Tax: detail['Tax'],
-        Unit: this.commonService.getObjectId(detail['Unit']),
-        UnitName: this.commonService.getObjectText(detail['Unit']),
-        Price: detail['Price'],
-        Quantity: detail['Quantity'],
-        ToMoney: detail['ToMoney'],
+        'STT DATA': no,
+        'Sku': detail['Product']['Sku'],
+        'ProductID': this.commonService.getObjectId(detail['Product']),
+        'ProductName/Tên Sản Phẩm': detail['Product']['Name'],
+        'SupplierSku/Mã SP nội bộ NCC': detail['SupplierSku'],
+        'SupplierProductName/Tên SP nội bộ NCC': detail['SupplierProductName'],
+        'SupplierProductTaxName/Tên SP theo thuế': detail['ProductTaxName'],
+        'SupplierTax/thuế suất %': detail['Tax'],
+        'Unit/Mã ĐVT': this.commonService.getObjectId(detail['Unit']),
+        'UnitName/Tên ĐVT': this.commonService.getObjectText(detail['Unit']),
+        'Price/Đơn Giá': detail['Price'],
+        'Quantity/Số lượng': detail['Quantity'],
+        'ToMoney/Thành tiền': detail['ToMoney'],
       });
     }
     const sheet = XLSX.utils.json_to_sheet(details);

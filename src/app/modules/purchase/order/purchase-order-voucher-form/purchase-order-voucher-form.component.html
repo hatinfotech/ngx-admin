@@ -272,9 +272,14 @@
                                                     <input type="text" nbInput fullWidth formControlName="Tax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" class="align-right">
                                                 </ngx-form-group>
                                             </div>
-                                            <div class="col-md-7 col-sm-6 col-xs-8">
-                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Description" label="Tên theo nhà cung cấp" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Tên theo nhà cung cấp' | translate | headtitlecase}}" [ngClass]="{'imported': detail?.IsImport}"></textarea>
+                                            <div class="col-md-3 col-sm-3 col-xs-3">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="SupplierProductName" label="Tên theo nhà cung cấp" [array]="formItem._details" [index]="ic" [allowCopy]="true" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="SupplierProductName" placeholder="{{'Tên theo nhà cung cấp' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-md-4 col-sm-3 col-xs-3">
+                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Description" label="Mô tả" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <textarea class="scrollable-container" nbInput fullWidth formControlName="Description" placeholder="{{'Mô tả' | translate | headtitlecase}}" [ngClass]="{'imported': detail?.IsImport}"></textarea>
                                                 </ngx-form-group>
                                             </div>
                                         </div>
