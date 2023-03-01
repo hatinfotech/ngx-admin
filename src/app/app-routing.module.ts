@@ -123,6 +123,7 @@ import { ProductBrandListComponent } from './modules/admin-product/brand/product
 import { ProductPropertyListComponent } from './modules/admin-product/property/product-property-list/product-property-list.component';
 import { AccountingContraAccountReportComponent } from './modules/accounting/reports/contra-account-report/accounting-contra-account-report.component';
 import { ProductKeywordListComponent } from './modules/admin-product/keyword/product-keyword-list/product-keyword-list.component';
+import { PurchaseProductListComponent } from './modules/purchase/product/purchase-product-list/purchase-product-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -587,6 +588,14 @@ const routes: Routes = [
     path: 'purchase/goods/list',
     canActivate: [AuthGuardService],
     component: PurchaseGoodsListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'purchase/products/list',
+    canActivate: [AuthGuardService],
+    component: PurchaseProductListComponent,
     data: {
       reuse: true,
     },

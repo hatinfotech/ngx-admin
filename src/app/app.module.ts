@@ -300,6 +300,9 @@ import { ProductObjectReferenceListComponent } from './modules/admin-product/pro
 import { ProductObjectReferenceFormComponent } from './modules/admin-product/product-object-reference/product-object-reference-form/product-object-reference-form.component';
 import { ProductKeywordListComponent } from './modules/admin-product/keyword/product-keyword-list/product-keyword-list.component';
 import { ProductKeywordFormComponent } from './modules/admin-product/keyword/product-keyword-form/product-keyword-form.component';
+import { PurchaseProductListComponent } from './modules/purchase/product/purchase-product-list/purchase-product-list.component';
+import { PurchaseProductFormComponent } from './modules/purchase/product/purchase-product-form/purchase-product-form.component';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -369,6 +372,8 @@ export class DynamicLocaleId extends String {
     PurchaseGoodsListComponent,
     PurchaseGoodsPrintComponent,
     PurchaseDashboardComponent,
+    PurchaseProductListComponent,
+    PurchaseProductFormComponent,
 
     // Warehouse components
     WarehouseGoodsReceiptNoteListComponent,
@@ -679,6 +684,7 @@ export class DynamicLocaleId extends String {
     NgxUploaderModule,
 
     NgxBarcodeModule.forRoot(),
+    NgxQRCodeModule,
 
     // Photo browser
     // AngularImageViewerModule,

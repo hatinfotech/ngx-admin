@@ -2147,3 +2147,12 @@ body{
     background: transparent;
   }
 }
+
+ngx-barcode svg {
+  vertical-align: top;
+}
+
+#print-area .qr-code img {
+  width: 9mm;
+  height: 9mm;
+}
