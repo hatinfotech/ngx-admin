@@ -149,6 +149,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   filter: FormGroup;
   @Input() productList: any[] = [];
   @Input() unitList: any[] = [];
+  isStaticData = false;
 
   select2OptionForProducts = {
     placeholder: 'Sản phẩm...',
@@ -189,9 +190,13 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
 
     this.filter.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
       setTimeout(() => {
+        this.page = 1;
         this.refresh();
       }, 300);
     });
+    if (this.data) {
+      this.isStaticData = true;
+    }
   }
 
   async init() {
@@ -323,60 +328,60 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
 
 
     let rs;
-    // if (this.data) {
-    //   rs = this.data;
-    // } else {
-    try {
-      rs = await this.apiService.getObservable<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-        includeWarehouse: true,
-        includeContainer: true,
-        includeProduct: true,
-        includeUnit: true,
-        // renderBarCode: true,
-        // renderQrCode: true,
-        includePrice: true,
-        sort_No: 'asc',
-        sort_AccessNumberNo: 'asc',
-        ...params,
-        ...filter,
-      }).pipe(
-        map((res) => {
-          this.lastRequestCount = +res.headers.get('x-total-count');
-          this.totalPage = Math.ceil(this.lastRequestCount / this.perPage);
-          let data = res.body;
-          // Auto add no
-          // data = data.map((item: WarehouseGoodsReceiptNoteDetailAccessNumberModel, index: number) => {
-          //   // const paging = this.getPaging();
-          //   // item['No'] = (this.page - 1) * this.perPage + index + 1;
-          //   return item;
-          // });
-          // this.data = data;
-          return data;
-        }),
-      ).toPromise();
-    } catch (err) {
-      console.error(err);
-      this.loading = false;
+    if (this.isStaticData && this.data) {
+      rs = this.data;
+    } else {
+      try {
+        rs = await this.apiService.getObservable<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+          includeWarehouse: true,
+          // includeContainer: true,
+          includeProduct: true,
+          includeUnit: true,
+          // renderBarCode: true,
+          // renderQrCode: true,
+          includePrice: true,
+          sort_No: 'asc',
+          sort_AccessNumberNo: 'asc',
+          ...params,
+          ...filter,
+        }).pipe(
+          map((res) => {
+            this.lastRequestCount = +res.headers.get('x-total-count');
+            this.totalPage = Math.ceil(this.lastRequestCount / this.perPage);
+            let data = res.body;
+            // Auto add no
+            // data = data.map((item: WarehouseGoodsReceiptNoteDetailAccessNumberModel, index: number) => {
+            //   // const paging = this.getPaging();
+            //   // item['No'] = (this.page - 1) * this.perPage + index + 1;
+            //   return item;
+            // });
+            // this.data = data;
+            return data;
+          }),
+        ).toPromise();
+      } catch (err) {
+        console.error(err);
+        this.loading = false;
+      }
+      // rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+      //   includeWarehouse: true,
+      //   includeContainer: true,
+      //   includeProduct: true,
+      //   includeUnit: true,
+      //   // renderBarCode: true,
+      //   // renderQrCode: true,
+      //   includePrice: true,
+      //   // eq_Type: this.printForType,
+      //   // id: this.id,
+      //   // eq_Voucher: this.voucher,
+      //   sort_No: 'asc',
+      //   sort_AccessNumberNo: 'asc',
+      //   limit: 'nolimit',
+      //   ...params
+      // }).then(rs => {
+      //   return rs;
+      // });
     }
-    // rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-    //   includeWarehouse: true,
-    //   includeContainer: true,
-    //   includeProduct: true,
-    //   includeUnit: true,
-    //   // renderBarCode: true,
-    //   // renderQrCode: true,
-    //   includePrice: true,
-    //   // eq_Type: this.printForType,
-    //   // id: this.id,
-    //   // eq_Voucher: this.voucher,
-    //   sort_No: 'asc',
-    //   sort_AccessNumberNo: 'asc',
-    //   limit: 'nolimit',
-    //   ...params
-    // }).then(rs => {
-    //   return rs;
-    // });
-    // }
     this.choosedForms.controls = [];
     let previousItem = null;
     for (const item of rs) {

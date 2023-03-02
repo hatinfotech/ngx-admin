@@ -49,7 +49,7 @@
         <nb-card-footer>
             <div class="buttons-row">
                 <button nbButton hero status="primary" (click)="print(0)">
-                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                    <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
                 </button>
                 <ngx-pagination-control [total]="totalPage" [page]="page" (pageChange)="onPageChange($event)" [isProcessing]="loading"></ngx-pagination-control>
                 <button nbButton hero status="danger" (click)="close()">
