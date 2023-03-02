@@ -135,12 +135,11 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   }
   .blabel .section-break {
     position: absolute;
-    right: -5px;
-    bottom: -5px;
-    width: 10px;
-    height: 10px;
-    background-color: black;
-    transform: rotate(45deg);
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed black;
   }
   `;
 

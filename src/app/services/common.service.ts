@@ -583,9 +583,9 @@ export class CommonService {
 
     let originalCloseOnEsc = userConfig.closeOnEsc;
     if (typeof userConfig?.closeOnEsc == 'undefined') {
-      userConfig.closeOnEsc = false;
       originalCloseOnEsc = true;
     }
+    userConfig.closeOnEsc = false;
     if (userConfig?.context) {
       if (!userConfig?.context['inputMode']) {
         userConfig.context['inputMode'] = 'dialog';
