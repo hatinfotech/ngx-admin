@@ -1,5 +1,5 @@
 import { takeUntil, filter, map } from 'rxjs/operators';
-import { FormControl, FormBuilder, FormArray } from '@angular/forms';
+import { FormControl, FormBuilder, FormArray, FormGroup } from '@angular/forms';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberModel } from './../../../../models/warehouse.model';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { DatePipe } from '@angular/common';
@@ -133,10 +133,37 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   .print-choosed {
     display: none;
   }
+  .blabel .section-break {
+    position: absolute;
+    right: -5px;
+    bottom: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    transform: rotate(45deg);
+  }
   `;
 
   registerInfo: any;
   choosedForms = this.formBuilder.array([]);
+  filter: FormGroup;
+  @Input() productList: any[] = [];
+  @Input() unitList: any[] = [];
+
+  select2OptionForProducts = {
+    placeholder: 'Sản phẩm...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   constructor(
     public commonService: CommonService,
@@ -154,6 +181,16 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     super.ngOnInit();
     this.commonService.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
+    });
+
+    this.filter = this.formBuilder.group({
+      Product: [null],
+    });
+
+    this.filter.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      setTimeout(() => {
+        this.refresh();
+      }, 300);
     });
   }
 
@@ -277,66 +314,79 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     }
     params.limit = this.perPage;
     params.offset = (this.page - 1) * this.perPage;
-    let rs;
-    if (this.data) {
-      rs = this.data;
-    } else {
-      try {
-        rs = await this.apiService.getObservable<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-          includeWarehouse: true,
-          includeContainer: true,
-          includeProduct: true,
-          includeUnit: true,
-          // renderBarCode: true,
-          // renderQrCode: true,
-          includePrice: true,
-          sort_No: 'asc',
-          sort_AccessNumberNo: 'asc',
-          ...params
-        }).pipe(
-          map((res) => {
-            this.lastRequestCount = +res.headers.get('x-total-count');
-            this.totalPage = Math.floor(this.lastRequestCount / this.perPage);
-            let data = res.body;
-            // Auto add no
-            // data = data.map((item: WarehouseGoodsReceiptNoteDetailAccessNumberModel, index: number) => {
-            //   // const paging = this.getPaging();
-            //   // item['No'] = (this.page - 1) * this.perPage + index + 1;
-            //   return item;
-            // });
-            // this.data = data;
-            return data;
-          }),
-        ).toPromise();
-      } catch (err) {
-        console.error(err);
-        this.loading = false;
-      }
-      // rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
-      //   includeWarehouse: true,
-      //   includeContainer: true,
-      //   includeProduct: true,
-      //   includeUnit: true,
-      //   // renderBarCode: true,
-      //   // renderQrCode: true,
-      //   includePrice: true,
-      //   // eq_Type: this.printForType,
-      //   // id: this.id,
-      //   // eq_Voucher: this.voucher,
-      //   sort_No: 'asc',
-      //   sort_AccessNumberNo: 'asc',
-      //   limit: 'nolimit',
-      //   ...params
-      // }).then(rs => {
-      //   return rs;
-      // });
+
+    const filter = {};
+    if (this.filter.value['Product']) {
+      filter['eq_Product'] = this.commonService.getObjectId(this.filter.value['Product']['Product']);
+      filter['eq_Unit'] = this.commonService.getObjectId(this.filter.value['Product']['Unit']);
     }
+
+
+    let rs;
+    // if (this.data) {
+    //   rs = this.data;
+    // } else {
+    try {
+      rs = await this.apiService.getObservable<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+        includeWarehouse: true,
+        includeContainer: true,
+        includeProduct: true,
+        includeUnit: true,
+        // renderBarCode: true,
+        // renderQrCode: true,
+        includePrice: true,
+        sort_No: 'asc',
+        sort_AccessNumberNo: 'asc',
+        ...params,
+        ...filter,
+      }).pipe(
+        map((res) => {
+          this.lastRequestCount = +res.headers.get('x-total-count');
+          this.totalPage = Math.ceil(this.lastRequestCount / this.perPage);
+          let data = res.body;
+          // Auto add no
+          // data = data.map((item: WarehouseGoodsReceiptNoteDetailAccessNumberModel, index: number) => {
+          //   // const paging = this.getPaging();
+          //   // item['No'] = (this.page - 1) * this.perPage + index + 1;
+          //   return item;
+          // });
+          // this.data = data;
+          return data;
+        }),
+      ).toPromise();
+    } catch (err) {
+      console.error(err);
+      this.loading = false;
+    }
+    // rs = await this.apiService.getPromise<WarehouseGoodsReceiptNoteDetailAccessNumberModel[]>(this.apiPath, {
+    //   includeWarehouse: true,
+    //   includeContainer: true,
+    //   includeProduct: true,
+    //   includeUnit: true,
+    //   // renderBarCode: true,
+    //   // renderQrCode: true,
+    //   includePrice: true,
+    //   // eq_Type: this.printForType,
+    //   // id: this.id,
+    //   // eq_Voucher: this.voucher,
+    //   sort_No: 'asc',
+    //   sort_AccessNumberNo: 'asc',
+    //   limit: 'nolimit',
+    //   ...params
+    // }).then(rs => {
+    //   return rs;
+    // });
+    // }
     this.choosedForms.controls = [];
+    let previousItem = null;
     for (const item of rs) {
       const formData = {};
       // item['Price'] = item['Price'] && (parseInt(item['Price']) / 1000) || null as any;
       for (const field of Object.keys(item)) {
         formData[field] = [item[field]];
+      }
+      if (previousItem && (this.commonService.getObjectId(previousItem.Product) != this.commonService.getObjectId(item.Product) || this.commonService.getObjectId(previousItem.Unit) != this.commonService.getObjectId(item.Unit))) {
+        formData['IsBeginSection'] = true;
       }
       const checkbox = this.formBuilder.group({
         'Choosed': [true],
@@ -347,6 +397,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       checkbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
         console.log(value);
       });
+      previousItem = item;
     }
     this.loading = false;
     return rs;

@@ -71,10 +71,15 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
       },
       click: (event: any, option: any) => {
         const item = this.data[option.index];
+
+
+        const productList = item.Details.filter(f => this.commonService.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.commonService.getObjectId(m.Product) + '-' + this.commonService.getObjectId(m.Unit), text: m.Description + ' (' + this.commonService.getObjectText(m.Unit) + ')', ...m }));
+
         this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
           context: {
             voucher: item.Code,
-            id: ['xxx']
+            id: ['xxx'],
+            productList,
           }
         });
         return false;

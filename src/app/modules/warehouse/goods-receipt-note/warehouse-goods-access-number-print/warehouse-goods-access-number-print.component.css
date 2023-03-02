@@ -69,6 +69,15 @@
   font-weight: normal;
   white-space: nowrap;
 }
+.blabel .section-break {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: black;
+  transform: rotate(45deg);
+}
 .bar-code {
   height: 3.7mm;
 }

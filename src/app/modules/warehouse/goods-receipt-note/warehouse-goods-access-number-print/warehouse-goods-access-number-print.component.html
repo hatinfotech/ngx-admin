@@ -3,6 +3,15 @@
         <nb-card-header>
             <ngx-card-header [option]="{controlOption: {}}" [size]="size" [icon]="favicon" [title]="(title | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
+        <nb-card-header>
+            <div class="row">
+                <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="filter" name="Categories" label="Lọc theo sản phẩm" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                        <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProducts" [data]="productList"></ngx-select2>
+                    </ngx-form-group>
+                </div>
+            </div>
+        </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area" [formGroup]="choosedForms">
                 <!-- <div class="blabel" *ngFor="let item of this.data; let i = index;" style="position: relative;"> -->
@@ -32,6 +41,7 @@
                         <div class="register-info" style="flex: 1">{{registerInfo.companyName}}<br>ĐC: {{registerInfo.address}}<br>ĐT: {{registerInfo.tel}}<br>Web: {{registerInfo.website}}</div>
                     </div>
                     <div class="probox-link">QRLink: {{item.value.QrCodeDataPreview}}</div>
+                    <div class="section-break" *ngIf="item.value.IsBeginSection"></div>
                 </div>
                 <div style="clear:both"></div>
             </div>
