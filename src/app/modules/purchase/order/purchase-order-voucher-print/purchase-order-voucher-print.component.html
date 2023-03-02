@@ -58,7 +58,9 @@
               <thead class="print-voucher-detail-header">
                 <td>#</td>
                 <td *ngIf="showPicture" style="white-space: nowrap">{{'Hình' | translate | headtitlecase}}</td>
-                <td style="white-space: nowrap"><div style="margin-left: 10px;">{{'Sku' | translate | headtitlecase}}</div></td>
+                <td style="white-space: nowrap">
+                  <div style="margin-left: 10px;">{{'Sku' | translate | headtitlecase}}</div>
+                </td>
                 <td style="white-space: nowrap">{{'Common.productOrService' | translate | headtitlecase}}</td>
                 <td class="text-align-right" style="white-space: nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <td class="text-align-right" style="white-space: nowrap">{{'Voucher.shortQuantity' | translate | headtitlecase}}</td>
@@ -76,7 +78,7 @@
                     <img *ngIf="detail?.Image && detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage">
                   </td>
                   <td>
-                    
+
                     <ngx-barcode [bc-value]="detail.Product?.Sku" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="30" [bc-width]="1" [bc-margin]="0"></ngx-barcode>
                     <div style="margin-left: 10px">
                       <span>{{detail.Product?.Sku}}</span>
@@ -85,7 +87,7 @@
                     <div style="margin-left: 10px">
                       <span *ngIf="detail.SupplierSku">Sku NCC: {{detail.SupplierSku}}</span>
                     </div>
-                    
+
                   </td>
                   <td>
                     <span class="description" (click)="updateSalePrice(detail)">{{renderValue(detail.Description)}}</span><br>
@@ -131,9 +133,9 @@
       </div>
     </nb-card-body>
     <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
-        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
-          <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
-          <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+      <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type?.text}}: {{relationVoucher | objectstext}}">
+        <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher.type?.symbol | objectid}}:{{relationVoucher | objectid}}</span>
+        <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
       </span>
     </nb-card-footer>
     <nb-card-footer>

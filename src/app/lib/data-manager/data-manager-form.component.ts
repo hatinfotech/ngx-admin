@@ -251,6 +251,15 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         }
       })(async (data: M[]) => {
         if (!this.patchFormGroupValue) {
+
+          for (const item of data) {
+            if (Array.isArray(item['RelativeVouchers'])) {
+              for (const relativeVoucher of item['RelativeVouchers']) {
+                relativeVoucher.typeMap = this.commonService.voucherTypeMap[relativeVoucher.type];
+              }
+            }
+          }
+
           this.array.clear();
           for (let i = 0; i < data.length; i++) {
             const item = data[i];

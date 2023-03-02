@@ -31,7 +31,9 @@ export class SmartTableBaseComponent implements ViewCell, OnInit {
   @Output() valueChange: EventEmitter<any> = new EventEmitter();
   init?: EventEmitter<any> = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    public commonService: CommonService,
+  ) { }
 
   ngOnInit() {
     // this.renderValue = this.value ? true : false;
@@ -374,6 +376,45 @@ export class SmartTableTagsComponent extends SmartTableBaseComponent implements 
   }
 
 }
+
+@Component({
+  template: `<div [style]="style" [class]="class">
+    <a (click)="onClick(tag)" *ngFor="let tag of value" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(tag)}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText(tag) || tag.id}}</a>
+  </div>`
+})
+export class SmartTableRelativeVouchersComponent extends SmartTableBaseComponent implements ViewCell, OnInit {
+
+  @Input() value: SmartTableCompoentTagModel | any;
+  @Input() rowData: any;
+
+  @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
+
+  labelAsText(tag: SmartTableCompoentTagModel) {
+    return (this.commonService.voucherTypeMap[tag.type]?.symbol || tag.type) + ':' + tag.id;
+  };
+
+  renderToolTip(tag: SmartTableCompoentTagModel) {
+    return (tag.type ? `${this.commonService.voucherTypeMap[tag.type]?.text || tag.type}: ` : '') + tag.text;
+  }
+
+  nowrap = true;
+
+  ngOnInit() {
+    // this.renderValue = this.value;
+    // console.log(123);
+  }
+
+  protected onClick(tag: { id: string, text: string, type: string }) {
+    this.click.emit(tag);
+    this.commonService.previewVoucher(tag.type, tag.id);
+  }
+
+  onChange(value: any) {
+    this.valueChange.emit(value);
+    this.value = value;
+  }
+
+}
 @Component({
   template: `<div [style]="style" [class]="class">
     <a (click)="onClick(value)" class="tag nowrap" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(value)}}"><nb-icon icon="{{value.icon || 'pricetags'}}" pack="{{value.iconPack || 'eva'}}"></nb-icon> {{labelAsText(value) || value.id}}</a>
@@ -443,7 +484,7 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
-    super();
+    super(commonService);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -529,7 +570,7 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
-    super();
+    super(commonService);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -612,7 +653,7 @@ export class SmartTableTextEditableComponent extends SmartTableBaseComponent imp
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
-    super();
+    super(commonService);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -708,7 +749,7 @@ export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent 
   jqueryInput: JQuery;
 
   constructor(public commonService: CommonService) {
-    super();
+    super(commonService);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),

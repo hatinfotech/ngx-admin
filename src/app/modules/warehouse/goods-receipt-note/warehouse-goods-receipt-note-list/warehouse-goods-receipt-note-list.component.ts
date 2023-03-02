@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogConfig, NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { WarehouseGoodsReceiptNoteFormComponent } from '../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 import { takeUntil } from 'rxjs/operators';
@@ -191,10 +191,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
         RelativeVouchers: {
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
-          },
+          renderComponent: SmartTableRelativeVouchersComponent,
           width: '15%',
         },
         Copy: {

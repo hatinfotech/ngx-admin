@@ -130,8 +130,8 @@
                                 <div class="form-group">
                                     <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
                                     <div>
-                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
-                                            <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
+                                        <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" nbTooltip="{{relationVoucher.typeMap?.text}}: {{relationVoucher | objectstext}}">
+                                            <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher.typeMap?.symbol | objectid}}:{{relationVoucher | objectid}}</span>
                                             <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
                                         </span>
                                     </div>

@@ -112,6 +112,13 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             this.commonService.toastService.show('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
             this.close();
           }
+          for (const item of this.data) {
+            if (Array.isArray(item['RelativeVouchers'])) {
+              for (const relativeVoucher of item['RelativeVouchers']) {
+                relativeVoucher.type = this.commonService.voucherTypeMap[relativeVoucher.type];
+              }
+            }
+          }
         } catch (err) {
           console.error(err);
           this.close();
@@ -460,7 +467,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.commonService.previewVoucher(this.commonService.getObjectId(relativeVocher.type), relativeVocher);
     return false;
   }
 

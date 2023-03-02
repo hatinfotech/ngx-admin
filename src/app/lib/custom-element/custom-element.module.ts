@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
-import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent } from './smart-table/smart-table.component';
+import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent, SmartTableRelativeVouchersComponent } from './smart-table/smart-table.component';
 import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule, NbButtonGroupModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
@@ -72,6 +72,7 @@ import { PaginationControlComponent } from './my-components/pagination-control/p
     CkbCellRenderer,
     CustomHeader,
     PaginationControlComponent,
+    SmartTableRelativeVouchersComponent,
   ],
   imports: [
     CommonModule,
@@ -156,6 +157,7 @@ import { PaginationControlComponent } from './my-components/pagination-control/p
     PrintHeaderComponent,
     SmartTableAccCurrencyComponent,
     PaginationControlComponent,
+    SmartTableRelativeVouchersComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

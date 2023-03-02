@@ -14,14 +14,14 @@
         <div>
           <div style="display: flex;">
             <div style="flex: 1;">
-                <div class="under-line">{{'Common.supplier' | translate | headtitlecase}} :
-                    {{renderValue(data.ObjectName)}}
-                </div>
+              <div class="under-line">{{'Common.supplier' | translate | headtitlecase}} :
+                {{renderValue(data.ObjectName)}}
+              </div>
             </div>
             <div>
-                <div class="under-line">{{'Common.supplierId' | translate | headtitlecase}} :
-                    {{renderValue(data.Object | objectid)}}
-                </div>
+              <div class="under-line">{{'Common.supplierId' | translate | headtitlecase}} :
+                {{renderValue(data.Object | objectid)}}
+              </div>
             </div>
           </div>
           <div class="under-line">{{'Common.address' | translate | headtitlecase}} : {{renderValue(data.ObjectAddress)}}
@@ -86,22 +86,22 @@
       </div>
     </nb-card-body>
     <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
-        <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type}}: {{relationVoucher | objectstext}}">
-          <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher | objectid}}</span>
-          <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+      <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type?.text}}: {{relationVoucher | objectstext}}">
+        <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher.type?.symbol | objectid}}:{{relationVoucher | objectid}}</span>
+        <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
       </span>
     </nb-card-footer>
     <nb-card-footer>
       <div class="buttons-row">
         <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
-            <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+          <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
         </button>
         <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
 
         <!--State process buttons-->
         <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
         <!--End State process buttons-->
-        
+
         <!-- <button *ngIf="mode === 'print' && data.State === 'APPROVED'" nbButton hero status="success" (click)="payment(data);">
           {{'Purchase.payment' | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward-outline"></nb-icon>
         </button> -->

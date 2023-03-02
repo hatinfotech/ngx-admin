@@ -172,6 +172,22 @@ export class CommonService {
     },
   };
 
+  voucherTypeMap: { [key: string]: { prefix: string, id: string, text: string, symbol: string } } = {
+    PAYMENT: { prefix: '101', id: 'PAYMENT', text: 'Phiếu chi', symbol: 'PC' },
+    RECEIPT: { prefix: '100', id: 'RECEIPT', text: 'Phiếu thu', symbol: 'PT' },
+    OTHERBUSINESSVOUCHER: { prefix: '103', id: 'OTHERBUSINESSVOUCHER', text: 'Chứng từ nghiệp vụ khác', symbol: 'NVK' },
+    SALES: { prefix: '104', id: 'SALES', text: 'Phiếu bán hàng', symbol: 'PBH' },
+    SALESRETURNS: { prefix: '126', id: 'SALESRETURNS', text: 'Phiếu trả hàng bán', symbol: 'PTHB' },
+    PURCHASE: { prefix: '107', id: 'PURCHASE', text: 'Phiếu mua hàng', symbol: 'PMH' },
+    PURCHASEORDER: { prefix: '107', id: 'PURCHASEORDER', text: 'Đơn đặt mua hàng', symbol: 'DDMH' },
+    GOODSRECEIPT: { prefix: '110', id: 'GOODSRECEIPT', text: 'Phiếu nhập kho', symbol: 'PNK' },
+    GOODSDELIVERY: { prefix: '111', id: 'GOODSDELIVERY', text: 'Phiếu xuất kho', symbol: 'PXK' },
+    INVENTORYADJUST: { prefix: '124', id: 'INVENTORYADJUST', text: 'Phiếu kiểm kho', symbol: 'PKK' },
+    COMMERCEPOSORDER: { prefix: '128', id: 'COMMERCEPOSORDER', text: 'Đơn hàng POS', symbol: 'DHPOS' },
+    COMMERCEPOSRETURN: { prefix: '129', id: 'COMMERCEPOSRETURN', text: 'Phiếu trả hàng POS', symbol: 'PTHPOS' },
+    CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK' },
+  };
+
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
@@ -1074,6 +1090,8 @@ export class CommonService {
       if (type == 'TASK' || type == 'CHATROOM') {
         this.openMobileSidebar();
         this.mobileService.openChatRoom({ ChatRoom: this.getObjectId(relativeVocher) });
+      } else {
+        this.showToast('Loại chứng từ ' + type + ' không hỗ trợ xem trước', 'Không hỗ trợ xem trước');
       }
     }
     return false;

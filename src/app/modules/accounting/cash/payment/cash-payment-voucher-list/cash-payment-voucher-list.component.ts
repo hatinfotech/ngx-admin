@@ -247,6 +247,13 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
+          valuePrepareFunction: (cell: any, row: any) => {
+            return Array.isArray(cell) && cell.map(m => ({
+              ...m,
+              id: (this.commonService.voucherTypeMap[m.type]?.symbol || m.type) + ': ' + m.id,
+              type: this.commonService.voucherTypeMap[m.type]?.text || m.type,
+            })) || cell as any;
+          },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
           },
