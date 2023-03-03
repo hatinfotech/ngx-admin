@@ -32,9 +32,9 @@
                                             <div style="flex: 1;">
                                                 <div style="font-weight: bold;">{{item.text}}</div>
                                                 <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
-                                                <div>Vị trí: {{item.Container?.FindOrder || item.Container?.ContainerFindOrder}} - {{item.Container?.ShelfName}}</div>
+                                                <div>Vị trí: {{item.Container?.FindOrder || item.Container?.ContainerFindOrder}} - {{item.Container?.ShelfName}}, Tồn kho: {{ item.Inventory === null && 'đang kiểm tra...' || (item.Inventory | number)}}</div>
                                                 <!-- <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div> -->
-                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span></div>
+                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span> <span style="font-size: 1.2rem; line-height: 1.2rem;color: var(---ck-color-base)">{{item.PriceOfBaseUnitText}}</span></div>
                                             </div>
                                         </div>
                                     </cdk-virtual-scroll-viewport>

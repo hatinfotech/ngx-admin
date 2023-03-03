@@ -84,16 +84,19 @@ export class ProductGroupModel {
   Description?: string;
 }
 export interface ProductSearchIndexModel {
+  // [key: string]: any;
+  id?: string;
+  text?: string;
   Code?: string;
   Sku?: string;
   Type?: string;
   Name?: string;
-  BaseUnit?: string;
+  BaseUnit?: any;
   BaseUnitLabel?: string;
-  Unit?: string;
+  Unit?: any;
   UnitSeq?: string;
   UnitNo?: string;
-  ConversionRatio?: string;
+  ConversionRatio?: number;
   IsDefaultSales?: string;
   IsDefaultPurchase?: string;
   IsManageByAccessNumber?: string;
@@ -101,7 +104,7 @@ export interface ProductSearchIndexModel {
   IsExpirationGoods?: string;
   UnitLabel?: string;
   Price?: number;
-  Container?: string;
+  Container?: any;
   ContainerName?: string;
   ContainerShelf?: string;
   ContainerShelfName?: string;
@@ -120,9 +123,10 @@ export interface ProductSearchIndexModel {
   Pictures?: FileModel[];
   Technical?: string;
   Description?: string;
-  Inventory?: string;
+  Inventory?: number;
   LastUpdate?: string;
   IsNotBusiness?: string;
+  Keyword?: string;
 }
 
 export class ProductBrandModel {
