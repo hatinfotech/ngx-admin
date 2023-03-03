@@ -25,7 +25,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
   componentName: string = 'PurchaseProductListComponent';
   formPath = '/purchase/product/form';
   apiPath = '/purchase/products';
-  idKey = ['Product', 'Supplier'];
+  idKey = ['Id'];
   formDialog = PurchaseProductFormComponent;
 
   constructor(
@@ -68,6 +68,11 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
       // delete: this.configDeleteButton(),
       // pager: this.configPaging(),
       columns: {
+        Id: {
+          title: 'ID',
+          type: 'string',
+          width: '2%',
+        },
         FeaturePicture: {
           title: 'Hình',
           type: 'custom',

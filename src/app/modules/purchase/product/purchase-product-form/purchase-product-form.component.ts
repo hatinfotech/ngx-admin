@@ -19,7 +19,7 @@ import { PurchaseProductModel } from '../../../../models/purchase.model';
 export class PurchaseProductFormComponent extends DataManagerFormComponent<PurchaseProductModel> implements OnInit {
 
   componentName: string = 'PurchaseProductFormComponent';
-  idKey = ['Product', 'Supplier'];
+  idKey = ['Id'];
   baseFormUrl = '/purchase/product/form';
   apiPath = '/purchase/products';
 
@@ -121,6 +121,7 @@ export class PurchaseProductFormComponent extends DataManagerFormComponent<Purch
 
   makeNewFormGroup(data?: ProductCategoryModel): FormGroup {
     const newForm = this.formBuilder.group({
+      Id: [''],
       Product: [''],
       Supplier: [''],
       Sku: ['', Validators.required],
