@@ -178,7 +178,7 @@
                 <label class="label">{{'Cài đặt tham số' | translate | headtitlecase}}</label>
                 <div class="row">
                   <div class="col-sm-12">
-                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                    <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                       <nb-checkbox class="form-group-icon-control" formControlName="RequireVatTax"></nb-checkbox>
                       <input class="form-group-input-control" type="text" nbInput fullWidth formControlName="VatTax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" [inputMask]="towDigitsInputMask">
                     </ngx-form-group>
@@ -220,7 +220,7 @@
                     <div class="row fit-row">
                       <div class="fit-fist-col label">
                         <div class="form-group">
-                          <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
+                          <!-- <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label> -->
                           <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ie + 1 }}">
                           <!-- <input type="hidden" formControlName="Id"> -->
                         </div>
@@ -247,7 +247,7 @@
                       </div>
                       <div class="fit-last-col">
                         <div class="form-group" style="text-align: right;">
-                          <label class="label">CM</label>
+                          <!-- <label class="label">CM</label> -->
                           <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removePropertyGroup(formItem, unitConversion, ie)">
                             <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                           </button>

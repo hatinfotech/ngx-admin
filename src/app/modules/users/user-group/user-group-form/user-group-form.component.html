@@ -3,8 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.Group.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
-                        [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.Group.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
                     <!-- <nav>
             Cập nhật nhóm người dùng
@@ -32,7 +31,7 @@
                             <div class="col-sm-3">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                                     <label class="label"><span class="valid">Mã nhóm (*)</span><span class="invalid">Mã nhóm là bắt buộc
-                      (*)</span></label>
+                                            (*)</span></label>
                                     <input type="text" nbInput fullWidth formControlName="Code" placeholder="Mã nhóm">
                                 </div>
                             </div>
@@ -46,7 +45,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                                     <label class="label"><span class="valid">Tên (*)</span><span class="invalid">Tên là bắt buộc
-                      (*)</span></label>
+                                            (*)</span></label>
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên">
                                 </div>
                             </div>
@@ -78,8 +77,8 @@
                             </div>
                             <div class="col-sm-1" style="text-align: center;">
                                 <button nbButton status="success" (click)="addUserFormGroup(i)" size="medium" style="width: 100%; margin-bottom: 3px;" hero>
-                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
-                </button>
+                                    <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                </button>
                             </div>
                         </div>
 
@@ -89,7 +88,7 @@
                                 <div class="row">
                                     <div class="col-sm-1">
                                         <div class="form-group">
-                                            <label class="label">Stt</label>
+                                            <!-- <label class="label">Stt</label> -->
                                             <input nbInput fullWidth disabled="true" value="{{ ir + 1 }}" style="text-align: center;">
                                             <input type="hidden" formControlName="Id">
                                         </div>
@@ -113,10 +112,10 @@
                                     </div>
                                     <div class="col-sm-1">
                                         <div class="form-group">
-                                            <label class="label">CM</label>
+                                            <!-- <label class="label">CM</label> -->
                                             <button nbButton status="danger" hero size="medium" (click)="removeUser(i, ir)" style="width: 100%; margin-bottom: 3px;">
-                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
-                      </button>
+                                                <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>

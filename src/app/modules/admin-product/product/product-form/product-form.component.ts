@@ -374,9 +374,9 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       unitConversions.push(newUnitConversion);
       this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
 
-      const newProperty = this.makeNewPropertyFormGroup({}, newForm);
-      properties.push(newProperty);
-      this.onAddPropertyFormGroup(newForm, 0, newProperty);
+      // const newProperty = this.makeNewPropertyFormGroup({}, newForm);
+      // properties.push(newProperty);
+      // this.onAddPropertyFormGroup(newForm, 0, newProperty);
     }
 
     newForm.get('WarehouseUnit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {

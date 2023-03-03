@@ -183,7 +183,7 @@
                         <label class="label label-with-border-below">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div class="row dashed-radius-border">
                             <div class="col-sm-12">
-                                <div class="row">
+                                <!-- <div class="row">
                                     <div class="col-sm-2 label">{{'Common.noNumber' | translate | headtitlecase}}/{{'Common.photo' | translate | headtitlecase}}</div>
                                     <div class="col-lg-10">
                                         <div class="row">
@@ -198,13 +198,12 @@
                                                     <div class="col-sm-3 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
                                                     <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
                                                     <div class="col-sm-4 label align-right">{{'Giá EU' | translate | headtitlecase}}</div>
-                                                    <!-- <div class="col-sm-3 label">{{'Voucher.tax' | translate | headtitlecase}}</div> -->
                                                     <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
                                     <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">
@@ -213,12 +212,12 @@
                                             <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
                                                 <div class="row">
                                                     <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                                                        <ngx-form-group [hideLabel]="false" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'" [formGroup]="detail" name="No" label="&nbsp;" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                        <ngx-form-group [hideLabel]="false" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'" [formGroup]="detail" name="No" label="STT" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
                                                             <input type="hidden" formControlName="Id">
                                                         </ngx-form-group>
                                                         <div class="form-group">
-                                                            <!-- <label class="label">{{'Form.cm' | translate | headtitlecase}}</label> -->
+                                                            <label class="label" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">cm</label>
                                                             <button nbButton status="{{getFieldValue(detail, 'Type') !== 'CATEGORY' ? 'danger' : 'primary'}}" hero size="medium" (click)="removeDetailGroup(formItem, detail, ic)" style="width: 100%; margin-bottom: 3px; padding: 0">
                                                                 <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                             </button>
@@ -230,7 +229,7 @@
                                                             <ngx-files-input formControlName="Image" [config]="{style: {height: '6.9rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
                                                         </ngx-form-group>
                                                         <div class="form-group" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">
-                                                            <label class="label">#</label>
+                                                            <label class="label">Di chuyển</label>
                                                             <input type="text" nbInput fullWidth placeholder="Kéo để di chuyển" disabled class="sorting-handle" style="cursor: pointer;">
                                                         </div>
                                                     </div>
@@ -255,7 +254,7 @@
                                                     <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                                                         <div class="row">
                                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" [inputMask]="towDigitsInputMask">
                                                                 </ngx-form-group>
                                                             </div>
@@ -265,12 +264,12 @@
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Giá EU" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Giá EU" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Voucher.price' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Price', ic)" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ToMoney" label="Voucher.toMoney" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'ToMoney', ic)" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
                                                                 </ngx-form-group>
                                                             </div>
