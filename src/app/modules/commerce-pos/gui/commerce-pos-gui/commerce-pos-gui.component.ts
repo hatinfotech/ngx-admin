@@ -228,8 +228,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   private goodsList: ProductSearchIndexModel[] = [];
   private productSearchIndex: { [key: string]: ProductSearchIndexModel } = {};
+  private updateGodosInfoProcessing = false;
   async updateGodosInfo() {
     this.status = 'Đang tải bảng giá...';
+    if (this.updateGodosInfoProcessing) {
+      console.warn('Other processing in progress...');
+      return false;
+    }
+    ;
+    this.updateGodosInfoProcessing = true;
     // while (true) {
     try {
       await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' }).then(productList => {
@@ -271,8 +278,6 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.status = '';
 
       });
-      // this.commonService.showToast('Đã cập nhật bảng giá mới', 'POS Thương mại', { status: 'success' });
-
 
       // Get goods list
       this.goodsList = [];
@@ -280,27 +285,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.progressStatus = 'danger';
       this.progress = 0;
       // while (true) {
-      const rs = await this.apiService.getPromise<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true })
-        // .pipe(
-        //   map((res) => {
-        //     const total = +res.headers.get('x-total-count');
-        //     let data = res.body;
-        //     return { data, total };
-        //   }),
-        // ).toPromise()
-        .then(rs => {
-
-          // const rs = result.data;
-          // const total = result.total;
-
-          // const progress = parseInt(((offset + 101) / total * 100) as any);
-          // if (progress <= 100) {
-          //   this.progress = progress;
-          // } else {
-          //   this.progress = 100;
-          //   this.progressStatus = 'success';
-          // }
-          // this.progressLabel = 'Tải thông tin hàng hóa (' + this.progress + '%)';
+      this.progressStatus = 'success';
+      this.progress = 0;
+      this.progressLabel = 'Đang tải thông tin sản phẩm...';
+      const rs = await this.apiService.getProgress<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true }, (loaded, total) => {
+        this.progress = loaded / total * 100;
+        this.progressLabel = 'Đang tải thông tin sản phẩm...' + this.progress + '%';
+      }).then(rs => {
+          this.progress = 0;
 
           for (const productSearchIndex of rs) {
             // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
@@ -335,20 +327,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           // offset += 100;
           return rs;
         });
-
-      // if (!rs || rs.length == 0) {
-      //   break;
-      // }
-      // }
       this.progress = 0;
-
-      // console.log(this.goodsList);
-
-
-
-
+      this.updateGodosInfoProcessing = false;
       return true;
     } catch (err) {
+      this.updateGodosInfoProcessing = false;
+      this.progress = 0;
       console.log(err);
       console.log('retry...');
       this.status = 'Lỗi tải bảng giá, đang thử lại...';

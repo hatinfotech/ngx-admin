@@ -41,7 +41,7 @@
                                 </div>
                             </div>
                             <div class="pos-search-button-wrap">
-                                <button nbButton status="{{orderForm['voucherType'] == 'COMMERCEPOSRETURN' ? 'danger' : 'success'}}" class="pos-search-button" size="large" style="margin-left: 1rem; width: 3.3rem;">
+                                <button (click)="updateGodosInfo()" nbButton status="{{orderForm['voucherType'] == 'COMMERCEPOSRETURN' ? 'danger' : 'success'}}" class="pos-search-button" size="large" style="margin-left: 1rem; width: 3.3rem;">
                                     <nb-icon icon="search-outline"></nb-icon>
                                 </button>
                             </div>

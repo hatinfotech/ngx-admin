@@ -47,8 +47,6 @@ export class ApiService {
     public dialogService: NbDialogService,
     public translate: TranslateService,
     public toastService: NbToastrService,
-    // private commonService: CommonService,
-    // private activatedRoute: ActivatedRouteSnapshot,
   ) {
 
     this.authService.onTokenChange()
@@ -63,46 +61,7 @@ export class ApiService {
         this.setToken(token);
       }
     });
-
-    // this.autoRefeshToken();
-    // setInterval(() => {
-    //   this.autoRefeshToken();
-    // }, 60000);
   }
-
-  // public tokenExpired(token: string) {
-  //   const expiry = (JSON.parse(atob(token.split('.')[1]))).exp;
-  //   return (Math.floor((new Date).getTime() / 1000)) >= expiry;
-  // }
-
-  // async refreshToken() {
-  //   return this.authService.refreshToken('email', { token: this.token }).pipe(take(1)).toPromise().then(authResult => {
-
-  //     // this.refreshTokenInProgress = false;
-  //     if (authResult.isSuccess) {
-  //       this.setToken(authResult.getToken());
-  //       // this.refreshTokenSubject.next(true);
-  //       console.log('Refresh token success');
-  //       return authResult;
-  //       // return this.continueRequest(req, next, this.apiService.token && this.apiService.token.access_token);
-  //     }
-  //     this.onUnauthorizied();
-  //     return false;
-
-  //   }, catchError((error2: HttpErrorResponse) => {
-  //     // this.refreshTokenInProgress = false;
-  //     console.log(error2);
-  //     return throwError(error2);
-  //   }));
-  // }
-
-  // async autoRefeshToken() {
-  //   const expiry = (JSON.parse(atob(this.getAccessToken().split('.')[1]))).exp;
-  //   if ((Math.floor((new Date).getTime() / 1000)) >= expiry - 10) {
-  //     return this.refreshToken();
-  //   }
-  //   return true;
-  // }
 
   getBaseApiUrl() {
     return this.baseApiUrl;
@@ -148,28 +107,19 @@ export class ApiService {
   }
 
   buildApiUrl(path: string, params?: Object) {
-    // this.refreshToken(() => { });
     const token = (params && params['token']) || this.getAccessToken();
     let paramsStr = '';
 
     if (typeof params === 'undefined') params = {};
-    // const _idParams = {};
     if (Array.isArray(params['id'])) {
-      // const idParam = {};
       params['id'].forEach((item, index) => {
         params['id' + index] = encodeURIComponent(item);
       });
       delete params['id'];
-      // url = this.buildApiUrl(`${enpoint}`, params);
     } else if (params['id']) {
-      // enpoint += `/${params['id']}`;
-      // url = this.buildApiUrl(enpoint, params);
       params['id0'] = params['id'];
       delete params['id'];
     }
-    //  else {
-    //   // url = this.buildApiUrl(enpoint, params);
-    // }
 
     if (params) {
       paramsStr += this.buildParams(params);
@@ -197,17 +147,8 @@ export class ApiService {
     return httpParams;
   }
 
-  // refreshToken(success: () => void, error?: () => void) {
-  //   this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-  //     console.info(result);
-  //     success();
-  //   });
-  // }
-
   /** Restful api getting request */
   get<T>(enpoint: string, params: any, success: (resources: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
-    // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-    //   if (result) {
     const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
@@ -219,17 +160,11 @@ export class ApiService {
         if (complete) complete(resources);
         obs.unsubscribe();
       });
-    // } else {
-    //   this.onUnauthorizied();
-    // }
-    // });
   }
 
   /** Restful api getting request - promise */
   async getPromise<T>(enpoint: string, params?: any): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-      //   if (result) {
       const obs = this._http.get<T>(this.buildApiUrl(enpoint, params))
         .pipe(retry(0), catchError(e => {
           reject(e);
@@ -239,10 +174,46 @@ export class ApiService {
           resolve(resources);
           obs.unsubscribe();
         });
-      // } else {
-      //   this.onUnauthorizied();
-      // }
-      // });
+    });
+
+  }
+
+  /** Restful api getting request - promise */
+  async getProgress<T>(enpoint: string, params: any, progress: (loaded: number, total: number) => void): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const obs = this._http.get<T>(this.buildApiUrl(enpoint, params), { reportProgress: true, observe: "events" })
+        .pipe(
+        // map(event2 => {
+        //   // console.log(event);
+        //   // if (event2 instanceof ProgressEvent) {
+        //   //   console.log("download progress");
+        //   // }
+        //   return event2;
+        // }),
+        // retry(0),
+        // catchError(e => {
+        //   // reject(e);
+        //   return this.handleError(e, params['silent']);
+        // }),
+        // take(1)
+      )
+        // .toPromise().catch(e => {
+        //   this.handleError(e, params['silent']);
+        //   return Promise.reject(e);
+        // });
+        .subscribe((event: any) => {
+          if (event.type == HttpEventType.DownloadProgress) {
+            console.log('Download: ' + event.loaded / event.total * 100 + '%');
+            progress(event.loaded, event.total);
+          }
+          if (event instanceof HttpResponse) {
+            resolve(event.body);
+            obs.unsubscribe();
+          }
+        }, err => {
+          this.handleError(err, params['silent']);
+          reject(err);
+        });
     });
 
   }
@@ -256,61 +227,10 @@ export class ApiService {
         catchError(e => {
           return this.handleError(e, params['silent']);
         }));
-
-
-
-
-    // try {
-    //   this.authService.isAuthenticatedOrRefresh().toPromise().then().catch();
-    //   return this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' })
-    //     .pipe(
-    //       retry(0),
-    //       catchError(e => {
-    //         return this.handleError(e, params['silent']);
-    //       }));
-    // } catch (e) {
-    //   this.handleError(e, params['silent']);
-    // }
-    // return await new Promise<Observable<HttpResponse<T>>>((resolve, reject) => {
-    //   this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-    //     if (result) {
-    //       const obs = this._http.get<T>(this.buildApiUrl(enpoint, params), { observe: 'response' })
-    //         .pipe(
-    //           retry(0),
-    //           catchError(e => {
-    //           reject(e);
-    //           return this.handleError(e, params['silent']);
-    //         }));
-    //         resolve(obs);
-    //     } else {
-    //       this.onUnauthorizied();
-    //     }
-    //   });
-    // });
-
   }
-
-  // getAsObservable<T>(enpoint: string, params: any, error?: (e: HttpErrorResponse) => void): Observable<T> {
-  //   let id: string;
-  //   if (Array.isArray(params['id'])) {
-  //     id = params['id'].join('-');
-  //     enpoint += `/${id}`;
-  //     delete params['id'];
-  //   } else if (params['id']) {
-  //     id = params['id'];
-  //     enpoint += `/${id}`;
-  //   }
-  //   return this._http.get<T>(this.buildApiUrl(enpoint, params))
-  //     .pipe(retry(0), catchError(e => {
-  //       if (error) error(e);
-  //       return this.handleError(e);
-  //     }));
-  // }
 
   /** Restful api post request */
   post<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
-    // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-    //   if (result) {
     const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
@@ -322,17 +242,11 @@ export class ApiService {
         if (complete) complete(newResource);
         obs.unsubscribe();
       });
-    //   } else {
-    //     this.onUnauthorizied();
-    //   }
-    // });
   }
 
   /** Restful api post request */
   postPromise<T>(enpoint: string, params: any, resource: T): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-      //   if (result) {
       const obs = this._http.post(this.buildApiUrl(enpoint, params), resource)
         .pipe(retry(0), catchError(e => {
           reject(e);
@@ -342,27 +256,11 @@ export class ApiService {
           resolve(newResource);
           obs.unsubscribe();
         });
-      //   } else {
-      //     this.onUnauthorizied();
-      //   }
-      // });
     });
   }
 
   /** Restful api put request */
   put<T>(enpoint: string, params: any, resource: T, success: (newResource: T) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: T | HttpErrorResponse) => void) {
-    // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-    //   if (result) {
-    // let url = '';
-    // if (Array.isArray(params)) {
-    //   const _params = {};
-    //   params.forEach((item, index) => {
-    //     _params['id' + index] = encodeURIComponent(item);
-    //   });
-    //   url = this.buildApiUrl(`${enpoint}`, _params);
-    // } else {
-    //   this.buildApiUrl(`${enpoint}/${params}`);
-    // }
     const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
       .pipe(retry(0), catchError(e => {
         if (error) error(e);
@@ -374,17 +272,11 @@ export class ApiService {
         if (complete) complete(newResource);
         obs.unsubscribe();
       });
-    //   } else {
-    //     this.onUnauthorizied();
-    //   }
-    // });
   }
 
   /** Restful api put request */
   putPromise<T>(enpoint: string, params: any, resource: T): Promise<T> {
     return new Promise<T>((resolve, reject) => {
-      // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-      //   if (result) {
       const obs = this._http.put(this.buildApiUrl(enpoint, params), resource)
         .pipe(retry(0), catchError(e => {
           reject(e);
@@ -394,10 +286,6 @@ export class ApiService {
           resolve(newResource);
           obs.unsubscribe();
         });
-      //   } else {
-      //     this.onUnauthorizied();
-      //   }
-      // });
     });
   }
 
@@ -411,11 +299,8 @@ export class ApiService {
 
   /** Restful api delete request */
   delete(enpoint: string, idsOrParams: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    // this.authService.isAuthenticatedOrRefresh().subscribe(result => {
-    //   if (result) {
     let apiUrl = '';
     if (Array.isArray(idsOrParams)) {
-      // const _id = id.join(encodeURIComponent('-'));
       const params = {};
       (idsOrParams as Array<any>).forEach((item, index) => {
         params['id' + index] = encodeURIComponent(item);
@@ -435,10 +320,6 @@ export class ApiService {
         if (complete) complete(resp);
         obs.unsubscribe();
       });
-    //   } else {
-    //     this.onUnauthorizied();
-    //   }
-    // });
   }
 
   deletePromise(enpoint: string, id: string | string[] | { [key: string]: string }) {
@@ -469,10 +350,6 @@ export class ApiService {
   logout(sucess, error) {
     this._http.get<HttpResponse<any>>(this.buildApiUrl('/user/logout'), { observe: 'response' })
       .subscribe((resp: HttpResponse<any>) => {
-        // const session = resp.headers.get('session');
-        // if (session) {
-        //   this.storeSession(session);
-        // }
         sucess(resp.body);
       }, (e: HttpErrorResponse) => {
         if (error) error(e);
@@ -484,7 +361,6 @@ export class ApiService {
   async takeUntil(context: string, delay: number, callback?: () => void): Promise<boolean> {
     const result = new Promise<boolean>(resolve => {
       if (delay === 0) {
-        // if (callback) callback(); else return;
         resolve(true);
         return;
       }
@@ -497,7 +373,6 @@ export class ApiService {
       })(this.takeUltilCount[context]);
       setTimeout(() => {
         if (this.takeUltilPastCount[context] === this.takeUltilCount[context]) {
-          // callback();
           resolve(true);
         }
       }, delay);
@@ -513,11 +388,6 @@ export class ApiService {
   private takeOnceCount = {};
   async takeOnce(context: string, delay: number): Promise<boolean> {
     const result = new Promise<boolean>(resolve => {
-      // resolve(true);
-      // if (delay === 0) {
-      //   resolve(true);
-      //   return;
-      // }
       if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
         resolve(true);
       }
@@ -532,7 +402,6 @@ export class ApiService {
         if (this.takeOncePastCount[context] === this.takeOnceCount[context]) {
           this.takeOncePastCount[context] = null;
           this.takeOnceCount[context] = null;
-          // resolve(true);
         }
       }, delay);
     });
@@ -553,35 +422,14 @@ export class ApiService {
           this.dialogService.open(LoginDialogComponent);
         }
       });
-      // this.authService.isAuthenticated().subscribe(isAuth => {
-      // if (!isAuth) {
-      // this.router.navigate(['/auth/login']);
-      // }
-      // });
     });
   }
 
   handleError(e: HttpErrorResponse, silent?: boolean) {
     if (e.status === 401 && !silent) {
       console.warn('API: Bạn chưa đăng nhập');
-      // this.router.navigate(['/auth/login']);
-      // this.onUnauthorizied();
     }
     if (e.status === 405) {
-      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-      //   context: {
-      //     title: 'Yêu cầu quyền truy cập',
-      //     content: this.joinLogs(e),
-      //     actions: [
-      //       {
-      //         label: 'Trở về',
-      //         icon: 'back',
-      //         status: 'info',
-      //         action: () => { },
-      //       },
-      //     ],
-      //   },
-      // });
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu quyền truy cập', {
           status: 'danger',
@@ -613,43 +461,7 @@ export class ApiService {
         },
       });
     }
-    // if (e.status === 400) {
-    //   // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-    //   //   context: {
-    //   //     title: 'Yêu cầu không thể thực thi',
-    //   //     content: this.joinLogs(e),
-    //   //     actions: [
-    //   //       {
-    //   //         label: 'Trở về',
-    //   //         icon: 'back',
-    //   //         status: 'info',
-    //   //         action: () => { },
-    //   //       },
-    //   //     ],
-    //   //   },
-    //   // });
-    //   if (!silent) {
-    //     this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
-    //       status: 'danger',
-    //       duration: 10000,
-    //     });
-    //   }
-    // }
     if (e.status === 403) {
-      // if (!silent) this.dialogService.open(ShowcaseDialogComponent, {
-      //   context: {
-      //     title: 'Yêu cầu không có quyền',
-      //     content: this.joinLogs(e),
-      //     actions: [
-      //       {
-      //         label: 'Trở về',
-      //         icon: 'back',
-      //         status: 'info',
-      //         action: () => { },
-      //       },
-      //     ],
-      //   },
-      // });
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không có quyền', {
           status: 'danger',
