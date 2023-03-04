@@ -5,7 +5,7 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.2.17.2',
+  version: '6.2.17.3',
   // 6.2.18:   POS: search show inventory
   // 6.2.17:   update relative voucher tags: show type info
   // 6.2.16:   update print label
@@ -149,7 +149,7 @@ export const environment = {
   production: true,
   bundleId: 'com.namsoftware.probox-web-gui',
   hmr: false,
-  basePath: 'probox-core',
+  basePath: 'probox-one',
   register: {
     logo: {
       voucher: 'assets/images/logo/logo-dang-ky-nhan-hieu-probox.png',

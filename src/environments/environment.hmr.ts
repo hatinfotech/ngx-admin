@@ -33,7 +33,7 @@ export const environment = {
 //   production: false,
 //   bundleId: 'com.namsoftware.probox-web-gui',
 //   hmr: true,
-//   basePath: 'probox-core',
+//   basePath: 'probox-one',
 //   register: {
 //     logo: {
 //       voucher: 'assets/images/logo/logo-dang-ky-nhan-hieu-probox.png',

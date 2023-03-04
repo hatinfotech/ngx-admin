@@ -88,7 +88,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
           //   // setTimeout(() => {
           //   //   this.close();
           //   // }, this.redirectDelay);
-          //   window.location.href = '/probox-core';
+          //   window.location.href = '/probox-one';
           // });
 
           // reply response

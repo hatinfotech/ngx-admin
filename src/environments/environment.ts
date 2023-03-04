@@ -31,7 +31,7 @@ export const environment = {
 //   version: '2.0.5.15.dev',
 //   production: false,
 //   hmr: false,
-//   basePath: 'probox-core',
+//   basePath: 'probox-one',
 //   bundleId: 'com.namsoftware.probox-web-gui',
 //   register: {
 //     logo: {

@@ -38,7 +38,7 @@ messaging.setBackgroundMessageHandler(payload => {
 self.addEventListener('notificationclick', function (event) {
   event.notification.close();
   console.log(event);
-  let navigateUrl = '/probox-core/notification?'+(new URLSearchParams(event.notification.data).toString());
+  let navigateUrl = '/probox-one/notification?'+(new URLSearchParams(event.notification.data).toString());
 
   // go to target
   event.waitUntil(clients.matchAll({includeUncontrolled: true, type: 'window'}).then(clientList => {

@@ -15,7 +15,7 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
-            "outputPath": "../ProBox-core/Source/ProBox-core/probox-core",
+            "outputPath": "../ProBox-core/Source/ProBox-core/probox-one",
             "index": "src/index.html",
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
@@ -197,7 +197,7 @@
         }
       }
     },
-    "probox-core-gui-e2e": {
+    "probox-one-gui-e2e": {
       "root": "",
       "sourceRoot": "",
       "projectType": "application",
