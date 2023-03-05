@@ -5,6 +5,7 @@ import { ProductModel } from './product.model';
 import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { Model } from './model';
+import { IdTextModel } from './common.model';
 
 export class SalesVoucherModel extends Model {
   Id?: string & number;
@@ -56,7 +57,7 @@ export class SalesVoucherDetailModel extends Model  {
   Image?: string;
   CurrencyType?: string;
   Unit?: string & UnitModel;
-  Business?: string[] | BusinessModel[];
+  Business?: IdTextModel[];
   ProductName?: string;
   PriceTableDetail?: string;
 }
@@ -109,7 +110,7 @@ export class SalesReturnsVoucherDetailModel extends Model  {
   Image?: string;
   CurrencyType?: string;
   Unit?: string & UnitModel;
-  Business?: string | BusinessModel[];
+  Business?: IdTextModel[];
   ProductName?: string;
   PriceTableDetail?: string;
 }
@@ -170,7 +171,7 @@ export class SalesPriceReportDetailModel extends Model  {
   Tax?: string & TaxModel;
   Image?: string;
   Reason?: string;
-  Business?: string | BusinessModel[];
+  Business?: IdTextModel[];
 }
 
 

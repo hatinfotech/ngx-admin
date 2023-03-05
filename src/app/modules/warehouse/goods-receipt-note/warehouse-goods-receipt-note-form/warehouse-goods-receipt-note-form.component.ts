@@ -851,18 +851,20 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 if (voucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
-                    // const sourceDetailBusiness = voucherDetail.Business || [];
-                    if (voucherDetail.Type != 'CATEGORY') {
-                      // delete orderDetail.Id;
-                      // delete orderDetail.Voucher;
-                      // delete orderDetail.No;
+                    // Chỉ import sản phẩm nào được yêu cầu hạch toán mua hàng nhập kho
+                    if (voucherDetail.Type == 'CATEGORY') {
                       const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}`, Signature: voucherDetail['Signature1'] } as any);
-                      newDetailFormGroup.get('Business').disable();
                       details.push(newDetailFormGroup);
-                      this.onSelectProduct(newDetailFormGroup, voucherDetail.Product, true);
-                      const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
-                      if (selectedUnit) {
-                        this.onSelectUnit(newDetailFormGroup, null, selectedUnit);
+                    } else {
+                      if (Array.isArray(voucherDetail.Business) && voucherDetail.Business.find(f => this.commonService.getObjectId(f) === 'PURCHASEWAREHOUSE')) {
+                        const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}`, Signature: voucherDetail['Signature1'] } as any);
+                        newDetailFormGroup.get('Business').disable();
+                        details.push(newDetailFormGroup);
+                        this.onSelectProduct(newDetailFormGroup, voucherDetail.Product, true);
+                        const selectedUnit = voucherDetail.Product.Units.find(f => f.id == voucherDetail.Unit.id);
+                        if (selectedUnit) {
+                          this.onSelectUnit(newDetailFormGroup, null, selectedUnit);
+                        }
                       }
                     }
                   }
@@ -870,7 +872,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER', typeMap: this.commonService.voucherTypeMap['PURCHASEORDER'] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'SALESRETURNS') {

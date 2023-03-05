@@ -161,6 +161,7 @@ export class PurchaseOrderVoucherDetailModel {
   Image?: any;
   RelateDetail?: string;
   SystemUuid?: string;
+  Business?: IdTextModel[];
 }
 
 export interface PurchaseProductModel {

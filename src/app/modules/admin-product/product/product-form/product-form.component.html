@@ -60,7 +60,7 @@
                 </ngx-form-group>
               </div>
 
-              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-is-12 dashed-radius-border">
                 <!-- Detail form -->
                 <label class="label">{{'AdminProduct.conversionRatio' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'UnitConversions')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
                 <div class="row fit-row form-detail-header">
@@ -174,7 +174,7 @@
                 <!-- End Detail form -->
               </div>
 
-              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-is-12 dashed-radius-border">
                 <label class="label">{{'Cài đặt tham số' | translate | headtitlecase}}</label>
                 <div class="row">
                   <div class="col-sm-12">
@@ -193,7 +193,7 @@
                 </div>
               </div>
 
-              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+              <div class="col-xxl-10 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-is-12 dashed-radius-border">
 
                 <!-- Begin properties form -->
                 <label class="label">{{'Thuộc tính' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'Properties')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
@@ -259,7 +259,7 @@
                 </div>
                 <!-- End Detail form -->
               </div>
-              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12 dashed-radius-border">
+              <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-is-12 dashed-radius-border">
                 <!-- <div class="row">
                 </div> -->
               </div>
@@ -267,7 +267,7 @@
             </div>
             <label class="label">Hình sản phẩm (kéo & thả hình vào bên dưới để upload)</label>
             <div class="row">
-              <div class="col-xs-12 col-lg-3">
+              <div class="col-is-12 col-lg-3">
                 <ngx-form-group [formGroup]="formItem" name="FeaturePicture" label="Common.featurePicture" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
                   <ngx-file-input formControlName="FeaturePicture"></ngx-file-input>
                 </ngx-form-group>

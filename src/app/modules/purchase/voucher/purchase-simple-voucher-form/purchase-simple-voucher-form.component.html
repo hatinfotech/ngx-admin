@@ -147,7 +147,7 @@
                 <div class="row">
                   <div class="col-lg-1">
                     <div class="row">
-                      <div class="col-md-6 col-sm-3 col-xs-3">
+                      <div class="col-md-6 col-sm-3 col-is-3">
                         <div class="form-group">
                           <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
                           <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
@@ -159,7 +159,7 @@
                         </div>
                       </div>
 
-                      <div class="col-md-6 col-sm-9 col-xs-9">
+                      <div class="col-md-6 col-sm-9 col-is-9">
                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Image" label="Common.image"
                           [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                           <input type="button" nbInput fullWidth formControlName="Image"
@@ -178,7 +178,7 @@
                     <div class="row">
                       <div class="col-md-12">
                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.image"
-                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
+                          [array]="getDetails(formItem)" [index]="ic" [allowCopy]="falase" [required]="false">
                           <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"
                             (selectChange)="onSelectProduct(detail, $event)">
                           </ngx-select2>
@@ -227,7 +227,7 @@
                             class="align-right" currencyMask [options]="curencyFormat">
                         </ngx-form-group>
                       </div>
-                      <div class="col-md-1 col-sm-1 col-xs-1">
+                      <div class="col-md-1 col-sm-1 col-is-1">
                         <div class="form-group">
                           <label class="label align-right">Remove</label>
                           <button nbButton status="danger" hero size="medium"
@@ -243,22 +243,22 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-2 col-md-4 col-sm-12 col-is-12">
                   <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero
                     [disabled]="isProcessing">
                     <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                     {{'Sales.addProduct' | translate | headtitlecase}}
                   </button>
                 </div>
-                <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>
-                <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-3 col-md-8 col-sm-12 col-is-12"></div>
+                <div class="col-lg-7 col-md-12 col-sm-12 col-is-12">
                   <div class="row">
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-3 col-sm-4 col-is-4" style="text-align: right; font-weight: bold;">
                       {{'Voucher.total' | translate | headtitlecase}}</div>
-                    <div class="col-md-3 col-sm-8 col-xs-8"
+                    <div class="col-md-3 col-sm-8 col-is-8"
                       style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
                       {{formItem.get('_total').value | currency:'VND'}}</div>
                   </div>

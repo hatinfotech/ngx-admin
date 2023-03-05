@@ -6,6 +6,7 @@ import { ProductModel, ProductPictureModel } from './product.model';
 import { UnitModel } from './unit.model';
 import { BusinessModel } from './accounting.model';
 import { Tracing } from 'trace_events';
+import { IdTextModel } from './common.model';
 
 export class WarehouseModel {
   Id?: string | number;
@@ -67,7 +68,7 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
-  Business?: BusinessModel[] | string;
+  Business?: IdTextModel[];
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
@@ -138,7 +139,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
-  Business?: BusinessModel[] | string;
+  Business?: IdTextModel[];
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
@@ -195,7 +196,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   Location?: string;
   Container?: any;
   ImageThumbnail?: string;
-  Business?: BusinessModel[] | string;
+  Business?: IdTextModel[];
   DebitAccount?: number;
   CreaditAccount?: number;
   Tax?: string & TaxModel;

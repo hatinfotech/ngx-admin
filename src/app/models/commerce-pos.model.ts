@@ -59,7 +59,7 @@ export class CommercePosOrderDetailModel extends Model {
   Image?: any;
   CurrencyType?: string;
   Unit?: string & UnitModel;
-  Business?: string | BusinessModel[];
+  Business?: IdTextModel[];
   ProductName?: string;
   PriceTableDetail?: string;
 }

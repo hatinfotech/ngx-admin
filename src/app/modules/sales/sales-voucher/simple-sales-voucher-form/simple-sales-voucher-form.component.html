@@ -129,9 +129,9 @@
                 [formGroup]="detail">
 
                 <div class="row">
-                  <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12">
+                  <div class="col-lg-1 col-md-4 col-sm-12 col-is-12">
                     <div class="row">
-                      <div class="col-md-6 col-sm-3 col-xs-3">
+                      <div class="col-md-6 col-sm-3 col-is-3">
                         <div class="form-group">
                           <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label>
                           <input nbInput fullWidth disabled="true" value="{{ ic + 1 }}"
@@ -143,7 +143,7 @@
                         </div>
                       </div>
 
-                      <div class="col-md-6 col-sm-9 col-xs-9">
+                      <div class="col-md-6 col-sm-9 col-is-9">
                         <div class="form-group">
                           <label class="label">{{'Common.image' | translate | headtitlecase}}</label>
                           <input type="button" nbInput fullWidth formControlName="Image"
@@ -157,9 +157,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-5 col-md-8 col-sm-12 col-xs-12">
+                  <div class="col-lg-5 col-md-8 col-sm-12 col-is-12">
                     <div class="row">
-                      <div class="col-md-12 col-sm-12 col-xs-12">
+                      <div class="col-md-12 col-sm-12 col-is-12">
                         <div class="form-group" [attr.state]="formControlValidate(formItem.get('Note'), 'warning')">
                           <label class="label"><span
                               class="valid">{{'Voucher.productOrService' | translate | headtitlecase}}</span><span
@@ -172,9 +172,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                  <div class="col-lg-6 col-md-12 col-sm-12 col-is-12">
                     <div class="row">
-                      <div class="col-md-2 col-sm-4 col-xs-4">
+                      <div class="col-md-2 col-sm-4 col-is-4">
                         <div class="form-group">
                           <label class="label">{{'Voucher.quantity' | translate | headtitlecase}}</label>
                           <input type="text" nbInput fullWidth formControlName="Quantity"
@@ -182,14 +182,14 @@
                             (keyup)="toMoney(formItem, detail)" currencyMask [options]="numberFormat">
                         </div>
                       </div>
-                      <div class="col-md-3 col-sm-4 col-xs-4">
+                      <div class="col-md-3 col-sm-4 col-is-4">
                         <div class="form-group">
                           <label class="label">{{'Voucher.unit' | translate | headtitlecase}}</label>
                           <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit">
                           </ngx-select2>
                         </div>
                       </div>
-                      <div class="col-md-3 col-sm-4 col-xs-4">
+                      <div class="col-md-3 col-sm-4 col-is-4">
                         <div class="form-group">
                           <label class="label">{{'Voucher.price' | translate | headtitlecase}}</label>
                           <input type="text" nbInput fullWidth formControlName="Price"
@@ -197,14 +197,14 @@
                             (keyup)="toMoney(formItem, detail)" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
-                      <div class="col-md-3 col-sm-8 col-xs-8">
+                      <div class="col-md-3 col-sm-8 col-is-8">
                         <div class="form-group">
                           <label class="label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</label>
                           <input type="text" nbInput fullWidth formControlName="ToMoney" placeholder="Thành tiền"
                             class="align-right" currencyMask [options]="curencyFormat">
                         </div>
                       </div>
-                      <div class="col-md-1 col-sm-1 col-xs-1">
+                      <div class="col-md-1 col-sm-1 col-is-1">
                         <div class="form-group">
                           <label class="label align-right">Remove</label>
                           <button nbButton status="danger" hero size="medium"
@@ -220,22 +220,22 @@
               </div>
               <hr>
               <div class="row">
-                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                <div class="col-lg-2 col-md-4 col-sm-12 col-is-12">
                   <button nbButton status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero
                     [disabled]="isProcessing">
                     <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
                     {{'Sales.addProduct' | translate | headtitlecase}}
                   </button>
                 </div>
-                <div class="col-lg-3 col-md-8 col-sm-12 col-xs-12"></div>
-                <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12">
+                <div class="col-lg-3 col-md-8 col-sm-12 col-is-12"></div>
+                <div class="col-lg-7 col-md-12 col-sm-12 col-is-12">
                   <div class="row">
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-2 col-sm-4 col-xs-4"></div>
-                    <div class="col-md-3 col-sm-4 col-xs-4" style="text-align: right; font-weight: bold;">
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-2 col-sm-4 col-is-4"></div>
+                    <div class="col-md-3 col-sm-4 col-is-4" style="text-align: right; font-weight: bold;">
                       {{'Voucher.total' | translate | headtitlecase}}</div>
-                    <div class="col-md-3 col-sm-8 col-xs-8"
+                    <div class="col-md-3 col-sm-8 col-is-8"
                       style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
                       {{formItem.get('_total').value | currency:'VND'}}</div>
                   </div>

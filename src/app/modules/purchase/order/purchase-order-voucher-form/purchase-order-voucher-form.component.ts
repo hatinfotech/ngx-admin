@@ -2,7 +2,7 @@ import { AdminProductService } from './../../../admin-product/admin-product.serv
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -28,6 +28,7 @@ import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { _ } from 'ag-grid-community';
+import { BusinessModel } from '../../../../models/accounting.model';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -301,6 +302,23 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     },
   }];
 
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // dropdownCssClass: 'is_tags',
+    maximumSelectionLength: 1,
+    multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -329,7 +347,12 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     // } else {
     //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
     // }
-    return super.init().then(status => {
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
+      accBusiness['id'] = accBusiness.Code;
+      accBusiness['text'] = accBusiness.Name;
+      return accBusiness;
+    }));
+    return super.init().then(async status => {
       if (this.isDuplicate) {
         // Clear id
         this.id = [];
@@ -338,13 +361,14 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
           formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
-            conditonFormGroup.get('Id').setValue('');
+            // conditonFormGroup.get('Id').setValue('');
           });
         });
       }
       // this.changeDirectorRef.detectChanges();//https://viblo.asia/p/tim-hieu-ve-change-detection-trong-angular-djeZ18EjKWz
       return status;
     });
+
   }
 
   /** Execute api get */
@@ -446,16 +470,37 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: PurchaseOrderVoucherDetailModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm: FormGroup;
+    newForm = this.formBuilder.group({
       // Id: [''],
       SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT'],
-      Product: [''],
-      Description: [''],
-      Quantity: [1],
-      Price: [0],
-      Unit: [''],
+      Product: ['', (control: FormControl) => {
+        if (newForm && newForm.get('Type').value === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Description: ['', Validators.required],
+      Quantity: [1, (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Price: ['', (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
+      Unit: ['', (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
@@ -464,8 +509,15 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       SupplierProductName: [''],
       ProductTaxName: [''],
       Tax: [''],
+      Business: [null, (control: FormControl) => {
+        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }]
     });
 
+    newForm['__type'] = 'PRODUCT';
     if (data) {
       if (data?.Product && Array.isArray(data.Product['Units'])) {
         const unitControl = newForm.get('Unit');
@@ -479,8 +531,24 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       // await new Promise(resolve => setTimeout(() => resolve(true), 300));
       // this.toMoney(parentFormGroup, newForm, null, );
       // })()
-
+      newForm['__type'] = data["Type"];
     }
+    newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      newForm['__type'] = this.commonService.getObjectId(value);
+      // if (newForm['__type'] == 'CATEGORY') {
+      newForm.get('Image').setValue([]);
+      newForm.get('Product').setValue(null);
+      newForm.get('Unit').setValue(null);
+      newForm.get('Quantity').setValue(null);
+      newForm.get('Price').setValue(null);
+      newForm.get('ToMoney').setValue(null);
+      newForm.get('Description').setValue(null);
+      newForm.get('SupplierSku').setValue(null);
+      newForm.get('SupplierProductName').setValue(null);
+      newForm.get('ProductTaxName').setValue(null);
+      newForm.get('Tax').setValue(null);
+      // }
+    });
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -1158,6 +1226,12 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       }
     };
     reader.readAsBinaryString(file);
+  }
+
+  addDetailAfter(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    const formDetails = this.getDetails(parentFormGroup);
+    const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { Type: 'CATEGORY' });
+    formDetails.controls.splice(index + 1, 0, newDetailFormGroup);
   }
 
 }

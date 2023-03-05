@@ -930,50 +930,56 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                   continue;
                 }
 
-                // Check goods receipt notes
-                const relativeGoodsReceiptVouchers = voucher.RelativeVouchers.filter(f => f.type == 'GOODSRECEIPT');
-                if (relativeGoodsReceiptVouchers.length == 0) {
-                  this.commonService.showDialog('Thêm chứng từ liên quan', 'Không thể tạo phiếu mua hàng từ đơn đặt hàng chưa được nhập kho !', []);
-                  continue;
-                }
-
-                const goodsReceiptNotes = await this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>('/warehouse/goods-receipt-notes', { id: relativeGoodsReceiptVouchers.map(m => this.commonService.getObjectId(m)), includeIdText: true });
-                for (const goodsReceiptNote of goodsReceiptNotes) {
-                  if (goodsReceiptNote.State != 'APPROVED') {
-                    this.commonService.showDialog('Thêm chứng từ liên quan', 'Phiếu nhập kho liên quan chưa được duyệt !', []);
-                    continue;
+                // Check PO require goods receipt
+                if (voucher) {
+                  if (Array.isArray(voucher.Details) && voucher.Details.some(f => f.Business && Array.isArray(f.Business) && f.Business.some(s => this.commonService.getObjectId(s) == 'PURCHASEWAREHOUSE'))) {
+                    // Check goods receipt notes
+                    const relativeGoodsReceiptVouchers = voucher.RelativeVouchers.filter(f => f.type == 'GOODSRECEIPT');
+                    if (relativeGoodsReceiptVouchers.length == 0) {
+                      this.commonService.showDialog('Thêm chứng từ liên quan', 'Không thể tạo phiếu mua hàng từ đơn đặt hàng chưa được nhập kho !', []);
+                      continue;
+                    }
+                    const goodsReceiptNotes = await this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>('/warehouse/goods-receipt-notes', { id: relativeGoodsReceiptVouchers.map(m => this.commonService.getObjectId(m)), includeIdText: true });
+                    for (const goodsReceiptNote of goodsReceiptNotes) {
+                      if (goodsReceiptNote.State != 'APPROVED') {
+                        this.commonService.showDialog('Thêm chứng từ liên quan', 'Phiếu nhập kho liên quan chưa được duyệt !', []);
+                        continue;
+                      }
+                      insertList.push({ id: goodsReceiptNote.Code, text: goodsReceiptNote.Title, type: 'GOODSRECEIPT' });
+                    }
                   }
-                  insertList.push({ id: goodsReceiptNote.Code, text: goodsReceiptNote.Title, type: 'GOODSRECEIPT' });
-                }
 
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
-                    continue;
+                  if (this.commonService.getObjectId(formGroup.get('Object').value)) {
+                    if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
+                      this.commonService.showToast(this.commonService.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                      continue;
+                    }
+                  } else {
+                    delete voucher.Id;
+                    formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
+                    details.clear();
                   }
-                } else {
-                  delete voucher.Id;
-                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
-                  details.clear();
-                }
-                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASEORDER' });
+                  insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASEORDER' });
 
-                // Insert order details into voucher details
-                if (voucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
-                  for (const voucherDetail of voucher.Details) {
-                    if (voucherDetail.Type !== 'CATEGORY') {
-                      const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` } as any);
-                      details.push(newDetailFormGroup);
-                      await new Promise(resolve => setTimeout(() => resolve(true), 300));
-                      this.toMoney(formGroup, newDetailFormGroup);
+                  // Insert order details into voucher details
+                  if (voucher?.Details) {
+                    details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
+                    for (const voucherDetail of voucher.Details) {
+                      if (voucherDetail.Type == 'CATEGORY') {
+                        const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` } as any);
+                        details.push(newDetailFormGroup);
+                      } else {
+                        const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}` } as any);
+                        details.push(newDetailFormGroup);
+                        await new Promise(resolve => setTimeout(() => resolve(true), 300));
+                        this.toMoney(formGroup, newDetailFormGroup);
+                      }
                     }
                   }
                 }
-
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.commonService.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'GOODSRECEIPT') {// Code mẫu chưa xử lý
@@ -1053,7 +1059,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.commonService.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           setTimeout(() => {
