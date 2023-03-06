@@ -1,3 +1,5 @@
+import { FileModel } from './../../../../models/file.model';
+import { CurrencyPipe } from '@angular/common';
 import { takeUntil } from 'rxjs/operators';
 import { AdminProductService } from './../../admin-product.service';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
@@ -6,19 +8,21 @@ import { NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams } from '@ag-grid-community/all-modules';
+import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ImportProductMapFormComponent } from '../import-product-map-form/import-product-map-form.component';
+import { AgGridColumn } from '@ag-grid-community/angular';
 var CryptoJS = require("crypto-js");
 
 @Component({
   selector: 'ngx-import-products-dialog',
   templateUrl: './import-products-dialog.component.html',
   styleUrls: ['./import-products-dialog.component.scss'],
+  providers: [CurrencyPipe],
 })
 export class ImportProductDialogComponent extends BaseComponent implements OnInit, AfterViewInit {
 
@@ -35,6 +39,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     public themeService: NbThemeService,
     public formBuilder: FormBuilder,
     public adminProductService: AdminProductService,
+    public currencyPipe: CurrencyPipe,
     public ref?: NbDialogRef<ImportProductDialogComponent>,
   ) {
     super(commonService, router, apiService);
@@ -589,9 +594,13 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             headerName: 'Giá EU',
             field: 'SalesPrice',
             width: 110,
+            // cellStyle: { justifyContent: 'flex-end' },
             filter: 'agTextColumnFilter',
-            cellRenderer: 'textRender',
+            // cellRenderer: 'textRender',
             pinned: 'right',
+            valueFormatter: (cell: ValueFormatterParams) => {
+              return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
+            }
           },
           {
             headerName: 'ID',
@@ -802,7 +811,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   onFileChange(ev: any) {
     const reader = new FileReader();
     const file = ev.target.files[0];
-    if(!file) return;
+    if (!file) return;
     this.fileName = file.name;
     reader.onload = async (event) => {
       try {
@@ -811,7 +820,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         this.workBook = XLSX.read(data, { type: 'binary' });
         this.jsonData = this.workBook.SheetNames.reduce((initial, name) => {
           const sheet = this.workBook.Sheets[name];
-          initial[name] = XLSX.utils.sheet_to_json(sheet);
+          initial[name] = XLSX.utils.sheet_to_json(sheet, { header: 1 });
           return initial;
         }, {});
         this.processing = false;
@@ -897,10 +906,11 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
         // Confirm mapping
         const tmpSheet: string[][] = XLSX.utils.sheet_to_json(this.workBook.Sheets[this.chooseSheet], { header: 1 });
-        const columnList = tmpSheet[0].map((m: string) => {
+        const columnList = tmpSheet[0].map((m: string, index) => {
           const id = m.split('/')[0];
+          const colindex = index;
           const text = m;
-          return { id, text };
+          return { id, text, colindex };
         });
 
         this.commonService.openDialog(ImportProductMapFormComponent, {
@@ -911,19 +921,24 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
                 this.mapping = dataMappiing[0];
                 for (const i in this.mapping) {
-                  this.mapping[i] = this.commonService.getObjectText(this.mapping[i]);
-                  if (this.mapping['UnitConversions']) {
-                    for (const unitConverion of this.mapping['UnitConversions']) {
-                      for (const r in unitConverion) {
-                        unitConverion[r] = this.commonService.getObjectText(unitConverion[r]);
-                      }
+                  // this.mapping[i] = this.commonService.getObjectText(this.mapping[i]);
+                  if (i !== 'UnitConversions' && i !== 'Properties') {
+                    this.mapping[i] = this.mapping[i]?.colindex;
+                  }
+                }
+                if (Array.isArray(this.mapping['UnitConversions'])) {
+                  for (const unitConverion of this.mapping['UnitConversions']) {
+                    for (const r in unitConverion) {
+                      // unitConverion[r] = this.commonService.getObjectText(unitConverion[r]);
+                      unitConverion[r] = unitConverion[r]?.colindex;
                     }
                   }
-                  if (this.mapping['Properties']) {
-                    for (const property of this.mapping['Properties']) {
-                      for (const r in property) {
-                        property[r] = this.commonService.getObjectText(property[r]);
-                      }
+                }
+                if (Array.isArray(this.mapping['Properties'])) {
+                  for (const property of this.mapping['Properties']) {
+                    for (const r in property) {
+                      // property[r] = this.commonService.getObjectText(property[r]);
+                      property[r] = property[r]?.colindex;
                     }
                   }
                 }
@@ -943,17 +958,19 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   propertyMapping[property.Code] = property;
                 }
                 const currentProductList = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' });
-                this.array = this.sheet.map((row: any, index: number) => {
+                this.array = this.sheet.filter((f, index) => index > 0).map((row: any, index: number) => {
                   const mappedRow: any = {
                     No: index + 1,
                     IsUpdatePrice: false,
                   };
 
                   for (const column in this.mapping) {
+                    // if (typeof this.mapping[column] == 'string') {
                     mappedRow[column] = row[this.mapping[column]] || null;
                     if (typeof mappedRow[column] == 'string') {
                       mappedRow[column] = mappedRow[column].trim();
                     }
+                    // }
                   }
                   mappedRow['Type'] = mappedRow['Type'] || 'PRODUCT';
                   if (mappedRow['Brand']) {
@@ -1103,6 +1120,10 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     reader.readAsBinaryString(file);
   }
 
+  progress = 0;
+  progressStatus = 'primary';
+  progressLabel = '';
+  uploadedImages: { [key: string]: FileModel } = {};
   async importProducts() {
     this.processing = true;
     try {
@@ -1154,18 +1175,28 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         }
       });
 
+      const total = allProductList.length;
+      let loaded = 0;
+      this.progressStatus = 'success';
       for (const newProduct of allProductList) {
-
+        loaded++;
+        this.progress = loaded/total*100;
+        this.progressLabel = newProduct.Name + ' (' + this.progress.toFixed(2) + '%)';
         if (newProduct.IsImport) {
           // var CryptoJS = require("crypto-js");
           // Download iamges
           if (newProduct.FeaturePicture) {
             try {
               if (typeof newProduct.FeaturePicture == 'string') {
-                this.commonService.toastService.show(`${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
                 const tag = CryptoJS.MD5(newProduct.FeaturePicture as any).toString();
-                const file = await this.apiService.uploadFileByLink(newProduct.FeaturePicture);
-                file.Tag = tag;
+                // const file = await this.apiService.uploadFileByLink(newProduct.FeaturePicture);
+                let file = this.uploadedImages[tag];
+                if (!file) {
+                  this.commonService.toastService.show(`${newProduct.Name}`, `Upload hình đại diện`, { status: 'primary', duration: 10000 });
+                  file = file || await this.apiService.uploadFileByLink(newProduct.FeaturePicture as any);
+                  file.Tag = tag;
+                  this.uploadedImages[tag] = file;
+                }
 
                 newProduct.FeaturePicture = file;
               }
@@ -1182,11 +1213,15 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           if (newProduct.Pictures && newProduct.Pictures.length > 0) {
             for (let i = 0; i < newProduct.Pictures.length; i++) {
               if (typeof newProduct.Pictures[i] == 'string') {
-                this.commonService.toastService.show(`${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
                 try {
                   const tag = CryptoJS.MD5(newProduct.Pictures[i] as any).toString();
-                  const file = await this.apiService.uploadFileByLink(newProduct.Pictures[i] as any);
-                  file.Tag = tag;
+                  let file = this.uploadedImages[tag];
+                  if (!file) {
+                    this.commonService.toastService.show(`${newProduct.Name}`, `Upload danh sách hình`, { status: 'primary', duration: 10000 });
+                    file = file || await this.apiService.uploadFileByLink(newProduct.Pictures[i] as any);
+                    file.Tag = tag;
+                    this.uploadedImages[tag] = file;
+                  }
                   console.log(file);
 
                   newProduct.Pictures[i] = file;
@@ -1203,6 +1238,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           const node = this.gridApi.getDisplayedRowAtIndex(newProduct.index);
           try {
             const createdProducts = await this.apiService.putPromise<ProductModel[]>('/admin-product/products', {}, [newProduct]);
+            // this.progress = 0;
             // for (const i in createdProducts) {
             newProduct.Code = createdProducts[0].Code;
             newProduct.Sku = createdProducts[0].Sku;
@@ -1211,7 +1247,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             node.setDataValue('IsImport', false);
             node.setDataValue('Result', 'Success');
             // }
-            this.commonService.toastService.show(newProduct.Name, 'Import thành công', { status: 'success' });
+            // this.commonService.toastService.show(newProduct.Name, 'Import thành công', { status: 'success' });
             console.log(createdProducts[0]);
           } catch (err) {
             console.error(err);
@@ -1223,6 +1259,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         }
 
       }
+      this.progress = 0;
 
       // console.log(newProductList);
       if (newProductList.length > 0) {
@@ -1242,17 +1279,23 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       // Update price
       if (updatePriceProductList.length > 0) {
         this.commonService.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
-        await this.apiService.putPromise('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
+        await this.apiService.putProgress('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
           return {
             MasterPriceTable: 'default',
             Product: this.commonService.getObjectId(m.Code),
+            ProductName: this.commonService.getObjectId(m.Name),
             Unit: this.commonService.getObjectId(m.WarehouseUnit),
             Price: m.SalesPrice,
           };
-        }));
-        for(const updatePriceProduct of updatePriceProductList) {
+        }), progressInfo => {
+          console.log(progressInfo);
+          this.progress = progressInfo.progress;
+          this.progressLabel = progressInfo['item']['ProductName'] + ' (' + progressInfo.progress.toFixed(2) + '%)';
+        });
+        this.progress = 0;
+        for (const updatePriceProduct of updatePriceProductList) {
           const node = this.gridApi.getDisplayedRowAtIndex(updatePriceProduct.index);
-          if(node) node.setDataValue('IsUpdatePrice', false);
+          if (node) node.setDataValue('IsUpdatePrice', false);
         }
         this.commonService.toastService.show('Đã cập nhật giá mới', 'Cập nhật giá', { status: 'success' });
       }
@@ -1280,7 +1323,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
       // Include column name into header
       // Export mapping file
-      this.workBook.Sheets[this.chooseSheet] = XLSX.utils.json_to_sheet(this.sheet);
+      this.workBook.Sheets[this.chooseSheet] = XLSX.utils.json_to_sheet(this.sheet, { skipHeader: true });
       XLSX.writeFile(this.workBook, this.fileName);
 
 

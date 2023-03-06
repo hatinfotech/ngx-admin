@@ -4,8 +4,8 @@ import {
   HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpEventType,
 } from '@angular/common/http';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
-import { Observable, throwError, BehaviorSubject } from 'rxjs';
-import { map, retry, catchError, switchMap, take, filter, delay } from 'rxjs/operators';
+import { Observable, throwError, BehaviorSubject, of } from 'rxjs';
+import { map, retry, catchError, switchMap, take, filter, delay, concatMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../modules/dialog/showcase-dialog/showcase-dialog.component';
@@ -20,6 +20,7 @@ export class ApiToken {
   refresh_token?: string;
 }
 
+declare var $: any;
 @Injectable({
   providedIn: 'root',
 })
@@ -286,6 +287,75 @@ export class ApiService {
           resolve(newResource);
           obs.unsubscribe();
         });
+    });
+  }
+
+  putProgress<T>(enpoint: string, params: any, resource: T, progress: (progressInfo: {progress: number, loaded: number, total: number}) => void): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      // const obs = this._http.put(this.buildApiUrl(enpoint, params), resource, { reportProgress: true, responseType: 'text', observe: 'response' })
+      //   .pipe(
+      //     concatMap((event) => {
+      //       console.log(event);
+      //       return of(event);
+      //     })
+      //   )
+      //   .subscribe({
+      //     next(chunck) { console.log('got chunck', chunck); },
+      //     error(err) { console.error('something wrong occurred: ' + err); },
+      //     complete() { console.log('done'); }
+      //   });
+      params.reportProgress = true;
+      var jsonResponse: any = '', lastResponseLen = false;
+      $.ajax({
+        type: 'PUT',
+        url: this.buildApiUrl(enpoint, params),
+        data: JSON.stringify(resource),
+        xhrFields: {
+          onprogress: function (e) {
+            var thisResponse, response = e.currentTarget.response;
+            if (lastResponseLen === false) {
+              thisResponse = response;
+              lastResponseLen = response.length;
+            } else {
+              thisResponse = response.substring(lastResponseLen);
+              lastResponseLen = response.length;
+            }
+
+            const thisResponses = thisResponse.split('\n');
+            for (const chunkReponse of thisResponses) {
+              if (chunkReponse) {
+                try {
+                  jsonResponse = JSON.parse(chunkReponse);
+                } catch (err) {
+                  console.log('json fail: ', chunkReponse);
+                  console.error(err);
+                }
+                if (!Array.isArray(jsonResponse)) {
+                  progress(jsonResponse);
+                }
+              }
+            }
+
+            // console.log('Processed ' + jsonResponse.count + ' of ' + jsonResponse.total);
+            // console.log('width', jsonResponse.progress + '%')
+            // console.log(jsonResponse.progress + '%');
+          }
+        },
+        success: (text) => {
+          console.log('done!');
+          console.log('Process completed successfully');
+          // $(".progress-bar").css({
+          //   width: '100%',
+          //   backgroundColor: 'green'
+          // });
+          resolve(text);
+        },
+        complete: (text) => {
+          // console.log(text);
+          resolve(jsonResponse);
+        }
+      });
+
     });
   }
 

@@ -2,13 +2,6 @@
   <nb-card class="small-header popup" [nbSpinner]="processing">
     <nb-card-header>
       <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Import thông tin sản phẩm' | translate:{definition: '', action: commonService.translate.instant('Common.assign')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-
-      <!-- <nav>
-        {{'AdminProduct.assignCategories' | translate | headtitlecase}}
-        <button nbButton status="warning" hero size="tiny" style="float: right;" title="Đóng" (click)="close()">
-          <nb-icon pack="eva" icon="close"></nb-icon>
-        </button>
-      </nav> -->
     </nb-card-header>
     <nb-card-body>
       <div class="row">
@@ -38,6 +31,9 @@
         </div>
       </div>
     </nb-card-body>
+    <nb-card-footer>
+      <nb-progress-bar *ngIf="progress > 0" [value]="progress" [status]="progressStatus" size="tiny" style="margin: 0.5rem;">{{progressLabel}}</nb-progress-bar>
+    </nb-card-footer>
     <nb-card-footer>
       <div class="buttons-row" style="text-align: right;">
         <button nbButton status="warning" hero>{{'Common.close' | translate | headtitlecase}}</button>

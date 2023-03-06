@@ -38,7 +38,7 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<ProductListComponent>,
+    public ref: NbDialogRef<UserGroupListComponent>,
   ) {
     super(apiService, router, commonService, dialogService, toastService, ref);
   }

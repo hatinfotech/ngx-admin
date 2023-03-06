@@ -240,5 +240,6 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
 
   dismiss() {
     this.ref.close();
+    return false;
   }
 }

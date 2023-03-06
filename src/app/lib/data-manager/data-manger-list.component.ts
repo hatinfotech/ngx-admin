@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef, NbDialogConfig } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, Output, EventEmitter } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, Output, EventEmitter, ElementRef } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -95,6 +95,23 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   @Input() title?: string;
   @Input() size?: string = 'medium';
   @Input() actionButtonList?: ActionControl[];
+
+  smartTable: Ng2SmartTableComponent;
+  @ViewChild('smartTable') set content(content: Ng2SmartTableComponent) {
+    if (content) { // initially setter gets called with undefined
+      this.smartTable = content;
+
+      // handle change page event
+      const $this = this;
+      this.smartTable.changePage = (function (_super) {
+        return function () {
+          $this.selectedIds = [];
+          $this.selectedItems = [];
+        };
+
+      })(this.smartTable.changePage);
+    }
+  }
 
   constructor(
     public apiService: ApiService,
@@ -250,29 +267,30 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     this.loadList();
   }
 
-  // ngAfterViewInit(): void {
-  //   // const nativeEle = this;
-  //   // Fix dialog scroll
-  //   if (this.ref) {
-  //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this.ref;
-  //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-  //       const nativeEle = dialog.componentRef.location.nativeElement;
-  //       // tslint:disable-next-line: ban
-  //       const compoentNativeEle = $(nativeEle);
-  //       const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
-  //       const overlayBackdrop = overlayWraper.prev();
+  ngAfterViewInit(): void {
+    // console.log(this.startTable);
+    //   // const nativeEle = this;
+    //   // Fix dialog scroll
+    //   if (this.ref) {
+    //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this.ref;
+    //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
+    //       const nativeEle = dialog.componentRef.location.nativeElement;
+    //       // tslint:disable-next-line: ban
+    //       const compoentNativeEle = $(nativeEle);
+    //       const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
+    //       const overlayBackdrop = overlayWraper.prev();
 
-  //       this.ref.hide = () => {
-  //         overlayWraper.fadeOut(100);
-  //         overlayBackdrop.fadeOut(100);
-  //         this.onDialogHide();
-  //       };
+    //       this.ref.hide = () => {
+    //         overlayWraper.fadeOut(100);
+    //         overlayBackdrop.fadeOut(100);
+    //         this.onDialogHide();
+    //       };
 
-  //       compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
-  //       console.log(compoentNativeEle);
-  //     }
-  //   }
-  // }
+    //       compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
+    //       console.log(compoentNativeEle);
+    //     }
+    //   }
+  }
 
   getList(callback: (list: M[]) => void) {
     this.commonService.takeUntil(this.componentName, 300, () => {

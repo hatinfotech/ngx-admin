@@ -1,7 +1,7 @@
 import { IdTextModel } from './../../../../models/common.model';
 import { ProductUnitModel } from './../../../../models/product.model';
 import { AdminProductService } from './../../admin-product.service';
-import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, EventEmitter, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel, ProductGroupModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -25,13 +25,14 @@ import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model
 import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
 import { defaultMaxListeners } from 'stream';
 import { ImportProductDialogComponent } from '../import-products-dialog/import-products-dialog.component';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
 
 @Component({
   selector: 'ngx-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
 })
-export class ProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit {
+export class ProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit, AfterViewInit {
 
   componentName: string = 'ProductListComponent';
   formPath = '/admin-product/product/form';
@@ -54,6 +55,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   containerList: WarehouseGoodsContainerModel[] = [];
 
   shelfList: IdTextModel[];
+  // @ViewChild('smartTable', { static: false }) smartTable: Ng2SmartTableComponent;
+
+  // private smartTable: Ng2SmartTableComponent;
 
   constructor(
     public apiService: ApiService,
@@ -75,6 +79,11 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
     this.shelfList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, limit: 'nolimit', eq_Type: 'SHELF' })).map(container => ({ id: container.Code, text: `${container.Name}` })) as any;
+  }
+
+  ngAfterViewInit(): void {
+    super.ngAfterViewInit();
+    console.log(this.smartTable);
   }
 
   async init() {
@@ -136,7 +145,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         name: 'importProducts',
         status: 'primary',
         label: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
-        icon: 'copy-outline',
+        icon: 'download-outline',
         title: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
         size: 'medium',
         disabled: () => false,
@@ -158,6 +167,57 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             },
             closeOnEsc: false,
             closeOnBackdropClick: false,
+          });
+          return false;
+        },
+      });
+
+      // Test
+      this.actionButtonList.unshift({
+        name: 'test',
+        status: 'danger',
+        label: 'Test',
+        icon: 'download-outline',
+        title: 'Test',
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => false,
+        click: () => {
+          this.apiService.putProgress('/sales/master-price-table-details', {}, [
+            {
+              MasterPriceTable: 'default',
+              Product: '123123123123',
+              Unit: 'CAI',
+              Price: 1234123123,
+            },
+            {
+              MasterPriceTable: 'default',
+              Product: '123123123123',
+              Unit: 'CAI',
+              Price: 1234123123,
+            },
+            {
+              MasterPriceTable: 'default',
+              Product: '123123123123',
+              Unit: 'CAI',
+              Price: 1234123123,
+            },
+            {
+              MasterPriceTable: 'default',
+              Product: '123123123123',
+              Unit: 'CAI',
+              Price: 1234123123,
+            },
+            {
+              MasterPriceTable: 'default',
+              Product: '123123123123',
+              Unit: 'CAI',
+              Price: 1234123123,
+            },
+          ], (progressInfo) => {
+            console.log(progressInfo);
+          }).then(rs => {
+            console.log(rs);
           });
           return false;
         },
@@ -243,7 +303,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           type: 'html',
           width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+            return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
           },
           filter: {
             type: 'custom',
@@ -282,7 +342,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           type: 'html',
           width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate['text']).join('</span><span class="tag">') + '</span>') : '';
+            return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
           },
           filter: {
             type: 'custom',
@@ -682,7 +742,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       params['includeUnits'] = true;
       params['includeCreator'] = true;
       params['includeLastUpdateBy'] = true;
-      
+
       params['sort_Id'] = 'desc';
       return params;
     };

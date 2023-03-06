@@ -71,7 +71,7 @@
             </div> -->
             <div class="ng2-smart-table-wrap">
               <div class="ng2-smart-table-wrap">
-                <ng2-smart-table *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
+                <ng2-smart-table #smartTable *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source"
                   (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)"
                   (edit)="onEditAction($event)" (create)="onSerialAction($event)">
                 </ng2-smart-table>
