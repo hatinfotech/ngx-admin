@@ -1277,6 +1277,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       }
 
       // Update price
+        this.progressStatus = 'primary';
       if (updatePriceProductList.length > 0) {
         this.commonService.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
         await this.apiService.putProgress('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {

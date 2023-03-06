@@ -173,55 +173,55 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       });
 
       // Test
-      this.actionButtonList.unshift({
-        name: 'test',
-        status: 'danger',
-        label: 'Test',
-        icon: 'download-outline',
-        title: 'Test',
-        size: 'medium',
-        disabled: () => false,
-        hidden: () => false,
-        click: () => {
-          this.apiService.putProgress('/sales/master-price-table-details', {}, [
-            {
-              MasterPriceTable: 'default',
-              Product: '123123123123',
-              Unit: 'CAI',
-              Price: 1234123123,
-            },
-            {
-              MasterPriceTable: 'default',
-              Product: '123123123123',
-              Unit: 'CAI',
-              Price: 1234123123,
-            },
-            {
-              MasterPriceTable: 'default',
-              Product: '123123123123',
-              Unit: 'CAI',
-              Price: 1234123123,
-            },
-            {
-              MasterPriceTable: 'default',
-              Product: '123123123123',
-              Unit: 'CAI',
-              Price: 1234123123,
-            },
-            {
-              MasterPriceTable: 'default',
-              Product: '123123123123',
-              Unit: 'CAI',
-              Price: 1234123123,
-            },
-          ], (progressInfo) => {
-            console.log(progressInfo);
-          }).then(rs => {
-            console.log(rs);
-          });
-          return false;
-        },
-      });
+      // this.actionButtonList.unshift({
+      //   name: 'test',
+      //   status: 'danger',
+      //   label: 'Test',
+      //   icon: 'download-outline',
+      //   title: 'Test',
+      //   size: 'medium',
+      //   disabled: () => false,
+      //   hidden: () => false,
+      //   click: () => {
+      //     this.apiService.putProgress('/sales/master-price-table-details', {}, [
+      //       {
+      //         MasterPriceTable: 'default',
+      //         Product: '123123123123',
+      //         Unit: 'CAI',
+      //         Price: 1234123123,
+      //       },
+      //       {
+      //         MasterPriceTable: 'default',
+      //         Product: '123123123123',
+      //         Unit: 'CAI',
+      //         Price: 1234123123,
+      //       },
+      //       {
+      //         MasterPriceTable: 'default',
+      //         Product: '123123123123',
+      //         Unit: 'CAI',
+      //         Price: 1234123123,
+      //       },
+      //       {
+      //         MasterPriceTable: 'default',
+      //         Product: '123123123123',
+      //         Unit: 'CAI',
+      //         Price: 1234123123,
+      //       },
+      //       {
+      //         MasterPriceTable: 'default',
+      //         Product: '123123123123',
+      //         Unit: 'CAI',
+      //         Price: 1234123123,
+      //       },
+      //     ], (progressInfo) => {
+      //       console.log(progressInfo);
+      //     }).then(rs => {
+      //       console.log(rs);
+      //     });
+      //     return false;
+      //   },
+      // });
       return rs;
     });
   }
