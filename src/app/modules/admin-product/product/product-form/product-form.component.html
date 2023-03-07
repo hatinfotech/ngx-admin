@@ -178,6 +178,11 @@
                 <label class="label">{{'Cài đặt tham số' | translate | headtitlecase}}</label>
                 <div class="row">
                   <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="formItem" name="Barcode" label="Barcode" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                      <input type="text" nbInput fullWidth formControlName="Barcode" placeholder="Barcode">
+                    </ngx-form-group>
+                  </div>
+                  <div class="col-sm-12">
                     <ngx-form-group [formGroup]="formItem" name="RequireVatTax" label="Thuế VAT (%)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                       <nb-checkbox class="form-group-icon-control" formControlName="RequireVatTax"></nb-checkbox>
                       <input class="form-group-input-control" type="text" nbInput fullWidth formControlName="VatTax" placeholder="{{'Thuế VAT' | translate | headtitlecase}}" [inputMask]="towDigitsInputMask">
