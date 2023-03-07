@@ -268,28 +268,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   ngAfterViewInit(): void {
-    // console.log(this.startTable);
-    //   // const nativeEle = this;
-    //   // Fix dialog scroll
-    //   if (this.ref) {
-    //     const dialog: NbDialogRef<DataManagerListComponent<M>> = this.ref;
-    //     if (dialog && dialog.componentRef && dialog.componentRef.location && dialog.componentRef.location.nativeElement) {
-    //       const nativeEle = dialog.componentRef.location.nativeElement;
-    //       // tslint:disable-next-line: ban
-    //       const compoentNativeEle = $(nativeEle);
-    //       const overlayWraper = compoentNativeEle.closest('.cdk-global-overlay-wrapper');
-    //       const overlayBackdrop = overlayWraper.prev();
-
-    //       this.ref.hide = () => {
-    //         overlayWraper.fadeOut(100);
-    //         overlayBackdrop.fadeOut(100);
-    //         this.onDialogHide();
-    //       };
-
-    //       compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
-    //       console.log(compoentNativeEle);
-    //     }
-    //   }
+    super.ngAfterViewInit();
   }
 
   getList(callback: (list: M[]) => void) {

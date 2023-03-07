@@ -784,13 +784,17 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   select2OptionForContact = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {
+      includeIdText: true,
+      includeGroups: true,
+      sort_SearchRank: 'desc',
+    }, {
       placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
         item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
         return item;
       }
     }),
-    minimumInputLength: 1,
+    // minimumInputLength: 1,
   };
 
 }

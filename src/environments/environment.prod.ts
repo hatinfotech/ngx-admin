@@ -5,7 +5,9 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.3.1.3',
+  version: '6.3.2.2',
+  // 6.3.2.2:   hotfix scrollabel for list dialog
+  // 6.3.2.1:   search rank feature v1
   // 6.3.1.1:   server report progress feature v1
   // 6.2.19:   Update purchase process v2.1
   // 6.2.18:   api get with progress

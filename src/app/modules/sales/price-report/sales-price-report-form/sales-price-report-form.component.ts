@@ -83,7 +83,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       },
     },
   };
-  
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -130,7 +130,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -168,7 +168,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         title: this.commonService.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
       this.commonService.openDialog(ContactFormComponent, {
         context: {
@@ -276,7 +276,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', {
+      select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
+      includeSearchResultLabel: true,
+      includeUnits: true,
+      sort_SearchRank: 'desc',
+    }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa/dịch vụ...',
       prepareReaultItem: (item) => {
@@ -999,7 +1004,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
           title: this.commonService.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
         this.commonService.openDialog(ProductFormComponent, {
           context: {
@@ -1024,7 +1029,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.commonService.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',

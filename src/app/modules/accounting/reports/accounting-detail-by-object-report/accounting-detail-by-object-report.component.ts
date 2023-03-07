@@ -27,7 +27,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
   idKey = ['Voucher', 'WriteNo'];
   formDialog = AccAccountFormComponent;
 
-  reuseDialog = true;
+  reuseDialog = false;
 
   // Smart table
   static filterConfig: any;

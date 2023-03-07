@@ -123,7 +123,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   // searchInput = '';
 
   select2OptionForContact = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {
+      includeIdText: true,
+      includeGroups: true,
+      sort_SearchRank: 'desc',
+    }, {
       placeholder: 'F6 - Chọn khách hàng...', limit: 10, prepareReaultItem: (item) => {
         item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
         return item;
@@ -292,41 +296,41 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.progress = loaded / total * 100;
         this.progressLabel = 'Đang tải thông tin sản phẩm...' + this.progress + '%';
       }).then(rs => {
-          this.progress = 0;
+        this.progress = 0;
 
-          for (const productSearchIndex of rs) {
-            // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
-            const goods = {
-              id: `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`,
-              text: productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')',
-              Code: productSearchIndex.Code,
-              Sku: productSearchIndex.Sku?.toUpperCase(),
-              Name: productSearchIndex.Name,
-              FeaturePicture: productSearchIndex.FeaturePicture,
-              // Unit: goodsInContainer.Unit,
-              Container: {
-                id: productSearchIndex.Container,
-                text: productSearchIndex.ContainerName,
-                FindOrder: productSearchIndex.ContainerFindOrder,
-                Shelf: productSearchIndex.ContainerShelf,
-                ShelfName: productSearchIndex.ContainerShelfName,
-              },
-              BaseUnit: { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel },
-              // ConversionRatio: productSearchIndex.ConversionRatio,
-              Unit: { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq },
-              // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
-              Price: productSearchIndex.Price,
-              PriceOfBaseUnitText: productSearchIndex.Price && productSearchIndex.BaseUnit != productSearchIndex.Unit && (' (' + (this.currencyPipe.transform(productSearchIndex.Price / productSearchIndex.ConversionRatio, 'VND') + '/' + productSearchIndex.BaseUnitLabel) + ')') || '',
-              Inventory: null,
-              Keyword: (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase()
-            };
-            this.goodsList.push(goods);
-            this.productSearchIndex[goods.id] = goods;
-          }
+        for (const productSearchIndex of rs) {
+          // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
+          const goods = {
+            id: `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`,
+            text: productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')',
+            Code: productSearchIndex.Code,
+            Sku: productSearchIndex.Sku?.toUpperCase(),
+            Name: productSearchIndex.Name,
+            FeaturePicture: productSearchIndex.FeaturePicture,
+            // Unit: goodsInContainer.Unit,
+            Container: {
+              id: productSearchIndex.Container,
+              text: productSearchIndex.ContainerName,
+              FindOrder: productSearchIndex.ContainerFindOrder,
+              Shelf: productSearchIndex.ContainerShelf,
+              ShelfName: productSearchIndex.ContainerShelfName,
+            },
+            BaseUnit: { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel },
+            // ConversionRatio: productSearchIndex.ConversionRatio,
+            Unit: { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq },
+            // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
+            Price: productSearchIndex.Price,
+            PriceOfBaseUnitText: productSearchIndex.Price && productSearchIndex.BaseUnit != productSearchIndex.Unit && (' (' + (this.currencyPipe.transform(productSearchIndex.Price / productSearchIndex.ConversionRatio, 'VND') + '/' + productSearchIndex.BaseUnitLabel) + ')') || '',
+            Inventory: null,
+            Keyword: (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase()
+          };
+          this.goodsList.push(goods);
+          this.productSearchIndex[goods.id] = goods;
+        }
 
-          // offset += 100;
-          return rs;
-        });
+        // offset += 100;
+        return rs;
+      });
       this.progress = 0;
       this.updateGodosInfoProcessing = false;
       return true;

@@ -181,7 +181,12 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', {
+      select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
+      includeSearchResultLabel: true,
+      includeUnits: true,
+      sort_SearchRank: 'desc',
+    }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa...',
       prepareReaultItem: (item) => {

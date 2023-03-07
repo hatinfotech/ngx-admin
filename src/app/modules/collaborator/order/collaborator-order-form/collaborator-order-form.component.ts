@@ -300,7 +300,16 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
-        this.apiService.getPromise('/collaborator/products', { includeIdText: true, limit: 40, includeUnit: false, includeSubscribed: true, includePrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value }).then(rs => {
+        this.apiService.getPromise('/collaborator/products', {
+          includeIdText: true,
+          limit: 40,
+          includeUnit: false,
+          includeSubscribed: true,
+          includePrice: true,
+          'search': params['term'],
+          page: this.collaboratorService.currentpage$?.value,
+          sort_SearchRank: 'desc',
+        }).then(rs => {
           success(rs);
         }).catch(err => {
           console.error(err);
@@ -534,7 +543,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
               icon: 'message-circle',
               label: 'Chat',
               action: async () => {
-                const voucher  = this.array.controls[0].value;
+                const voucher = this.array.controls[0].value;
                 let task = voucher.RelativeVouchers?.find(f => f.type == 'CHATROOM');
                 if (task) {
                   this.commonService.openMobileSidebar();
