@@ -232,37 +232,37 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   private goodsList: ProductSearchIndexModel[] = [];
   private productSearchIndex: { [key: string]: ProductSearchIndexModel } = {};
-  private updateGodosInfoProcessing = false;
-  async updateGodosInfo() {
+  private updateGoodsInfoProcessing = false;
+  async updateGoodsInfo() {
     this.status = 'Đang tải bảng giá...';
-    if (this.updateGodosInfoProcessing) {
+    if (this.updateGoodsInfoProcessing) {
       console.warn('Other processing in progress...');
       return false;
     }
     ;
-    this.updateGodosInfoProcessing = true;
+    this.updateGoodsInfoProcessing = true;
     // while (true) {
     try {
-      await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' }).then(productList => {
-        for (const product of productList) {
-          this.productMap[product.Code] = product;
-        }
-        console.log(this.productMap);
-      });
-      await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { limit: 'nolimit' }).then(unitList => {
-        for (const unit of unitList) {
-          this.unitMap[unit['Sequence']] = unit;
-        }
-        console.log(this.unitMap);
-        return true;
-      });
-      await this.apiService.getPromise<any>('/warehouse/goods', {
-        getFindOrderIndex: true,
-        limit: 'nolimit'
-      }).then(rs => {
-        this.findOrderMap = rs;
-        return true;
-      });
+      // await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { limit: 'nolimit' }).then(productList => {
+      //   for (const product of productList) {
+      //     this.productMap[product.Code] = product;
+      //   }
+      //   console.log(this.productMap);
+      // });
+      // await this.apiService.getPromise<ProductUnitModel[]>('/admin-product/units', { limit: 'nolimit' }).then(unitList => {
+      //   for (const unit of unitList) {
+      //     this.unitMap[unit['Sequence']] = unit;
+      //   }
+      //   console.log(this.unitMap);
+      //   return true;
+      // });
+      // await this.apiService.getPromise<any>('/warehouse/goods', {
+      //   getFindOrderIndex: true,
+      //   limit: 'nolimit'
+      // }).then(rs => {
+      //   this.findOrderMap = rs;
+      //   return true;
+      // });
 
       await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
         masterPriceTable: 'default',
@@ -285,6 +285,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       // Get goods list
       this.goodsList = [];
+      this.productMap = {};
+      this.unitMap = {};
+      this.findOrderMap = {};
       let offset = 0;
       this.progressStatus = 'danger';
       this.progress = 0;
@@ -293,13 +296,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.progress = 0;
       this.progressLabel = 'Đang tải thông tin sản phẩm...';
       const rs = await this.apiService.getProgress<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true }, (loaded, total) => {
-        this.progress = loaded / total * 100;
+        this.progress = parseInt(loaded / total * 100 as any);
         this.progressLabel = 'Đang tải thông tin sản phẩm...' + this.progress + '%';
       }).then(rs => {
         this.progress = 0;
 
         for (const productSearchIndex of rs) {
           // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
+          productSearchIndex['WarehouseUnit'] = { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel };
           const goods = {
             id: `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`,
             text: productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')',
@@ -325,17 +329,21 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             Keyword: (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase()
           };
           this.goodsList.push(goods);
-          this.productSearchIndex[goods.id] = goods;
+          this.productSearchIndex[productSearchIndex.Code] = productSearchIndex;
+
+          if (!this.productMap[productSearchIndex.Code]) this.productMap[productSearchIndex.Code] = productSearchIndex;
+          if (!this.unitMap[productSearchIndex.UnitSeq]) this.unitMap[productSearchIndex.UnitSeq] = { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq };
+          if (!this.findOrderMap[productSearchIndex.ContainerFindOrder]) this.findOrderMap[productSearchIndex.ContainerFindOrder] = productSearchIndex;
         }
 
         // offset += 100;
         return rs;
       });
       this.progress = 0;
-      this.updateGodosInfoProcessing = false;
+      this.updateGoodsInfoProcessing = false;
       return true;
     } catch (err) {
-      this.updateGodosInfoProcessing = false;
+      this.updateGoodsInfoProcessing = false;
       this.progress = 0;
       console.log(err);
       console.log('retry...');
@@ -348,7 +356,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private productMap: { [key: string]: ProductModel } = {};
-  private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
+  // private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
+  private findOrderMap: { [key: string]: ProductModel } = {};
   async init() {
     this.loading = true;
     const result = await super.init().then(async status => {
@@ -357,7 +366,16 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         console.log(serverProductSearchIndexCheckPoint);
         localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
       });
-      await this.updateGodosInfo();
+      while (true) {
+        try {
+          await this.updateGoodsInfo();
+          break;
+        } catch (err) {
+          console.error(err);
+          this.commonService.showToast('Chưa thể tải thông tin sản phẩm, thử lại trong 3s', 'Tải thông tin sản phẩm thất bại', { status: 'danger' });
+          await new Promise(resolve => setTimeout(() => resolve(true), 3000));
+        }
+      }
 
       // Notification
       this.commonService.showToast('Hệ thống đã sẵn sàng để bán hàng !', 'POS đã sẵn sàng', { ...this.toastDefaultConfig, status: 'success' });
@@ -367,7 +385,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         //   console.log(rs);
         //   if (rs && rs.State == 'UPDATED') {
         //     this.commonService.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
-        //     return this.updateGodosInfo().then(status => {
+        //     return this.updateGoodsInfo().then(status => {
         //       this.commonService.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
         //       return status;
         //     });
@@ -382,7 +400,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           const productSearchCacheCheckPoint = localStorage.getItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT');
           if (serverProductSearchIndexCheckPoint && serverProductSearchIndexCheckPoint != productSearchCacheCheckPoint) {
             this.commonService.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { ...this.toastDefaultConfig, status: 'primary' });
-            return this.updateGodosInfo().then(status => {
+            return this.updateGoodsInfo().then(status => {
               this.commonService.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { ...this.toastDefaultConfig, status: 'success' });
               localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
               return status;
@@ -922,14 +940,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         } else {
           if (option?.searchByFindOrder || inputValue.length < 5) {
             //Tìm hàng hóa theo số nhận thức
-            const goodsInContainer = this.findOrderMap[inputValue];
-            if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
-              productId = goodsInContainer.Goods;
-              product = this.productMap[productId];
-              unitId = goodsInContainer.Unit;
-              product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
-              product.Container = goodsInContainer.Container;
-            }
+            product = this.findOrderMap[inputValue];
+            // if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
+            //   productId = goodsInContainer.Goods;
+            //   product = this.productMap[productId];
+            //   unitId = goodsInContainer.Unit;
+            //   product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
+            //   product.Container = goodsInContainer.Container;
+            // }
             if (!product) {
               product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
                 includeUnit: true,
@@ -944,7 +962,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               unit = product.Unit;
               unitId = unitId || this.commonService.getObjectId(unit);
               product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
-              product.FindOrder = inputValue.trim();
+              // product.FindOrder = inputValue.trim();
+              product.FindOrder = product.ContainerFindOrder || inputValue.trim();
               productId = product.Code;
             }
           } else {
@@ -961,13 +980,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               tmpcode = tmpcode.substring(unitSeqLength);
               productId = tmpcode;
 
-              product = this.productMap[this.findOrderMap[findOrder].Goods];
+              product = this.productMap[this.findOrderMap[findOrder].Code];
 
               if (product && unitSeq) {
                 unit = this.unitMap[unitSeq];
                 if (unit) {
                   unitId = unit.Code;
-                  product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                  // product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                  product.Unit = unit;
                 }
               }
 
@@ -1121,9 +1141,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   if (product && unitSeq) {
                     unit = this.unitMap[unitSeq];
                     if (unit) {
-                      unitId = unit.Code;
-
-                      product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                      unitId = this.commonService.getObjectId(unit);
+                      // product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                      product.Unit = unit;
                     }
                   }
                 }
