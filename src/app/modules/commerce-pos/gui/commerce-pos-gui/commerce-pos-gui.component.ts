@@ -885,6 +885,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               if (currentSearchCount == this.lastSearchCount) {
                 this.searchResults = rs.map(goods => {
                   // goods.Price = this.masterPriceTable[`${goods.Goods}-${this.cms.getObjectId(goods.Unit)}`]?.Price;
+                  if (!goods.Price) {
+                    goods.Price = this.productUnitMap[`${goods.Goods}-${this.cms.getObjectId(goods.Unit)}`]?.Price;
+                  }
                   return goods;
                 });
                 if (rs[0]) {
@@ -1018,6 +1021,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               unit = product.Unit;
               unitId = unitId || this.cms.getObjectId(unit);
               // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              if (!product.Price) {
+                product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+              }
               // product.FindOrder = inputValue.trim();
               product.FindOrder = product.ContainerFindOrder || inputValue.trim();
               productId = product.Code;
@@ -1053,6 +1059,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
               unitId = this.cms.getObjectId(product.Unit);
               // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              if (!product.Price) {
+                product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+              }
               productId = product.Code;
               product.FindOrder = findOrder;
 
@@ -1178,6 +1187,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                     productId = product.Code;
                     unitId = this.cms.getObjectId(product.WarehouseUnit);
                     // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                    if (!product.Price) {
+                      product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                    }
                   }
                 }
 
@@ -1337,7 +1349,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               if (product) {
                 productId = product.Code;
                 unitId = unitId || this.cms.getObjectId(product.Unit);
-                // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                if (!product.Price) {
+                  // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                  product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                }
               } else {
                 product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
                   includeUnit: true,
@@ -1348,7 +1363,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   return rs[0];
                 });
                 unitId = this.cms.getObjectId(product.Unit);
-                // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                if (!product.Price) {
+                  // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                  product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                }
               }
             }
           }
@@ -1371,7 +1389,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         });
         if (product) {
           unitId = this.cms.getObjectId(product.Unit);
-          product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+          // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+          if (!product.Price) {
+            // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+            product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+          }
         }
         // }
       }
