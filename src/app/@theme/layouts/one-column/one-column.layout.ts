@@ -8,25 +8,25 @@ import { CommonService } from '../../../services/common.service';
   selector: 'ngx-one-column-layout',
   styleUrls: ['./one-column.layout.scss'],
   template: `
-    <nb-layout [attr.authState]="authState" windowMode [ngClass]="{'fullscreen': (commonService.layout$ | async) == 'fullscreen'}">
+    <nb-layout [attr.authState]="authState" windowMode [ngClass]="{'fullscreen': (cms.layout$ | async) == 'fullscreen'}">
 
-        <nb-layout-header fixed  *ngIf="(commonService.layout$ | async) == 'one-column'">
+        <nb-layout-header fixed  *ngIf="(cms.layout$ | async) == 'one-column'">
           <ngx-header></ngx-header>
         </nb-layout-header>
   
-        <nb-sidebar #menuSidebar class="menu-sidebar" tag="menu-sidebar" responsive state="expanded" *ngIf="(commonService.layout$ | async) == 'one-column'">
+        <nb-sidebar #menuSidebar class="menu-sidebar" tag="menu-sidebar" responsive state="expanded" *ngIf="(cms.layout$ | async) == 'one-column'">
           <ng-content select="nb-menu"></ng-content>
         </nb-sidebar>
   
-        <nb-layout-column [ngClass]="{'fullscreen': (commonService.layout$ | async) == 'fullscreen'}">
+        <nb-layout-column [ngClass]="{'fullscreen': (cms.layout$ | async) == 'fullscreen'}">
           <ng-content select="router-outlet"></ng-content>
         </nb-layout-column>
   
-        <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed" *ngIf="(commonService.layout$ | async) == 'one-column'">
+        <nb-sidebar #chatSidebar right class="chat-sidebar" tag="chat-sidebar" responsive state="collapsed" *ngIf="(cms.layout$ | async) == 'one-column'">
           <ngx-smart-bot id="small-smart-bot"></ngx-smart-bot>
         </nb-sidebar>
   
-        <nb-layout-footer fixed *ngIf="(commonService.layout$ | async) == 'one-column'">
+        <nb-layout-footer fixed *ngIf="(cms.layout$ | async) == 'one-column'">
           <ngx-footer></ngx-footer>
         </nb-layout-footer>
 
@@ -54,7 +54,7 @@ export class OneColumnLayoutComponent {
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private authService: NbAuthService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
     // setTimeout(() => {
     //   this.authState = 'login';
@@ -70,8 +70,8 @@ export class OneColumnLayoutComponent {
 
   ngAfterViewInit(): void {
 
-    this.commonService.menuSidebar = this.menuSidebar;
-    this.commonService.mobileSidebar = this.chatSiderbar;
+    this.cms.menuSidebar = this.menuSidebar;
+    this.cms.mobileSidebar = this.chatSiderbar;
 
     // Restore sidebar state
     const menuSidebarState = localStorage.getItem(`sidebar-state-menu`);

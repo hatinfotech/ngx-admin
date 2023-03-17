@@ -7,7 +7,7 @@ import {
 
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 
-  // constructor(private commonService: CommonService) {}
+  // constructor(private cms: CommonService) {}
 
   private handlers: { [key: string]: DetachedRouteHandle } = {};
   private takeUltilCount: {[key: string]: number} = {};

@@ -26,12 +26,12 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -82,7 +82,7 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'copy';
-            instance.label = this.commonService.translateText('Common.copy');
+            instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
             instance.status = 'success';
             instance.valueChange.subscribe(value => {
@@ -94,7 +94,7 @@ export class SystemRouteListComponent extends ServerDataManagerListComponent<Sys
             });
             instance.click.subscribe(async (row: SystemRouteModel) => {
 
-              this.commonService.openDialog(SystemRouteFormComponent, {
+              this.cms.openDialog(SystemRouteFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 
 /**
-this.commonService.openDialog(DialogFormComponent, {
+this.cms.openDialog(DialogFormComponent, {
   context: {
     title: 'Cập nhật phiên bản phát hành',
     controls: [
@@ -92,8 +92,8 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   // @Input() onKeyboardEvent?: (event: KeyboardEvent, component: DialogFormComponent) => void;
 
   public destroy$: Subject<void> = new Subject<void>();
-  curencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
-  numberFormat = this.commonService.createFloatNumberMaskConfig({
+  curencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
+  numberFormat = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -104,12 +104,12 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   inited = new BehaviorSubject<boolean>(false);
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<DialogFormComponent>,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
     this.formGroup = new FormGroup({});
 
     if (this.actions) {
@@ -179,7 +179,7 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   ngOnDestroy(): void {
     super.ngOnDestroy();
     // if (!this.ref) {
-    // this.commonService.clearHeaderActionControlList();
+    // this.cms.clearHeaderActionControlList();
     // }
     // this.destroy$.next();
     // this.destroy$.complete();
@@ -191,7 +191,7 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
 
   // @HostListener('document:keydown', ['$event'])
   // handleKeyboardEvent(event: KeyboardEvent) {
-  //   if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+  //   if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
   //     // console.log(event.key + ': listen on show case dialog...');
   //     const action = this.actions.find(f => f.keyShortcut == event.key);
   //     if (action) {
@@ -209,7 +209,7 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   // }
 
   onKeyboardEvent(event: KeyboardEvent, component?: BaseComponent) {
-    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+    if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
       if (!this.processing) {
         const action = this.actions.find(f => f.keyShortcut == event.key);
         if (action) {

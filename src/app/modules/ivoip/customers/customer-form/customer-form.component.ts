@@ -60,11 +60,11 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<CustomerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   progressBarValue = 10;
@@ -207,7 +207,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterCreateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      // this.commonService.openDialog(ShowcaseDialogComponent, {
+      // this.cms.openDialog(ShowcaseDialogComponent, {
       //   context: {
       //     title: 'Triển khai Tổng Đài Điện Toán',
       //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
@@ -216,7 +216,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       // });
     }, e => {
       this.onProcessed();
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
           content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
@@ -224,7 +224,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
             //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-            //     this.commonService.openDialog(ShowcaseDialogComponent, {
+            //     this.cms.openDialog(ShowcaseDialogComponent, {
             //       context: {
             //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
             //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
@@ -245,7 +245,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     super.onAfterUpdateSubmit(newFormData);
     this.deployPbxAndMiniErp(newFormData, () => {
       this.onProcessed();
-      // this.commonService.openDialog(ShowcaseDialogComponent, {
+      // this.cms.openDialog(ShowcaseDialogComponent, {
       //   context: {
       //     title: 'Triển khai Tổng Đài Điện Toán',
       //     content: 'Hoàn tất triển khai Tổng Đài Điện Toán',
@@ -254,7 +254,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       // });
     }, e => {
       this.onProcessed();
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Lỗi triển khai Tổng Đài Điện Toán',
           content: e && e.error && e.error.logs ? e.error.logs.join('\n') : JSON.stringify(e),
@@ -262,7 +262,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
             { label: 'Đóng', icon: 'back', status: 'info', action: () => { } },
             // {
             //   label: 'Chi tiết', icon: 'ok', status: 'warning', action: () => {
-            //     this.commonService.openDialog(ShowcaseDialogComponent, {
+            //     this.cms.openDialog(ShowcaseDialogComponent, {
             //       context: {
             //         title: 'Lỗi triển khai Tổng Đài Điện Toán',
             //         content: e && e.error && e.error.logs ? e.error.logs.join('<br>') : JSON.stringify(e),
@@ -778,8 +778,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       Gateway: string,
     } = this.form.value['array'][0];
 
-    const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === this.commonService.getObjectId(formData.Hosting))[0];
-    const pbx = this.pbxList.filter(p => p.Code === this.commonService.getObjectId(formData.Pbx))[0];
+    const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === this.cms.getObjectId(formData.Hosting))[0];
+    const pbx = this.pbxList.filter(p => p.Code === this.cms.getObjectId(formData.Pbx))[0];
     // const domainParse = formData.DomainName.split('.');
     // const deployName = domainParse[0] + (domainParse.length > 1 ? domainParse[1] : '');
     const deployName = formData.DomainName.replace(/\.+/g, '').slice(0, 13);
@@ -991,7 +991,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
-          this.commonService.openDialog(ShowcaseDialogComponent, {
+          this.cms.openDialog(ShowcaseDialogComponent, {
             context: {
               title: 'Triển khai ProBox One',
               content: 'Đã triển khai thành công ProBox One cho khách ' + formData.Name,

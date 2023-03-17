@@ -28,11 +28,11 @@ export class RecordingFormComponent extends IvoipBaseFormComponent<PbxRecordingM
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<RecordingFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

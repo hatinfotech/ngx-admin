@@ -31,7 +31,7 @@ export class AccMasterBookFormComponent extends DataManagerFormComponent<AccMast
   apiPath = '/accounting/master-books';
 
   select2OptionForWarehouse = {
-    placeholder: this.commonService.translateText('Common.choose'),
+    placeholder: this.cms.translateText('Common.choose'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -49,10 +49,10 @@ export class AccMasterBookFormComponent extends DataManagerFormComponent<AccMast
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<AccMasterBookFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

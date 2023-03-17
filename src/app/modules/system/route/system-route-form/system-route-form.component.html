@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('System.Route.Rule.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('System.Route.Rule.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
@@ -35,7 +35,7 @@
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Priority'), 'warning')">
                                     <label class="label">
                                       <span class="valid">{{'System.Route.Rule.priority' | translate | headtitlecase}}</span>
-                                      <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('System.Route.Rule.priority')} | headtitlecase }} (*)</span>
+                                      <span class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('System.Route.Rule.priority')} | headtitlecase }} (*)</span>
                                     </label>
                                     <input type="text" nbInput fullWidth formControlName="Priority" placeholder="{{'System.Route.Rule.priority' | translate | headtitlecase}}">
                                 </div>
@@ -61,7 +61,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                                     <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}} (*)</span>
-                                      <span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }} (*)</span>
+                                      <span class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.description')} | headtitlecase }} (*)</span>
                                     </label>
                                     <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
                                 </div>

@@ -166,20 +166,20 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   };
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent>,
     public datePipe: DatePipe,
     public formBuilder?: FormBuilder,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
-    this.commonService.systemConfigs$.subscribe(registerInfo => {
+    this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
     });
 
@@ -265,7 +265,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   toMoney(detail: WarehouseGoodsDeliveryNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');
@@ -321,8 +321,8 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
 
     const filter = {};
     if (this.filter.value['Product']) {
-      filter['eq_Product'] = this.commonService.getObjectId(this.filter.value['Product']['Product']);
-      filter['eq_Unit'] = this.commonService.getObjectId(this.filter.value['Product']['Unit']);
+      filter['eq_Product'] = this.cms.getObjectId(this.filter.value['Product']['Product']);
+      filter['eq_Unit'] = this.cms.getObjectId(this.filter.value['Product']['Unit']);
     }
 
 
@@ -389,7 +389,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       for (const field of Object.keys(item)) {
         formData[field] = [item[field]];
       }
-      if (previousItem && (this.commonService.getObjectId(previousItem.Product) != this.commonService.getObjectId(item.Product) || this.commonService.getObjectId(previousItem.Unit) != this.commonService.getObjectId(item.Unit))) {
+      if (previousItem && (this.cms.getObjectId(previousItem.Product) != this.cms.getObjectId(item.Product) || this.cms.getObjectId(previousItem.Unit) != this.cms.getObjectId(item.Unit))) {
         formData['IsBeginSection'] = true;
       }
       const checkbox = this.formBuilder.group({
@@ -417,7 +417,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     const currentForm = this.choosedForms.controls;
     this.choosedForms.controls = this.choosedForms.controls.filter(f => f.value?.Choosed);
     if (this.choosedForms.controls.length === 0) {
-      this.commonService.toastService.show('Không có tem nào được chọn !', 'In barcode', { status: 'warning' })
+      this.cms.toastService.show('Không có tem nào được chọn !', 'In barcode', { status: 'warning' })
       this.choosedForms.controls = [...currentForm];
     } else {
       if (oldLength != this.choosedForms.controls.length) {

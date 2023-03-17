@@ -173,7 +173,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   private callStateSubscription: Subscription;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public themeService: NbThemeService,
@@ -189,7 +189,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     public notificationService: NotificationService,
     public helpdeskService?: HeldpeskServiceService,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
 
     // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
@@ -232,7 +232,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         // }
       });
 
-    this.commonService.getMainSocket().then(sc => {
+    this.cms.getMainSocket().then(sc => {
       sc.on<HelpdeskTicketModel>('Helpdesk_Had_New_Ticket').subscribe(rs => {
         console.log(rs.data);
         // this.apiService.getPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', {
@@ -303,7 +303,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   onResume() {
-    // this.commonService.openMobileSidebar();
+    // this.cms.openMobileSidebar();
     super.onResume();
     this.callStateSubscription.unsubscribe();
     this.mobileAppService.callState$
@@ -314,9 +314,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   ngOnInit() {
-    this.commonService.openMobileSidebar();
+    this.cms.openMobileSidebar();
     // this.notificationService.activityUpdate$.subscribe(status => {
-    //   this.commonService.takeUntil('helpdesk-dashboard-auto-update-tickets', 500).then(status => {
+    //   this.cms.takeUntil('helpdesk-dashboard-auto-update-tickets', 500).then(status => {
     //     if(status) {
     //       this.refresh();
     //     }
@@ -345,7 +345,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   onFilterChange() {
-    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
+    this.cms.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.tickets = [];
       this.loadNext(this.infiniteLoadModel);
@@ -406,7 +406,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   //     if (!checkpoint && helpdeskHeaderOffset.top < 50) {
   //       checkpoint = helpdeskDashboardOffset.top;
 
-  //       this.commonService.pushHeaderActionControlList(this.actionButtonList);
+  //       this.cms.pushHeaderActionControlList(this.actionButtonList);
 
   //       //   helpdeskHeaderEle.css({ position: 'fixed', zIndex: 1, width: fixedWidth, top: fixedOffset.top, left: helpdeskHeaderOffset.left });
   //       //   helpdeskDashboard.css({paddingTop: helpdeskHeaderEle.height() + 17});
@@ -416,7 +416,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   //     if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
   //       //   helpdeskHeaderEle.css({ position: 'relative', zIndex: 'initial', width: 'initial', top: 'initial', left: 'initial' });
   //       //   helpdeskDashboard.css({paddingTop: 'initial'});
-  //       this.commonService.popHeaderActionControlList();
+  //       this.cms.popHeaderActionControlList();
   //       checkpoint = null;
   //     }
   //   });
@@ -452,7 +452,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   async refresh() {
-    this.commonService.takeUntil('helpdesk-filter-change', 500, () => {
+    this.cms.takeUntil('helpdesk-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.tickets = [];
       this.loadNext(this.infiniteLoadModel);
@@ -510,7 +510,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
       this.refresh();
     }
 
-    // this.commonService.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+    // this.cms.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
     //   context: {
     //     showLoadinng: true,
     //     inputMode: 'dialog',
@@ -533,7 +533,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     const quickForm = { index: id, ticketCode: id };
     this.quickTicketFormList.unshift(quickForm);
     this.layoutScrollService.scrollTo(0, 0);
-    // this.commonService.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
+    // this.cms.openDialog<QuickTicketFormComponent>(QuickTicketFormComponent, {
     //   context: {  
     //     showLoadinng: true,
     //     inputMode: 'dialog',
@@ -662,7 +662,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: HelpdeskTicketModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(QuickTicketFormComponent, {
+    this.cms.openDialog(QuickTicketFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
@@ -713,9 +713,9 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     if (ticket && ticket.Code && ticket.ObjectPhone) {
 
 
-      this.commonService.showDialog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
+      this.cms.showDialog(this.cms.translateText('Click2Call'), this.cms.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
         {
-          label: this.commonService.translateText('Common.cancel'),
+          label: this.cms.translateText('Common.cancel'),
           status: 'danger',
           action: () => {
           },
@@ -723,7 +723,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         {
           icon: 'phone-call',
           status: 'success',
-          label: this.commonService.translateText('Gọi'),
+          label: this.cms.translateText('Gọi'),
           action: () => {
             this.toastrService.show('Đang kết nối tới số SIP của bạn...');
             this.apiService.putPromise('/helpdesk/tickets/' + ticket.Code, { click2call: true }, []).then(rs => {
@@ -737,7 +737,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
       // this.mobileAppService.phoneCall(phone, name).then(callSessionId => {
       //   // callSession.stateChanged$.pipe(takeUntil(this.destroy$)).subscribe(state => {
-      //   this.commonService.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
+      //   this.cms.takeUntil('add_call_sessin_to_ticket', 3000).then(() => {
       //     if (callSessionId) {
       //       this.apiService.postPromise<HelpdeskTicketCallingSessionModel[]>('/helpdesk/ticketCallingSessions', {}, [{ Ticket: ticket.Code, CallSession: callSessionId, State: 'CALLOUT' }]).then(rs => {
       //         console.log(rs);
@@ -755,7 +755,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   }
 
   async openChatRoom(chatRoomId: string, silient?: boolean) {
-    this.commonService.openMobileSidebar();
+    this.cms.openMobileSidebar();
     return this.mobileAppService.openChatRoom({ ChatRoom: chatRoomId, silient: silient || false });
   }
 
@@ -771,10 +771,10 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         Code: ticket.Code,
         Object: rs[0].Code,
       }]);
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
-          title: this.commonService.translate.instant('Notification'),
-          content: this.commonService.translate.instant('Helpldesk.contactSaveSuccess'),
+          title: this.cms.translate.instant('Notification'),
+          content: this.cms.translate.instant('Helpldesk.contactSaveSuccess'),
         },
       });
     });
@@ -832,18 +832,18 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
   previewState(item: HelpdeskTicketModel) {
     if (item.State.id === 'OPEN') {
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
-          title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Helpdesk.accept'), definition: '' }),
-          content: this.commonService.translateText('Helpdesk.acceptStateConfirm', { description: `<i>${item.Description}</i>` }),
+          title: this.cms.translateText('Helpdesk.Ticket.title', { action: this.cms.translate.instant('Helpdesk.accept'), definition: '' }),
+          content: this.cms.translateText('Helpdesk.acceptStateConfirm', { description: `<i>${item.Description}</i>` }),
           actions: [
             {
-              label: this.commonService.translateText('Common.close'),
+              label: this.cms.translateText('Common.close'),
               status: 'primary',
               action: () => { },
             },
             {
-              label: this.commonService.translateText('Helpdesk.State.accepted'),
+              label: this.cms.translateText('Helpdesk.State.accepted'),
               status: 'success',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'ACCEPT' }, [{ Code: item.Code }]).then((result) => {
@@ -859,13 +859,13 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
         },
       });
     } else {
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
-          title: this.commonService.translateText('Helpdesk.Ticket.title', { action: this.commonService.translate.instant('Common.changeState'), definition: '' }),
-          content: this.commonService.translateText('Helpdesk.changeStateConfirm', { description: `<i>${item.Description}</i>` }),
+          title: this.cms.translateText('Helpdesk.Ticket.title', { action: this.cms.translate.instant('Common.changeState'), definition: '' }),
+          content: this.cms.translateText('Helpdesk.changeStateConfirm', { description: `<i>${item.Description}</i>` }),
           actions: [
             {
-              label: this.commonService.translateText('Helpdesk.State.approved'),
+              label: this.cms.translateText('Helpdesk.State.approved'),
               status: 'danger',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'APPROVED' }, [{ Code: item.Code }])
@@ -876,7 +876,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               },
             },
             {
-              label: this.commonService.translateText('Helpdesk.State.cancel'),
+              label: this.cms.translateText('Helpdesk.State.cancel'),
               status: 'warning',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'CANCEL' }, [{ Code: item.Code }]).then((result) => {
@@ -886,7 +886,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
               },
             },
             {
-              label: this.commonService.translateText('Helpdesk.State.complete'),
+              label: this.cms.translateText('Helpdesk.State.complete'),
               status: 'success',
               action: () => {
                 this.apiService.putPromise<HelpdeskTicketModel[]>('/helpdesk/tickets', { id: [item.Code], changeStateTo: 'COMPLETE' }, [{ Code: item.Code }]).then((result) => {
@@ -904,7 +904,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   /** Open assign categories dialog */
   openShareDialog(ticket: HelpdeskTicketModel) {
     if (ticket) {
-      this.commonService.openDialog(TicketPmsFormComponent, {
+      this.cms.openDialog(TicketPmsFormComponent, {
         context: {
           inputMode: 'dialog',
           inputResource: ticket,

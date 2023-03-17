@@ -32,7 +32,7 @@ export class AccountingLiabilitiesDetailsReportPrintComponent extends DataManage
   @Input() objects: string[];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<AccountingLiabilitiesDetailsReportPrintComponent>,
@@ -40,7 +40,7 @@ export class AccountingLiabilitiesDetailsReportPrintComponent extends DataManage
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {

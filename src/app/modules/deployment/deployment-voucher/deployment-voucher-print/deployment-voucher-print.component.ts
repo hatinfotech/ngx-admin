@@ -30,13 +30,13 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   formDialog = DeploymentVoucherFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<DeploymentVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {

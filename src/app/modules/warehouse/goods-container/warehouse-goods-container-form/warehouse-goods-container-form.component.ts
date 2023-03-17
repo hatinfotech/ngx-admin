@@ -41,7 +41,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
         if (select2Option.formItem) {
           const warehouseFormControl = select2Option.formItem.get('Warehouse');
           if (warehouseFormControl) {
-            option.eq_Warehouse = this.commonService.getObjectId(warehouseFormControl.value);
+            option.eq_Warehouse = this.cms.getObjectId(warehouseFormControl.value);
           }
         }
         return this.apiService.buildApiUrl('/warehouse/goods-containers', option);
@@ -49,10 +49,10 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
       delay: 300,
       processResults: (data: any, params: any) => {
         // console.info(data, params);
-        const warehouse = this.commonService.getObjectId(this.activeFormGroup.get('Warehouse').value);
+        const warehouse = this.cms.getObjectId(this.activeFormGroup.get('Warehouse').value);
         return {
           results: data.filter((item: WarehouseGoodsContainerModel) => {
-            return this.commonService.getObjectId(item.Warehouse) === warehouse;
+            return this.cms.getObjectId(item.Warehouse) === warehouse;
           }),
         };
       },
@@ -86,7 +86,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     {id: '157', text: 'Hàng gửi đi bán (157)'},
   ];
   select2OptionForAccAccount = {
-    placeholder: this.commonService.translateText('Chọn tài khoản kho...'),
+    placeholder: this.cms.translateText('Chọn tài khoản kho...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -100,7 +100,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   static _warehouseList: WarehouseModel[];
   get warehouseList() { return WarehouseGoodsContainerFormComponent._warehouseList; }
   select2OptionForWarehouse = {
-    placeholder: this.commonService.translateText('Chọn kho...'),
+    placeholder: this.cms.translateText('Chọn kho...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -111,7 +111,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     },
   };
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Chọn loại...'),
+    placeholder: this.cms.translateText('Chọn loại...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -138,10 +138,10 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<WarehouseGoodsContainerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async loadCache() {

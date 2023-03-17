@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   constructor(
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
   ) { }
 
@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     if (LoginDialogComponent.instances.length === 0) {
-      this.commonService.openDialog(LoginDialogComponent, {
+      this.cms.openDialog(LoginDialogComponent, {
         context: {
           onSuccess: (redirect?: string) => {
             this.showBackground = false;
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
       }, 500);
     } else {
       setTimeout(() => {
-        this.commonService.goToPrevious();
+        this.cms.goToPrevious();
       }, 500);
     }
   }

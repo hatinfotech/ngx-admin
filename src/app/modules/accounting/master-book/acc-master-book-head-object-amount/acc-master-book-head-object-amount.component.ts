@@ -40,27 +40,27 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccMasterBookHeadObjectAmountComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'choose', 'preview'].indexOf(f.name) < 0);
-      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.cms.translateText('Common.refresh');
       this.actionButtonList.unshift({
-        label: this.commonService.translateText('Common.save'),
+        label: this.cms.translateText('Common.save'),
         icon: 'save',
         type: 'button',
         status: 'primary',
         size: 'medium',
-        title: this.commonService.translateText('Common.save'),
+        title: this.cms.translateText('Common.save'),
         click: () => {
           this.saveAndClose();
         },
@@ -68,9 +68,9 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
       const addActionButton = this.actionButtonList.find(f => f.name === 'add');
       if (addActionButton) {
         addActionButton.status = 'success';
-        addActionButton.label = this.commonService.translateText('Common.addObject');
+        addActionButton.label = this.cms.translateText('Common.addObject');
         addActionButton.click = () => {
-          this.commonService.openDialog(ContactAllListComponent, {
+          this.cms.openDialog(ContactAllListComponent, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: (accounts: ContactModel[]) => {
@@ -101,19 +101,19 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
       actions: false,
       columns: {
         Object: {
-          title: this.commonService.translateText('Common.object'),
+          title: this.cms.translateText('Common.object'),
           type: 'string',
           width: '5%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         ObjectName: {
-          title: this.commonService.translateText('Common.objectName'),
+          title: this.cms.translateText('Common.objectName'),
           type: 'string',
           width: '45%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Debit: {
-          title: this.commonService.translateText('Accounting.headDebit'),
+          title: this.cms.translateText('Accounting.headDebit'),
           width: '12%',
           type: 'custom',
           editable: true,
@@ -128,7 +128,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
           },
         },
         Credit: {
-          title: this.commonService.translateText('Accounting.headCredit'),
+          title: this.cms.translateText('Accounting.headCredit'),
           width: '10%',
           type: 'custom',
           editable: true,
@@ -143,7 +143,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
           },
         },
         Remove: {
-          title: this.commonService.translateText('Common.remove'),
+          title: this.cms.translateText('Common.remove'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -155,8 +155,8 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.label = this.commonService.translateText('Common.remove');
-            instance.title = this.commonService.translateText('Common.remove');
+            instance.label = this.cms.translateText('Common.remove');
+            instance.title = this.cms.translateText('Common.remove');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccountModel) => {

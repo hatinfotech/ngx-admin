@@ -24,7 +24,7 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   constructor(
     public activeRoute: ActivatedRoute,
-    public commonService: CommonService,
+    public cms: CommonService,
     private route: ActivatedRoute,
     private mobileService: MobileAppService,
     private notificationService: NotificationService,
@@ -32,23 +32,23 @@ export class NotificationComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.activeRoute.params.subscribe(params => {
-      const param = this.commonService.getRouteParams(params['id']);
+      const param = this.cms.getRouteParams(params['id']);
       // this.urlParameters = window.location.search;
       this.route.queryParams.subscribe(params => {
         // this.urlParameters = JSON.stringify(params);
         const notification = this.notificationService.prepareNotificaitonInfo({ Data: params });
-        this.commonService.navigate('/');
+        this.cms.navigate('/');
         setTimeout(() => {
           this.notificationService.openNotification(notification);
         }, 3000);
         // if (params?.type === 'CHATROOM') {
         // this.mobileService.allReady().then(rs => {
         //   setTimeout(() => {
-        //     this.commonService.openMobileSidebar();
+        //     this.cms.openMobileSidebar();
         //     this.mobileService.openChatRoom({
         //       ChatRoom: params?.room,
         //     });
-        //     this.commonService.navigate('/');
+        //     this.cms.navigate('/');
 
         //   }, 3000);
         // });

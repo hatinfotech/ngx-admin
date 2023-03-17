@@ -24,12 +24,12 @@ export class PromotionListComponent extends DataManagerListComponent<PromotionMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -97,7 +97,7 @@ export class PromotionListComponent extends DataManagerListComponent<PromotionMo
         //       });
         //       instance.click.subscribe(async (row: PromotionModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -131,7 +131,7 @@ export class PromotionListComponent extends DataManagerListComponent<PromotionMo
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PromotionModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(PromotionFormComponent, {
+  //   this.cms.openDialog(PromotionFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

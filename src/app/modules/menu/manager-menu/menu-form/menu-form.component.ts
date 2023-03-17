@@ -45,9 +45,9 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     public apiService: ApiService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastService, dialogService, cms);
   }
 
   parentList: MenuItemModel[];

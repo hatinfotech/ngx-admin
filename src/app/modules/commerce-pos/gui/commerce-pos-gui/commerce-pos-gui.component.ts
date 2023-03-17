@@ -1,3 +1,4 @@
+import { Select2Option } from './../../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
 import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { DeploymentVoucherFormComponent } from './../../../deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
@@ -28,6 +29,7 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { resolve } from 'dns';
+import { AccBankAccountModel } from '../../../../models/accounting.model';
 
 declare const openDatabase;
 
@@ -102,10 +104,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return screenfull.isFullscreen;
   }
 
-  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
+  quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0, allowNegative: true };
 
   order: OrderModel = new OrderModel;
+
+  paymentMethod = [
+    { id: 'CASH', text: 'Tiền mặt', status: 'success' },
+    { id: 'DEBT', text: 'Công nợ', status: 'warning' },
+    { id: 'BANKTRANSFER', text: 'Chuyển khoản', status: 'primary' },
+    { id: 'MIXED', text: 'Hỗn hợp', status: 'danger' },
+  ];
 
   historyOrderIndex: number = 0;
   historyOrders: FormGroup[] = [];
@@ -122,8 +131,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   // searchInput = '';
 
+  bankAccountList: AccBankAccountModel[] = [];
   select2OptionForContact = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', {
       includeIdText: true,
       includeGroups: true,
       sort_SearchRank: 'desc',
@@ -137,18 +147,29 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       `
     }),
   }
+  select2OptionForBankAccount: Select2Option = {
+    placeholder: 'Tài khoản ngân hàng...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  }
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
     public ref?: NbDialogRef<CommercePosGuiComponent>,
     public formBuilder?: FormBuilder,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
 
-    this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(settings => {
+    this.cms.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.systemConfigs = settings;
     });
 
@@ -165,12 +186,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     screenfull.onchange(event => {
       console.log(event);
       setTimeout(() => {
-        this.commonService.sidebarService.collapse('menu-sidebar');
-        this.commonService.sidebarService.collapse('chat-sidebar');
+        this.cms.sidebarService.collapse('menu-sidebar');
+        this.cms.sidebarService.collapse('chat-sidebar');
       }, 300);
     });
 
-    this.commonService.layout$.next('fullscreen');
+    this.cms.layout$.next('fullscreen');
   }
 
   ngOnDestroy(): void {
@@ -180,12 +201,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   onResume() {
     super.onResume();
-    this.commonService.sidebarService.collapse('menu-sidebar');
-    this.commonService.sidebarService.collapse('chat-sidebar');
+    this.cms.sidebarService.collapse('menu-sidebar');
+    this.cms.sidebarService.collapse('chat-sidebar');
   }
 
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel) {
-    // this.commonService.takeUntil('pos-on-object-change', 300, () => {
+    // this.cms.takeUntil('pos-on-object-change', 300, () => {
 
     if (selectedData && !selectedData['doNotAutoFill']) {
       if (selectedData.Code) {
@@ -264,24 +285,24 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       //   return true;
       // });
 
-      await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
-        masterPriceTable: 'default',
-        includeCategories: true,
-        includeGroups: true,
-        includeFeaturePicture: true,
-        getRawData: true,
-        limit: 'nolimit',
-        includeContainers: true,
-      }).then(priceTableDetails => {
-        this.masterPriceTable = {};
-        for (const priceTableDetail of priceTableDetails) {
-          priceTableDetail.Price = parseFloat(priceTableDetail.Price);
-          this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
-        }
-        // console.log(this.masterPriceTable);
-        this.status = '';
+      // await this.apiService.getPromise<any[]>('/sales/master-price-table-details', {
+      //   masterPriceTable: 'default',
+      //   includeCategories: true,
+      //   includeGroups: true,
+      //   includeFeaturePicture: true,
+      //   getRawData: true,
+      //   limit: 'nolimit',
+      //   includeContainers: true,
+      // }).then(priceTableDetails => {
+      //   this.masterPriceTable = {};
+      //   for (const priceTableDetail of priceTableDetails) {
+      //     priceTableDetail.Price = parseFloat(priceTableDetail.Price);
+      //     this.masterPriceTable[`${priceTableDetail.Product}-${priceTableDetail.Unit}`] = priceTableDetail;
+      //   }
+      //   // console.log(this.masterPriceTable);
+      //   this.status = '';
 
-      });
+      // });
 
       // Get goods list
       this.goodsList = [];
@@ -302,7 +323,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         this.progress = 0;
 
         for (const productSearchIndex of rs) {
-          // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.commonService.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
+          // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.cms.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
           productSearchIndex['WarehouseUnit'] = { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel };
           const goods = {
             id: `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`,
@@ -332,6 +353,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           this.productSearchIndex[productSearchIndex.Code] = productSearchIndex;
 
           if (!this.productMap[productSearchIndex.Code]) this.productMap[productSearchIndex.Code] = productSearchIndex;
+          if (!this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit]) this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit] = productSearchIndex;
           if (!this.unitMap[productSearchIndex.UnitSeq]) this.unitMap[productSearchIndex.UnitSeq] = { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq };
           if (!this.findOrderMap[productSearchIndex.ContainerFindOrder]) this.findOrderMap[productSearchIndex.ContainerFindOrder] = productSearchIndex;
         }
@@ -348,7 +370,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       console.log(err);
       console.log('retry...');
       this.status = 'Lỗi tải bảng giá, đang thử lại...';
-      this.commonService.showToast('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'Cập nhật bảng giá không thành công !', { ...this.toastDefaultConfig, status: 'danger' });
+      this.cms.showToast('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'Cập nhật bảng giá không thành công !', { ...this.toastDefaultConfig, status: 'danger' });
       return false;
     }
     // }
@@ -356,37 +378,39 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private productMap: { [key: string]: ProductModel } = {};
+  private productUnitMap: { [key: string]: ProductModel } = {};
   // private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
   private findOrderMap: { [key: string]: ProductModel } = {};
   async init() {
     this.loading = true;
     const result = await super.init().then(async status => {
-      const loginId = await this.commonService.loginInfo$.pipe(filter(f => !!f), take(1)).toPromise().then(loginInfo => loginInfo?.user?.Code);
+      const loginId = await this.cms.loginInfo$.pipe(filter(f => !!f), take(1)).toPromise().then(loginInfo => loginInfo?.user?.Code);
       this.apiService.getPromise<any>('/commerce-pos/product-search-indexs', { cacheCheckPonit: true }).then(rs => rs.data).then(serverProductSearchIndexCheckPoint => {
         console.log(serverProductSearchIndexCheckPoint);
         localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
       });
+      this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;' ';AccountNumber;' ';Bank;' ';Branch)" });
       while (true) {
         try {
           await this.updateGoodsInfo();
           break;
         } catch (err) {
           console.error(err);
-          this.commonService.showToast('Chưa thể tải thông tin sản phẩm, thử lại trong 3s', 'Tải thông tin sản phẩm thất bại', { status: 'danger' });
+          this.cms.showToast('Chưa thể tải thông tin sản phẩm, thử lại trong 3s', 'Tải thông tin sản phẩm thất bại', { status: 'danger' });
           await new Promise(resolve => setTimeout(() => resolve(true), 3000));
         }
       }
 
       // Notification
-      this.commonService.showToast('Hệ thống đã sẵn sàng để bán hàng !', 'POS đã sẵn sàng', { ...this.toastDefaultConfig, status: 'success' });
+      this.cms.showToast('Hệ thống đã sẵn sàng để bán hàng !', 'POS đã sẵn sàng', { ...this.toastDefaultConfig, status: 'success' });
       setInterval(() => {
         console.log('Listen new master price table update...');
         // this.apiService.getPromise<any>('/sales/master-price-tables/getUpdate', { priceTable: 'default' }).then(rs => {
         //   console.log(rs);
         //   if (rs && rs.State == 'UPDATED') {
-        //     this.commonService.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
+        //     this.cms.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { status: 'primary' });
         //     return this.updateGoodsInfo().then(status => {
-        //       this.commonService.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
+        //       this.cms.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { status: 'success' });
         //       return status;
         //     });
         //   }
@@ -399,9 +423,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           console.log(serverProductSearchIndexCheckPoint);
           const productSearchCacheCheckPoint = localStorage.getItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT');
           if (serverProductSearchIndexCheckPoint && serverProductSearchIndexCheckPoint != productSearchCacheCheckPoint) {
-            this.commonService.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { ...this.toastDefaultConfig, status: 'primary' });
+            this.cms.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { ...this.toastDefaultConfig, status: 'primary' });
             return this.updateGoodsInfo().then(status => {
-              this.commonService.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { ...this.toastDefaultConfig, status: 'success' });
+              this.cms.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { ...this.toastDefaultConfig, status: 'success' });
               localStorage.setItem(loginId + '_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
               return status;
             });
@@ -414,8 +438,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       return status;
     });
-    this.commonService.sidebarService.collapse('menu-sidebar');
-    this.commonService.sidebarService.collapse('chat-sidebar');
+    this.cms.sidebarService.collapse('menu-sidebar');
+    this.cms.sidebarService.collapse('chat-sidebar');
 
     await this.save(this.orderForm);
 
@@ -441,7 +465,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Amount: [0],
       CashReceipt: [null],
       DecreaseForTotal: [null],
-      // CashBack: [null],
+      CashBack: [null],
       State: [null],
       DateOfSale: [null],
       Created: [null],
@@ -451,6 +475,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       DebitFunds: [],
       // FinalReceipt: [],
       IsDebt: [false],
+      PaymentMethod: [this.paymentMethod.find(f => this.cms.getObjectId(f) == 'CASH')],
+      ReceiptBankAccount: [],
+      CashTransferAmount: [],
+      CashAmount: [],
     });
     newForm['voucherType'] = 'COMMERCEPOSORDER';
     newForm['isReceipt'] = true;
@@ -459,12 +487,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     if (data) {
       if (data.Object) {
         data.Object = {
-          id: this.commonService.getObjectId(data.Object),
-          text: this.commonService.getObjectText(data.Object) || data.ObjectName,
+          id: this.cms.getObjectId(data.Object),
+          text: this.cms.getObjectText(data.Object) || data.ObjectName,
           Phone: data.ObjectPhone,
           Email: data.ObjectEmail,
           Address: data.ObjectAddress,
         };
+      }
+      if (typeof data.PaymentMethod === 'string') {
+        data.PaymentMethod = this.paymentMethod.find(f => this.cms.getObjectId(f) === data.PaymentMethod);
       }
       newForm.patchValue(data);
       if (data.Details) {
@@ -515,6 +546,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         RelativeVouchers: [[{ id: order.Code, text: order.Title || order.Code, type: 'COMMERCEPOSORDER' }]],
         Details: this.formBuilder.array([]),
         IsDebt: [false],
+        PaymentMethod: [this.paymentMethod.find(f => this.cms.getObjectId(f) == 'CASH')],
+        ReceiptBankAccount: [],
+        CashTransferAmount: [],
+        CashAmount: [],
       });
       if (order.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
@@ -536,13 +571,17 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         Note: [],
         SubNote: [],
         Amount: [0],
-        // CashBack: [0],
+        CashBack: [0],
         CashReceipt: [0],
         State: [null],
         DateOfSale: [new Date()],
         Created: [null],
         Details: this.formBuilder.array([]),
         IsDebt: [false],
+        PaymentMethod: [this.paymentMethod.find(f => this.cms.getObjectId(f) == 'CASH')],
+        ReceiptBankAccount: [],
+        CashTransferAmount: [],
+        CashAmount: [],
         RelativeVouchers: [[]]
       });
     }
@@ -594,7 +633,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     return formGroup.get('Details') as FormArray;
   }
 
-  async makeNewOrder(data?: CommercePosOrderModel, returns?: string, option?: { force?: boolean, location?: string, autoActiveForm?: boolean }) {
+  returnVoucherMap: { [key: string]: FormGroup } = {};
+
+  async makeNewOrder(data?: CommercePosOrderModel, returnsObj?: any, option?: { force?: boolean, location?: string, autoActiveForm?: boolean }) {
 
     option = {
       ...option,
@@ -602,7 +643,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     const endOrderForm = this.historyOrders[this.historyOrders.length - 1];
-    if (!returns && !option?.force && endOrderForm && this.orderForm['voucherType'] != 'COMMERCEPOSRETURN' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
+    if (!returnsObj && !option?.force && endOrderForm && this.orderForm['voucherType'] != 'COMMERCEPOSRETURN' && endOrderForm.getRawValue()['State'] == 'NOTJUSTAPPROVED' && endOrderForm.getRawValue()['Details'].length == 0) {
       this.historyOrderIndex = this.historyOrders.length - 1;
       this.orderForm = this.historyOrders[this.historyOrders.length - 1];
       return this.orderForm;
@@ -613,23 +654,29 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.save(this.orderForm);
     }
 
-    if (returns) {
-      const returnsObj = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + returns, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true }).then(rs => rs[0]);
+    if (returnsObj) {
+      if (typeof returnsObj === 'string') {
+        const returnsData = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + returnsObj, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true }).then(rs => rs[0]);
+        returnsObj = await this.makeNewReturnsForm(returnsData);
+        this.returnVoucherMap[returnsData.Code] = returnsObj;
+      }
 
       let debitFunds = 0;
       // if (!returnsObj.IsDebt) {
-      if (returnsObj && returnsObj?.Details) {
-        for (const detail of returnsObj.Details) {
-          debitFunds += detail.Price * detail.Quantity;
+      const returnsDetails = returnsObj && (returnsObj.get('Details') as FormArray).controls || null;
+      if (returnsDetails) {
+        for (const detail of returnsDetails) {
+          debitFunds += detail.get('Price').value * detail.get('Quantity').value;
         }
       }
       // }
 
-      if (returnsObj.Object) {
-        returnsObj.Object = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.commonService.getObjectId(returnsObj.Object), { includeIdText: true }).then(rs => rs[0]);
+      let returnObject = null;
+      if (returnsObj.get('Object').value) {
+        returnObject = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.cms.getObjectId(returnsObj.get('Object').value), { includeIdText: true }).then(rs => rs[0]);
       }
 
-      orderForm = this.makeNewOrderForm({ ...data, Object: returnsObj.Object, ObjectName: data?.ObjectName || returnsObj.ObjectName, ObjectPhone: data?.ObjectPhone || returnsObj.ObjectPhone, ObjectEmail: data?.ObjectEmail || returnsObj.ObjectEmail, ObjectAddress: data?.ObjectAddress || returnsObj.ObjectAddress, returnsObj, Code: null, Returns: returns, DebitFunds: debitFunds });
+      orderForm = this.makeNewOrderForm({ ...data, Object: returnObject.Object, ObjectName: data?.ObjectName || returnObject.ObjectName, ObjectPhone: data?.ObjectPhone || returnObject.ObjectPhone, ObjectEmail: data?.ObjectEmail || returnObject.ObjectEmail, ObjectAddress: data?.ObjectAddress || returnObject.ObjectAddress, returnsObj, Code: null, Returns: returnsObj.get('Code').value, DebitFunds: debitFunds });
     } else {
       orderForm = this.makeNewOrderForm(data);
     }
@@ -686,12 +733,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     //   }
 
     //   if (returnsObj.Object) {
-    //     returnsObj.Object = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.commonService.getObjectId(returnsObj.Object), { includeIdText: true }).then(rs => rs[0]);
+    //     returnsObj.Object = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + this.cms.getObjectId(returnsObj.Object), { includeIdText: true }).then(rs => rs[0]);
     //   }
 
     //   orderForm = this.makeNewReturnsForm({ ...data, Object: returnsObj.Object, returnsObj, Code: null, Returns: order, DebitFunds: debitFunds });
     // } else {
-    orderForm = await this.makeNewReturnsForm(data);
+    orderForm = this.returnVoucherMap[data.Code];
+    if (!orderForm) {
+      orderForm = await this.makeNewReturnsForm(data);
+    }
     // }
     this.calculateTotal(orderForm);
     if (option?.location == 'HEAD') {
@@ -748,7 +798,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async onSearchInputKeydown(event: any) {
-    console.log(event);
+    // console.log(event);
 
     const inputValue: string = event.target?.value;
     if (event.key == 'Enter' && (!this.searchResults || this.searchResults.length == 0)) {
@@ -757,7 +807,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         event.target.value = '';
         event.target.blur();
       } catch (err) {
-        this.commonService.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
+        this.cms.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
       }
     }
     return true;
@@ -766,7 +816,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   lastSearchCount = 0;
   async onSearchInputKeyup(event: any) {
     // console.log(event);
-    this.commonService.takeUntilCallback('commerce-pos-search', 300, () => {
+    this.cms.takeUntilCallback('commerce-pos-search', 300, () => {
       const inputValue: string = event.target?.value;
       if ((event.key.length == 1 && /[a-z0-9\ ]/i.test(event.key)) || (event.key.length > 1 && ['Backspace'].indexOf(event.key) > -1)) {
         if (/\w+/.test(inputValue)) {
@@ -777,10 +827,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           if (this.goodsList && this.goodsList.length > 0) {
             // Search in local memory
             let rs = this.goodsList.filter(f => new RegExp('^' + inputValue.toUpperCase()).test(f.Sku)).slice(0, 256);
-            // rs = rs.concat(rs, this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256));
-            let rsByKeyword = this.goodsList.filter(f => this.commonService.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256);
+            // rs = rs.concat(rs, this.goodsList.filter(f => this.cms.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256));
+            let rsByKeyword = this.goodsList.filter(f => this.cms.smartFilter(f.Keyword, inputValue.toLowerCase())).slice(0, 256);
             for (const item of rsByKeyword) {
-              if (rs.findIndex(f => f.Code == item.Code && this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(item.Unit) && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(item.Container)) < 0) {
+              if (rs.findIndex(f => f.Code == item.Code && this.cms.getObjectId(f.Unit) == this.cms.getObjectId(item.Unit) && this.cms.getObjectId(f.Container) == this.cms.getObjectId(item.Container)) < 0) {
                 rs.push(item);
               }
             }
@@ -829,7 +879,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             }).then(rs => {
               if (currentSearchCount == this.lastSearchCount) {
                 this.searchResults = rs.map(goods => {
-                  goods.Price = this.masterPriceTable[`${goods.Goods}-${this.commonService.getObjectId(goods.Unit)}`]?.Price;
+                  // goods.Price = this.masterPriceTable[`${goods.Goods}-${this.cms.getObjectId(goods.Unit)}`]?.Price;
                   return goods;
                 });
                 if (rs[0]) {
@@ -854,7 +904,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   onObjectPhoneInput(orderForm: FormGroup, event: any) {
-    this.commonService.takeUntil('commerce-pos-seach-contact-by-phone', 600).then(() => {
+    this.cms.takeUntil('commerce-pos-seach-contact-by-phone', 600).then(() => {
       const phone = this.orderForm.get('ObjectPhone').value;
       if (phone && phone.length > 9) {
         this.apiService.getPromise<ContactModel[]>('/contact/contacts', { search: phone, sort_Id: 'desc' }).then(rs => {
@@ -874,7 +924,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     });
   }
   onObjectNameInput(orderForm: FormGroup, event: any) {
-    this.commonService.takeUntil('commerce-pos-save-contact-name', 3000).then(() => {
+    this.cms.takeUntil('commerce-pos-save-contact-name', 3000).then(() => {
     });
   }
 
@@ -896,7 +946,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     try {
       this.inputValue = inputValue = inputValue && inputValue.trim() || inputValue;
       const detailsControls = this.getDetails(this.orderForm).controls
-      const systemConfigs = await this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
+      const systemConfigs = await this.cms.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
       const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
       let productId = null;
       let accessNumber = null;
@@ -913,10 +963,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           if (this.goodsList) {
             const products = this.goodsList.filter(f => f.Sku == inputValue.toUpperCase());
             for (const prod of products) {
-              const productInfo = this.productMap[prod.Code];
+              const productInfo = this.productUnitMap[prod.Code + '-' + prod.Unit];
 
               // Tìm vị trí tương ứng với đơn vị tính cơ bản
-              if (productInfo && this.commonService.getObjectId(productInfo.WarehouseUnit) == this.commonService.getObjectId(prod.Unit)) {
+              if (productInfo && this.cms.getObjectId(productInfo.WarehouseUnit) == this.cms.getObjectId(prod.Unit)) {
                 product = prod;
                 break;
               }
@@ -929,14 +979,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           }
 
           if (!product) {
-            this.commonService.showToast(`Sku không tồn tại !`, 'Sku không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
+            this.cms.showToast(`Sku không tồn tại !`, 'Sku không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
             // resolve(true);
             // return;
             throw new Error(`Sku không tồn tại !`);
           }
           productId = product.Code;
           unit = product.Unit;
-          unitId = this.commonService.getObjectId(product.Unit);
+          unitId = this.cms.getObjectId(product.Unit);
         } else {
           if (option?.searchByFindOrder || inputValue.length < 5) {
             //Tìm hàng hóa theo số nhận thức
@@ -960,8 +1010,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             }
             if (product) {
               unit = product.Unit;
-              unitId = unitId || this.commonService.getObjectId(unit);
-              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              unitId = unitId || this.cms.getObjectId(unit);
+              // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               // product.FindOrder = inputValue.trim();
               product.FindOrder = product.ContainerFindOrder || inputValue.trim();
               productId = product.Code;
@@ -980,7 +1030,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               tmpcode = tmpcode.substring(unitSeqLength);
               productId = tmpcode;
 
-              product = this.productMap[this.findOrderMap[findOrder].Code];
+              product = this.productUnitMap[this.findOrderMap[findOrder].Code + '-' + this.findOrderMap[findOrder].Unit];
 
               if (product && unitSeq) {
                 unit = this.unitMap[unitSeq];
@@ -995,8 +1045,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 throw new Error('Không tìm thấy hàng hóa !');
               }
 
-              unitId = this.commonService.getObjectId(product.Unit);
-              product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              unitId = this.cms.getObjectId(product.Unit);
+              // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               productId = product.Code;
               product.FindOrder = findOrder;
 
@@ -1007,7 +1057,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 if (new RegExp('^128' + coreId).test(inputValue)) {
                   setTimeout(() => {
 
-                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                    this.cms.openDialog(ShowcaseDialogComponent, {
                       context: {
                         title: 'Máy bán hàng',
                         content: 'Bạn có muốn tạo phiếu trả hàng từ đơn hàng ' + inputValue,
@@ -1049,7 +1099,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 } else if (new RegExp('^129' + coreId).test(inputValue)) {
                   setTimeout(() => {
                     this.shortcutKeyContext = 'returnspaymentconfirm';
-                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                    this.cms.openDialog(ShowcaseDialogComponent, {
                       context: {
                         title: 'Máy bán hàng',
                         content: 'Bạn có muốn tiếp tục bán hàng từ phiếu trả hàng ' + inputValue + ' hay hoàn tiền cho khách',
@@ -1080,7 +1130,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   throw new Error('Trường hợp tạo phiếu bán hàng từ phiếu trả hàng');
                 } else if (new RegExp('^113' + coreId).test(inputValue)) {
                   setTimeout(() => {
-                    this.commonService.openDialog(ShowcaseDialogComponent, {
+                    this.cms.openDialog(ShowcaseDialogComponent, {
                       context: {
                         title: 'Máy bán hàng',
                         content: 'Xem lại phiếu triển khai và đơn hàng liên quan',
@@ -1100,7 +1150,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                             status: 'success',
                             focus: true,
                             action: async () => {
-                              this.commonService.previewVoucher('DEPLOYMENT80', inputValue);
+                              this.cms.previewVoucher('DEPLOYMENT80', inputValue);
                             }
                           },
                         ],
@@ -1120,8 +1170,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   });
                   if (product) {
                     productId = product.Code;
-                    unitId = this.commonService.getObjectId(product.WarehouseUnit);
-                    product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                    unitId = this.cms.getObjectId(product.WarehouseUnit);
+                    // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
                   }
                 }
 
@@ -1129,19 +1179,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
                 if (!product) {
 
-                  const extracted = this.commonService.extractGoodsBarcode(inputValue);
+                  const extracted = this.cms.extractGoodsBarcode(inputValue);
                   accessNumber = extracted.accessNumber;
                   productId = extracted.productId;
                   unitSeq = extracted.unitSeq;
                   unit = this.unitMap[unitSeq];
-                  unitId = this.commonService.getObjectId(unit);
+                  unitId = this.cms.getObjectId(unit);
 
-                  product = this.productMap[productId];
+                  product = this.productUnitMap[productId + '-' + unitId];
 
                   if (product && unitSeq) {
                     unit = this.unitMap[unitSeq];
                     if (unit) {
-                      unitId = this.commonService.getObjectId(unit);
+                      unitId = this.cms.getObjectId(unit);
                       // product.Unit = { ...unit, id: unit.Code, text: unit.Name };
                       product.Unit = unit;
                     }
@@ -1165,7 +1215,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 product = rs[0];
 
                 if (!product) {
-                  this.commonService.showToast(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { ...this.toastDefaultConfig, status: 'warning' });
+                  this.cms.showToast(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { ...this.toastDefaultConfig, status: 'warning' });
                   existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
                   throw new Error(`Số truy xuất ${accessNumber} không tồn tại !`);
                 }
@@ -1173,7 +1223,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 const addReturnGoodsPromise = new Promise((resolve, reject) => {
                   setTimeout(async () => {
                     try {
-                      const existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+                      const existsProductIndex = detailsControls.findIndex(f => this.cms.getObjectId(f.get('Product').value) === productId && this.cms.getObjectId(f.get('Unit').value) == unitId);
                       existsProduct = detailsControls[existsProductIndex] as FormGroup;
                       if (existsProduct) {
 
@@ -1181,7 +1231,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
                         if (this.orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
                           if (product.Inventory && product.Inventory > 0) {
-                            this.commonService.showToast(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
+                            this.cms.showToast(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
                             existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
 
 
@@ -1203,9 +1253,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                                     object.setValue(rs[0]);
                                   });
                                 } else {
-                                  if (this.commonService.getObjectId(product['LastAccEntry']['Object']) != this.commonService.getObjectId(object.value)) {
+                                  if (this.cms.getObjectId(product['LastAccEntry']['Object']) != this.cms.getObjectId(object.value)) {
 
-                                    this.commonService.showToast('Liên hệ trên đơn bán hàng phải giống với trên đơn trả hàng !', 'Không đúng liên hệ đã mua hàng trước đó', { ...this.toastDefaultConfig, status: 'warning' });
+                                    this.cms.showToast('Liên hệ trên đơn bán hàng phải giống với trên đơn trả hàng !', 'Không đúng liên hệ đã mua hàng trước đó', { ...this.toastDefaultConfig, status: 'warning' });
                                     return false;
 
                                   }
@@ -1216,7 +1266,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                               const detailsRelativeVouchers = existsProduct.get('RelativeVouchers');
                               const detailsRelativeVouchersData = detailsRelativeVouchers.value || [];
 
-                              if (!detailsRelativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                              if (!detailsRelativeVouchersData.some(f => this.cms.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
                                 detailsRelativeVouchersData.push({
                                   type: 'COMMERCEPOSORDER',
                                   id: product['LastAccEntry']['Voucher'],
@@ -1232,7 +1282,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
                               const relativeVouchers = this.orderForm.get('RelativeVouchers');
                               const relativeVouchersData = relativeVouchers.value || [];
-                              if (!relativeVouchersData.some(f => this.commonService.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                              if (!relativeVouchersData.some(f => this.cms.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
                                 relativeVouchersData.push({
                                   type: 'COMMERCEPOSORDER',
                                   id: product['LastAccEntry']['Voucher'],
@@ -1256,7 +1306,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                           }
                         } else {
                           if (!product.Inventory || product.Inventory < 1) {
-                            this.commonService.showToast(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { ...this.toastDefaultConfig, status: 'warning' });
+                            this.cms.showToast(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { ...this.toastDefaultConfig, status: 'warning' });
                             existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
                             // return;
                           }
@@ -1280,8 +1330,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               }
               if (product) {
                 productId = product.Code;
-                unitId = unitId || this.commonService.getObjectId(product.Unit);
-                product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                unitId = unitId || this.cms.getObjectId(product.Unit);
+                // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               } else {
                 product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
                   includeUnit: true,
@@ -1291,15 +1341,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 }).then(rs => {
                   return rs[0];
                 });
-                unitId = this.commonService.getObjectId(product.Unit);
-                product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                unitId = this.cms.getObjectId(product.Unit);
+                // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
               }
             }
           }
         }
       } else {
         productId = product.Code;
-        unitId = this.commonService.getObjectId(product.Unit);
+        unitId = this.cms.getObjectId(product.Unit);
       }
 
       if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
@@ -1314,19 +1364,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           return rs[0];
         });
         if (product) {
-          unitId = this.commonService.getObjectId(product.Unit);
+          unitId = this.cms.getObjectId(product.Unit);
           product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
         }
         // }
       }
 
       if (this.orderForm.value?.State == 'APPROVED') {
-        this.commonService.showToast('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { ...this.toastDefaultConfig, status: 'warning' });
+        this.cms.showToast('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { ...this.toastDefaultConfig, status: 'warning' });
         throw new Error('Bạn phải hủy phiếu mới thêm hàng hóa vào được!');
       }
 
       console.log(accessNumber, productId);
-      let existsProductIndex = detailsControls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) === productId && this.commonService.getObjectId(f.get('Unit').value) == unitId);
+      let existsProductIndex = detailsControls.findIndex(f => this.cms.getObjectId(f.get('Product').value) === productId && this.cms.getObjectId(f.get('Unit').value) == unitId);
       existsProduct = detailsControls[existsProductIndex] as FormGroup;
       if (existsProduct) {
         const quantityControl = existsProduct.get('Quantity');
@@ -1340,7 +1390,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
               accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
             }
-            this.calculateTotal(this.orderForm);
+            // this.calculateTotal(this.orderForm);
 
             this.playIncreasePipSound();
             this.calculateToMoney(existsProduct);
@@ -1348,7 +1398,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
           } else {
             this.playErrorPipSound();
-            this.commonService.showToast('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { ...this.toastDefaultConfig, status: 'warning' });
+            this.cms.showToast('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { ...this.toastDefaultConfig, status: 'warning' });
           }
         } else {
           quantityControl.setValue(quantityControl.value + 1);
@@ -1386,9 +1436,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           // Nếu chưa có giá (trường hợp quét ID sản phẩm)
           if (product) {
 
-            if (!product.Unit || !this.commonService.getObjectId(product.Unit) || this.commonService.getObjectId(product.Unit) == 'n/a') {
+            if (!product.Unit || !this.cms.getObjectId(product.Unit) || this.cms.getObjectId(product.Unit) == 'n/a') {
               this.playErrorPipSound();
-              this.commonService.showToast('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { ...this.toastDefaultConfig, status: 'danger' });
+              this.cms.showToast('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { ...this.toastDefaultConfig, status: 'danger' });
               throw new Error('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !');
             }
 
@@ -1401,9 +1451,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               product: productId,
               includeUnit: true
             }).catch(err => {
-              this.commonService.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
+              this.cms.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
               return [];
-            }).then(prices => prices.find(f => this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(product.Unit))).then(price => {
+            }).then(prices => prices.find(f => this.cms.getObjectId(f.Unit) == this.cms.getObjectId(product.Unit))).then(price => {
               if (price || true) { // Cho phép chọn sản phẩm không có giá bán
                 price = parseFloat(price?.Price || 0);
                 existsProduct.get('Price').setValue(price);
@@ -1415,12 +1465,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 this.activeDetail(this.orderForm, existsProduct, 0);
                 this.playNewPipSound();
               } else {
-                this.commonService.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
+                this.cms.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
               }
             });
           } else {
             this.playErrorPipSound();
-            this.commonService.showToast('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
+            this.cms.showToast('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
             throw new Error('Hàng hóa không tồn tại !');
           }
         }
@@ -1436,7 +1486,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   destroyOrder(event?: any) {
-    this.commonService.showDialog('POS', 'Bạn có muốn hủy phiếu này không ?', [
+    this.cms.showDialog('POS', 'Bạn có muốn hủy phiếu này không ?', [
       {
         label: 'ESC - Trở về',
         status: 'primary',
@@ -1523,6 +1573,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             await this.makeNewOrder(order, (order?.RelativeVouchers || []).find(f => f.type == 'COMMERCEPOSRETURN')?.id || null, { force: true, location: 'HEAD', autoActiveForm: false });
           }
           if (_order.Type == 'COMMERCEPOSRETURN') {
+
             const returns = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/returns/' + _order.Code, { includeDetails: true, renderBarCode: true, includeObject: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => rs[0]);
             await this.makeNewReturns(returns, null, { force: true, location: 'HEAD', autoActiveForm: false });
           }
@@ -1533,7 +1584,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             this.progress = 100;
             this.progressStatus = 'success';
           }
-          this.progressLabel = 'Tải đơn hàng ' + this.commonService.datePipe.transform(this.dateOfPrevious, 'shortDate') + ' (' + i + '/' + rs.length + ')';
+          this.progressLabel = 'Tải đơn hàng ' + this.cms.datePipe.transform(this.dateOfPrevious, 'shortDate') + ' (' + i + '/' + rs.length + ')';
         }
         this.progress = 0;
         if (rs.length > 0) {
@@ -1677,13 +1728,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     if (event.key == 'Escape') {
       this.shortcutKeyContext = 'main';
-      if (this.commonService.dialogStack.length === 0) {
+      if (this.cms.dialogStack.length === 0) {
         this.blurAll();
       }
       return true;
     }
 
-    if (this.commonService.dialogStack.length === 0) {
+    if (this.cms.dialogStack.length === 0) {
       if (event.key == 'F6') {
         console.log(this.customerEle);
         $(this.customerEle['controls'].selector.nativeElement)['select2']('open');
@@ -1692,18 +1743,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
       // Toggle debt
       if (event.key == 'F7') {
-        this.toggleDebt(this.orderForm);
+        this.switchPaymentMethod(this.orderForm);
         return false;
       }
 
       if (event.key == 'F10') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           this.onMakeNewReturnsForm();
           return false;
         }
       }
       if (event.key == 'F11') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           const cashReceiptEle = $('#CashReceipt');
           const decreaseForTotalEle = $('#DecreaseForTotal');
           if (decreaseForTotalEle.is(':focus')) {
@@ -1763,7 +1814,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // Change price
       if (event.key == 'F12') {
         if (this.orderForm.value?.State == 'APPROVED') {
-          this.commonService.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
+          this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
           this.playErrorPipSound();
           return false;
         }
@@ -1771,7 +1822,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         const details = this.getDetails(this.orderForm).controls;
         let activeDetail = details.find(f => f['isActive'] === true);
 
-        this.commonService.openDialog(DialogFormComponent, {
+        this.cms.openDialog(DialogFormComponent, {
           context: {
             title: 'Thay đổi giá bán',
             onInit: async (form, dialog) => {
@@ -1860,7 +1911,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         return true;
       }
       if (event.key == 'F5') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           this.makeNewOrder();
         }
         event.preventDefault();
@@ -1868,7 +1919,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
 
       if (event.key == '+') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           const details = this.getDetails(this.orderForm).controls;
           const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
           if (activeDetail) {
@@ -1878,7 +1929,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         return false;
       }
       if (event.key == '-') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           const details = this.getDetails(this.orderForm).controls;
           const activeDetail = details.find(f => f['isActive'] === true) as FormGroup;
           if (activeDetail) {
@@ -1889,7 +1940,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
 
       if (event.key == 'Delete') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           const details = this.getDetails(this.orderForm).controls;
           let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
           if (activeDetailIndex > -1) {
@@ -1923,14 +1974,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     if ((this.searchResults == null || this.searchResults.length == 0) && (document.activeElement as HTMLElement).tagName == 'BODY') {
       if (event.key == 'ArrowLeft') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           this.onPreviousOrderClick();
           event.preventDefault();
         }
         return true;
       }
       if (event.key == 'ArrowRight') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
           this.onNextOrderClick();
           event.preventDefault();
         }
@@ -1938,7 +1989,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
 
       if (event.key == 'ArrowDown') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
 
           this.findOrderKeyInput = '';
           this.searchInputPlaceholder = '';
@@ -1969,7 +2020,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
 
       if (event.key == 'ArrowUp') {
-        if (this.commonService.dialogStack.length === 0) {
+        if (this.cms.dialogStack.length === 0) {
 
           this.findOrderKeyInput = '';
           this.searchInputPlaceholder = '';
@@ -2020,10 +2071,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     // Barcode scan
-    if (this.commonService.dialogStack.length === 0) {
+    if (this.cms.dialogStack.length === 0) {
       if ((/^[0-9a-z]$/i.test(event.key) || ['Enter'].indexOf(event.key) > -1) && (document.activeElement as HTMLElement).tagName == 'BODY') {
 
-        this.commonService.barcodeScanDetective(event.key, barcode => {
+        this.cms.barcodeScanDetective(event.key, barcode => {
           this.barcodeProcess(barcode, {
             onHadPrimise: (promise) => {
               // this.promiseAll.push(promise);
@@ -2050,14 +2101,14 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             try {
               this.barcodeProcess(this.findOrderKeyInput, { searchBySku: true });
             } catch (err) {
-              this.commonService.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
+              this.cms.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
             }
           } else {
             if (this.findOrderKeyInput && this.findOrderKeyInput.length < 6) {
               try {
                 this.barcodeProcess(this.findOrderKeyInput, { searchByFindOrder: true });
               } catch (err) {
-                this.commonService.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
+                this.cms.showToast(err, 'Cảnh báo', { ...this.toastDefaultConfig, status: 'warning' });
               }
             }
           }
@@ -2107,12 +2158,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   removeDetail(orderForm: FormGroup, index: number) {
     if (orderForm.value?.State == 'APPROVED') {
-      this.commonService.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
       this.playErrorPipSound();
       return false;
     }
 
-    const removedRelativeVouchers = this.getDetails(orderForm).controls[index]?.value?.RelativeVouchers?.map(m => this.commonService.getObjectId(m)) || [];
+    const removedRelativeVouchers = this.getDetails(orderForm).controls[index]?.value?.RelativeVouchers?.map(m => this.cms.getObjectId(m)) || [];
 
     this.getDetails(orderForm).controls.splice(index, 1);
     this.calculateTotal(orderForm);
@@ -2121,8 +2172,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const relativeVouchers = orderForm.get('RelativeVouchers');
     let relativeVouchersData = relativeVouchers.value;
     for (const removedRelativeVoucher of removedRelativeVouchers) {
-      if (this.getDetails(orderForm).controls?.findIndex(f => f.get('RelativeVouchers').value.some(s => this.commonService.getObjectId(s) == removedRelativeVoucher) < 0)) {
-        relativeVouchersData = relativeVouchersData.filter(f => this.commonService.getObjectId(f) != removedRelativeVoucher);
+      if (this.getDetails(orderForm).controls?.findIndex(f => f.get('RelativeVouchers').value.some(s => this.cms.getObjectId(s) == removedRelativeVoucher) < 0)) {
+        relativeVouchersData = relativeVouchersData.filter(f => this.cms.getObjectId(f) != removedRelativeVoucher);
       }
     }
     relativeVouchers.setValue(relativeVouchersData);
@@ -2154,7 +2205,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   onIncreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
     if (orderForm.value?.State == 'APPROVED') {
-      this.commonService.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
       this.playErrorPipSound();
       return false;
     }
@@ -2166,7 +2217,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
   onDecreaseQuantityClick(orderForm: FormGroup, detail: FormGroup) {
     if (orderForm.value?.State == 'APPROVED') {
-      this.commonService.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, status: 'warning' });
       this.playErrorPipSound();
       return false;
     }
@@ -2178,8 +2229,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       this.playDecreasePipSound();
     } else {
       this.playErrorPipSound();
-      this.commonService.showToast('Chỉ có thể bán hàng với số lượng lớn hơn 0', 'Số lượng phải lớn hơn 0', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Chỉ có thể bán hàng với số lượng lớn hơn 0', 'Số lượng phải lớn hơn 0', { ...this.toastDefaultConfig, status: 'warning' });
     }
+  }
+
+  removeCashBack(orderForm: FormGroup) {
+    orderForm['cashBack'] = 0;
+    orderForm.get('CashBack').setValue(0);
   }
 
   onCashReceiptChanged(orderForm: FormGroup) {
@@ -2188,12 +2244,42 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // const totolControl = formGroup.get('Total');
     // cashBackControl.setValue(cashReceiptControl.value - totolControl.value);
 
+    const cashReceiptControl = orderForm.get('CashReceipt');
+    const decreaseForTotalControl = orderForm.get('DecreaseForTotal');
+    const totalAmount = orderForm.get('Amount');
+    const cashAmount = orderForm.get('CashAmount');
+    const cashTransferAmount = orderForm.get('CashTransferAmount');
+    const receivableDebt = orderForm['ReceivableDebt'] || 0;
+    if (cashReceiptControl && totalAmount && decreaseForTotalControl && this.cms.getObjectId(orderForm.get('PaymentMethod').value) === 'CASH') {
+      let cashBack = cashReceiptControl.value - ((totalAmount.value) - decreaseForTotalControl.value - (orderForm['returnsObj'] && this.cms.getObjectId(orderForm['returnsObj'].get('PaymentMethod').value) === 'CASH' ? orderForm['returnsObj'].get('Amount').value : 0));
+
+      if (cashBack > 0) {
+        orderForm['cashBack'] = cashBack;
+        orderForm.get('CashBack').setValue(cashBack);
+      } else {
+        orderForm['cashBack'] = 0;
+      }
+    }
+    if (cashTransferAmount && totalAmount && decreaseForTotalControl && this.cms.getObjectId(orderForm.get('PaymentMethod').value) === 'BANKTRANSFER') {
+      const cashBack = cashTransferAmount.value - (totalAmount.value) - decreaseForTotalControl.value;
+      if (cashBack > 0) {
+        orderForm['cashBack'] = cashBack;
+      } else {
+        orderForm['cashBack'] = 0;
+      }
+    }
+    if (cashAmount && cashTransferAmount && totalAmount && decreaseForTotalControl && this.cms.getObjectId(orderForm.get('PaymentMethod').value) === 'MIXED') {
+      const cashBack = cashAmount.value + cashTransferAmount.value - (receivableDebt + totalAmount.value - decreaseForTotalControl.value);
+      orderForm['cashBack'] = cashBack;
+    }
+    orderForm.get('CashBack').setValue(orderForm['cashBack']);
+
     if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
-      if (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt) {
+      if (orderForm['returnsObj'] && this.cms.getObjectId(orderForm['returnsObj'].get('PaymentMethod').value) === 'DEBT') {
         orderForm['isReceipt'] = true;
         orderForm.get('CashReceipt').enable();
       } else {
-        if (orderForm.value?.DebitFunds >= orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) {
+        if (orderForm['returnsObj'] && orderForm['returnsObj'].get('Amount').value >= orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) {
           orderForm['isReceipt'] = false;
           orderForm.get('CashReceipt').disable();
         } else {
@@ -2228,7 +2314,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     // }
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
-      this.commonService.showToast('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { ...this.toastDefaultConfig, status: 'warning', duration: 5000 })
+      this.cms.showToast('Bạn phải thêm hàng hóa vào đơn hàng trước khi thanh toán !', 'Chưa có hàng hóa nào trong đơn hàng !', { ...this.toastDefaultConfig, status: 'warning', duration: 5000 })
       return false;
     }
     delete data.DateOfSale;
@@ -2246,7 +2332,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
 
-      this.commonService.openDialog(CommercePosBillPrintComponent, {
+      this.cms.openDialog(CommercePosBillPrintComponent, {
         context: {
           skipPreview: true,
           printType: option?.printType,
@@ -2260,8 +2346,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             if (!newOrder.Object || !newOrder.Object.id) {
               newOrder.Object = null;
             }
+            if (typeof newOrder.PaymentMethod == 'string') {
+              newOrder.PaymentMethod = this.paymentMethod.find(f => this.cms.getObjectId(f) === newOrder.PaymentMethod);
+            }
             orderForm.patchValue(newOrder);
-            this.commonService.showToast(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Đã thanh toán', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
+            this.cms.showToast(option?.skipPrint ? `Đã thanh toán cho đơn hàng ${newOrder.Code}, để in phiếu nhấn nút điều hướng sang trái và in lại!` : `Đã thanh toán cho đơn hàng ${newOrder.Code}`, 'Đã thanh toán', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
             if (this.historyOrders[this.historyOrders.length - 1] == orderForm) {
               this.makeNewOrder();
             }
@@ -2269,7 +2358,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
             // Decrease inventory
             // for (const detail of data.Details) {
-            //   const goods = this.productSearchIndex[`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}-${this.commonService.getObjectId(detail.Container)}`];
+            //   const goods = this.productSearchIndex[`${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}-${this.cms.getObjectId(detail.Container)}`];
             //   if (goods) {
             //     goods.Inventory -= parseFloat(detail.Quantity);
             //   }
@@ -2293,7 +2382,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       });
     } else {
-      this.commonService.openDialog(CommercePosReturnsPrintComponent, {
+      this.cms.openDialog(CommercePosReturnsPrintComponent, {
         context: {
           skipPreview: true,
           instantPayment: true,
@@ -2307,13 +2396,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               newOrder.Object = null;
             }
             orderForm.patchValue(newOrder);
-            this.commonService.showToast('Phiếu trả hàng đã lưu !', 'Đã lưu phiếu trả hàng !', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
+            this.cms.showToast('Phiếu trả hàng đã lưu !', 'Đã lưu phiếu trả hàng !', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
             this.makeNewOrder();
             console.log(this.historyOrders);
 
             // Increase inventory
             // for (const detail of data.Details) {
-            //   const goods = this.productSearchIndex[`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}-${this.commonService.getObjectId(detail.Container)}`];
+            //   const goods = this.productSearchIndex[`${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}-${this.cms.getObjectId(detail.Container)}`];
             //   if (goods) {
             //     goods.Inventory += parseFloat(detail.Quantity);
             //   }
@@ -2330,7 +2419,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             component.onContinueOrder.pipe(take(1)).toPromise().then(async retunsOrder => {
               // Find blank new order
               console.log('Return voucher: ', retunsOrder);
-              const newOrderForm = await this.makeNewOrder(null, retunsOrder.Code);
+              // const newOrderForm = await this.makeNewOrder(null, retunsOrder.Code);
+              const newOrderForm = await this.makeNewOrder(null, orderForm);
               this.orderForm = newOrderForm;
             });
           }
@@ -2340,10 +2430,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   async saveAsPriceReport(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT', skipPrint?: boolean }) {
-    orderForm.get('Title').setValue(`Báo giá khách POS: ${orderForm.get('ObjectName').value} - ${this.commonService.datePipe.transform(new Date(), 'short')}`);
+    orderForm.get('Title').setValue(`Báo giá khách POS: ${orderForm.get('ObjectName').value} - ${this.cms.datePipe.transform(new Date(), 'short')}`);
     const data = orderForm.getRawValue();
     if (!data?.Details?.length) {
-      this.commonService.showToast('Bạn phải thêm hàng hóa vào đơn hàng trước khi báo giá !', 'Chưa có hàng hóa nào trong đơn hàng !', { ...this.toastDefaultConfig, status: 'warning', duration: 5000 })
+      this.cms.showToast('Bạn phải thêm hàng hóa vào đơn hàng trước khi báo giá !', 'Chưa có hàng hóa nào trong đơn hàng !', { ...this.toastDefaultConfig, status: 'warning', duration: 5000 })
       return false;
     }
     delete data.DateOfSale;
@@ -2361,7 +2451,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
 
-      this.commonService.openDialog(CommercePosBillPrintComponent, {
+      this.cms.openDialog(CommercePosBillPrintComponent, {
         context: {
           skipPreview: true,
           printType: option?.printType,
@@ -2377,7 +2467,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               newOrder.Object = null;
             }
             orderForm.patchValue(newOrder);
-            this.commonService.showToast(option?.skipPrint ? `Đã báo giá cho đơn hàng ${newOrder.Code}` : `Đã báo giá cho đơn hàng ${newOrder.Code}`, 'Đã báo giá', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
+            this.cms.showToast(option?.skipPrint ? `Đã báo giá cho đơn hàng ${newOrder.Code}` : `Đã báo giá cho đơn hàng ${newOrder.Code}`, 'Đã báo giá', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
             // this.makeNewOrder();
             console.log(this.historyOrders);
             // this.playPaymentSound();
@@ -2410,7 +2500,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     let order = orderForm.getRawValue();
     delete order.BarCode;
     if (orderForm && orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
-      return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
+      return this.cms.takeUntil('commerce-pos-order-save', 500).then(status => {
         if (order.Code) {
           return this.apiService.putPromise(apiPath + '/' + order.Code, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
             if (rs[0].Details) {
@@ -2448,11 +2538,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       return Promise.reject('Phiếu hiện tại không phải đơn hàng POS');
     }
     const apiPath = '/commerce-pos/orders';
-    this.orderForm.get('Title').setValue(`Báo giá khách POS: ${this.commonService.getObjectText(this.orderForm.get('Object').value)}} - ${this.commonService.datePipe.transform(this.orderForm.get('Created').value, 'short')}`);
+    this.orderForm.get('Title').setValue(`Báo giá khách POS: ${this.cms.getObjectText(this.orderForm.get('Object').value)}} - ${this.cms.datePipe.transform(this.orderForm.get('Created').value, 'short')}`);
     let order = this.orderForm.getRawValue();
     delete order.BarCode;
     if (this.orderForm && this.orderForm['isProcessing'] !== true && order.State != 'APPROVED') {
-      return this.commonService.takeUntil('commerce-pos-order-save', 500).then(status => {
+      return this.cms.takeUntil('commerce-pos-order-save', 500).then(status => {
         if (order.Code) {
           return this.apiService.putPromise(apiPath + '/' + order.Code, { renderBarCode: true, includeRelativeVouchers: true }, [order]).then(rs => {
             if (rs[0].Details) {
@@ -2486,7 +2576,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   async print(orderForm: FormGroup, option?: { printType?: 'PRICEREPORT' | 'RETAILINVOICE' }) {
     if (orderForm.get('State').value !== 'APPROVED') {
-      this.commonService.showToast('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { ...this.toastDefaultConfig, status: 'warning' });
       return false;
     }
     option = {
@@ -2496,19 +2586,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
       return new Promise(resovle => {
 
-        this.commonService.openDialog(CommercePosBillPrintComponent, {
+        this.cms.openDialog(CommercePosBillPrintComponent, {
           context: {
             skipPreview: true,
             printType: option.printType,
             data: [orderForm.getRawValue()],
             onSaveAndClose: (newOrder, printComponent) => {
-              this.commonService.showToast('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Đã tạo phiếu chi !', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
+              this.cms.showToast('Đã tạo phiếu chi hoàn tiền cho phiếu trả hàng !', 'Đã tạo phiếu chi !', { ...this.toastDefaultConfig, status: 'success', duration: 8000 })
             }
           }
         });
       });
     } else if (orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
-      this.commonService.openDialog(CommercePosReturnsPrintComponent, {
+      this.cms.openDialog(CommercePosReturnsPrintComponent, {
         context: {
           skipPreview: true,
           data: [orderForm.getRawValue()],
@@ -2529,11 +2619,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   async printOrder(orderId: string) {
     const order = await this.apiService.getPromise<CommercePosOrderModel[]>('/commerce-pos/orders/' + orderId, { includeDetails: true, renderBarCode: true, includeRelativeVouchers: true }).then(rs => rs[0]);
     if (order.State !== 'APPROVED') {
-      this.commonService.showToast('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Bạn chỉ có thể in lại phiếu đã chốt', 'Không thể in bill !', { ...this.toastDefaultConfig, status: 'warning' });
       return false;
     }
     return new Promise(resovle => {
-      this.commonService.openDialog(CommercePosBillPrintComponent, {
+      this.cms.openDialog(CommercePosBillPrintComponent, {
         context: {
           skipPreview: true,
           data: [order],
@@ -2569,7 +2659,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     }
     if (returnsObj.State !== 'APPROVED') {
-      this.commonService.showToast('Phiếu trả hàng chưa được duyệt', 'Không thể trả hàng !', { ...this.toastDefaultConfig, status: 'warning' });
+      this.cms.showToast('Phiếu trả hàng chưa được duyệt', 'Không thể trả hàng !', { ...this.toastDefaultConfig, status: 'warning' });
       return false;
     }
 
@@ -2577,12 +2667,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       const refPayment = returnsObj.RelativeVouchers.find(f => f.type == 'CPOSPAYMENT');
       // Kiểm tra lại nó không cho hoàn tiền từ phiếu trả hàng
       // if (refPayment) {
-      //   this.commonService.showToast('Phiếu trả hàng này đã được hoàn tiền bởi phiếu chi ' + refPayment.id, 'Máy bán hàng', { status: 'danger', position: NbGlobalPhysicalPosition.BOTTOM_LEFT });
+      //   this.cms.showToast('Phiếu trả hàng này đã được hoàn tiền bởi phiếu chi ' + refPayment.id, 'Máy bán hàng', { status: 'danger', position: NbGlobalPhysicalPosition.BOTTOM_LEFT });
       //   return false;
       // }
       // const refOrder = returnsObj.RelativeVouchers.find(f => f.type == 'COMMERCEPOSORDER');
       // if (refOrder) {
-      //   this.commonService.showToast('Phiếu trả hàng này đã được cấn trừ trong đơn hàng ' + refOrder.id, 'Máy bán hàng', { status: 'danger', position: NbGlobalPhysicalPosition.BOTTOM_LEFT });
+      //   this.cms.showToast('Phiếu trả hàng này đã được cấn trừ trong đơn hàng ' + refOrder.id, 'Máy bán hàng', { status: 'danger', position: NbGlobalPhysicalPosition.BOTTOM_LEFT });
       //   return false;
       // }
     }
@@ -2611,7 +2701,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     return new Promise(resovle => {
 
-      this.commonService.openDialog(CommercePosPaymnentPrintComponent, {
+      this.cms.openDialog(CommercePosPaymnentPrintComponent, {
         context: {
           skipPreview: true,
           data: [returnsPaymentVoucher],
@@ -2637,7 +2727,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   chooseCustomer() {
-    this.commonService.openDialog(ContactAllListComponent, {
+    this.cms.openDialog(ContactAllListComponent, {
       context: {
         inputMode: 'dialog',
         onDialogChoose: async (chooseItems: ContactModel[]) => {
@@ -2652,25 +2742,41 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     });
   }
+  switchPaymentMethod(orderForm: FormGroup) {
+    const paymnetMethodControl = orderForm.get('PaymentMethod');
 
-  toggleDebt(orderForm: FormGroup) {
+    if (orderForm.value?.State == 'APPROVED') {
+      this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, });
+      return false;
+    }
+
+    const index = this.paymentMethod.findIndex(f => this.cms.getObjectId(f) === this.cms.getObjectId(paymnetMethodControl.value));
+    if (index < 0 || index === this.paymentMethod.length - 1) {
+      paymnetMethodControl.setValue(this.paymentMethod[0]);
+    } else {
+      paymnetMethodControl.setValue(this.paymentMethod[index + 1]);
+    }
+
+    this.cms.showToast('Phiếu này sẽ ghi nhận doanh thu ' + this.cms.getObjectText(paymnetMethodControl.value) + ' !', 'Ghi nhận doanh thu ' + this.cms.getObjectText(paymnetMethodControl.value), { ...this.toastDefaultConfig, status: paymnetMethodControl.value?.status, duration: 5000 });
+    this.onCashReceiptChanged(orderForm);
+    return true;
     const debtControl = orderForm.get('IsDebt');
     debtControl.setValue(!debtControl.value);
     if (orderForm.value?.State == 'APPROVED') {
-      this.commonService.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, });
+      this.cms.showToast('Không thể thay đổi thông tin trên phiếu đã duyệt, hãy hủy phiếu trước khi thay đổi !', 'Phiếu đã duyệt', { ...this.toastDefaultConfig, });
       return false;
     }
     if (orderForm['voucherType'] == 'COMMERCEPOSORDER') {
       if (debtControl.value) {
-        this.commonService.showToast('Phiếu này sẽ ghi nhận doanh thu công nợ !', 'Ghi nhận doanh thu công nợ', { ...this.toastDefaultConfig, status: 'primary', duration: 1000 });
+        this.cms.showToast('Phiếu này sẽ ghi nhận doanh thu công nợ !', 'Ghi nhận doanh thu công nợ', { ...this.toastDefaultConfig, status: 'primary', duration: 1000 });
       } else {
-        this.commonService.showToast('Phiếu này sẽ ghi nhận doanh thu tiền mặt !', 'Ghi nhận doanh thu tiền mặt', { ...this.toastDefaultConfig, status: 'success', duration: 1000 });
+        this.cms.showToast('Phiếu này sẽ ghi nhận doanh thu tiền mặt !', 'Ghi nhận doanh thu tiền mặt', { ...this.toastDefaultConfig, status: 'success', duration: 1000 });
       }
     } else if (orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
       if (debtControl.value) {
-        this.commonService.showToast('Phiếu này sẽ ghi giảm doanh thu công nợ !', 'Ghi giảm doanh thu công nợ', { ...this.toastDefaultConfig, status: 'primary', duration: 1000 });
+        this.cms.showToast('Phiếu này sẽ ghi giảm doanh thu công nợ !', 'Ghi giảm doanh thu công nợ', { ...this.toastDefaultConfig, status: 'primary', duration: 1000 });
       } else {
-        this.commonService.showToast('Phiếu này sẽ ghi giảm doanh thu tiền mặt !', 'Ghi giảm doanh thu tiền mặt', { ...this.toastDefaultConfig, status: 'success', duration: 1000 });
+        this.cms.showToast('Phiếu này sẽ ghi giảm doanh thu tiền mặt !', 'Ghi giảm doanh thu tiền mặt', { ...this.toastDefaultConfig, status: 'success', duration: 1000 });
       }
     }
     if (debtControl.value) {
@@ -2695,12 +2801,12 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const orderData: CommercePosOrderModel = orderForm.getRawValue();
 
     if (orderData?.Details?.length == 0) {
-      this.commonService.showToast('Không có gì để triển khai', 'Không thể triển khai cho đơn hàng rỗng !', { ...this.toastDefaultConfig, status: 'warning', duration: 10000 })
+      this.cms.showToast('Không có gì để triển khai', 'Không thể triển khai cho đơn hàng rỗng !', { ...this.toastDefaultConfig, status: 'warning', duration: 10000 })
       return false;
     }
 
     await this.save(orderForm);
-    this.commonService.openDialog(DeploymentVoucherFormComponent, {
+    this.cms.openDialog(DeploymentVoucherFormComponent, {
       context: {
         printDialog: CommercePosDeploymentVoucherPrintComponent,
         data: [
@@ -2719,7 +2825,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             DirectReceiverPhone: orderData.ObjectPhone,
             DeliveryAddress: orderData.ObjectAddress,
             Details: orderData.Details.map(detail => {
-              const product = this.productMap[this.commonService.getObjectId(detail.Product)];
+              const product = this.productUnitMap[this.cms.getObjectId(detail.Product) + '-' + this.cms.getObjectId(detail.Unit)];
               product.id = product?.Code;
               product.text = product?.Name;
               detail.Product = product as any;
@@ -2743,7 +2849,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   preview(type: string, id: string) {
-    this.commonService.previewVoucher(type, id);
+    this.cms.previewVoucher(type, id);
   }
 
   previewGoodsThumbnail(detail: FormGroup) {
@@ -2752,7 +2858,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       images = [images];
     }
     if (images && images.length > 0) {
-      this.commonService.openDialog(ImagesViewerComponent, {
+      this.cms.openDialog(ImagesViewerComponent, {
         context: {
           images: images.map(m => m.OriginImage),
           imageIndex: 0

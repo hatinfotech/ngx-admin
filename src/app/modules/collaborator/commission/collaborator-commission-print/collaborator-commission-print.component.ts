@@ -31,14 +31,14 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   processMapList: ProcessMap[] = [];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorCommissionPrintComponent>,
     private datePipe: DatePipe,
     private decimalPipe: DecimalPipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -119,16 +119,16 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
+        label: this.cms.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -137,7 +137,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
           }).catch(err => {
@@ -153,16 +153,16 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   //   const processMap = AppModule.processMaps.commissionVoucher[data.State || ''];
   //   params['changeState'] = nextState.state;
 
-  //   this.commonService.showDiaplog(this.commonService.translateText(nextState.confirmText), this.commonService.translateText(nextState.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+  //   this.cms.showDiaplog(this.cms.translateText(nextState.confirmText), this.cms.translateText(nextState.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
   //     {
-  //       label: this.commonService.translateText('Common.cancel'),
+  //       label: this.cms.translateText('Common.cancel'),
   //       status: 'primary',
   //       action: () => {
 
   //       },
   //     },
   //     {
-  //       label: this.commonService.translateText(nextState.label),
+  //       label: this.cms.translateText(nextState.label),
   //       status: nextState.status,
   //       action: () => {
   //         this.loading = true;
@@ -171,7 +171,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   //           this.onChange && this.onChange(data);
   //           this.onClose && this.onClose(data);
   //           this.close();
-  //           this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+  //           this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.cms.translateText(processMap?.responseTitle), {
   //             status: 'success',
   //           });
   //         }).catch(err => {
@@ -194,7 +194,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   }
 
   previewDetail(detail: CollaboratorCommissionVoucherDetailModel) {
-    // this.commonService.openDialog(CollaboratorCommissionDetailPrintComponent, {
+    // this.cms.openDialog(CollaboratorCommissionDetailPrintComponent, {
     //   context: {
     //     showLoadinng: true,
     //     title: 'Xem trước',
@@ -208,7 +208,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     //   },
     // });
     // id = id[0].split('-');
-    this.commonService.openDialog(DynamicListDialogComponent, {
+    this.cms.openDialog(DynamicListDialogComponent, {
       context: {
         inputMode: 'dialog',
         title: 'Chi tiết kết chuyển chiết khấu theo sản phẩm: ' + detail.ProductName,
@@ -227,47 +227,47 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               title: 'No.',
               type: 'string',
               width: '5%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             Voucher: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.voucher'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Common.voucher'), 'head-title'),
               type: 'custom',
               renderComponent: SmartTableTagsComponent,
               onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-                instance.click.subscribe((voucher: string) => this.commonService.previewVoucher('CLBRTORDER', voucher));
+                instance.click.subscribe((voucher: string) => this.cms.previewVoucher('CLBRTORDER', voucher));
               },
               width: '10%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
               valuePrepareFunction: (cell: string, row: any) => {
                 return [{ id: cell, text: cell }] as any;
               },
             },
             Product: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.product'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Common.product'), 'head-title'),
               type: 'string',
               width: '5%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             Description: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
               type: 'string',
               width: '40%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             UnitLabel: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Product.unit'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Product.unit'), 'head-title'),
               type: 'string',
               width: '5%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             Quantity: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.quantity'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Common.quantity'), 'head-title'),
               type: 'string',
               width: '5%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             Price: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Common.price'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Common.price'), 'head-title'),
               type: 'custom',
               class: 'align-right',
               width: '10%',
@@ -279,7 +279,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
             },
             ToMoney: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Doanh số'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Doanh số'), 'head-title'),
               type: 'custom',
               class: 'align-right',
               width: '10%',
@@ -294,13 +294,13 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
             },
             Strategy: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('Chiến dịch'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('Chiến dịch'), 'head-title'),
               type: 'string',
               width: '5%',
-              filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
             },
             CommissionRatio: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('% chiết khấu'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('% chiết khấu'), 'head-title'),
               type: 'custom',
               class: 'align-right',
               width: '10%',
@@ -314,7 +314,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
             },
             CommissionAmount: {
-              title: this.commonService.textTransform(this.commonService.translate.instant('chiết khấu'), 'head-title'),
+              title: this.cms.textTransform(this.cms.translate.instant('chiết khấu'), 'head-title'),
               type: 'custom',
               class: 'align-right',
               width: '10%',
@@ -326,7 +326,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
               },
             },
             Preview: {
-              title: this.commonService.translateText('Common.show'),
+              title: this.cms.translateText('Common.show'),
               type: 'custom',
               width: '5%',
               class: 'align-right',
@@ -338,14 +338,14 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
                 instance.status = 'primary';
                 instance.style = 'text-align: right';
                 instance.class = 'align-right';
-                instance.title = this.commonService.translateText('Common.preview');
+                instance.title = this.cms.translateText('Common.preview');
                 instance.valueChange.subscribe(value => {
                   // instance.icon = value ? 'unlock' : 'lock';
                   // instance.status = value === 'REQUEST' ? 'warning' : 'success';
                   // instance.disabled = value !== 'REQUEST';
                 });
                 instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherDetailOrderModel) => {
-                  this.commonService.previewVoucher('CLBRTORDER', rowData.Voucher);
+                  this.cms.previewVoucher('CLBRTORDER', rowData.Voucher);
                 });
               },
             }

@@ -293,10 +293,10 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public elRef: ElementRef,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];
@@ -411,7 +411,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
 
   }
   goback(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
         content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',

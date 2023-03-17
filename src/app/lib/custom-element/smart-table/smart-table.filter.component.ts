@@ -34,7 +34,7 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
   // searchEvent = 'keyup';
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
     super();
     this.delay = 1000;
@@ -60,7 +60,7 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
     // }
     // else {
     //   if (!this.inputControl.value) {
-    //     this.commonService.takeUntilCallback('smart-table-filter-input-keyup', 300, () => {
+    //     this.cms.takeUntilCallback('smart-table-filter-input-keyup', 300, () => {
     //       this.query = new SmartTableFilterQuery(this.condition, this.inputControl.value) as any;
     //       this.setFilter();
     //     });
@@ -119,8 +119,8 @@ export class SmartTableFilterComponent extends DefaultFilter implements OnInit, 
 export class SmartTableDateTimeRangeFilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
   }
 
   ngOnInit() {
@@ -164,8 +164,8 @@ export class SmartTableDateTimeRangeFilterComponent extends SmartTableFilterComp
 export class SmartTableDateRangeFilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
   }
 
   ngOnInit() {
@@ -209,8 +209,8 @@ export class SmartTableDateRangeFilterComponent extends SmartTableFilterComponen
 export class SmartTableClearingFilterComponent extends SmartTableFilterComponent implements OnInit, OnChanges {
   inputControl = new FormControl();
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
   }
 
   ngOnInit() {
@@ -244,8 +244,8 @@ export class SmartTableSelect2FilterComponent extends SmartTableFilterComponent 
   data: any[] = [];
   condition = 'filter';
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
   }
 
   ngOnInit() {
@@ -309,8 +309,8 @@ export class SmartTableSelectFilterComponent extends SmartTableFilterComponent i
   list: { value: string, title: string }[];
   selectText: string;
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
     this.delay = 1000;
   }
 

@@ -19,7 +19,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
   isLocalUpdate = false;
   state$ = new BehaviorSubject<string>('INIT');
 
-  constructor(protected apiService: ApiService, protected commonService: CommonService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
+  constructor(protected apiService: ApiService, protected cms: CommonService, protected url: string, filterConf?: any, sortConf?: any, pagingConf?: any) {
     super();
     if (filterConf && filterConf.length > 0) {
       filterConf.init = true;
@@ -94,8 +94,8 @@ export class CustomServerDataSource<M> extends LocalDataSource {
                   throw new Error('Search to not instance of date');
                 }
               }
-              params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
-              params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
+              params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.cms.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
+              params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.cms.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
             } else {
               if (fieldConf['search']['value']) {
                 params[`${fieldConf?.search?.condition || 'filter'}_${fieldConf?.field}`] = this.encodeFilterQuery(fieldConf['search']['value']);

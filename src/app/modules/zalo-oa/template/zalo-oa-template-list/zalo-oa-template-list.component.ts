@@ -38,13 +38,13 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ZaloOaTemplateListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {
@@ -76,27 +76,27 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Name: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.name'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         TemplateId: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Tempalte.id'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('ZaloOa.Tempalte.id'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         ZaloOa: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('ZaloOa.Oa.name'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('ZaloOa.Oa.name'), 'head-title'),
           type: 'string',
           width: '10%',
           renderComponent: SmartTableDateTimeComponent,
@@ -105,7 +105,7 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
           },
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
@@ -166,7 +166,7 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
   }
 
   async preview(data: ZaloOaTemplateModel[]) {
-    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+    this.cms.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',

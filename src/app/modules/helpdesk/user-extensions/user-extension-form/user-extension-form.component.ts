@@ -26,7 +26,7 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
   domainList: PbxDomainSelection[] = [];
 
   select2OptionPbxDomain = {
-    placeholder: this.commonService.translateText('Ivoip.chooseDomain'),
+    placeholder: this.cms.translateText('Ivoip.chooseDomain'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -47,7 +47,7 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
 
   extensionList: PbxExtensionModel[];
   extensionListConfig = {
-    placeholder: this.commonService.translateText('Ivoip.chooseExtension'),
+    placeholder: this.cms.translateText('Ivoip.chooseExtension'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -65,18 +65,18 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<UserExtensionFormComponent>,
     public ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
     // this.formLoad();
-    // this.id = [this.commonService.loginInfo.user.Code];
+    // this.id = [this.cms.loginInfo.user.Code];
   }
 
   async init() {
@@ -222,12 +222,12 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
       item['Extensions'] = item['Extensions'].map(extension => {
         const domainUuid = extension['DomainUuid'];
         if (domainUuid) {
-          const doaminExtrancted = this.commonService.getObjectId(extension['DomainUuid']).split('@');
+          const doaminExtrancted = this.cms.getObjectId(extension['DomainUuid']).split('@');
           // const doaminName = extension['Domain']['text'];
           // extension['Domain'] = doaminName;
           extension['DomainUuid'] = doaminExtrancted[0];
           extension['Pbx'] = doaminExtrancted[1];
-          extension['Extension'] = this.commonService.getObjectId(extension.Extension);
+          extension['Extension'] = this.cms.getObjectId(extension.Extension);
         }
         return extension;
       });

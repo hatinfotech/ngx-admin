@@ -4,7 +4,7 @@
 <ngx-quick-ticket-form *ngFor="let quickForm of quickTicketFormList; let i = index;" (onInit)="onQuickFormInit($event)" [phoneNumber]="quickForm.phoneNumber" [index]="quickForm.index" [ticketCode]="quickForm.ticketCode" [inputMode]="'inline'" (onClose)="onQuickFormClose($event)"></ngx-quick-ticket-form>
 <nb-card id="helpdeskDashboard" class="small-header helpdesk-dashoard">
     <nb-card-header id="helpdeskHeader">
-        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Helpdesk.Ticket.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Helpdesk.Ticket.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
     </nb-card-header>
     <nb-card-body>
         <div class="m-list" nbInfiniteList listenWindowScroll [threshold]="500" (bottomThreshold)="loadNext(infiniteLoadModel)">

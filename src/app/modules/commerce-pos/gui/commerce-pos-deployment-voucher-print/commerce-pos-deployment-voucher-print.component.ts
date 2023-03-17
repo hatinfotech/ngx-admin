@@ -32,16 +32,16 @@ export class CommercePosDeploymentVoucherPrintComponent extends DataManagerPrint
   registerInfo: any;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosDeploymentVoucherPrintComponent>,
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
 
-    this.commonService.systemConfigs$.subscribe(registerInfo => {
+    this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
     });
 

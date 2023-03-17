@@ -51,7 +51,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -59,7 +59,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
     public collaboratorService: CollaboratorService,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
 
@@ -79,9 +79,9 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
       // this.actionButtonList.unshift({
       //   name: 'assignCategories',
       //   status: 'info',
-      //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   label: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
       //   icon: 'pricetags',
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   title: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
       //   size: 'medium',
       //   disabled: () => this.selectedIds.length === 0,
       //   hidden: () => false,
@@ -96,39 +96,39 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
 
       const deleteBtn = this.actionButtonList.find(f => f.name === 'delete');
       if (deleteBtn) {
-        deleteBtn.label = this.commonService.translateText('Common.unsubscribe');
+        deleteBtn.label = this.cms.translateText('Common.unsubscribe');
         deleteBtn.icon = 'flash-off-outline';
       }
 
       this.actionButtonList.unshift({
         type: 'button',
         name: 'subscribe',
-        label: this.commonService.translateText('Common.subscribe'),
+        label: this.cms.translateText('Common.subscribe'),
         icon: 'cast-outline',
         status: 'success',
         size: 'medium',
-        title: this.commonService.translateText('Common.subscribe'),
+        title: this.cms.translateText('Common.subscribe'),
         click: () => {
-          this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
+          this.cms.openDialog(CollaboratorProductPreviewListComponent, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: async (chooseItems: ProductModel[]) => {
                 console.log(chooseItems);
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
-                    title: this.commonService.translateText('Common.subscribe'),
-                    content: this.commonService.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
+                    title: this.cms.translateText('Common.subscribe'),
+                    content: this.cms.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
                     actions: [
                       {
-                        label: this.commonService.translateText('Common.close'),
+                        label: this.cms.translateText('Common.close'),
                         status: 'primary',
                       },
                       {
-                        label: this.commonService.translateText('Common.subscribe'),
+                        label: this.cms.translateText('Common.subscribe'),
                         status: 'danger',
                         action: () => {
                           this.apiService.putPromise<ProductModel[]>('/collaborator/products', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code, WarehouseUnit: product.WarehouseUnit }))).then(rs => {
-                            this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+                            this.cms.toastService.show(this.cms.translateText('Common.success'), this.cms.translateText('Collaborator.Product.subscribeSuccessText'), {
                               status: 'success',
                             })
                             this.refresh();
@@ -154,7 +154,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {
@@ -218,21 +218,21 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
             //     this.uploadForProduct = row;
             //     this.uploadBtn.nativeElement.click();
             //   } else {
-            //     this.commonService.toastService.show(
-            //       this.commonService.translateText('Common.uploadInProcess'),
-            //       this.commonService.translateText('Common.upload'),
+            //     this.cms.toastService.show(
+            //       this.cms.translateText('Common.uploadInProcess'),
+            //       this.cms.translateText('Common.upload'),
             //       {
             //         status: 'warning',
             //       });
-            //     // this.commonService.openDialog(ShowcaseDialogComponent, {
+            //     // this.cms.openDialog(ShowcaseDialogComponent, {
             //     //   context: {
-            //     //     title: this.commonService.translateText('Common.upload'),
-            //     //     content: this.commonService.translateText('Common.uploadInProcess'),
+            //     //     title: this.cms.translateText('Common.upload'),
+            //     //     content: this.cms.translateText('Common.uploadInProcess'),
             //     //   },
             //     // });
             //   }
             // });
-            // instance.title = this.commonService.translateText('click to change main product picture');
+            // instance.title = this.cms.translateText('click to change main product picture');
           },
         },
         Name: {
@@ -270,7 +270,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -308,7 +308,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -402,7 +402,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   // executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductModel[] | HttpErrorResponse) => void) {
   //   params['includeCategories'] = true;
   //   if (this.currentPage) {
-  //     params['page'] = this.commonService.getObjectId(this.currentPage);
+  //     params['page'] = this.cms.getObjectId(this.currentPage);
   //   }
   //   super.executeGet(params, success, error, complete);
   // }
@@ -433,7 +433,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   async openAssignCategoiesDialplog() {
     if (this.selectedIds.length > 0) {
       const editedItems = await this.convertIdsToItems(this.selectedIds);
-      this.commonService.openDialog(AssignCategoriesFormComponent, {
+      this.cms.openDialog(AssignCategoriesFormComponent, {
         context: {
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
@@ -453,7 +453,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
 
   onChangePage(page: PageModel) {
     // this.currentPage = page;
-    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
     this.refresh();
   }
 

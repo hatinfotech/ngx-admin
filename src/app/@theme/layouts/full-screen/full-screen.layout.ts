@@ -36,7 +36,7 @@ export class FullScreenLayoutComponent {
     private sidebarService: NbSidebarService,
     private menuService: NbMenuService,
     private authService: NbAuthService,
-    private commonService: CommonService,
+    private cms: CommonService,
   ) {
     // setTimeout(() => {
     //   this.authState = 'login';
@@ -52,8 +52,8 @@ export class FullScreenLayoutComponent {
 
   ngAfterViewInit(): void {
 
-    this.commonService.menuSidebar = this.menuSidebar;
-    this.commonService.mobileSidebar = this.chatSiderbar;
+    this.cms.menuSidebar = this.menuSidebar;
+    this.cms.mobileSidebar = this.chatSiderbar;
 
     // Restore sidebar state
     const menuSidebarState = localStorage.getItem(`sidebar-state-menu`);

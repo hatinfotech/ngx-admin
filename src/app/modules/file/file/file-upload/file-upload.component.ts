@@ -24,11 +24,11 @@ export class FileUploadComponent extends BaseComponent implements OnInit {
   @Input('fileListComponent') fileListComponent: FileListComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
     this.options = { concurrency: 3, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
     this.files = []; // local uploading files array
     this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader

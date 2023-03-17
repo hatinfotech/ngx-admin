@@ -43,14 +43,14 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
   groupList: (ProductGroupModel & { id?: string, text?: string })[] = [];
 
   // public Editor = ClassicEditorBuild;
-  percentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 3 };
-  okrPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 1 };
-  kpiPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+  percentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 3 };
+  okrPercentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 1 };
+  kpiPercentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
   // currencyInputMask = createMask({
   //   alias: 'numeric',
   //   // inputmode: 'numeric',
-  //   groupSeparator: this.commonService.getNumberGroupPointChar(),
-  //   radixPoint: this.commonService.getNumberRadixPointChar(),
+  //   groupSeparator: this.cms.getNumberGroupPointChar(),
+  //   radixPoint: this.cms.getNumberRadixPointChar(),
   //   digits: 2,
   //   // digitsOptional: false,
   //   prefix: '',
@@ -64,19 +64,19 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
   //     return `${initialValue}`.replace(/\./, ',');
   //   }
   // });
-  currencyInputMask = this.commonService.createFloatNumberMaskConfig({
+  currencyInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 3
   });
-  okrInputMask = this.commonService.createFloatNumberMaskConfig({
+  okrInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 1
   });
-  level1ComissionRatioInputMask = this.commonService.createFloatNumberMaskConfig({
+  level1ComissionRatioInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 1
   });
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -88,11 +88,11 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<CollaboratorBasicStrategyProductFormComponent>,
     public collaboratorService?: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** ngx-uploader */
     // this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
@@ -311,7 +311,7 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
       //     status: 'success',
       //     label: 'Select page',
       //     icon: 'plus',
-      //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      //     title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       //     size: 'medium',
       //     select2: {
       //       data: pageList, option: {
@@ -329,7 +329,7 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
       //     value: () => this.collaboratorService.currentpage$.value,
       //     change: (value: any, option: any) => {
       //       // this.onChangePage(value);
-      //       this.collaboratorService.currentpage$.next(this.commonService.getObjectId(value));
+      //       this.collaboratorService.currentpage$.next(this.cms.getObjectId(value));
       //     },
       //     disabled: () => {
       //       return true;
@@ -601,7 +601,7 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
 
   async save(): Promise<ProductModel[]> {
     // if (!this.collaboratorService?.currentpage$?.value) {
-    // this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+    // this.cms.toastService.show(this.cms.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
     //   status: 'danger',
     //   // });
     // }
@@ -612,8 +612,8 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
 
   // alphaNumberOnly(e: any) {  // Accept only alpha numerics, not special characters 
   //   console.log(e.target.value);
-  //   console.log("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
-  //   var regex = new RegExp("^[0-9]*(\\" + this.commonService.getFloatPointChar() + "[0-9]*)?$");
+  //   console.log("^[0-9]*(\\" + this.cms.getFloatPointChar() + "[0-9]*)?$");
+  //   var regex = new RegExp("^[0-9]*(\\" + this.cms.getFloatPointChar() + "[0-9]*)?$");
   //   var str = e.target.value + e.key;
   //   if (regex.test(str)) {
   //     return true;
@@ -624,7 +624,7 @@ export class CollaboratorBasicStrategyProductFormComponent extends DataManagerFo
   // }
 
   onAdvanceTermChange(formItem: FormGroup, data: any, index: number) {
-    formItem.get('ExtendTermLabel').setValue(this.commonService.getObjectText(data));
+    formItem.get('ExtendTermLabel').setValue(this.cms.getObjectText(data));
   }
   saveAndClose() {
     this.close();

@@ -9,13 +9,13 @@ export class WpSyncSocketManager extends SocketManager {
   static socketNamespaceList: WpSyncSocketNamespace[] = [];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public user?: User,
     public socketServerUri?: string,
   ) {
-    super(commonService, user, socketServerUri);
+    super(cms, user, socketServerUri);
     if (!socketServerUri) {
-      this.socketServerUri = this.commonService.mainSocketInfo$.getValue().url;
+      this.socketServerUri = this.cms.mainSocketInfo$.getValue().url;
     }
   }
 

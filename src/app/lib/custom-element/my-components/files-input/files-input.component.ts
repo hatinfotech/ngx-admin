@@ -57,7 +57,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
 
   constructor(
     public apiService: ApiService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
 
     /** ngx-uploader */
@@ -125,7 +125,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
           weight += file.size;
         }
         // this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
-        this.commonService.getAvailableFileStores().then(fileStores => {
+        this.cms.getAvailableFileStores().then(fileStores => {
           if (fileStores && fileStores.length > 0) {
             const event: UploadInput = {
               type: 'uploadAll',
@@ -135,7 +135,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
             };
             this.uploadInput.emit(event);
           } else {
-            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+            this.cms.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
           }
         });
 
@@ -178,7 +178,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
           this.value[imageIndex] = respFile;
         } else {
           this.value.splice(imageIndex, 1);
-          this.commonService.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', { status: 'danger', duration: 5000 });
+          this.cms.toastService.show(output.file.response?.logs?.join(', '), 'Hệ thống không thể upload file', { status: 'danger', duration: 5000 });
         }
         // this.style.backgroundImage = 'url(' + this.value.Thumbnail + ')';
 
@@ -224,7 +224,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   }
 
   uploadByLinks() {
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Upload hình bằng link',
         width: '600px',
@@ -292,7 +292,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
 
     // Open photo browser
     if (!this.config?.overrideOnThumbnailClick) {
-      this.commonService.openDialog(ImagesViewerComponent, {
+      this.cms.openDialog(ImagesViewerComponent, {
         context: {
           images: this.value.map(m => m.OriginImage),
           imageIndex: this.value.findIndex(f => f.Id == file.Id)

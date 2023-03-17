@@ -176,7 +176,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
         // return false;
       },
       click: () => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
+        this.cms.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Xác nhận',
             content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',
@@ -283,11 +283,11 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public elRef: ElementRef,
     public ref: NbDialogRef<EmailAdvertisementFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];
@@ -430,7 +430,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
       var3.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var4.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
     }).pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.commonService.takeUntil('email-sengding', 300).then(r => {
+      this.cms.takeUntil('email-sengding', 300).then(r => {
         setTimeout(() => {
           previewEditor.patchValue(this.generatePreview(newForm));
           subjectPreview.patchValue(this.generateSubjectPreview(newForm));
@@ -459,7 +459,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   }
 
   // goback(): false {
-  //   // this.commonService.openDialog(ShowcaseDialogComponent, {
+  //   // this.cms.openDialog(ShowcaseDialogComponent, {
   //   //   context: {
   //   //     title: 'Phiếu yêu cầu hỗ trợ',
   //   //     content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
@@ -566,7 +566,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   }
 
   onSaveAndSendClick() {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Email sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 mail mỗi giờ',

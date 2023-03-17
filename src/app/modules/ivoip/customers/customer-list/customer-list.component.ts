@@ -29,13 +29,13 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
     public toastrService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -152,7 +152,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
                 dialogContent += `Mật khẩu Root: ${miniErp.ApiPassword}<br>`;
               }
 
-              this.commonService.openDialog(ShowcaseDialogComponent, {
+              this.cms.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Thông tin triển khai',
                   content: dialogContent,

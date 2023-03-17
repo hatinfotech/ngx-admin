@@ -23,11 +23,11 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -107,7 +107,7 @@ export class SmsGatewayListComponent extends DataManagerListComponent<SmsGateway
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsGatewayModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(SmsGatewayFormComponent, {
+  //   this.cms.openDialog(SmsGatewayFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

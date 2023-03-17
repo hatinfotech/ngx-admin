@@ -25,13 +25,13 @@ export class WarehouseBookCommitComponent extends BaseComponent implements OnIni
 
   goodsContainerList: (WarehouseGoodsContainerModel & { id?: string, text?: string })[] = [];
   select2OptionForGoodsContainers: Select2Option = {
-    placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+    placeholder: this.cms.translateText('Warehouse.GoodsContainer.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     matcher: (term, text, option) => {
-      return this.commonService.smartFilter(text, term);
+      return this.cms.smartFilter(text, term);
     },
     keyMap: {
       id: 'id',
@@ -44,12 +44,12 @@ export class WarehouseBookCommitComponent extends BaseComponent implements OnIni
   processing = false;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<WarehouseBookCommitComponent>,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {

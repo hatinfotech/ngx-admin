@@ -46,7 +46,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -54,13 +54,13 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
     public currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
 
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -92,12 +92,12 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
     ];
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'choose', 'preview'].indexOf(f.name) < 0);
-      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.cms.translateText('Common.refresh');
       const addActionButton = this.actionButtonList.find(f => f.name === 'add');
       if (addActionButton) {
         addActionButton.icon = 'save';
         addActionButton.status = 'primary';
-        addActionButton.label = this.commonService.translateText('Accounting.profitForward');
+        addActionButton.label = this.cms.translateText('Accounting.profitForward');
         addActionButton.click = () => {
 
           this.getList(rs => {
@@ -123,19 +123,19 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
             }
 
             const toDate = this.accountingService?.reportToDate$?.value || new Date();
-            this.commonService.openDialog(AccountingOtherBusinessVoucherFormComponent, {
+            this.cms.openDialog(AccountingOtherBusinessVoucherFormComponent, {
               context: {
                 showLoadinng: true,
                 inputMode: 'dialog',
                 // inputId: ids,
                 data: [{
                   DateOfVoucher: new Date(toDate.getFullYear(), toDate.getMonth(), toDate.getDate(), 21, 0, 0) as any,
-                  Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.commonService.datePipe.transform(toDate, 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'),
+                  Description: 'Kết chuyển lãi/lỗ đến ngày ' + this.cms.datePipe.transform(toDate, 'short') + ' => ' + (profit ? 'Lãi' : 'Lỗ') + ' ' + this.currencyPipe.transform(profitAmount, 'VND'),
                   Details: details,
                 }],
                 onDialogSave: (newData: OtherBusinessVoucherModel[]) => {
                   if (newData[0]?.Code) {
-                    this.commonService.previewVoucher('OTHERBUSINESSVOUCHER', newData[0].Code, () => {
+                    this.cms.previewVoucher('OTHERBUSINESSVOUCHER', newData[0].Code, () => {
                       this.refresh();
                     });
                   }
@@ -169,7 +169,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
       actions: false,
       columns: {
         AccountName: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '40%',
           valuePrepareFunction: (cell: any, row: any) => {
@@ -179,27 +179,27 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
           },
         },
         DebitAccount: {
-          title: this.commonService.translateText('Accounting.debitAccount'),
+          title: this.cms.translateText('Accounting.debitAccount'),
           type: 'string',
           width: '10%',
         },
         CreditAccount: {
-          title: this.commonService.translateText('Accounting.creditAccount'),
+          title: this.cms.translateText('Accounting.creditAccount'),
           type: 'string',
           width: '10%',
         },
         // HeadAmount: {
-        //   title: this.commonService.translateText('Accounting.headAmount'),
+        //   title: this.cms.translateText('Accounting.headAmount'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // GenerateAmount: {
-        //   title: this.commonService.translateText('Accounting.generate'),
+        //   title: this.cms.translateText('Accounting.generate'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         TailAmount: {
-          title: this.commonService.translateText('Accounting.tailAmount'),
+          title: this.cms.translateText('Accounting.tailAmount'),
           type: 'acc-currency',
           width: '10%',
           valuePrepareFunction: (cell: any, row: any) => {
@@ -207,7 +207,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '10%',
           class: 'align-right',
@@ -219,8 +219,8 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -290,7 +290,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

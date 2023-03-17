@@ -44,13 +44,13 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CommercePosReturnListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -61,12 +61,12 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
   rows = [];
 
   stateDic = {
-    APPROVE: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
-    IMPLEMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.commonService.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
+    APPROVE: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
+    IMPLEMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
+    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
+    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   loadListSetting(): SmartTableSetting {
@@ -85,18 +85,18 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           title: 'No.',
           type: 'string',
           width: '1%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
           valuePrepareFunction: (cell: any, row: CommercePosReturnModel) => {
             return row.ObjectName;
           },
@@ -107,7 +107,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -119,17 +119,17 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '15%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -175,7 +175,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -188,7 +188,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         DateOfReturn: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfReturn'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Sales.dateOfReturn'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -201,13 +201,13 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '10%',
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.amount'), 'head-title'),
           type: 'currency',
           width: '5%',
           class: 'align-right',
@@ -228,7 +228,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
             });
             instance.click.subscribe(async (row: CommercePosReturnModel) => {
 
-              this.commonService.openDialog(CommercePosReturnFormComponent, {
+              this.cms.openDialog(CommercePosReturnFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
@@ -247,7 +247,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -260,11 +260,11 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
             instance.disabled = this.isChoosedMode;
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.salesVoucher[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -292,14 +292,14 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.salesVoucher).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.salesVoucher[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.salesVoucher[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -312,17 +312,17 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommercePosReturnModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.CommercePosReturn  .title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.CommercePosReturn  .title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: '/sales/commerce-pos-returns',
                 }
@@ -331,7 +331,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -343,7 +343,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommercePosReturnModel) => {
@@ -400,7 +400,7 @@ export class CommercePosReturnListComponent extends ServerDataManagerListCompone
   }
 
   // async preview(data: CommercePosReturnModel[]) {
-  //   this.commonService.openDialog(CommercePosReturnPrintComponent, {
+  //   this.cms.openDialog(CommercePosReturnPrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

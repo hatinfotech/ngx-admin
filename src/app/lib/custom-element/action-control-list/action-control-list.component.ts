@@ -20,7 +20,7 @@ export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewI
   protected destroy$: Subject<void> = new Subject<void>();
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public layoutScrollService: NbLayoutScrollService,
   ) {
     console.log('constructor');
@@ -38,18 +38,18 @@ export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewI
       const helpdeskHeaderOffset = helpdeskHeaderEle.offset();
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskHeaderOffset.top;
-        this.commonService.pushHeaderActionControlList(this.list);
+        this.cms.pushHeaderActionControlList(this.list);
       }
 
       if (checkpoint && helpdeskHeaderOffset.top > checkpoint) {
-        this.commonService.popHeaderActionControlList();
+        this.cms.popHeaderActionControlList();
         checkpoint = null;
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.commonService.pushHeaderActionControlList([]);
+    this.cms.pushHeaderActionControlList([]);
     this.destroy$.next();
     this.destroy$.complete();
   }

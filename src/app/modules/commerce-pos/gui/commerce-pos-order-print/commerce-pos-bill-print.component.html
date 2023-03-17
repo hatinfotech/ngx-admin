@@ -49,15 +49,42 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="text-align: left; font-weight: bold;">{{order.IsDebt ? 'Công nợ' : ''}}</td>
-                                <td colspan="2" style="text-align: right; font-weight: bold;">Tổng cộng: {{order.Total | currency:'VND'}}</td>
+                                <td style="text-align: right; font-weight: bold;">{{(order.PaymentMethod | objectid) === 'DEBT' ? 'Công nợ: ' : 'Tổng cộng: '}}</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.Total | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="order.Returns">
-                                <td colspan="3" style="text-align: right; font-weight: bold;">Cấn trừ tiền trả hàng (phiếu {{order.Returns}}): {{order.DebitFunds | currency:'VND'}}</td>
+                                <td style="text-align: right; font-weight: bold;">Cấn trừ tiền trả hàng (phiếu {{order.Returns}}): </td>
+                                <td colspan="2" style="text-align: right; font-weight: bold;">-{{order.DebitFunds | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="order.DecreaseForTotal">
+                                <td style="text-align: right; font-weight: bold;">Giảm giá tổng đơn:</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.DecreaseForTotal | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="order.Returns">
-                                <td colspan="3" *ngIf="order.Total >= order.DebitFunds" style="text-align: right; font-weight: bold;">Phải thu: {{order.Total - order.DebitFunds | currency:'VND'}}</td>
-                                <td colspan="3" *ngIf="order.Total < order.DebitFunds" style="text-align: right; font-weight: bold;">Trả lại: {{order.DebitFunds - order.Total | currency:'VND'}}</td>
+                                <td *ngIf="order.Total - order.DecreaseForTotal >= order.DebitFunds" style="text-align: right; font-weight: bold;">Phải thu:</td>
+                                <td colspan="2" *ngIf="order.Total - order.DecreaseForTotal >= order.DebitFunds" style="text-align: right; font-weight: bold;">{{order.Total - order.DebitFunds - order.DecreaseForTotal | currency:'VND'}}</td>
+                                <td *ngIf="order.Total - order.DecreaseForTotal < order.DebitFunds" style="text-align: right; font-weight: bold;">Trả lại:</td>
+                                <td colspan="2" *ngIf="order.Total - order.DecreaseForTotal < order.DebitFunds" style="text-align: right; font-weight: bold;">{{order.DebitFunds - order.Total + order.DecreaseForTotal | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED'">
+                                <td style="text-align: right; font-weight: bold;">Tiền mặt:</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashAmount | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.CashTransferAmount">
+                                <td style="text-align: right; font-weight: bold;">Chuyển khoản:</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashTransferAmount | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.CashBack">
+                                <td style="text-align: right; font-weight: bold;">Thối lại:</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashBack | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.Debit > 0">
+                                <td style="text-align: left; font-weight: bold;">Công nợ: </td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.Debit | currency:'VND'}}</td>
+                            </tr>
+                            <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.Credit > 0">
+                                <td style="text-align: left; font-weight: bold;">Ứng trước: </td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.Credit | currency:'VND'}}</td>
                             </tr>
                             <tr>
                                 <td colspan="3" style="text-align: right; font-weight: bold;">&nbsp;</td>

@@ -18,10 +18,10 @@ export abstract class WebHostingBaseFormComponent<M> extends DataManagerFormComp
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public webHostingService: WebHostingService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

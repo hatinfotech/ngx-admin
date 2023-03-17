@@ -9,7 +9,7 @@ import { RegisterInfoModel } from '../../../models/model';
   styleUrls: ['./footer.component.scss'],
   template: `
     <span class="created-by">
-      <b><a href="https://ProBox.one" target="_blank"><span style="position: relative;margin-right: 10px;">ProBox One <div style="position: absolute;top: -4px;right: -6px;font-size: 11px;">®</div></span></a></b> 2017 version {{env.version}} core {{commonService?.loginInfo?.system?.version}} website
+      <b><a href="https://ProBox.one" target="_blank"><span style="position: relative;margin-right: 10px;">ProBox One <div style="position: absolute;top: -4px;right: -6px;font-size: 11px;">®</div></span></a></b> 2017 version {{env.version}} core {{cms?.loginInfo?.system?.version}} website
       <b><a href="https://ProBox.one" target="_blank"><span style="position: relative;margin-right: 10px;">https://ProBox.one<div style="position: absolute;top: -4px;right: -10px;font-size: 11px;">®</div></span></a></b>
       <ng-container *ngIf="register.domain && register.domain.length > 0"> | {{register.domain[0]}}</ng-container>
       <ng-container *ngIf="register.companyName"> | {{register.companyName}}</ng-container>
@@ -28,9 +28,9 @@ export class FooterComponent {
   register: RegisterInfoModel = {};
   constructor(
     private router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    this.commonService.systemConfigs$.subscribe(systemcConfig => {
+    this.cms.systemConfigs$.subscribe(systemcConfig => {
       if (systemcConfig) {
         this.register = systemcConfig.LICENSE_INFO.register;
       } else {

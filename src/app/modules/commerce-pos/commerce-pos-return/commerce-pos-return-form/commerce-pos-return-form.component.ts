@@ -49,12 +49,12 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
-  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
-  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+  locale = this.cms.getCurrentLoaleDataset();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -71,23 +71,23 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Object').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -109,23 +109,23 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
   contactControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Contact').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -227,7 +227,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   };
 
   selectPriceReportOption = {
-    placeholder: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + '...',
+    placeholder: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -257,7 +257,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
         return {
           results: data.map(item => {
             item['id'] = item['id'] || item['Code'];
-            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.commonService.datePipe.transform(item['Reported'], 'short') + ')';
+            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.cms.datePipe.transform(item['Reported'], 'short') + ')';
             return item;
           }),
         };
@@ -266,7 +266,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   };
 
   selectEmployeeOption = {
-    placeholder: this.commonService.translateText('Common.employee') + '...',
+    placeholder: this.cms.translateText('Common.employee') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -322,15 +322,15 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   };
 
   // customIcons: CustomIcon[] = [{
-  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-  //     this.commonService.openDialog(ProductFormComponent, {
+  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.cms.openDialog(ProductFormComponent, {
   //       context: {
   //         inputMode: 'dialog',
   //         // inputId: ids,
   //         onDialogSave: (newData: ProductModel[]) => {
   //           console.log(newData);
   //           // const formItem = formGroupComponent.formGroup;
-  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
   //           formGroup.get('Product').patchValue(newProduct);
   //         },
   //         onDialogClose: () => {
@@ -348,23 +348,23 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
     if (this.customIcons[name]) return this.customIcons[name];
     return this.customIcons[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Common.addNewProduct'),
+      title: this.cms.translateText('Common.addNewProduct'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Common.editProduct'),
+          title: this.cms.translateText('Common.editProduct'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Common.addNewProduct'),
+          title: this.cms.translateText('Common.addNewProduct'),
         },
       },
       action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        this.commonService.openDialog(ProductFormComponent, {
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        this.cms.openDialog(ProductFormComponent, {
           context: {
             inputMode: 'dialog',
             inputId: currentProduct ? [currentProduct] : null,
@@ -372,7 +372,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
             onDialogSave: (newData: ProductModel[]) => {
               console.log(newData);
               // const formItem = formGroupComponent.formGroup;
-              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
               formGroup.get('Product').patchValue(newProduct);
             },
             onDialogClose: () => {
@@ -387,8 +387,8 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductUnitFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
@@ -416,20 +416,20 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CommercePosReturnFormComponent>,
     public adminProductService?: AdminProductService,
     public datePipe?: DatePipe
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -440,9 +440,9 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
     // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
     //   name: 'print',
     //   status: 'info',
-    //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
+    //   label: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
     //   icon: 'link-2',
-    //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.task'), 'head-title'),
+    //   title: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
     //   size: 'medium',
     //   disabled: () => this.isProcessing,
     //   hidden: () => false,
@@ -457,7 +457,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa/dịch vụ...',
       prepareReaultItem: (item) => {
@@ -614,7 +614,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
         const details = this.getDetails(newForm);
         details.clear();
         for (const detailData of itemFormData.Details) {
-          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '' as any;
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '' as any;
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -688,7 +688,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
     newForm.get('DateOfReturn').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfReturn => {
       if (dateOfReturn) {
-        this.commonService.lastVoucherDate = dateOfReturn;
+        this.cms.lastVoucherDate = dateOfReturn;
       }
     });
     return newForm;
@@ -741,32 +741,32 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
       Description: ['', Validators.required],
       Quantity: [1, (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
       Price: ['', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
       Unit: ['', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
       // Tax: ['NOTAX', (control: FormControl) => {
-      //   if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
       //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
       //   }
       //   return null;
@@ -980,7 +980,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
           // Get first price report => prototype
           // const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
-          this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + this.commonService.getObjectId(selectedData), {
+          this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + this.cms.getObjectId(selectedData), {
             includeContact: true,
             includeDetails: true,
             includeProductUnitList: true,
@@ -1017,7 +1017,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   /** Choose product event */
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
     console.log(selectedData);
-    const priceTable = this.commonService.getObjectId(parentForm.get('PriceTable').value);
+    const priceTable = this.cms.getObjectId(parentForm.get('PriceTable').value);
     const unitControl = detail.get('Unit');
     detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
@@ -1025,7 +1025,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       if (priceTable) {
         this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
           priceTable: priceTable,
-          product: this.commonService.getObjectId(selectedData),
+          product: this.cms.getObjectId(selectedData),
           includeUnit: true,
         }).then(rs => {
           console.log(rs);
@@ -1041,7 +1041,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
             }, 0);
           }
           // } else {
-          //   detail['unitList'] = this.commonService.unitList;
+          //   detail['unitList'] = this.cms.unitList;
           // }
         });
       } else {
@@ -1058,14 +1058,14 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       unitControl['UnitList'] = null;
     }
     // Callculate: Doanh thu bán lẻ dựa triên thu chi
-    if (selectedData && this.commonService.getObjectId(selectedData) == 'BANLE' && detailForm) {
+    if (selectedData && this.cms.getObjectId(selectedData) == 'BANLE' && detailForm) {
       this.apiService.getPromise('/accounting/reports', {
         reportSummary: true,
         Accounts: '1111',
-        toDate: this.commonService.getEndOfDate(parentForm.get('DateOfReturn')?.value).toISOString(),
+        toDate: this.cms.getEndOfDate(parentForm.get('DateOfReturn')?.value).toISOString(),
       }).then(rs => {
         console.log(rs);
-        this.commonService.openDialog(DialogFormComponent, {
+        this.cms.openDialog(DialogFormComponent, {
           context: {
             title: 'Tính doanh thu bán lẻ',
             onInit: async (form, dialog) => {
@@ -1155,13 +1155,13 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   // }
 
   calulateTotal(formItem: FormGroup) {
-    this.commonService.takeUntil('calulcate_sales_voucher', 300).then(rs => {
+    this.cms.takeUntil('calulcate_sales_voucher', 300).then(rs => {
       let total = 0;
       const details = this.getDetails(formItem);
       for (let i = 0; i < details.controls.length; i++) {
         total += this.calculatToMoney(details.controls[i] as FormGroup);
       }
-      formItem.get('_total').setValue(this.commonService.roundUsing(total, Math.floor, 2));
+      formItem.get('_total').setValue(this.cms.roundUsing(total, Math.floor, 2));
     });
   }
 
@@ -1192,7 +1192,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+    this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
       if (source === 'ToMoney') {
         detail.get('Price').setValue(this.calculatToMoney(detail, source));
       } else {
@@ -1212,10 +1212,10 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   // preview(formItem: FormGroup) {
   //   const data: CommercePosReturnModel = formItem.value;
   //   data.Details.forEach(detail => {
-  //     detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
-  //     detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
+  //     detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
+  //     detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
   //   });
-  //   this.commonService.openDialog(CommercePosReturnPrintComponent, {
+  //   this.cms.openDialog(CommercePosReturnPrintComponent, {
   //     context: {
   //       title: 'Xem trước',
   //       data: [data],
@@ -1237,7 +1237,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   // }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
       context: {
         components: {
           'PRICEREPORT': { title: 'Phiếu báo giá' },
@@ -1257,19 +1257,19 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-                if (['APPROVED'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.commonService.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
+                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.cms.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
@@ -1301,13 +1301,13 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(refVoucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu báo giá chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(refVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -1366,13 +1366,13 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 
@@ -1392,7 +1392,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }
-            const acd = this.commonService.decompileAccessNumber(ac);
+            const acd = this.cms.decompileAccessNumber(ac);
             return acd.accessNumber;
           });
         }

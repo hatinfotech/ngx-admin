@@ -34,14 +34,14 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   // localeExtra = localeViExtra;
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
-  taxFormat: CurrencyMaskConfig = this.commonService.getTaxMaskConfig();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
+  taxFormat: CurrencyMaskConfig = this.cms.getTaxMaskConfig();
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -99,16 +99,16 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<PurchaseSimpleVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -169,7 +169,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
         <div class="image-wrap" style="width: 3rem; height: 3rem;">\
           <div class="image" style="width: 3rem; height: 3rem; background-image: url(' + state.image + ')"></div>\
         </div>\
-        <div class="text">' + state.text + (state.Units ? ('<br>' + this.commonService.translateText('Product.unit') + ': ' + state.Units.map(unit => unit.Name).join(', ')) : '') + '</div>\
+        <div class="text">' + state.text + (state.Units ? ('<br>' + this.cms.translateText('Product.unit') + ': ' + state.Units.map(unit => unit.Name).join(', ')) : '') + '</div>\
       </div>');
     },
     templateSelection: (state: Select2SelectionObject & ProductModel): JQuery | string => {
@@ -518,7 +518,7 @@ export class PurchaseSimpleVoucherFormComponent extends DataManagerFormComponent
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    // this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+    // this.cms.openDialog(PurchaseVoucherPrintComponent, {
     //   context: {
     //     title: 'Xem trước',
     //     data: data,

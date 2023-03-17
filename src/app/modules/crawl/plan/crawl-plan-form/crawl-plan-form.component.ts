@@ -114,11 +114,11 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CrawlPlanFormComponent>,
     public service: CrawlService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -150,7 +150,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     this.botList = await this.apiService.getPromise<WpSiteModel[]>('/crawl/servers', { limit: 99999999 });
 
     // Parent init
-    const mainSocket = await this.commonService.getMainSocket();
+    const mainSocket = await this.cms.getMainSocket();
     const crawlAlgorithms = await mainSocket.emit<{ id: string, text: string }[]>('crawl/get-algorithms', {});
     this.crawlAlgorithmList = crawlAlgorithms;
     const result = await super.init();
@@ -280,7 +280,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     if (data) {
       newForm.patchValue(data);
       if (data.Bot) {
-        this.commonService.getMainSocket().then(async mainSocket => {
+        this.cms.getMainSocket().then(async mainSocket => {
           const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: data.Bot }))[0];
           if (botInfo) {
             await mainSocket.emit<{ state: string, lastLog: string }>('crawl/init', botInfo);
@@ -366,12 +366,12 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     console.log('Main bot', mainBot);
     if (botInfo) {
       return new Promise<any>(async (resolve, reject) => {
-        const mainSocket = await this.commonService.getMainSocket();
+        const mainSocket = await this.cms.getMainSocket();
         await mainSocket.emit<any>('crawl/init', botInfo);
         mainSocket.emit<any>('crawl/test-crawl', { bot: botInfo, plan: crawlPlan }, 300000).then(post => {
           console.log(post);
           const content = typeof post.content === 'object' ? post.content.join('<br>') : post.content;
-          this.commonService.openDialog(ShowcaseDialogComponent, {
+          this.cms.openDialog(ShowcaseDialogComponent, {
             context: {
               title: 'Crawl preview',
               content: `Categories : ${post.categories} <br>Hình đại diện: <br><img src="${post.featured_media}" /><p>${post.description}</p><br>${content}`,
@@ -417,7 +417,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: botCode }))[0];
 
       if (botInfo) {
-        const mainSocket = await this.commonService.getMainSocket();
+        const mainSocket = await this.cms.getMainSocket();
         await mainSocket.emit<any>('crawl/init', botInfo);
         console.log('Main bot socket connected');
 
@@ -480,7 +480,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
       const botInfo = (await this.apiService.getPromise<CrawlServerModel[]>('/crawl/servers', { id: botCode }))[0];
       if (botInfo) {
         // const botSocket = await this.service.getBotSocket(botInfo.ApiUrl);
-        const mainSocket = await this.commonService.getMainSocket();
+        const mainSocket = await this.cms.getMainSocket();
         // subscription.unsubscribe();
         console.log('Main bot socket connected');
 
@@ -524,7 +524,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
             { Bot: botInfo },
           ];
           // return new Promise<{ state: string }>(async (resolve, reject) => {
-          const mainSocket = await this.commonService.getMainSocket();
+          const mainSocket = await this.cms.getMainSocket();
 
           const status = await mainSocket.emit<{ state: string }>('crawl/get-status', { bot: botInfo, plan: crawlPlan }, 15000);
           console.info(status);

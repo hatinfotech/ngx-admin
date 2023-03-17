@@ -43,7 +43,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   // curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -98,12 +98,12 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   printTemplateList: { id: string, text: string, name: Type<DataManagerPrintComponent<SalesMasterPriceTableModel>> }[] = [
     // {
     //   id: 'PriceTablePrintAsListComponent',
-    //   text: this.commonService.textTransform(this.commonService.translate.instant('Print.listTemplate'), 'head-title'),
+    //   text: this.cms.textTransform(this.cms.translate.instant('Print.listTemplate'), 'head-title'),
     //   name: PriceTablePrintAsListComponent,
     // },
     {
       id: 'PriceTablePrintComponent',
-      text: this.commonService.textTransform(this.commonService.translate.instant('Print.gridTemplate'), 'head-title'),
+      text: this.cms.textTransform(this.cms.translate.instant('Print.gridTemplate'), 'head-title'),
       name: MasterPriceTablePrintComponent,
     },
   ];
@@ -111,11 +111,11 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   typeList: { id: string, text: string }[] = [
     {
       id: 'RETAIL',
-      text: this.commonService.textTransform(this.commonService.translate.instant('Sales.retail'), 'head-title'),
+      text: this.cms.textTransform(this.cms.translate.instant('Sales.retail'), 'head-title'),
     },
     {
       id: 'WHOLESALE',
-      text: this.commonService.textTransform(this.commonService.translate.instant('Sales.wholesale'), 'head-title'),
+      text: this.cms.textTransform(this.cms.translate.instant('Sales.wholesale'), 'head-title'),
     },
   ];
 
@@ -139,12 +139,12 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<MasterPriceTableFormComponent>,
     // public currencyPipe: CurrencyPipe,
     public decimalPipe: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -499,7 +499,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
           includeUnit: true,
           includeFeaturePicture: true,
         }));
-      // this.commonService.openDialog(printTemplate.name, {
+      // this.cms.openDialog(printTemplate.name, {
       //   context: {
       //     title: 'Xem trước',
       //     data: data,
@@ -520,7 +520,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(ProductListComponent, {
+    this.cms.openDialog(ProductListComponent, {
       context: {
         inputMode: 'dialog',
         // inputId: ids,
@@ -642,7 +642,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
                 const currentItems = pictureList.splice(currentIndex, 1);
                 pictureList.unshift(currentItems[0]);
               }
-              this.commonService.openDialog(ImagesViewerComponent, {
+              this.cms.openDialog(ImagesViewerComponent, {
                 context: {
                   images: pictureList.map(m => m['OriginImage']),
                   imageIndex: 0,
@@ -698,7 +698,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                   };
                 },
               },
@@ -740,7 +740,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                   };
                 },
               },
@@ -753,7 +753,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         type: 'string',
         width: '10%',
         valuePrepareFunction: (cell: any, row: any) => {
-          return this.commonService.getObjectText(cell);
+          return this.cms.getObjectText(cell);
         },
         filter: {
           type: 'custom',
@@ -762,7 +762,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
             condition: 'eq',
             delay: 0,
             select2Option: {
-              placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+              placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -780,7 +780,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                    results: this.unitList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                   };
                 },
               },
@@ -817,13 +817,13 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         },
       },
       // Containers: {
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
+      //   title: this.cms.textTransform(this.cms.translate.instant('Warehouse.container'), 'head-title'),
       //   type: 'html',
       //   onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-      //     // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+      //     // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.cms.previewVoucher(tag.type, tag.id));
       //   },
       //   valuePrepareFunction: (cell: any, row) => {
-      //     return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+      //     return cell ? (cell.map(container => this.cms.getObjectText(container)).join('<br>')) : '';
       //   },
       //   width: '15%',
       //   // filter: {
@@ -832,7 +832,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       //   //   config: {
       //   //     delay: 0,
       //   //     select2Option: {
-      //   //       placeholder: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+      //   //       placeholder: this.cms.translateText('Warehouse.GoodsContainer.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
       //   //       allowClear: true,
       //   //       width: '100%',
       //   //       dropdownAutoWidth: true,
@@ -850,7 +850,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       //   //         delay: 0,
       //   //         processResults: (data: any, params: any) => {
       //   //           return {
-      //   //             results: this.containerList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+      //   //             results: this.containerList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
       //   //           };
       //   //         },
       //   //       },
@@ -859,11 +859,11 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       //   // },
       // },
       // Containers: {
-      //   title: this.commonService.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
+      //   title: this.cms.translateText('Warehouse.GoodsContainer.title', { action: '', definition: '' }),
       //   type: 'html',
       //   width: '15%',
       //   valuePrepareFunction: (value: any, product: ProductModel) => {
-      //     return value && (value.map(container => this.commonService.getObjectText(container).join('<br>'))) || '';
+      //     return value && (value.map(container => this.cms.getObjectText(container).join('<br>'))) || '';
       //   },
       // },
       Code: {
@@ -906,7 +906,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
               // }
             } else {
               instance.status = 'danger';
-              this.commonService.openDialog(ShowcaseDialogComponent, {
+              this.cms.openDialog(ShowcaseDialogComponent, {
                 context: {
                   title: 'Cảnh báo',
                   content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
@@ -939,7 +939,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     Object.keys(settings.columns).forEach(key => {
       const column = settings.columns[key];
       if (!settings.columns[key]['filterFunction']) {
-        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.cms.smartFilter(value, query);
       }
 
       if (column.type === 'boolean') {
@@ -1058,7 +1058,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   // }
 
   initDataSource() {
-    this.source = new CustomServerDataSource<ProductModel>(this.apiService, this.commonService, '/sales/master-price-table-details');
+    this.source = new CustomServerDataSource<ProductModel>(this.apiService, this.cms, '/sales/master-price-table-details');
 
     // Set DataSource: prepareData
     this.source.prepareData = (data: ProductModel[]) => {
@@ -1114,7 +1114,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductForm(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(ProductFormComponent, {
+    this.cms.openDialog(ProductFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,
@@ -1142,7 +1142,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   editChoosedItems(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
@@ -1183,7 +1183,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   }
 
   printQrcode(priceTable: SalesPriceTableModel) {
-    this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
+    this.cms.openDialog(SalesProductDemoTemPrintComponent, {
       context: {
         priceTable: priceTable.Code,
         id: this.selectedItems.map(item => this.makeDetailId(item as any)),

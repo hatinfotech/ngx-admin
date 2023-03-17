@@ -34,7 +34,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   formDialog = CollaboratorOrderFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorOrderPrintComponent>,
@@ -42,7 +42,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -57,11 +57,11 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     //   const data = this.data[i];
     //   data['Total'] = 0;
     //   data['Title'] = this.renderTitle(data);
-    //   const taxMap = this.commonService.taxList.reduce(function (map, obj) {
+    //   const taxMap = this.cms.taxList.reduce(function (map, obj) {
     //     map[obj.Code] = obj;
     //     return map;
     //   }, {});
-    //   const unitMap = this.commonService.unitList.reduce(function (map, obj) {
+    //   const unitMap = this.cms.unitList.reduce(function (map, obj) {
     //     map[obj.Code] = obj;
     //     return map;
     //   }, {});
@@ -155,7 +155,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
 
   prepareCopy(data: CollaboratorOrderModel) {
     this.close();
-    this.commonService.openDialog(SalesPriceReportFormComponent, {
+    this.cms.openDialog(SalesPriceReportFormComponent, {
       context: {
         showLoadinng: true,
         inputMode: 'dialog',
@@ -176,9 +176,9 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
 
   approvedConfirm(data: CollaboratorOrderModel, index: number) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.close'),
+          label: this.cms.translateText('Common.close'),
           status: 'success',
           action: () => {
             this.onClose(data);
@@ -219,16 +219,16 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     //     responseText = 'Common.approvedSuccess';
     //     break;
     // }
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(this.processMapList[index]?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(this.processMapList[index]?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(this.processMapList[index]?.nextStateLabel),
+        label: this.cms.translateText(this.processMapList[index]?.nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -237,12 +237,12 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
             this.onChange && this.onChange(data);
             this.close();
             this.onClose && this.onClose(data);
-            this.commonService.toastService.show(this.commonService.translateText(this.processMapList[index]?.responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(this.processMapList[index]?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(this.processMapList[index]?.responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(this.processMapList[index]?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },
@@ -292,7 +292,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
       const datanium = data[i];
       datanium['Total'] = 0;
       datanium['Title'] = this.renderTitle(datanium);
-      const taxMap = this.commonService.taxList.reduce(function (map, obj) {
+      const taxMap = this.cms.taxList.reduce(function (map, obj) {
         map[obj.Code] = obj;
         return map;
       }, {});
@@ -325,14 +325,14 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) {
       if (relativeVocher.type == 'PRICEREPORT') {
-        this.commonService.openDialog(CollaboratorOrderTeleCommitPrintComponent, {
+        this.cms.openDialog(CollaboratorOrderTeleCommitPrintComponent, {
           context: {
             showLoadinng: true,
             title: 'Xem trước',
-            id: [this.commonService.getObjectId(relativeVocher)],
+            id: [this.cms.getObjectId(relativeVocher)],
             inputMode: 'dialog',
             mode: 'print',
-            // inputId: [this.commonService.getObjectId(relativeVocher)],
+            // inputId: [this.cms.getObjectId(relativeVocher)],
             // data: data,
             idKey: ['Code'],
             // approvedConfirm: true,
@@ -343,7 +343,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
           },
         });
       } else {
-        this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+        this.cms.previewVoucher(relativeVocher.type, relativeVocher);
       }
     }
     return false;

@@ -41,43 +41,43 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorSubscriptionPageListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.cycleMap = {
-      MONTHLY: this.commonService.translateText('Common.monthly'),
-      YEARLY: this.commonService.translateText('Common.yearly'),
+      MONTHLY: this.cms.translateText('Common.monthly'),
+      YEARLY: this.cms.translateText('Common.yearly'),
     };
     this.stateList = [
       {
         id: 'ACTIVE',
-        text: this.commonService.translateText('Common.activated'),
+        text: this.cms.translateText('Common.activated'),
       },
       {
         id: 'INACTIVE',
-        text: this.commonService.translateText('Common.inactivated'),
+        text: this.cms.translateText('Common.inactivated'),
       },
       {
         id: 'EXPIREDSOON',
-        text: this.commonService.translateText('Common.expiredSoon'),
+        text: this.cms.translateText('Common.expiredSoon'),
       },
       {
         id: 'OVEREXPIRED',
-        text: this.commonService.translateText('Common.overExpired'),
+        text: this.cms.translateText('Common.overExpired'),
       },
       {
         id: 'EXPIRED',
-        text: this.commonService.translateText('Common.expired'),
+        text: this.cms.translateText('Common.expired'),
       },
     ];
     return super.init().then(rs => {
@@ -88,32 +88,32 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
       // this.actionButtonList.unshift({
       //   type: 'button',
       //   name: 'pushProduct',
-      //   label: this.commonService.translateText('Collaborator.Product.push'),
+      //   label: this.cms.translateText('Collaborator.Product.push'),
       //   icon: 'cloud-upload-outline',
       //   status: 'danger',
       //   size: 'medium',
-      //   title: this.commonService.translateText('Common.subscribe'),
+      //   title: this.cms.translateText('Common.subscribe'),
       //   click: () => {
-      //     this.commonService.openDialog(CollaboratorProductPreviewListComponent, {
+      //     this.cms.openDialog(CollaboratorProductPreviewListComponent, {
       //       context: {
       //         inputMode: 'dialog',
       //         onDialogChoose: async (chooseItems: PageModel[]) => {
       //           console.log(chooseItems);
-      //           this.commonService.openDialog(ShowcaseDialogComponent, {
+      //           this.cms.openDialog(ShowcaseDialogComponent, {
       //             context: {
-      //               title: this.commonService.translateText('Common.subscribe'),
-      //               content: this.commonService.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
+      //               title: this.cms.translateText('Common.subscribe'),
+      //               content: this.cms.translateText('Collaborator.Product.subscribeConfirmText') + '<br>' + chooseItems.map(product => product.Name).join(', '),
       //               actions: [
       //                 {
-      //                   label: this.commonService.translateText('Common.close'),
+      //                   label: this.cms.translateText('Common.close'),
       //                   status: 'primary',
       //                 },
       //                 {
-      //                   label: this.commonService.translateText('Common.subscribe'),
+      //                   label: this.cms.translateText('Common.subscribe'),
       //                   status: 'danger',
       //                   action: () => {
       //                     this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [chooseItems.map(product => product.Code)], subscribe: true, page: this.collaboratorService.currentpage$.value }, chooseItems.map(product => ({ Code: product.Code }))).then(rs => {
-      //                       this.commonService.toastService.show(this.commonService.translateText('Common.success'), this.commonService.translateText('Collaborator.Product.subscribeSuccessText'), {
+      //                       this.cms.toastService.show(this.cms.translateText('Common.success'), this.cms.translateText('Collaborator.Product.subscribeSuccessText'), {
       //                         status: 'success',
       //                       })
       //                       this.refresh();
@@ -142,22 +142,22 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
     return this.configSetting({
       columns: {
         Page: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '60%',
         },
         Assigned: {
-          title: this.commonService.translateText('Common.assigned'),
+          title: this.cms.translateText('Common.assigned'),
           type: 'datetime',
           width: '20%',
         },
         Level: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -169,7 +169,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
             instance.outline = true
-            // instance.label = this.commonService.translateText('Common.state');
+            // instance.label = this.cms.translateText('Common.state');
             instance.init.subscribe((row: CollaboratorPublisherModel) => {
               // const processMap = AppModule.processMaps.commerceServiceByCycle[row.State || ''];
               instance.title = row.LevelLabel;
@@ -190,7 +190,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
               delay: 0,
               condition: 'eq',
               select2Option: {
-                placeholder: this.commonService.translateText('Common.state') + '...',
+                placeholder: this.cms.translateText('Common.state') + '...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -207,7 +207,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -245,22 +245,22 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.goback'),
+          label: this.cms.translateText('Common.goback'),
           status: 'primary',
           action: () => {
             resolve(false);
           },
         },
         {
-          label: this.commonService.translateText(processMap?.nextStateLabel),
+          label: this.cms.translateText(processMap?.nextStateLabel),
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

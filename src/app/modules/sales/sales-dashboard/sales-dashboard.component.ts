@@ -75,7 +75,7 @@ export class SalesDashboardComponent implements OnDestroy {
   constructor(
     private themeService: NbThemeService,
     private solarService: SolarData,
-    public commonService: CommonService,
+    public cms: CommonService,
     public formBuilder: FormBuilder,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
@@ -179,7 +179,7 @@ export class SalesDashboardComponent implements OnDestroy {
     });
     this.formItem.get('ReportType').valueChanges.subscribe(value => {
       console.log(value);
-      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
+      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.cms.getObjectId(value)).range);
     });
 
     // setTimeout(() => {
@@ -189,14 +189,14 @@ export class SalesDashboardComponent implements OnDestroy {
       this.refresh();
     });
 
-    this.commonService.waitForReady().then(() => {
+    this.cms.waitForReady().then(() => {
       this.actionButtonList = [
         {
           name: 'refresh',
           status: 'success',
-          label: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          label: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           icon: 'sync',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           size: 'medium',
           disabled: () => {
             return false;
@@ -232,7 +232,7 @@ export class SalesDashboardComponent implements OnDestroy {
     minimumInputLength: 0,
     multiple: true,
     filter: (term: string, text: string, option: any) => {
-      return !term || this.commonService.smartFilter(text, term);
+      return !term || this.cms.smartFilter(text, term);
     },
     keyMap: {
       id: 'id',
@@ -241,7 +241,7 @@ export class SalesDashboardComponent implements OnDestroy {
   };
 
   select2OptionForProduct: Select2Option = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa/dịch vụ...',
       prepareReaultItem: (item) => {
@@ -294,7 +294,7 @@ export class SalesDashboardComponent implements OnDestroy {
     multiple: true,
     minimumInputLength: 0,
     filter: (term: string, text: string, option: any) => {
-      return !term || this.commonService.smartFilter(text, term);
+      return !term || this.cms.smartFilter(text, term);
     },
     keyMap: {
       id: 'id',
@@ -309,7 +309,7 @@ export class SalesDashboardComponent implements OnDestroy {
     multiple: true,
     minimumInputLength: 0,
     filter: (term: string, text: string, option: any) => {
-      return !term || this.commonService.smartFilter(text, term);
+      return !term || this.cms.smartFilter(text, term);
     },
     keyMap: {
       id: 'id',
@@ -317,7 +317,7 @@ export class SalesDashboardComponent implements OnDestroy {
     },
   };
   select2Employee: Select2Option = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, isn_User: null }, {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, isn_User: null }, {
       placeholder: 'Chọn nhân viên...', limit: 10, prepareReaultItem: (item) => {
         item['id'] = item['User'];
         item['text'] = item['User'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
@@ -328,7 +328,7 @@ export class SalesDashboardComponent implements OnDestroy {
   };
 
   select2OptionForContact: Select2Option = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
       placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
         item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
         return item;
@@ -440,13 +440,13 @@ export class SalesDashboardComponent implements OnDestroy {
   }
 
   async refresh() {
-    const reportType = this.commonService.getObjectId(this.formItem.get('ReportType').value);
-    let branches = this.formItem.get('Branchs').value?.map(branch => this.commonService.getObjectId(branch));
-    let products = this.formItem.get('Products')?.value?.map(m => this.commonService.getObjectId(m)) || [];
-    let productGroups = this.formItem.get('ProductGroups')?.value?.map(m => this.commonService.getObjectId(m)) || [];
-    let productCategories = this.formItem.get('ProductCategories')?.value?.map(m => this.commonService.getObjectId(m)) || [];
-    let employees = this.formItem.get('Employees')?.value?.map(m => this.commonService.getObjectId(m)) || [];
-    let objects = this.formItem.get('Objects')?.value?.map(m => this.commonService.getObjectId(m)) || [];
+    const reportType = this.cms.getObjectId(this.formItem.get('ReportType').value);
+    let branches = this.formItem.get('Branchs').value?.map(branch => this.cms.getObjectId(branch));
+    let products = this.formItem.get('Products')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let productGroups = this.formItem.get('ProductGroups')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let productCategories = this.formItem.get('ProductCategories')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let employees = this.formItem.get('Employees')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let objects = this.formItem.get('Objects')?.value?.map(m => this.cms.getObjectId(m)) || [];
     const dateRange: Date[] = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;

@@ -25,12 +25,12 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   initDataSource() {
@@ -76,27 +76,27 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
       pager: this.configPaging(),
       columns: {
         Name: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.name'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         Type: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.type'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.type'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Value: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.value'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.value'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         Module: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.module'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.module'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         IsApplied: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.enable'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.enable'), 'head-title'),
           type: 'boolean',
           editable: true,
           width: '10%',
@@ -127,7 +127,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
         //       });
         //       instance.click.subscribe(async (row: ParameterModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -168,7 +168,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SystemParameterModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(SystemParameterFormComponent, {
+  //   this.cms.openDialog(SystemParameterFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

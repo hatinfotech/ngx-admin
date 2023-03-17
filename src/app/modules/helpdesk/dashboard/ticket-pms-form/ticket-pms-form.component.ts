@@ -127,7 +127,7 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   };
 
   select2OptionForPms = {
-    placeholder: this.commonService.translateText('Common.choosePms') + '...',
+    placeholder: this.cms.translateText('Common.choosePms') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -142,15 +142,15 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
   // pmsList: { id: string, text: string, [key: string]: any }[] = [
   //   {
   //     id: 'VIEW',
-  //     text: this.commonService.translateText('Common.Pms.view'),
+  //     text: this.cms.translateText('Common.Pms.view'),
   //   },
   //   {
   //     id: 'EDIT',
-  //     text: this.commonService.translateText('Common.Pms.edit'),
+  //     text: this.cms.translateText('Common.Pms.edit'),
   //   },
   //   {
   //     id: 'MANAGE',
-  //     text: this.commonService.translateText('Common.Pms.manage'),
+  //     text: this.cms.translateText('Common.Pms.manage'),
   //   },
   // ];
 
@@ -161,10 +161,10 @@ export class TicketPmsFormComponent extends DataManagerFormComponent<HelpdeskTic
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<TicketPmsFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async loadCache() { }

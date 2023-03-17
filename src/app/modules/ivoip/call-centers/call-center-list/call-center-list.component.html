@@ -1,10 +1,10 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.CallCenter.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Ivoip.CallCenter.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
     <!-- <ngx-card-header [custom]="false" [size]="size">
       <div class="title item">
         <nb-icon *ngIf="favicon" [pack]="favicon.pack" [icon]="favicon.name"></nb-icon>
-        {{title ? title : ('Ivoip.CallCenter.title' | translate:{action: '', definition: commonService.translate.instant('Common.manage')} | headtitlecase)}}
+        {{title ? title : ('Ivoip.CallCenter.title' | translate:{action: '', definition: cms.translate.instant('Common.manage')} | headtitlecase)}}
       </div>
       <div class="controls item">
         <ngx-action-control-list [list]="actionButtonList">

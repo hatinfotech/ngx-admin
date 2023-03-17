@@ -29,13 +29,13 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   formDialog = WarehouseGoodsDeliveryNoteFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsDeliveryNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -80,7 +80,7 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   toMoney(detail: WarehouseGoodsDeliveryNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');
@@ -131,9 +131,9 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
 
   approvedConfirm(data: WarehouseGoodsDeliveryNoteModel, index: number) {
     // if (['BOOKKEEPING'].indexOf(data.State) > -1) {
-    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
-    //       label: this.commonService.translateText('Common.close'),
+    //       label: this.cms.translateText('Common.close'),
     //       status: 'success',
     //       action: () => {
     //         this.onClose(data);
@@ -160,16 +160,16 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
     //     break;
     // }
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(this.processMapList[index].nextStateLabel),
+        label: this.cms.translateText(this.processMapList[index].nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -178,12 +178,12 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },

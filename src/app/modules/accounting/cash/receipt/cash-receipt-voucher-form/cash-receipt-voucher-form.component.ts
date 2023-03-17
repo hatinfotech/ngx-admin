@@ -37,9 +37,9 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   printDialog = CashReceiptVoucherPrintComponent;
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   accountDebitList: AccountModel[] = [];
   accountCreditList: AccountModel[] = [];
@@ -48,8 +48,8 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(AccBusinessFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
@@ -76,18 +76,18 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CashReceiptVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -246,7 +246,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   select2OptionForBankAccounting = {
-    placeholder: this.commonService.translateText('Common.bankAccount'),
+    placeholder: this.cms.translateText('Common.bankAccount'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -260,12 +260,12 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -376,7 +376,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     if (data) {
       data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
-      const accoutnGroup = this.commonService.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
+      const accoutnGroup = this.cms.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
       newForm['debitAccounts'] = this.accountList.filter(f => f.Group === accoutnGroup);
       newForm.patchValue(data);
     } else {
@@ -393,7 +393,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
     newForm.get('DateOfVoucher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfPurchase => {
       if (dateOfPurchase) {
-        this.commonService.lastVoucherDate = dateOfPurchase;
+        this.cms.lastVoucherDate = dateOfPurchase;
       }
     });
 
@@ -534,7 +534,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   toMoney(formItem: FormGroup) {
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
@@ -551,7 +551,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   // async preview(formItem: FormGroup) {
   //   const data: CashVoucherModel = formItem.value;
-  //   this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+  //   this.cms.openDialog(CashReceiptVoucherPrintComponent, {
   //     context: {
   //       title: 'Xem trước',
   //       data: [data],
@@ -578,7 +578,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(SalesVoucherListComponent, {
+    this.cms.openDialog(SalesVoucherListComponent, {
       context: {
         inputMode: 'dialog',
         onDialogChoose: async (chooseItems: SalesVoucherModel[]) => {
@@ -611,7 +611,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     const relationVoucher = formGroup.get('RelativeVouchers');
     const relationVoucherValue: any[] = (relationVoucher.value || []);
     if (relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
-      this.commonService.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
+      this.cms.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
       return;
     }
     const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
@@ -627,13 +627,13 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           return false;
       }
 
-      if (this.commonService.getObjectId(salesVoucher.State) != 'APPROVED') {
-        this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+      if (this.cms.getObjectId(salesVoucher.State) != 'APPROVED') {
+        this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
         return false;
       }
-      if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-        if (this.commonService.getObjectId(salesVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-          this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+      if (this.cms.getObjectId(formGroup.get('Object').value)) {
+        if (this.cms.getObjectId(salesVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+          this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {
@@ -653,7 +653,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
         const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
         for (const voucherDetail of salesVoucher.Details) {
           if (voucherDetail.Type !== 'CATEGORY') {
-            const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+            const tax = this.cms.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.cms.getObjectId(voucherDetail.Tax))['Tax'] : null;
             totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
           }
         }
@@ -674,13 +674,13 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 

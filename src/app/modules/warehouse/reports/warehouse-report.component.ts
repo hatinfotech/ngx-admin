@@ -20,14 +20,14 @@ export class WarehouseReportComponent extends BaseComponent {
   formItem: FormGroup;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<WarehouseReportComponent>,
     public accountingService?: WarehouseService,
     public formBuilder?: FormBuilder,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
 
     const reportFromDate = localStorage.getItem('Warehouse.ReportFromDate');
     const reportToDate = localStorage.getItem('Warehouse.ReportToDate');
@@ -76,43 +76,43 @@ export class WarehouseReportComponent extends BaseComponent {
   }
 
   async init() {
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
-        title: this.commonService.translateText('Warehouse.SummaryReport.label'),
+        title: this.cms.translateText('Warehouse.SummaryReport.label'),
         route: '/accounting/report/summary',
         icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Đối soát công nợ'),
+        title: this.cms.translateText('Đối soát công nợ'),
         route: '/accounting/report/cash-flow',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Warehouse.LiabilitiesReport.label'),
+        title: this.cms.translateText('Warehouse.LiabilitiesReport.label'),
         route: '/accounting/report/liabilities',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Warehouse.ReceivablesFromCustomersReport.label'),
+        title: this.cms.translateText('Warehouse.ReceivablesFromCustomersReport.label'),
         route: '/accounting/report/receivables-from-customers-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Warehouse.ReceivablesFromEmployeeReport.label'),
+        title: this.cms.translateText('Warehouse.ReceivablesFromEmployeeReport.label'),
         route: '/accounting/report/receivables-from-employee-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Góp vốn'),
+        title: this.cms.translateText('Góp vốn'),
         route: '/accounting/report/contributed-capital-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Warehouse.ProfitReport.label'),
+        title: this.cms.translateText('Warehouse.ProfitReport.label'),
         route: '/accounting/report/profit-report',
         // icon: 'pie-chart',
       },

@@ -77,11 +77,11 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<PstnNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

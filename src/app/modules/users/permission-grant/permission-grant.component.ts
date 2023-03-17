@@ -42,7 +42,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
 
   constructor(
     private apiService: ApiService,
-    private commonService: CommonService,
+    private cms: CommonService,
     private formBuilder: FormBuilder,
     private dialogService: NbDialogService,
   ) {
@@ -167,12 +167,12 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
   }
 
   treeFilter(text: string, tree: TreeComponent) {
-    this.commonService.takeUntil('permission_filter', 500, () => {
+    this.cms.takeUntil('permission_filter', 500, () => {
       tree.treeModel.filterNodes((node: { data: { name: string } }) => {
         if (!node.data.name) {
           return false;
         }
-        return this.commonService.smartFilter(node.data.name, text);
+        return this.cms.smartFilter(node.data.name, text);
       });
     });
 
@@ -276,7 +276,7 @@ export class PermissionGrantComponent implements OnInit, OnDestroy {
   }
 
   onPermissionResetButtonClick(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận đặt lại phân quyền',
         content: 'Các phân quyền của nhóm và người dùng trong nhóm cũng sẽ bị đặt lại, bạn có muốn đặt lại không ?',

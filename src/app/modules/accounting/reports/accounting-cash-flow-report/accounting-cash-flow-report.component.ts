@@ -44,19 +44,19 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingCashFlowReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -95,7 +95,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       summaryReportBtn.status = 'info';
       summaryReportBtn.disabled = () => true;
       summaryReportBtn.click = () => {
-        this.commonService.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
+        this.cms.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -111,7 +111,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       // detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
       // detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
       // detailsReportBtn.click = () => {
-      //   this.commonService.openDialog(AccountingReceivablesFromCustomersDetailsReportPrintComponent, {
+      //   this.cms.openDialog(AccountingReceivablesFromCustomersDetailsReportPrintComponent, {
       //     context: {
       //       showLoadinng: true,
       //       // title: 'Xem trước',
@@ -129,7 +129,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       vouchersReportBtn.label = vouchersReportBtn.title = 'In đối soát công nợ';
       vouchersReportBtn.disabled = () => this.selectedIds.length <= 0;
       vouchersReportBtn.click = () => {
-        this.commonService.openDialog(AccountingObjectCashFlowReportPrintComponent, {
+        this.cms.openDialog(AccountingObjectCashFlowReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -147,7 +147,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       // printDebtConfirmBtn.name = 'detailReport';
       // printDebtConfirmBtn.label = printDebtConfirmBtn.title = 'In phiếu xác nhận công nợ';
       // printDebtConfirmBtn.click = () => {
-      //   this.commonService.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
+      //   this.cms.openDialog(AccountingReceivablesFromCustomersReportPrintComponent, {
       //     context: {
       //       showLoadinng: true,
       //       // title: 'Xem trước',
@@ -180,11 +180,11 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
       actions: false,
       columns: {
         Object: {
-          title: this.commonService.translateText('Common.contact'),
+          title: this.cms.translateText('Common.contact'),
           type: 'string',
           width: '30%',
           valuePrepareFunction: (cell: any, row: any) => {
-            return this.commonService.getObjectId(row.Object) + ' - ' + row.ObjectName;
+            return this.cms.getObjectId(row.Object) + ' - ' + row.ObjectName;
           },
           filter: {
             type: 'custom',
@@ -193,7 +193,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -205,37 +205,37 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
           },
         },
         HeadDebit: {
-          title: '[' + this.commonService.translateText('Accounting.headDebit'),
+          title: '[' + this.cms.translateText('Accounting.headDebit'),
           type: 'acc-currency',
           width: '10%',
         },
         HeadCredit: {
-          title: this.commonService.translateText('Accounting.headCredit') + ']',
+          title: this.cms.translateText('Accounting.headCredit') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         GenerateDebit: {
-          title: '[' + this.commonService.translateText('Accounting.debitGenerate'),
+          title: '[' + this.cms.translateText('Accounting.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateCredit: {
-          title: this.commonService.translateText('Accounting.creditGenerate') + ']',
+          title: this.cms.translateText('Accounting.creditGenerate') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         TailDebit: {
-          title: '[' + this.commonService.translateText('Accounting.tailDebit'),
+          title: '[' + this.cms.translateText('Accounting.tailDebit'),
           type: 'acc-currency',
           width: '10%',
         },
         TailCredit: {
-          title: this.commonService.translateText('Accounting.tailCredit') + ']',
+          title: this.cms.translateText('Accounting.tailCredit') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '10%',
           class: 'align-right',
@@ -247,8 +247,8 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -337,7 +337,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

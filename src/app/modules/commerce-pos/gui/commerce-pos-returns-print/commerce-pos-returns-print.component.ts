@@ -100,14 +100,14 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   registerInfo: any;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosReturnsPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
-    this.commonService.systemConfigs$.subscribe(registerInfo => {
+    super(cms, router, apiService, ref);
+    this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
     });
   }
@@ -165,7 +165,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   toMoney(detail: WarehouseGoodsDeliveryNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');
@@ -319,7 +319,7 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
         this.continueOrder(0);
         this.close();
       } else {
-        this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong phiếu trả hàng này !', 'Chưa thể tiếp tục mua hàng !', { status: 'warning' });
+        this.cms.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong phiếu trả hàng này !', 'Chưa thể tiếp tục mua hàng !', { status: 'warning' });
       }
       return false;
     }
@@ -330,11 +330,11 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
           this.print(0);
         }
       } else {
-        if (this.commonService.getObjectId(this.data[0].State) == 'APPROVED') {
+        if (this.cms.getObjectId(this.data[0].State) == 'APPROVED') {
           this.print(0);
           this.close();
         } else {
-          this.commonService.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
+          this.cms.toastService.show('Bạn vui lòng chờ cho hệ thống xử lý xong đơn hàng này !', 'Chưa thể in bill !', { status: 'warning' });
         }
       }
       return false;

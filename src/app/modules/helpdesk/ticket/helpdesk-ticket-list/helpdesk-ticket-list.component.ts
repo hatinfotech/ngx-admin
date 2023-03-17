@@ -23,11 +23,11 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
 
     this.columnDefs = this.configSetting([
       {
@@ -97,7 +97,7 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: HelpdeskTicketModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(ContactFormComponent, {
+    this.cms.openDialog(ContactFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

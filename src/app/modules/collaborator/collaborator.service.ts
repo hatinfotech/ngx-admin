@@ -15,7 +15,7 @@ export class CollaboratorService {
   currentpage$: BehaviorSubject<string>;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public apiService: ApiService,
     public authService: NbAuthService,
   ) {

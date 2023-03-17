@@ -150,20 +150,20 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorEducationArticleFormComponent>,
     public currencyPipe: CurrencyPipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -181,7 +181,7 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
     simpleUpload: {
       uploadUrl: () => {
         // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
-        return this.commonService.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+        return this.cms.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
           return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
         });
       },

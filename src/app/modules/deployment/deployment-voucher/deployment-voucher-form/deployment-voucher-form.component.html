@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Deployment.Voucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Deployment.Voucher.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -104,7 +104,7 @@
                                     <div class="col-md-12">
                                         <ngx-form-group [formGroup]="formItem" name="DeploymentDate" label="{{validateVoucherDate(formItem.get('DeploymentDate'), 'Ngày thực hiện')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                             <input type="text" [owlDateTime]="DeploymentDate" [owlDateTimeTrigger]="DeploymentDate" nbInput fullWidth formControlName="DeploymentDate" placeholder="{{'Ngày thực hiện' | translate | headtitlecase}}">
-                                            <owl-date-time #DeploymentDate [startAt]="formItem.get('DeploymentDate')?.value || this.commonService.lastVoucherDate"></owl-date-time>
+                                            <owl-date-time #DeploymentDate [startAt]="formItem.get('DeploymentDate')?.value || this.cms.lastVoucherDate"></owl-date-time>
                                         </ngx-form-group>
                                     </div>
                                 </div>

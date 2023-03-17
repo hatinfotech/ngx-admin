@@ -31,7 +31,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
   @Input() objects: string[];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<AccountingReceivablesFromCustomersReportPrintComponent>,
@@ -39,7 +39,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     public accountingService: AccountingService,
     private currencyPipe: CurrencyPipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {

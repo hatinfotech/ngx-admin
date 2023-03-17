@@ -27,7 +27,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   public overlayBackdrop: JQuery;
 
   registerInfo: any = {
-    voucherInfo: this.commonService.translateText('Information.Voucher.register'),
+    voucherInfo: this.cms.translateText('Information.Voucher.register'),
     voucherLogo: environment.register.logo.voucher,
     voucherLogoHeight: 60,
   };
@@ -47,7 +47,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       status: 'success',
       // label: 'Refresh',
       icon: 'sync',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
       size: 'medium',
       disabled: () => {
         return false;
@@ -62,7 +62,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       status: 'danger',
       label: 'esc',
       icon: 'close',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
       size: 'medium',
       disabled: () => false,
       hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
@@ -74,13 +74,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   ];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<BaseComponent>,
   ) {
-    commonService.iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-    this.commonService.systemConfigs$.subscribe(settings => {
+    cms.iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
+    this.cms.systemConfigs$.subscribe(settings => {
       if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
         this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
         this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
@@ -94,9 +94,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   // }
 
   restrict() {
-    this.commonService.checkPermission(this.componentName, 'ACCESS', result => {
+    this.cms.checkPermission(this.componentName, 'ACCESS', result => {
       if (!result) {
-        // this.commonService.gotoNotification({
+        // this.cms.gotoNotification({
         //   title: 'Quyền truy cập',
         //   content: 'Bạn không có quyền trên chức năng vừa truy cập !',
         //   actions: [
@@ -107,7 +107,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         //     },
         //   ],
         // });
-        // this.commonService.toastService.show('Bạn không có quyền truy cập ' + this.componentName + ' !', 'Quyền truy cập', {
+        // this.cms.toastService.show('Bạn không có quyền truy cập ' + this.componentName + ' !', 'Quyền truy cập', {
         //   status: 'warning',
         // })
         console.warn('Bạn không có quyền truy cập ' + this.componentName + ' !!! tạm thời vẫn cho vào component nhưng sẽ phải fix lại là không cho vào component khi không có quyền');
@@ -127,7 +127,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     if (this.ref instanceof NbDialogRef) {
-      if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+      if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
         return this.onKeyboardEvent(event);
       }
     } else {
@@ -138,7 +138,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @HostListener('document:keyup', ['$event'])
   handleKeyupEvent(event: KeyboardEvent) {
     if (this.ref instanceof NbDialogRef) {
-      if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+      if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
         if(event.key == 'Escape' && this.ref['originalCloseOnEsc'] === true) {
           this.ref.close();
         }
@@ -152,7 +152,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   ngOnInit(): void {
     if (!this.ref) {
-      this.commonService.clearHeaderActionControlList();
+      this.cms.clearHeaderActionControlList();
     }
     this.restrict();
     this.init();
@@ -163,13 +163,13 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   onResume() {
-    this.commonService.clearHeaderActionControlList();
+    this.cms.clearHeaderActionControlList();
     this.restrict();
   }
 
   ngOnDestroy(): void {
     if (!this.ref) {
-      this.commonService.clearHeaderActionControlList();
+      this.cms.clearHeaderActionControlList();
     }
     if (this.subcriptions) {
       this.subcriptions.forEach(subciption => {
@@ -266,7 +266,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   encodeId(id: string) {
-    return this.commonService.getObjectId(id).replace(/-/g, '~!');
+    return this.cms.getObjectId(id).replace(/-/g, '~!');
   }
 
   decodeId(id: string) {
@@ -286,7 +286,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
     pastedText = pastedText.replace(new RegExp(`\\${thousandsSymbol}`, 'g'), '');
     pastedText = pastedText.replace(new RegExp(`\\${decimalSymbol}`, 'g'), '.');
     pastedText = parseFloat(pastedText) as any;
-    pastedText = this.commonService.roundUsing(pastedText, Math.floor, 2) as any;
+    pastedText = this.cms.roundUsing(pastedText, Math.floor, 2) as any;
     event.target.value = pastedText;
     return false;
   }

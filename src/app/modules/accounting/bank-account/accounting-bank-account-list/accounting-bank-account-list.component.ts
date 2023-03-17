@@ -37,13 +37,13 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingBankAccountListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -58,56 +58,56 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         // Name: {
-        //   title: this.commonService.translateText('Common.name'),
+        //   title: this.cms.translateText('Common.name'),
         //   type: 'string',
         //   width: '15%',
-        //   // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        //   // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         // },
         Owner: {
-          title: this.commonService.translateText('Accounting.accountOwner'),
+          title: this.cms.translateText('Accounting.accountOwner'),
           type: 'string',
           width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         AccountNumber: {
-          title: this.commonService.translateText('Accounting.accountNumber'),
+          title: this.cms.translateText('Accounting.accountNumber'),
           type: 'string',
           width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Branch: {
-          title: this.commonService.translateText('Common.branch'),
+          title: this.cms.translateText('Common.branch'),
           type: 'string',
           width: '10%',
         },
         Province: {
-          title: this.commonService.translateText('Common.province'),
+          title: this.cms.translateText('Common.province'),
           type: 'string',
           width: '10%',
         },
         BranchAddress: {
-          title: this.commonService.translateText('Common.branchAddress'),
+          title: this.cms.translateText('Common.branchAddress'),
           type: 'string',
           width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '15%',
         },
         TailAmount: {
-          title: this.commonService.translateText('Accounting.tailAmount'),
+          title: this.cms.translateText('Accounting.tailAmount'),
           type: 'acc-currency',
           width: '10%',
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '10%',
           class: 'align-right',
@@ -119,8 +119,8 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -139,7 +139,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
         //     instance.iconPack = 'eva';
         //     instance.icon = 'copy';
-        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     // instance.label = this.cms.translateText('Common.copy');
         //     instance.display = true;
         //     instance.status = 'warning';
         //     instance.valueChange.subscribe(value => {
@@ -151,7 +151,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         //     });
         //     instance.click.subscribe(async (row: AccBankAccountModel) => {
 
-        //       this.commonService.openDialog(AccBusinessFormComponent, {
+        //       this.cms.openDialog(AccBusinessFormComponent, {
         //         context: {
         //           inputMode: 'dialog',
         //           inputId: [row.Code],
@@ -174,7 +174,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
   }
 
   openInstantDetailReport(rowData: AccBankAccountModel) {
-    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

@@ -46,18 +46,18 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboartorAwardDetailComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -103,38 +103,38 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
       actions: false,
       columns: {
         Product: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '5%',
         },
         Unit: {
-          title: this.commonService.translateText('ĐVT'),
+          title: this.cms.translateText('ĐVT'),
           type: 'string',
           width: '5%',
         },
         Description: {
-          title: this.commonService.translateText('Sản phẩm'),
+          title: this.cms.translateText('Sản phẩm'),
           type: 'string',
           width: '10%', 
         },
         SumOfBaseQuantity: {
-          title: this.commonService.translateText('KPI đạt được'),
+          title: this.cms.translateText('KPI đạt được'),
           type: 'string',
           width: '5%',
         },
         Level1Kpi: {
-          title: this.commonService.translateText('KPI yêu cầu'),
+          title: this.cms.translateText('KPI yêu cầu'),
           type: 'string',
           width: '5%',
         },
         SumOfNetRevenue: {
-          title: this.commonService.translateText('Doanh số'),
+          title: this.cms.translateText('Doanh số'),
           type: 'currency',
           width: '5%',
           valuePrepareFunction:(value) => value,
         },
         Level1AwardRatio: {
-          title: this.commonService.translateText('TL thưởng'),
+          title: this.cms.translateText('TL thưởng'),
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
           type: 'custom',
@@ -146,12 +146,12 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           }
         },
         Level1AwardAmount: {
-          title: this.commonService.translateText('Tiền thưởng'),
+          title: this.cms.translateText('Tiền thưởng'),
           type: 'currency',
           width: '7%',
         },
         ExtendTermRatio: {
-          title: this.commonService.translateText('TL CK Tăng cường'),
+          title: this.cms.translateText('TL CK Tăng cường'),
           width: '5%',
           valuePrepareFunction:(value) => value + '%',
           type: 'custom',
@@ -163,17 +163,17 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           }
         },
         ExtendTermAmount: {
-          title: this.commonService.translateText('Tiền CK tăng cường'),
+          title: this.cms.translateText('Tiền CK tăng cường'),
           type: 'currency',
           width: '7%',
         },
         ExtSumOfNetRevenue: {
-          title: this.commonService.translateText('D.Số học trò'),
+          title: this.cms.translateText('D.Số học trò'),
           type: 'currency',
           width: '8%',
         },
         Level2ExtAwardRatio: {
-          title: this.commonService.translateText('TL thưởng LV2'),
+          title: this.cms.translateText('TL thưởng LV2'),
           // type: 'string',
           width: '7%',
           valuePrepareFunction:(value) => value + '%',
@@ -186,13 +186,13 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           }
         },
         Level2ExtAwardAmount: {
-          title: this.commonService.translateText('Thưởng LV2'),
+          title: this.cms.translateText('Thưởng LV2'),
           type: 'currency',
           width: '8%',
           valuePrepareFunction:(value) => value,
         },
         Level3ExtAwardRatio: {
-          title: this.commonService.translateText('TL thưởng LV3'),
+          title: this.cms.translateText('TL thưởng LV3'),
           // type: 'string',
           width: '7%',
           valuePrepareFunction:(value) => value + '%',
@@ -205,53 +205,53 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
           }
         },
         Level3ExtAwardAmount: {
-          title: this.commonService.translateText('Thưởng LV3'),
+          title: this.cms.translateText('Thưởng LV3'),
           type: 'currency',
           width: '8%',
           valuePrepareFunction:(value) => value,
         },
         TotalAwardAmount: {
-          title: this.commonService.translateText('Tổng thưởng'),
+          title: this.cms.translateText('Tổng thưởng'),
           type: 'currency',
           width: '10%',
         },
         // SumOfMonthlyQuantity: {
-        //   title: this.commonService.translateText('Số lượng theo tháng'),
+        //   title: this.cms.translateText('Số lượng theo tháng'),
         //   type: 'string',
         //   width: '10%',
         // },
         // SumOfQuarterlyQuantity: {
-        //   title: this.commonService.translateText('Số lượng theo quý'),
+        //   title: this.cms.translateText('Số lượng theo quý'),
         //   type: 'string',
         //   width: '10%',
         // },
         // SumOfYearlyQuantity: {
-        //   title: this.commonService.translateText('Số lượng theo năm'),
+        //   title: this.cms.translateText('Số lượng theo năm'),
         //   type: 'string',
         //   width: '10%',
         // },
         // HeadAmount: {
-        //   title: this.commonService.translateText('Accounting.headAmount'),
+        //   title: this.cms.translateText('Accounting.headAmount'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // GenerateAmount: {
-        //   title: this.commonService.translateText('Accounting.generate'),
+        //   title: this.cms.translateText('Accounting.generate'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // IncrementAmount: {
-        //   title: this.commonService.translateText('Accounting.increment'),
+        //   title: this.cms.translateText('Accounting.increment'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // TailAmount: {
-        //   title: this.commonService.translateText('Accounting.tailAmount'),
+        //   title: this.cms.translateText('Accounting.tailAmount'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -263,8 +263,8 @@ export class CollaboartorAwardDetailComponent extends ServerDataManagerListCompo
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            // instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            // instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';

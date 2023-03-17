@@ -23,11 +23,11 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -95,7 +95,7 @@ export class EmailTemplateListComponent extends DataManagerListComponent<EmailTe
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailTemplateModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(EmailTemplateFormComponent, {
+  //   this.cms.openDialog(EmailTemplateFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

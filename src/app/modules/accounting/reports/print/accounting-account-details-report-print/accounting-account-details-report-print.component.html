@@ -1,7 +1,7 @@
 <div class="dialog-wrap {{inputMode}}" #dialogWrap>
     <nb-card *ngFor="let data of this.data; let i=index" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
         <nb-card-header>
-            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Chi tiết công nợ phải thu' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Chi tiết công nợ phải thu' | translate:{definition: '', action: cms.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body class="print-body" #printContent>
             <div id="print-area">
@@ -57,7 +57,7 @@
                             <tr class="print-voucher-detail-line" *ngFor="let detail of data.Details; let i = index">
                                 <td>{{i + 1}}</td>
                                 <td class="nowrap">{{detail.VoucherDate | date:'short'}}</td>
-                                <td><a href="#" (click)="this.commonService.previewVoucher(detail.VoucherType, detail.Voucher) && false">{{detail.Voucher}}</a></td>
+                                <td><a href="#" (click)="this.cms.previewVoucher(detail.VoucherType, detail.Voucher) && false">{{detail.Voucher}}</a></td>
                                 <td>{{detail.Description}}</td>
                                 <!-- <td class="text-align-right" [innerHtml]="renderCurrency(detail.HeadAmount)"></td>  -->
                                 <td class="text-align-right" [innerHtml]="renderCurrency(detail.Voucher == 'OPN' ? (detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit > 0 ? (detail.HeadDebit - detail.HeadCredit + detail.GenerateDebit - detail.GenerateCredit) : 0) : detail.GenerateDebit)"></td>

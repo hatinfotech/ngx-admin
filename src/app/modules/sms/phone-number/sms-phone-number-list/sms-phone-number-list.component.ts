@@ -24,12 +24,12 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -82,7 +82,7 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
         //       });
         //       instance.click.subscribe(async (row: SmsPhoneNumberList) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -125,7 +125,7 @@ export class SmsPhoneNumberListComponent extends DataManagerListComponent<SmsPho
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsPhoneNumberListModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(SmsPhoneNumberFormComponent, {
+  //   this.cms.openDialog(SmsPhoneNumberFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

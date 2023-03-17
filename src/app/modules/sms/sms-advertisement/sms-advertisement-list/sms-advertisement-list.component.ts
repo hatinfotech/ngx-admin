@@ -27,12 +27,12 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -132,7 +132,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
             });
             instance.click.subscribe(async (row: SmsModel) => {
               if (row.State !== 'SENDING') {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Xác nhận',
                     content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
@@ -163,7 +163,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
                   },
                 });
               } else {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Xác nhận',
                     content: 'Bạn có muốn dừng trình gửi mail ?',
@@ -229,7 +229,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(SmsAdvertisementFormComponent, {
+  //   this.cms.openDialog(SmsAdvertisementFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -251,7 +251,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   // }
 
   openSentStateList(sms: SmsModel) {
-    this.commonService.openDialog(SmsSentStatsListComponent, {
+    this.cms.openDialog(SmsSentStatsListComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [sms.PhoneNumberList],

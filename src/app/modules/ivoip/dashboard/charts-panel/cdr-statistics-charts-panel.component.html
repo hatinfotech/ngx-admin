@@ -1,7 +1,7 @@
 <nb-card class="small-header smart-table" size="large">
 
   <nb-card-header>
-    <ngx-card-header [size]="'medium'" [icon]="{pack: 'eva', name: 'list'}" [title]="('Ivoip.Dashboard.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [size]="'medium'" [icon]="{pack: 'eva', name: 'list'}" [title]="('Ivoip.Dashboard.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
   </nb-card-header>
   <div class="chart-container">
     <ngx-chart-panel-header [type]="period" (periodChange)="setPeriodAndGetChartData($event)">

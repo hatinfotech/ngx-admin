@@ -32,13 +32,13 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: ShowcaseDialogComponent) => void;
   loading = false;
 
-  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>, public commonService?: CommonService) {
+  constructor(public ref: NbDialogRef<ShowcaseDialogComponent>, public cms?: CommonService) {
 
   }
 
   @HostListener('document:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.commonService.dialogStack[this.commonService.dialogStack.length - 1] === this.ref) {
+    if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
       console.log(event.key + ': listen on show case dialog...');
       const action = this.actions.find(f => f.keyShortcut == event.key);
       if (action) {

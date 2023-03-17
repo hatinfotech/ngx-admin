@@ -49,9 +49,9 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
   // sortableInstance: any;
 
   /** Tax list */
@@ -62,7 +62,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -91,15 +91,15 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   };
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
           onDialogSave: (newData: ProductModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
             formGroup.get('Product').patchValue(newProduct);
           },
           onDialogClose: () => {
@@ -113,24 +113,24 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }];
 
   customIconsForContainer: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Gán vị trí'),
+    icon: 'plus-square-outline', title: this.cms.translateText('Gán vị trí'),
     status: 'danger',
     states: {
       '<>': {
         icon: 'plus-square-outline',
         status: 'danger',
-        title: this.commonService.translateText('Thêm vị trí mới'),
+        title: this.cms.translateText('Thêm vị trí mới'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Thêm vị trí mới'),
+        title: this.cms.translateText('Thêm vị trí mới'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-      const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
-      this.commonService.openDialog(AssignNewContainerFormComponent, {
+      const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+      const currentUnit = this.cms.getObjectId(formGroup.get('Unit').value);
+      this.cms.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
           inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
@@ -155,23 +155,23 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     if (this.customIconsForProduct[name]) return this.customIconsForProduct[name];
     return this.customIconsForProduct[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Common.addNewProduct'),
+      title: this.cms.translateText('Common.addNewProduct'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Common.editProduct'),
+          title: this.cms.translateText('Common.editProduct'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Common.addNewProduct'),
+          title: this.cms.translateText('Common.addNewProduct'),
         },
       },
       action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        this.commonService.openDialog(ProductFormComponent, {
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        this.cms.openDialog(ProductFormComponent, {
           context: {
             inputMode: 'dialog',
             inputId: currentProduct ? [currentProduct] : null,
@@ -179,7 +179,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
             onDialogSave: (newData: ProductModel[]) => {
               console.log(newData);
               // const formItem = formGroupComponent.formGroup;
-              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
               formGroup.get('Product').patchValue(newProduct);
             },
             onDialogClose: () => {
@@ -200,19 +200,19 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<WarehouseGoodsReceiptNoteFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -227,7 +227,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', {
       select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
       includeSearchResultLabel: true,
       includeUnits: true,
@@ -302,23 +302,23 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Object').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -340,23 +340,23 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   contactControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Contact').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -426,7 +426,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         itemFormData.Details.forEach(detail => {
-          detail.AccessNumbers = (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n')) : '') as any;
+          detail.AccessNumbers = (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n')) : '') as any;
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
@@ -526,7 +526,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       No: [''],
       Type: ['PRODUCT', Validators.required],
       Product: ['', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
@@ -539,7 +539,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       // ToMoney: [0],
       Image: [[]],
       Container: ['', (control: FormControl) => {
-        if (newForm && this.commonService.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.commonService.getObjectId(control.value)) {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
@@ -553,10 +553,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     });
 
     if (data) {
-      if (data?.AccessNumbers && this.commonService.getObjectId(data?.Product)) {
+      if (data?.AccessNumbers && this.cms.getObjectId(data?.Product)) {
         for (const accessNumber of data?.AccessNumbers) {
           if (accessNumber?.id && accessNumber.id == accessNumber?.text) {
-            accessNumber.text += ' (' + this.commonService.compileAccessNumber(accessNumber.id, this.commonService.getObjectId(data?.Product)) + ')';
+            accessNumber.text += ' (' + this.cms.compileAccessNumber(accessNumber.id, this.cms.getObjectId(data?.Product)) + ')';
           }
         }
       }
@@ -655,7 +655,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
 
     console.log(selectedData);
-    const productId = this.commonService.getObjectId(selectedData);
+    const productId = this.cms.getObjectId(selectedData);
     if (productId) {
       if (!doNotAutoFill) {
         const descriptionControl = detail.get('Description');
@@ -672,8 +672,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   async onSelectUnit(detail: FormGroup, prevUnit: ProductUnitConversoinModel, nextUnit: ProductUnitConversoinModel, force?: boolean) {
-    const unitId = this.commonService.getObjectId(nextUnit);
-    const productId = this.commonService.getObjectId(detail.get('Product').value);
+    const unitId = this.cms.getObjectId(nextUnit);
+    const productId = this.cms.getObjectId(detail.get('Product').value);
     if (typeof nextUnit?.IsManageByAccessNumber !== 'undefined') {
       detail['IsManageByAccessNumber'] = nextUnit.IsManageByAccessNumber;
       if (!this.isProcessing) {
@@ -713,12 +713,12 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         const product: ProductModel = detail.get('Product').value;
         if (product && (product.Units || product.UnitConversions)) {
           if (!product.Units) {
-            product.Units = product.UnitConversions.map(m => ({ ...m, id: this.commonService.getObjectId(m.Unit), text: m.Name }))
+            product.Units = product.UnitConversions.map(m => ({ ...m, id: this.cms.getObjectId(m.Unit), text: m.Name }))
           }
         }
-        prevUnit = product?.Units.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(prevUnit))
+        prevUnit = product?.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(prevUnit))
       }
-      if (prevUnit && nextUnit && this.commonService.getObjectId(prevUnit) != this.commonService.getObjectId(nextUnit) && prevUnit.ConversionRatio && nextUnit.ConversionRatio) {
+      if (prevUnit && nextUnit && this.cms.getObjectId(prevUnit) != this.cms.getObjectId(nextUnit) && prevUnit.ConversionRatio && nextUnit.ConversionRatio) {
         const currentQuantity = parseFloat(detail.get('Quantity').value);
 
         let baseQuantity = currentQuantity * prevUnit.ConversionRatio;
@@ -746,7 +746,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }
-            const acd = this.commonService.decompileAccessNumber(ac);
+            const acd = this.cms.decompileAccessNumber(ac);
             return { id: acd.accessNumber, text: acd.accessNumber };
           });
         }
@@ -756,7 +756,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
       context: {
         components: {
           'PURCHASE': { title: 'Phiếu mua hàng' },
@@ -779,13 +779,13 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 // get purchase order
                 const voucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeObject: true, includeContact: true, includeDetails: true, dIncludeUnitConversionCalculate: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu mua hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -801,7 +801,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
                   for (const voucherDetail of voucher.Details) {
                     const sourceDetailBusiness = voucherDetail.Business || [];
-                    if (voucherDetail.Type === 'PRODUCT' && sourceDetailBusiness.findIndex(f => this.commonService.getObjectId(f) == 'PURCHASESKIPWAREHOUSE') < 0) {
+                    if (voucherDetail.Type === 'PRODUCT' && sourceDetailBusiness.findIndex(f => this.cms.getObjectId(f) == 'PURCHASESKIPWAREHOUSE') < 0) {
                       // delete orderDetail.Id;
                       // delete orderDetail.Voucher;
                       // delete orderDetail.No;
@@ -831,17 +831,17 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 const voucher = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeObject: true, includeContact: true, includeDetails: true, dIncludeUnitConversionCalculate: true }).then(rs => rs[0]);
 
                 if (!voucher) {
-                  this.commonService.toastService.show(this.commonService.translateText('Không lấy được thông tin đơn đặt mua hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                  this.cms.toastService.show(this.cms.translateText('Không lấy được thông tin đơn đặt mua hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
 
-                if (['APPROVED'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu đặt mua hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu đặt mua hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu nhập kho'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -861,7 +861,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                       const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}`, Signature: voucherDetail['Signature1'] } as any);
                       details.push(newDetailFormGroup);
                     } else {
-                      if (Array.isArray(voucherDetail.Business) && voucherDetail.Business.find(f => this.commonService.getObjectId(f) === 'PURCHASEWAREHOUSE')) {
+                      if (Array.isArray(voucherDetail.Business) && voucherDetail.Business.find(f => this.cms.getObjectId(f) === 'PURCHASEWAREHOUSE')) {
                         const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, No: null, Voucher: null, Business: null, RelateDetail: `PURCHASEORDER/${voucher.Code}/${voucherDetail.SystemUuid}`, Signature: voucherDetail['Signature1'] } as any);
                         newDetailFormGroup.get('Business').disable();
                         details.push(newDetailFormGroup);
@@ -877,7 +877,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER', typeMap: this.commonService.voucherTypeMap['PURCHASEORDER'] }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER', typeMap: this.cms.voucherTypeMap['PURCHASEORDER'] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'SALESRETURNS') {
@@ -888,13 +888,13 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 // get purchase order
                 const voucher = await this.apiService.getPromise<SalesReturnsVoucherModel[]>('/sales/sales-returns-vouchers/' + chooseItems[i].Code, { includeRelativeVouchers: true, includeContact: true, includeDetails: true, includeUnit: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -913,7 +913,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                         details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + goodsDeliveryVoucher.Code + ' - ' + goodsDeliveryVoucher.Title }));
                         for (const goodsDeliveryDetail of goodsDeliveryVoucher.Details) {
                           if (goodsDeliveryDetail.Type === 'PRODUCT') {
-                            const quantity = voucher.Details.find(f => this.commonService.getObjectId(f.Product) == this.commonService.getObjectId(goodsDeliveryDetail.Product))?.Quantity;
+                            const quantity = voucher.Details.find(f => this.cms.getObjectId(f.Product) == this.cms.getObjectId(goodsDeliveryDetail.Product))?.Quantity;
                             const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...goodsDeliveryDetail, Id: null, No: null, Voucher: null, Business: [this.accountingBusinessList.find(f => f.id == 'GOODSRECEIPTFORRETURNS')], RelateDetail: `GOODSDELIVERY/${goodsDeliveryVoucher.Code}/${goodsDeliveryDetail.Id}`, Quantity: quantity });
                             newDtailFormGroup.get('Business').disable();
                             details.push(newDtailFormGroup);
@@ -955,13 +955,13 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 // get purchase order
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, dIncludeUnitConversionCalculate_x: true, includeAccessNumbers: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu xuất kho chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -982,17 +982,17 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                       // delete orderDetail.No;
 
                       // check duplicate
-                      const existsDetail = details.controls.find(fDetail => this.commonService.getObjectId(fDetail.get('Product').value) == this.commonService.getObjectId(voucherDetail.Product) && this.commonService.getObjectId(fDetail.get('Unit').value) == this.commonService.getObjectId(voucherDetail.Unit));
+                      const existsDetail = details.controls.find(fDetail => this.cms.getObjectId(fDetail.get('Product').value) == this.cms.getObjectId(voucherDetail.Product) && this.cms.getObjectId(fDetail.get('Unit').value) == this.cms.getObjectId(voucherDetail.Unit));
                       if (!existsDetail) {
 
-                        const accessNumbers = voucherDetail.AccessNumbers && Array.isArray(voucherDetail.AccessNumbers) && voucherDetail.AccessNumbers.length > 0 ? (voucherDetail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n')) : '';
+                        const accessNumbers = voucherDetail.AccessNumbers && Array.isArray(voucherDetail.AccessNumbers) && voucherDetail.AccessNumbers.length > 0 ? (voucherDetail.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n')) : '';
                         const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, AccessNumbers: accessNumbers as any, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
                         // newDetailFormGroup.get('Business').disable();
                         newDetailFormGroup['case'] = 'REIMPORT';
 
                         let business = [...voucherDetail.Business];
                         if (business) {
-                          const busunessItemIndex = business.findIndex(f => this.commonService.getObjectId(f) == 'WAREHOUSETEMPORARYEXPORT')
+                          const busunessItemIndex = business.findIndex(f => this.cms.getObjectId(f) == 'WAREHOUSETEMPORARYEXPORT')
                           if (busunessItemIndex > -1) {
                             business[busunessItemIndex] = { id: 'WAREHOUSEREIMPORT', text: 'Tái nhập hàng hóa' };
                           }
@@ -1005,13 +1005,13 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                           newDetailFormGroup['unitList'] = voucherDetail.Product?.Units;
                         }
 
-                        const chooseUnit = voucherDetail.Product?.Units.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(voucherDetail.Unit));
+                        const chooseUnit = voucherDetail.Product?.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(voucherDetail.Unit));
                         this.onSelectUnit(newDetailFormGroup, chooseUnit, null, true);
                       } else {
                         // Duplicate
                         existsDetail.get('Quantity').setValue(parseFloat(existsDetail.get('Quantity').value) + parseFloat(voucherDetail.Quantity));
                         if (voucherDetail.AccessNumbers && voucherDetail.AccessNumbers.length > 0) {
-                          existsDetail.get('AccessNumbers').setValue(existsDetail.get('AccessNumbers').value + '\n' + voucherDetail.AccessNumbers.map(m => this.commonService.getObjectId(m)).join('\n'));
+                          existsDetail.get('AccessNumbers').setValue(existsDetail.get('AccessNumbers').value + '\n' + voucherDetail.AccessNumbers.map(m => this.cms.getObjectId(m)).join('\n'));
                         }
 
                       }
@@ -1036,13 +1036,13 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 
@@ -1062,14 +1062,14 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       detail.get('Quantity').setValue(element.value.trim().split('\n').filter(ac => !!ac).length);
     }
 
-    // // const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+    // // const { accessNumber, goodsId } = this.cms.decompileAccessNumber(this.cms.getObjectId(an));
     // let hadChanged = false;
     // for (const an of selectedData) {
     //   if (an.id == an.text) {
-    //     const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+    //     const { accessNumber, goodsId } = this.cms.decompileAccessNumber(this.cms.getObjectId(an));
     //     console.log(accessNumber, goodsId);
     //     // an.text = an.text + ' (' + accessNumber + ')';
-    //     an.text = accessNumber + ' (' + this.commonService.getObjectId(an) + ')';
+    //     an.text = accessNumber + ' (' + this.cms.getObjectId(an) + ')';
     //     an.id = accessNumber;
     //     hadChanged = true;
     //   }

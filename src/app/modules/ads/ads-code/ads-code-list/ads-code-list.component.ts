@@ -24,12 +24,12 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -101,7 +101,7 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
         //       });
         //       instance.click.subscribe(async (row: AdsCodeModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -135,7 +135,7 @@ export class AdsCodeListComponent extends DataManagerListComponent<AdsCodeModel>
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: AdsCodeModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(AdsCodeFormComponent, {
+  //   this.cms.openDialog(AdsCodeFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

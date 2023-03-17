@@ -94,10 +94,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<DataManagerFormComponent<M>>,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
     // this.formLoading = true;
     this.onProcessing();
     this.formUniqueId = Date.now().toString();
@@ -114,14 +114,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   async init(): Promise<boolean> {
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.actionButtonList = [
       {
         name: 'reload',
         status: 'success',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
         icon: 'refresh',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.reload'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
         size: 'medium',
         disabled: () => this.isProcessing,
         hidden: () => false,
@@ -132,9 +132,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       {
         name: 'remove',
         status: 'warning',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
         icon: 'minus-circle',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.remove'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
         size: 'medium',
         hidden: () => this.array.controls.length < 2,
         disabled: () => this.isProcessing,
@@ -146,9 +146,9 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       {
         name: 'close',
         status: 'danger',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
         icon: 'close',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
         size: 'medium',
         disabled: () => this.isProcessing,
         click: () => {
@@ -255,7 +255,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           for (const item of data) {
             if (Array.isArray(item['RelativeVouchers'])) {
               for (const relativeVoucher of item['RelativeVouchers']) {
-                relativeVoucher.typeMap = this.commonService.voucherTypeMap[relativeVoucher.type];
+                relativeVoucher.typeMap = this.cms.voucherTypeMap[relativeVoucher.type];
               }
             }
           }
@@ -361,7 +361,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     } else if (this.listUrl) {
       this.router.navigate([this.listUrl]);
     } else {
-      this.commonService.goback();
+      this.cms.goback();
     }
     return false;
   }
@@ -386,10 +386,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }
     this.id = newFormData.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {
@@ -410,10 +410,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }
     this.id = newFormData?.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {
@@ -432,7 +432,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.close();
     }
     if (e && e.error && e.error.logs) {
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Form: Thông báo lỗi',
           content: e.error.logs?.length > 1 ? `<ol ><li>${e.error.logs.join('</li><li>')}</li></ol>` : e.error.logs[0],
@@ -610,7 +610,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   protected convertOptionList(list: any[], idKey: string, labelKey: string) {
-    return this.commonService.convertOptionList(list, idKey, labelKey);
+    return this.cms.convertOptionList(list, idKey, labelKey);
   }
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {
@@ -699,7 +699,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   getFieldValue(form: FormGroup, fieldName: string) {
     const value = form.get(fieldName).value;
-    return this.commonService.getObjectId(value);
+    return this.cms.getObjectId(value);
   }
 
   prepareRestrictedData(formGroup: FormGroup, data: M) {
@@ -763,7 +763,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       context['sourceOfDialog'] = source || 'form';
     }
 
-    this.commonService.openDialog(this.printDialog, {
+    this.cms.openDialog(this.printDialog, {
       context: context as any,
     });
     return false;
@@ -777,14 +777,14 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       const controlValue = new Date(control.value.getTime());
       controlValue.setHours(0, 0, 0, 0);
       if (controlValue.getTime() < currentDate.getTime()) {
-        return this.commonService.translateText(label) + ' trước ngày hiện tại';
+        return this.cms.translateText(label) + ' trước ngày hiện tại';
       }
     }
     return label;
   }
 
   select2OptionForContact = {
-    ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', {
       includeIdText: true,
       includeGroups: true,
       sort_SearchRank: 'desc',

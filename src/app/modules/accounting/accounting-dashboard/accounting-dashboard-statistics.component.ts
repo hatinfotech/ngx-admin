@@ -17,7 +17,7 @@ export class AccountingRevenueStatisticsComponent implements OnDestroy {
   constructor(
     private theme: NbThemeService,
     public apiService: ApiService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
     this.themeSubscription = this.theme.getJsTheme().subscribe(config => {
 

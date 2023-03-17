@@ -5,7 +5,7 @@
       <nb-card class="medium-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
-            [title]="title ? title : ('Sales.SimpleSalesVoucher.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [title]="title ? title : ('Sales.SimpleSalesVoucher.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
             [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>

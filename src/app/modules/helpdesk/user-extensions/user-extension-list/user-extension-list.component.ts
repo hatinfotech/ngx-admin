@@ -32,13 +32,13 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<UserExtensionListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -68,7 +68,7 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
           title: 'Name',
           type: 'string',
           width: '45%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Username: {
           title: 'Username',

@@ -25,7 +25,7 @@ export class MostActivePublishersComponent implements OnDestroy {
 
   constructor(
     private userService: UserData,
-    public commonService: CommonService,
+    public cms: CommonService,
     public apiService: ApiService,
     public mobileAppService: MobileAppService,
   ) {
@@ -45,10 +45,10 @@ export class MostActivePublishersComponent implements OnDestroy {
   }
 
   createTask(e, publisher) {
-    // this.commonService.showDialog('Tạo task trao đổi', 'Tính năng đang phát triển !', [
+    // this.cms.showDialog('Tạo task trao đổi', 'Tính năng đang phát triển !', [
     // ]);
 
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Tạo task trao đổi với CTV',
         controls: [
@@ -91,7 +91,7 @@ export class MostActivePublishersComponent implements OnDestroy {
                 }],
               }]).then(rs => {
                 // this.refresh();
-                this.commonService.openMobileSidebar();
+                this.cms.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Code'] });
               });
 
@@ -103,7 +103,7 @@ export class MostActivePublishersComponent implements OnDestroy {
       },
     });
 
-    // this.commonService.showDialog('Tạo task trao đổi', 'Bạn có muốn tạo task trao đổi với ' + publisher.Name +' không?', [
+    // this.cms.showDialog('Tạo task trao đổi', 'Bạn có muốn tạo task trao đổi với ' + publisher.Name +' không?', [
     //   {
     //     status: 'info',
     //     label: 'Trở về'

@@ -13,11 +13,11 @@ export class SystemConfigurationBoardComponent extends BaseComponent implements 
   componentName = 'SystemConfigurationBoardComponent';
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
    }
 
   ngOnInit() {

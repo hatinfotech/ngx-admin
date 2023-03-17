@@ -47,7 +47,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
   constructor(
     private themeService: NbThemeService,
     private solarService: SolarData,
-    public commonService: CommonService,
+    public cms: CommonService,
     public formBuilder: FormBuilder,
     public collaboratorService: CollaboratorService,
     public apiService: ApiService,
@@ -139,7 +139,7 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
     // });
     this.formItem.get('DateReport').valueChanges.subscribe(value => {
       console.log(value);
-      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
+      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.cms.getObjectId(value)).range);
     });
 
     // setTimeout(() => {
@@ -149,14 +149,14 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
       this.refresh();
     });
 
-    this.commonService.waitForReady().then(() => {
+    this.cms.waitForReady().then(() => {
       this.actionButtonList = [
         {
           name: 'refresh',
           status: 'success',
-          label: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          label: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           icon: 'sync',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           size: 'medium',
           disabled: () => {
             return false;
@@ -299,10 +299,10 @@ export class CollaboratorPublisherDashboardComponent implements OnDestroy {
   }
 
   async refresh() {
-    const reportType = this.commonService.getObjectId(this.formItem.get('DateReport').value);
+    const reportType = this.cms.getObjectId(this.formItem.get('DateReport').value);
     let pages = this.formItem.get('Page').value;
     if (pages) {
-      pages = pages.map(page => this.commonService.getObjectId(page));
+      pages = pages.map(page => this.cms.getObjectId(page));
       pages = pages.join(',');
     }
     const dateRange = this.formItem.get('DateRange').value;

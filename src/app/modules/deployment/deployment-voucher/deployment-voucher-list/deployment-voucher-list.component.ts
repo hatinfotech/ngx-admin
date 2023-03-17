@@ -43,14 +43,14 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<DeploymentVoucherListComponent>,
     public mobileAppService: MobileAppService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -61,12 +61,12 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
   rows = [];
 
   stateDic = {
-    APPROVED: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
-    DEPLOYMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.commonService.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
+    APPROVED: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
+    DEPLOYMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
+    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
+    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   loadListSetting(): SmartTableSetting {
@@ -85,19 +85,19 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: any, row: DeploymentVoucherModel) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -106,7 +106,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -118,11 +118,11 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         Driver: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Người triển khai'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Người triển khai'), 'head-title'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: any, row: DeploymentVoucherModel) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -131,7 +131,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -143,18 +143,18 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '40%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // RelationVoucher: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
         //   type: 'string',
         //   width: '20%',
         // },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           // filter: {
@@ -162,7 +162,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -208,7 +208,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
           width: '8%',
           filter: {
@@ -221,7 +221,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         // Amount: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
         //   type: 'custom',
         //   class: 'align-right',
         //   width: '10%',
@@ -233,7 +233,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
         //   },
         // },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '15%',
@@ -246,7 +246,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'message-circle';
-            // instance.label = this.commonService.translateText('Common.copy');
+            // instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
             instance.status = 'info';
             instance.valueChange.subscribe(value => {
@@ -261,35 +261,35 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
               this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + row.Code, { includeRelatedTasks: true }).then(rs => {
                 const priceReport = rs[0];
                 if (priceReport && priceReport['Tasks'] && priceReport['Tasks'].length > 0) {
-                  this.commonService.openMobileSidebar();
+                  this.cms.openMobileSidebar();
                   this.mobileAppService.openChatRoom({ ChatRoom: priceReport['Tasks'][0]?.Task });
                 } else {
 
-                  this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                  this.cms.showDialog(this.cms.translateText('Common.warning'), this.cms.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
                     {
-                      label: this.commonService.translateText('Common.goback'),
+                      label: this.cms.translateText('Common.goback'),
                       status: 'danger',
                       icon: 'arrow-ios-back',
                     },
                     {
-                      label: this.commonService.translateText('Common.create'),
+                      label: this.cms.translateText('Common.create'),
                       status: 'success',
                       icon: 'message-circle-outline',
                       action: () => {
                         this.apiService.putPromise<DeploymentVoucherModel[]>('/deployment/vouchers', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
                           if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                            this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho phiếu triển khai'),
-                              this.commonService.translateText('Common.notification'), {
+                            this.cms.toastService.show(this.cms.translateText('đã tạo task cho phiếu triển khai'),
+                              this.cms.translateText('Common.notification'), {
                               status: 'success',
                             });
-                          this.commonService.openMobileSidebar();
+                          this.cms.openMobileSidebar();
                           this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
                         });
                       }
                     },
                   ]);
 
-                  // this.commonService.toastService.show(this.commonService.translateText('chưa có liên kết với nhiệm vụ nào'), this.commonService.translateText('Thông báo'), {
+                  // this.cms.toastService.show(this.cms.translateText('chưa có liên kết với nhiệm vụ nào'), this.cms.translateText('Thông báo'), {
                   //   status: 'warning',
                   // })
                 }
@@ -297,7 +297,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                 return Promise.reject(err);
               });
 
-              // this.commonService.openDialog(DeploymentVoucherFormComponent, {
+              // this.cms.openDialog(DeploymentVoucherFormComponent, {
               //   context: {
               //     inputMode: 'dialog',
               //     inputId: [row.Code],
@@ -316,7 +316,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         ShippingCost: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Phí triển khai'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Phí triển khai'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -328,12 +328,12 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         IsDebt: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Nợ'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Nợ'), 'head-title'),
           type: 'boolean',
           width: '5%',
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -345,11 +345,11 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             instance.status = 'success';
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.deploymentVoucher[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);// this.stateDic[value]?.label || this.commonService.translateText('Common.notJustApproved');
+              instance.label = this.cms.translateText(processMap?.label);// this.stateDic[value]?.label || this.cms.translateText('Common.notJustApproved');
               instance.status = processMap?.status;//this.stateDic[value]?.status || 'danger';
               instance.outline = processMap.outline;//this.stateDic[value]?.outline || false;
             });
@@ -377,14 +377,14 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.deploymentVoucher).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.deploymentVoucher[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.deploymentVoucher[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -396,7 +396,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -404,12 +404,12 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: DeploymentVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Deployment.Voucher.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Deployment.Voucher.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -422,7 +422,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -434,7 +434,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -497,7 +497,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
   }
 
   // preview(data: DeploymentVoucherModel[], source?: string) {
-  //   this.commonService.openDialog(DeploymentVoucherPrintComponent, {
+  //   this.cms.openDialog(DeploymentVoucherPrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

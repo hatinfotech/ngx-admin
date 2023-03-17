@@ -34,13 +34,13 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<UserGroupListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {
@@ -72,19 +72,19 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Name: {
           title: 'Name',
           type: 'string',
           width: '30%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
           title: 'Description',
           type: 'string',
           width: '30%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         ParentDescription: {
           title: 'Nhóm cha',

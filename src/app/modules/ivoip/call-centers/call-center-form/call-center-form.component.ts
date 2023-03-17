@@ -103,11 +103,11 @@ export class CallCenterFormComponent extends IvoipBaseFormComponent<PbxCallCente
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref: NbDialogRef<CallCenterFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   ngOnInit() {

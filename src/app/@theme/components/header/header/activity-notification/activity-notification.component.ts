@@ -18,7 +18,7 @@ export class ActivityNotificationComponent implements OnInit {
 
   constructor(
     private notificationService: NotificationService,
-    private commonService: CommonService,
+    private cms: CommonService,
   ) { }
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class ActivityNotificationComponent implements OnInit {
 
     });
 
-    this.commonService.getMainSocket().then(mainSocket => {
+    this.cms.getMainSocket().then(mainSocket => {
       mainSocket.on<NotificationModel>('notify').subscribe((request) => {
         console.log('receive socket notification: ', request.data);
         request?.callback();

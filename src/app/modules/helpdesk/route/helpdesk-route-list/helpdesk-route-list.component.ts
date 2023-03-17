@@ -24,12 +24,12 @@ export class HelpdeskRouteListComponent extends DataManagerListComponent<Helpdes
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -97,7 +97,7 @@ export class HelpdeskRouteListComponent extends DataManagerListComponent<Helpdes
         //       });
         //       instance.click.subscribe(async (row: HelpdeskRouteModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],

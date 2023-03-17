@@ -29,12 +29,12 @@ export class CallCenterListComponent extends IvoipBaseListComponent<PbxCallCente
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -97,7 +97,7 @@ export class CallCenterListComponent extends IvoipBaseListComponent<PbxCallCente
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallCenterQueueModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(CallCenterFormComponent, {
+  //   this.cms.openDialog(CallCenterFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

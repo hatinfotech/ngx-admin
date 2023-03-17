@@ -39,19 +39,19 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseSummaryReportComponent>,
     public accountingService: WarehouseService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -83,7 +83,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
     ];
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
-      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.cms.translateText('Common.refresh');
 
       const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
       summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo sổ chi tiết tài khoản';
@@ -91,7 +91,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
       summaryReportBtn.status = 'info';
       summaryReportBtn.disabled = () => this.selectedIds.length <= 0;
       summaryReportBtn.click = () => {
-        // this.commonService.openDialog(WarehouseAccountDetailsReportPrintComponent, {
+        // this.cms.openDialog(WarehouseAccountDetailsReportPrintComponent, {
         //   context: {
         //     showLoadinng: true,
         //     // title: 'Xem trước',
@@ -125,7 +125,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
       actions: false,
       columns: {
         Accounts: {
-          title: this.commonService.translateText('Warehouse.account'),
+          title: this.cms.translateText('Warehouse.account'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: any, row: AccountModel) => {
@@ -176,52 +176,52 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
           },
         },
         AccountName: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '40%',
         },
         // HeadDebit: {
-        //   title: '[' + this.commonService.translateText('Warehouse.headDebit'),
+        //   title: '[' + this.cms.translateText('Warehouse.headDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // HeadCredit: {
-        //   title: this.commonService.translateText('Warehouse.headCredit') + ']',
+        //   title: this.cms.translateText('Warehouse.headCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         HeadAmount: {
-          title: '[' + this.commonService.translateText('Warehouse.headAmount') + ']',
+          title: '[' + this.cms.translateText('Warehouse.headAmount') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         GenerateDebit: {
-          title: '[' + this.commonService.translateText('Warehouse.debitGenerate'),
+          title: '[' + this.cms.translateText('Warehouse.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateCredit: {
-          title: this.commonService.translateText('Warehouse.creditGenerate') + ']',
+          title: this.cms.translateText('Warehouse.creditGenerate') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         // TailDebit: {
-        //   title: '[' + this.commonService.translateText('Warehouse.tailDebit'),
+        //   title: '[' + this.cms.translateText('Warehouse.tailDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // TailCredit: {
-        //   title: this.commonService.translateText('Warehouse.tailCredit') + ']',
+        //   title: this.cms.translateText('Warehouse.tailCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         TailAmount: {
-          title: '[' + this.commonService.translateText('Warehouse.tailAmount') + ']',
+          title: '[' + this.cms.translateText('Warehouse.tailAmount') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '10%',
           class: 'align-right',
@@ -233,8 +233,8 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -330,7 +330,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(WarehouseDetailByGoodsReportComponent, {
+    this.cms.openDialog(WarehouseDetailByGoodsReportComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

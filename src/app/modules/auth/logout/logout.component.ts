@@ -24,7 +24,7 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
     public router: Router,
     public tokenService: NbTokenService,
     public apiService: ApiService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public notificationService: NotificationService,
   ) {
     super(service, options, router);
@@ -37,14 +37,14 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
     // this.authService.logout();
 
     // this.dataService.logout(resp => {
-    //   this.commonService.openDialog(ShowcaseDialogComponent, {
+    //   this.cms.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Logout',
     //       content: 'Logout success',
     //     },
     //   });
     // }, error => {
-    //   this.commonService.openDialog(ShowcaseDialogComponent, {
+    //   this.cms.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Logout',
     //       content: 'Logout error',
@@ -57,25 +57,25 @@ export class LogoutComponent extends NbLogoutComponent implements OnInit {
   logout(strategy: string): void {
     // super.logout(strategy);
     try {
-      this.commonService.unregisterDevice().then(async rs => {
+      this.cms.unregisterDevice().then(async rs => {
         await this.notificationService.deleteToken();
         this.apiService.deletePromise('/user/login', null).then(status => {
           this.tokenService.clear();
           this.apiService.clearToken();
-          // this.commonService.pushLoggedIn(false);
-          this.commonService.clearCache();
-          this.commonService.setPreviousUrl('/');
+          // this.cms.pushLoggedIn(false);
+          this.cms.clearCache();
+          this.cms.setPreviousUrl('/');
           return true;
         }).finally(() => {
-          this.commonService.router.navigate(['/auth/login']);
+          this.cms.router.navigate(['/auth/login']);
         }).catch(err => {
           console.error(err);
-          this.commonService.router.navigate(['/auth/login']);
+          this.cms.router.navigate(['/auth/login']);
         });
       });
     } catch (err) {
       console.error(err);
-      this.commonService.router.navigate(['/auth/login']);
+      this.cms.router.navigate(['/auth/login']);
     }
   }
 

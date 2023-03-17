@@ -33,13 +33,13 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseGoodsReceiptNoteListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
 
     if (this.ref && Object.keys(this.ref).length > 0) {
       for (const actionButton of this.actionButtonList) {
@@ -76,12 +76,12 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
       pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.object'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.object'), 'head-title'),
           type: 'string',
           width: '15%',
           valuePrepareFunction: (cell: any, row: WarehouseGoodsReceiptNoteModel) => {
@@ -94,7 +94,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
                   placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                     item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                     return item;
@@ -108,12 +108,12 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         DateOfCreated: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '8%',
           filter: {
@@ -126,7 +126,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         DateOfDelivered: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfDelivered'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfDelivered'), 'head-title'),
           type: 'custom',
           width: '8%',
           filter: {
@@ -139,11 +139,11 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -189,7 +189,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '15%',
@@ -203,7 +203,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
+            // instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
             instance.status = 'warning';
             instance.valueChange.subscribe(value => {
@@ -215,7 +215,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             });
             instance.click.subscribe(async (row: WarehouseGoodsReceiptNoteModel) => {
 
-              this.commonService.openDialog(WarehouseGoodsReceiptNoteFormComponent, {
+              this.cms.openDialog(WarehouseGoodsReceiptNoteFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
@@ -234,7 +234,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -247,11 +247,11 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             instance.disabled = this.ref && Object.keys(this.ref).length > 0;
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.warehouseReceiptGoodsNote[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -279,14 +279,14 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.warehouseReceiptGoodsNote).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.warehouseReceiptGoodsNote[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.warehouseReceiptGoodsNote[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -299,7 +299,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -307,12 +307,12 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsReceiptNoteModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -325,7 +325,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -337,7 +337,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -385,7 +385,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends ServerDataManagerLis
   }
 
   // preview(data: WarehouseGoodsReceiptNoteModel[]) {
-  //   this.commonService.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
+  //   this.cms.openDialog(WarehouseGoodsReceiptNotePrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

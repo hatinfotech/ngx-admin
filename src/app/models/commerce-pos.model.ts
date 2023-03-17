@@ -42,6 +42,14 @@ export class CommercePosOrderModel extends Model {
   InventoryDeliveryVoucher?: string;
   Invoice?: string;
   Creator?: string;
+  PaymentMethod?: any;
+  CashAmount?: number;
+  Amount?: number;
+  CashTransferAmount?: number;
+  CashBack?: number;
+  CashReceipt?: number;
+  DebtAmount?: number;
+  DecreaseForTotal?: number;
 
   Details?: CommercePosOrderDetailModel[];
 }

@@ -5,7 +5,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
-            [title]="title ? title : ('System.Action.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [title]="title ? title : ('System.Action.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
             [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
@@ -105,7 +105,7 @@
                         <div class="form-group" [attr.state]="formControlValidate(param.get('Type'), 'warning')">
                           <label class="label"><span class="valid">{{'Common.dataType' | translate | headtitlecase}}
                               (*)</span><span
-                              class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.dataType')} | headtitlecase }}
+                              class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.dataType')} | headtitlecase }}
                               (*)</span></label>
                           <nb-select size="medium" formControlName="Type" fullWidth
                             placeholder="{{'Common.dataType' | translate | headtitlecase}}">

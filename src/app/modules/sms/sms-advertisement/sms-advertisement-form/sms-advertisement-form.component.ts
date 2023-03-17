@@ -176,7 +176,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
         // return false;
       },
       click: () => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
+        this.cms.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Xác nhận',
             content: 'SMS sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 sms mỗi giờ',
@@ -283,11 +283,11 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public elRef: ElementRef,
     public ref: NbDialogRef<SmsAdvertisementFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];
@@ -430,7 +430,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
       var3.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var4.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
     }).pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.commonService.takeUntil('sms-sengding', 300).then(r => {
+      this.cms.takeUntil('sms-sengding', 300).then(r => {
         setTimeout(() => {
           previewEditor.patchValue(this.generatePreview(newForm));
           // subjectPreview.patchValue(this.generateSubjectPreview(newForm));
@@ -459,7 +459,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   }
 
   // goback(): false {
-  //   // this.commonService.openDialog(ShowcaseDialogComponent, {
+  //   // this.cms.openDialog(ShowcaseDialogComponent, {
   //   //   context: {
   //   //     title: 'Phiếu yêu cầu hỗ trợ',
   //   //     content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',
@@ -567,7 +567,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   }
 
   onSaveAndSendClick() {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'SMS sẽ được gửi cho tất cả địa chỉ trong danh sách, tần suất gửi 50 sms mỗi giờ',

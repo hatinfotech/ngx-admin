@@ -34,13 +34,13 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<UserListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -70,7 +70,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
           title: 'Name',
           type: 'string',
           width: '45%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Username: {
           title: 'Username',
@@ -96,7 +96,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
             instance.click.subscribe(async (userInfo: UserModel) => {
 
               if (!userInfo.AllowLoginSignature) {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Mở khóa đăng nhập',
                     content: 'Bạn có muốn MỞ KHÓA ĐĂNG NHẬP cho người dùng này? người dùng sẽ phải đăng nhập trong vòng 15 phút kể từ túc khóa đăng nhập đươc mở !',
@@ -122,7 +122,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
                   },
                 });
               } else {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Khóa đăng nhập',
                     content: 'Bạn có muốn KHÓA ĐĂNG NHẬP người dùng này? sau khi khóa người dùng không thể đăng nhập thêm lần nào nữa !',

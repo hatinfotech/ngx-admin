@@ -18,7 +18,7 @@ export class CdrComponent implements OnInit {
     public apiService: ApiService,
     public router: Router,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) { }
 
   editing = {};
@@ -177,7 +177,7 @@ export class CdrComponent implements OnInit {
     //   event.confirm.reject();
     // }
 
-    this.commonService.openDialog(PlayerDialogComponent, {
+    this.cms.openDialog(PlayerDialogComponent, {
       context: {
         tracks: [
           {

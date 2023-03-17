@@ -47,14 +47,14 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<SalesPriceReportListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -65,12 +65,12 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   rows = [];
 
   stateDic = {
-    APPROVED: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
-    DEPLOYMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.commonService.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
+    APPROVED: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
+    DEPLOYMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
+    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
+    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   loadListSetting(): SmartTableSetting {
@@ -89,18 +89,18 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
           valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
             return row.ObjectName;
           },
@@ -111,7 +111,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -123,18 +123,18 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '15%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // RelationVoucher: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
         //   type: 'string',
         //   width: '20%',
         // },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           // filter: {
@@ -142,7 +142,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -188,7 +188,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -201,7 +201,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         Reported: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Sales.dateOfReported'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Sales.dateOfReported'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -214,7 +214,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         // Amount: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
         //   type: 'custom',
         //   class: 'align-right',
         //   width: '10%',
@@ -226,13 +226,13 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
         //   },
         // },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '15%',
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.amount'), 'head-title'),
           type: 'currency',
           width: '5%',
           class: 'align-right',
@@ -254,7 +254,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.click.subscribe(async (row: SalesPriceReportModel) => {
               let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
               if (task) {
-                this.commonService.openMobileSidebar();
+                this.cms.openMobileSidebar();
                 this.mobileAppService.openChatRoom({ ChatRoom: task.id });
               } else {
                 this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelatedTasks: true }).then(rs => {
@@ -263,33 +263,33 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
 
                     task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
                     if (task) {
-                      this.commonService.openMobileSidebar();
+                      this.cms.openMobileSidebar();
                       this.mobileAppService.openChatRoom({ ChatRoom: task.id });
                     }
                   }
                   if (!task) {
-                    this.commonService.showDialog(this.commonService.translateText('Common.warning'), this.commonService.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
+                    this.cms.showDialog(this.cms.translateText('Common.warning'), this.cms.translateText('Chưa có task cho phiếu triển khai này, bạn có muốn tạo ngây bây giờ không ?'), [
                       {
-                        label: this.commonService.translateText('Common.goback'),
+                        label: this.cms.translateText('Common.goback'),
                         status: 'danger',
                         icon: 'arrow-ios-back',
                       },
                       {
-                        label: this.commonService.translateText('Common.create'),
+                        label: this.cms.translateText('Common.create'),
                         status: 'success',
                         icon: 'message-circle-outline',
                         action: () => {
                           this.apiService.putPromise<PriceReportModel[]>('/sales/price-reports', { createTask: true }, [{ Code: row?.Code }]).then(rs => {
                             if (rs && rs[0] && rs[0]['Tasks'] && rs[0]['Tasks'].length > 0)
-                              this.commonService.toastService.show(this.commonService.translateText('đã tạo task cho báo giá'),
-                                this.commonService.translateText('Common.notification'), {
+                              this.cms.toastService.show(this.cms.translateText('đã tạo task cho báo giá'),
+                                this.cms.translateText('Common.notification'), {
                                 status: 'success',
                               });
                             this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + row.Code, { includeRelativeVouchers: true }).then(rs => {
                               this.updateGridItems([row], rs);
                             });
                             setTimeout(() => {
-                              this.commonService.openMobileSidebar();
+                              this.cms.openMobileSidebar();
                               this.mobileAppService.openChatRoom({ ChatRoom: rs[0]['Tasks'][0]?.Task });
                             }, 500);
                           });
@@ -305,7 +305,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -315,11 +315,11 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.icon = 'checkmark-circle';
             instance.display = true;
             instance.status = 'success';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.priceReport[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
             });
@@ -347,14 +347,14 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.priceReport).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.priceReport[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.priceReport[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -366,7 +366,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -374,12 +374,12 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesPriceReportModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: '/sales/price-reports',
                 }
@@ -392,7 +392,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -404,7 +404,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -468,7 +468,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   }
 
   // preview(data: SalesPriceReportModel[], source?: string) {
-  //   this.commonService.openDialog(SalesPriceReportPrintComponent, {
+  //   this.cms.openDialog(SalesPriceReportPrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

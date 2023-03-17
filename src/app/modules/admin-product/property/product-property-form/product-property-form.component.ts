@@ -68,11 +68,11 @@ export class ProductPropertyFormComponent extends DataManagerFormComponent<Produ
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<ProductPropertyFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

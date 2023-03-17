@@ -31,8 +31,8 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   apiPath = '/collaborator/commission-vouchers';
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
   accountList: AccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
 
@@ -43,19 +43,19 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorCommissionFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -132,7 +132,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   commissionData = {
     rowCount: null,
     getRows: async (getRowParams: IGetRowsParams) => {
-      this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.commonService.getObjectId(this.array.controls[0].get('Page').value), publisher: this.commonService.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
+      this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.cms.getObjectId(this.array.controls[0].get('Page').value), publisher: this.cms.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
         let lastRow = -1;
         if (rs.length < 40) {
           lastRow = getRowParams.startRow + rs.length;
@@ -179,7 +179,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   makeNewFormGroup(data?: CollaboratorCommissionVoucherModel): FormGroup {
-    const loggedUser = this.commonService?.loginInfo$?.value?.user;
+    const loggedUser = this.cms?.loginInfo$?.value?.user;
 
     const newForm = this.formBuilder.group({
       Code: [''],
@@ -211,7 +211,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     const awardRange = newForm.get('CommissionTo').value;
     console.log(awardRange);
     const publisherEle = newForm.get('Publisher');
-    const publisher = this.commonService.getObjectId(publisherEle.value);
+    const publisher = this.cms.getObjectId(publisherEle.value);
     const publisherName = newForm.get('PublisherName').value;
     newForm.get('Description').setValue(`Kết chuyển chiết khấu đến ngày ${newForm.get('CommissionTo')?.value?.toLocaleDateString()}`);
     if (!this.isProcessing && publisher) {
@@ -297,7 +297,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   toMoney(formItem: FormGroup) {
-    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
@@ -312,7 +312,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
 
   async preview(formItem: FormGroup) {
     const data: CollaboratorCommissionVoucherModel = formItem.value;
-    this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+    this.cms.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],
@@ -337,13 +337,13 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 

@@ -39,7 +39,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -98,19 +98,19 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<PurchasePriceTableImportComponent>,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -292,7 +292,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
   loadList(callback?: (list: SmsReceipientModel[]) => void) {
 
     // if (this.gridApi) {
-    //   this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+    //   this.cms.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
     // }
 
   }
@@ -711,7 +711,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    // this.commonService.openDialog(PurchasePriceTablePrintComponent, {
+    // this.cms.openDialog(PurchasePriceTablePrintComponent, {
     //   context: {
     //     title: 'Xem trước',
     //     data: data,

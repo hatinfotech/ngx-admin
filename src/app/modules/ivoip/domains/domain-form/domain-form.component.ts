@@ -83,11 +83,11 @@ export class DomainFormComponent extends IvoipBaseFormComponent<PbxDomainModel> 
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref: NbDialogRef<DomainFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

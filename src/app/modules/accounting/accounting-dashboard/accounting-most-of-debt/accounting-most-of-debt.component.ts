@@ -19,7 +19,7 @@ export class AccountingMostOfDebtComponent implements OnDestroy {
 
   constructor(
     private userService: UserData,
-    public commonService: CommonService,
+    public cms: CommonService,
     ) {
     // forkJoin(
     //   this.userService.getContacts(),
@@ -37,9 +37,9 @@ export class AccountingMostOfDebtComponent implements OnDestroy {
   }
 
   createTask(e, publisher) {
-    this.commonService.showDialog('Tạo task trao đổi', 'Tính năng đang phát triển !', [
+    this.cms.showDialog('Tạo task trao đổi', 'Tính năng đang phát triển !', [
     ]);
-    // this.commonService.showDialog('Tạo task trao đổi', 'Bạn có muốn tạo task trao đổi với ' + publisher.Name +' không?', [
+    // this.cms.showDialog('Tạo task trao đổi', 'Bạn có muốn tạo task trao đổi với ' + publisher.Name +' không?', [
     //   {
     //     status: 'info',
     //     label: 'Trở về'

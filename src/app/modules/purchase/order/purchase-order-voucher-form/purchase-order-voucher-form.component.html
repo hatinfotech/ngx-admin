@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card [nbSpinner]="isProcessing" class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Order.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Order.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -103,7 +103,7 @@
                                     <div class="col-lg-6">
                                         <ngx-form-group [formGroup]="formItem" name="DateOfOrder" label="{{validateVoucherDate(formItem.get('DateOfOrder'), 'Purchase.dateOfPurchaseOrder')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                             <input type="text" [owlDateTime]="DateOfOrder" [owlDateTimeTrigger]="DateOfOrder" nbInput fullWidth formControlName="DateOfOrder" placeholder="{{'Purchase.dateOfPurchaseOrder' | translate | headtitlecase}}">
-                                            <owl-date-time #DateOfOrder [startAt]="formItem.get('DateOfOrder')?.value || this.commonService.lastVoucherDate"></owl-date-time>
+                                            <owl-date-time #DateOfOrder [startAt]="formItem.get('DateOfOrder')?.value || this.cms.lastVoucherDate"></owl-date-time>
                                         </ngx-form-group>
                                     </div>
                                     <div class="col-lg-6">

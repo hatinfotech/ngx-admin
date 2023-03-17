@@ -28,10 +28,10 @@ export class MinierpFormComponent extends MinierpBaseFormComponent<MiniErpModel>
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public minierpService: MinierpService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, minierpService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, minierpService);
   }
 
   ngOnInit() {

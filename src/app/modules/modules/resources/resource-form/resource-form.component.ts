@@ -87,9 +87,9 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     // this.idKey = 'Name';
     // this.apiPath = '/module/modules';
 

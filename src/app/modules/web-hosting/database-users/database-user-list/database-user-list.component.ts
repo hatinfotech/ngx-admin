@@ -54,12 +54,12 @@ export class DatabaseUserListComponent extends WebHostingBaseListComponent<WhDat
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public webHostingService: WebHostingService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, webHostingService);
+    super(apiService, router, cms, dialogService, toastService, webHostingService);
   }
 
   ngOnInit() {

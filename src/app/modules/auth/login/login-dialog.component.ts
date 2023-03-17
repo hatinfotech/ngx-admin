@@ -35,13 +35,13 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     cd: ChangeDetectorRef,
     public router: Router,
     public ref: NbDialogRef<LoginDialogComponent>,
-    public commonService: CommonService,
+    public cms: CommonService,
     public apiService: ApiService,
     public authService: NbAuthService,
   ) {
     super(service, options, cd, router);
     LoginDialogComponent.instances.push(this);
-    this.commonService.getMainSocket().then(mainSocket => {
+    this.cms.getMainSocket().then(mainSocket => {
       mainSocket.socketServerId$.subscribe(async socketServerId => {
         if (socketServerId) {
           try {
@@ -112,7 +112,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     // this.service.onAuthenticationChange().pipe(takeUntil(this.destroy$)).subscribe(status => {
     //   if (status) {
     //     // this.close();
-    //     // this.commonService.goback();
+    //     // this.cms.goback();
 
     //     this.service.isAuthenticated().pipe(take(1)).subscribe(status2 => {
     //       if (status2) {
@@ -148,7 +148,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
       //   }, this.redirectDelay);
       // } else {
       //   setTimeout(() => {
-      //     this.commonService.goToPrevious();
+      //     this.cms.goToPrevious();
       //   }, this.redirectDelay);
       // }
       this.cd.detectChanges();
@@ -184,7 +184,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   //       }, this.redirectDelay);
   //     } else {
   //       setTimeout(() => {
-  //         this.commonService.goToPrevious();
+  //         this.cms.goToPrevious();
   //       }, this.redirectDelay);
   //     }
   //     this.cd.detectChanges();
@@ -216,7 +216,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   switchToLoginByApp() {
     let toastDialog: NbToastRef = null;
     if (this.qrCodeExpried === false) {
-      toastDialog = this.commonService.toastService.show('Bạn chỉ được gửi yêu cầu scan2login mỗi lần trong vòng 30 giây, hãy thủ lại sau khi token hết hạn !', 'Scan2Login', { status: 'warning' })
+      toastDialog = this.cms.toastService.show('Bạn chỉ được gửi yêu cầu scan2login mỗi lần trong vòng 30 giây, hãy thủ lại sau khi token hết hạn !', 'Scan2Login', { status: 'warning' })
       return false;
     }
     this.apiService.postPromise<any>('/user/login/requestAuthByQrCode', {}, []).then(rs => {
@@ -237,19 +237,19 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
       // Listen second login token
       this.apiService.getPromise<any>('/user/login/listenSecondLoginToken', { uuid: rs.Uuid }).then(rs => {
         toastDialog && toastDialog.close();
-        toastDialog = this.commonService.toastService.show('Đang đăng nhập bằng Scan2Login... !', 'Scan2Login', { status: 'info' })
+        toastDialog = this.cms.toastService.show('Đang đăng nhập bằng Scan2Login... !', 'Scan2Login', { status: 'info' })
         this.user.secondLoginToken = rs.SecondLoginToken;
         this.login().then(status => {
           if (status) {
             toastDialog && toastDialog.close();
-            toastDialog = this.commonService.toastService.show('Đăng nhập bằng Scan2Login thành công!', 'Scan2Login', { status: 'success' })
+            toastDialog = this.cms.toastService.show('Đăng nhập bằng Scan2Login thành công!', 'Scan2Login', { status: 'success' })
           }
         });
         this.qrCodeExpried = null;
       }).catch(err => {
         console.log(err);
         toastDialog && toastDialog.close();
-        toastDialog = this.commonService.toastService.show('Không thể đăng nhập bằng Scan2Login', 'Scan2Login', { status: 'danger' });
+        toastDialog = this.cms.toastService.show('Không thể đăng nhập bằng Scan2Login', 'Scan2Login', { status: 'danger' });
         this.qrCodeExpried = true;
       });
 

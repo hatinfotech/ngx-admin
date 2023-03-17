@@ -16,12 +16,12 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ref?: NbDialogRef<ServerDataManagerListComponent<M>>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
     this.source = null;
   }
 
@@ -32,7 +32,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   /** List init event */
   ngOnInit() {
     super.ngOnInit();
-    this.commonService.activeRoute.params.subscribe(params => {
+    this.cms.activeRoute.params.subscribe(params => {
       // if (params['id']) callback(decodeURIComponent(params['id']).split('&')); else callback();
       console.log(params);
     });
@@ -47,7 +47,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   }
 
   initDataSource() {
-    return this.source = new CustomServerDataSource<M>(this.apiService, this.commonService, this.getApiPath());
+    return this.source = new CustomServerDataSource<M>(this.apiService, this.cms, this.getApiPath());
   }
 
   /** Get data from api and push to list */

@@ -101,7 +101,7 @@ export class ZaloOaFollowerFormComponent extends DataManagerFormComponent<Contac
 
   typeList: ContactDetailTypeModel[];
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Common.type') + '...',
+    placeholder: this.cms.translateText('Common.type') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -121,10 +121,10 @@ export class ZaloOaFollowerFormComponent extends DataManagerFormComponent<Contac
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<ZaloOaFollowerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

@@ -171,7 +171,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
       type: 'button',
       name: 'saveAndClose',
       status: 'primary',
-      label: this.commonService.translateText('Common.saveAndClose'),
+      label: this.cms.translateText('Common.saveAndClose'),
       icon: 'save',
       title: 'Lưu yêu cầu',
       size: 'medium',
@@ -244,13 +244,13 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public elRef: ElementRef,
     public mobileAppService: MobileAppService,
     public ref?: NbDialogRef<QuickTicketFormComponent>,
     public helpdeskService?: HeldpeskServiceService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
     this.silent = true;
     if (this.ticketCode) {
       this.id = [this.ticketCode];
@@ -545,9 +545,9 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     const ticketCode = this.array.controls[0].get('Code').value;
     if (phoneNumber) {
       // this.mobileAppService.phoneCall(phoneNumber, name ? name : phoneNumber);
-      this.commonService.showDialog(this.commonService.translateText('Click2Call'), this.commonService.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
+      this.cms.showDialog(this.cms.translateText('Click2Call'), this.cms.translateText('Gọi lại khách hàng, hệ thống sẽ kết nối tới số SIP của bạn trước vì vậy hãy online số SIP của bạn trước khi thưc hiên click2call !'), [
         {
-          label: this.commonService.translateText('Common.cancel'),
+          label: this.cms.translateText('Common.cancel'),
           status: 'danger',
           action: () => {
           },
@@ -555,7 +555,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
         {
           icon: 'phone-call',
           status: 'success',
-          label: this.commonService.translateText('Gọi'),
+          label: this.cms.translateText('Gọi'),
           action: () => {
             this.toastrService.show('Đang kết nối tới số SIP của bạn...');
             this.apiService.putPromise('/helpdesk/tickets/' + ticketCode, { click2call: true }, []).then(rs => {

@@ -27,12 +27,12 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public webHostingService: WebHostingService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {
@@ -61,7 +61,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
       status: 'success',
       label: 'Hosting',
       icon: 'plus',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',
       select2: { data: this.webHostingService.hostingList, option: this.webHostingService.hostingListConfig },
       value: () => this.webHostingService.activeHosting,
@@ -101,7 +101,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
 
   // getList(callback: (list: M[]) => void) {
   //   if (this.ivoipService.getPbxActiveDomainUuid()) {
-  //     this.commonService.takeUntil('pbx_ext_get_list', 300, () => {
+  //     this.cms.takeUntil('pbx_ext_get_list', 300, () => {
   //       // this.ivoipService.activeDomainUuid$.subscribe(activeDoaminUUid => {
   //       this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, results => callback(results));
   //       // });

@@ -79,9 +79,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
   // sortableInstance: any;
 
   /** Tax list */
@@ -94,7 +94,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   warehouseContainerList = [];
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -185,15 +185,15 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   };
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ProductFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
           onDialogSave: (newData: ProductModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
-            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+            const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
             formGroup.get('Product').patchValue(newProduct);
           },
           onDialogClose: () => {
@@ -207,24 +207,24 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }];
 
   customIconsForContainerX: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Gán vị trí'),
+    icon: 'plus-square-outline', title: this.cms.translateText('Gán vị trí'),
     status: 'danger',
     states: {
       '<>': {
         icon: 'plus-square-outline',
         status: 'danger',
-        title: this.commonService.translateText('Thêm vị trí mới'),
+        title: this.cms.translateText('Thêm vị trí mới'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Thêm vị trí mới'),
+        title: this.cms.translateText('Thêm vị trí mới'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-      const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
-      this.commonService.openDialog(AssignNewContainerFormComponent, {
+      const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+      const currentUnit = this.cms.getObjectId(formGroup.get('Unit').value);
+      this.cms.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
           inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
@@ -254,12 +254,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<WarehouseInventoryAdjustNoteFormComponent>,
     public adminProductService: AdminProductService,
     public themeService: NbThemeService
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     this.themeService.onThemeChange().pipe(map(({ name }) => name), takeUntil(this.destroy$)).subscribe(theme => {
       this.themeName = theme == 'default' ? '' : theme;
@@ -395,9 +395,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -406,7 +406,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       },
     });
 
-    this.commonService.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(configs => this.systemConfigs = configs);
+    this.cms.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(configs => this.systemConfigs = configs);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -418,23 +418,23 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     if (this.customIconsForProduct[name]) return this.customIconsForProduct[name];
     return this.customIconsForProduct[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Common.addNewProduct'),
+      title: this.cms.translateText('Common.addNewProduct'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Common.editProduct'),
+          title: this.cms.translateText('Common.editProduct'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Common.addNewProduct'),
+          title: this.cms.translateText('Common.addNewProduct'),
         },
       },
       action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        this.commonService.openDialog(ProductFormComponent, {
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        this.cms.openDialog(ProductFormComponent, {
           context: {
             inputMode: 'dialog',
             inputId: currentProduct ? [currentProduct] : null,
@@ -442,7 +442,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             onDialogSave: (newData: ProductModel[]) => {
               console.log(newData);
               // const formItem = formGroupComponent.formGroup;
-              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
               formGroup.get('Product').patchValue(newProduct);
             },
             onDialogClose: () => {
@@ -547,7 +547,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   };
   public getRowNodeId = (item: WarehouseInventoryAdjustNoteDetailModel) => {
-    return this.commonService.getObjectId(item.Product) + '-' + this.commonService.getObjectId(item.Unit);
+    return this.cms.getObjectId(item.Product) + '-' + this.cms.getObjectId(item.Unit);
   }
   public getRowStyle = (params: { node: RowNode }) => {
     // if (params.node.rowIndex == this.activeDetailIndex) {
@@ -557,7 +557,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   async createNewContainer(productId: string, unitId: string): Promise<WarehouseGoodsContainerModel> {
     return new Promise((resolve, reject) => {
-      this.commonService.openDialog(AssignNewContainerFormComponent, {
+      this.cms.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
           inputGoodsList: [{ Code: productId, WarehouseUnit: unitId as any }],
@@ -576,7 +576,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   async openCreateOfPreviewContainersDialog(productId: string, productName: string, unitId: string, containers: string[]) {
     return new Promise<WarehouseGoodsContainerModel>((resolve, reject) => {
-      this.commonService.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
+      this.cms.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
         {
           label: 'Tạo mới',
           status: 'danger',
@@ -598,7 +598,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           label: 'Xem lại',
           status: 'primary',
           action: () => {
-            this.commonService.openDialog(WarehouseGoodsContainerListComponent, {
+            this.cms.openDialog(WarehouseGoodsContainerListComponent, {
               context: {
                 // isChoosedMode: true,
                 inputFilter: {
@@ -621,20 +621,20 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   public cellDoubleClicked = (params: CellDoubleClickedEvent) => {
     console.log(params);
-    const shelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+    const shelf = this.cms.getObjectId(this.array.controls[0].get('Shelf').value);
     if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
       if (!params.data.Containers || params.data.Containers.length == 0) {
 
-        this.createNewContainer(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectId(params.data.Unit)).then(container => {
+        this.createNewContainer(this.cms.getObjectId(params.data.Product), this.cms.getObjectId(params.data.Unit)).then(container => {
           params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
           params.node.setDataValue('Warehouse', container.Warehouse);
           params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
         });
 
       } else {
-        this.openCreateOfPreviewContainersDialog(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectText(params.data.Product), this.commonService.getObjectId(params.data.Unit), params.data.Containers.map(m => this.commonService.getObjectId(m))).then(container => {
-          if (this.commonService.getObjectId(shelf) && container.Shelf != this.commonService.getObjectId(shelf)) {
-            this.commonService.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
+        this.openCreateOfPreviewContainersDialog(this.cms.getObjectId(params.data.Product), this.cms.getObjectText(params.data.Product), this.cms.getObjectId(params.data.Unit), params.data.Containers.map(m => this.cms.getObjectId(m))).then(container => {
+          if (this.cms.getObjectId(shelf) && container.Shelf != this.cms.getObjectId(shelf)) {
+            this.cms.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.cms.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
           } else {
             params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
             params.node.setDataValue('Warehouse', container.Warehouse);
@@ -648,7 +648,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       }
     }
     if (params.colDef.field == 'AccessNumbers') {
-      this.commonService.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
+      this.cms.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
     }
   };
 
@@ -663,27 +663,27 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     },
     textRender: (params) => {
       if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
-        if (!this.commonService.getObjectId(params.value) || typeof this.commonService.getObjectId(params.value) == 'undefined') {
+        if (!this.cms.getObjectId(params.value) || typeof this.cms.getObjectId(params.value) == 'undefined') {
           return 'Double click để thay đổi vị trí';
         }
       }
       if (params.colDef.field == 'Warehouse') {
-        return this.commonService.getObjectText(params.data.Warehouse);
+        return this.cms.getObjectText(params.data.Warehouse);
       }
       if (params.colDef.field == 'Sku') {
         return params.data.Product?.Sku;
       }
       if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectText(m)).join(', ');
+        return params.value.map(m => this.cms.getObjectText(m)).join(', ');
       } else {
-        return this.commonService.getObjectText(params.value);
+        return this.cms.getObjectText(params.value);
       }
     },
     idRender: (params) => {
       if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
+        return params.value.map(m => this.cms.getObjectId(m)).join(', ');
       } else {
-        return this.commonService.getObjectId(params.value);
+        return this.cms.getObjectId(params.value);
       }
     },
     numberRender: (params) => {
@@ -724,13 +724,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   loadList(callback?: (list: WarehouseInventoryAdjustNoteDetailModel[]) => void) {
 
     if (this.gridApi) {
-      // this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+      // this.cms.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
 
       let details: WarehouseInventoryAdjustNoteDetailModel[] = (this.array.controls[0]['Details'] || []).map((detail: WarehouseInventoryAdjustNoteDetailModel) => {
         if (detail.Container) {
           detail.Shelf = { id: detail.Container.Shelf, text: detail.Container.ShelfName };
         }
-        detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
+        detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.cms.getObjectId(m)) : [];
         return detail;
       });
       this.gridApi.setRowData(details);
@@ -809,26 +809,26 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     if (this.customIconsForContainer[name]) return this.customIconsForContainer[name];
     return this.customIconsForContainer[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Thêm vị trí mới'),
+      title: this.cms.translateText('Thêm vị trí mới'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Chỉnh sửa vị trí'),
+          title: this.cms.translateText('Chỉnh sửa vị trí'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Thêm vị trí mới'),
+          title: this.cms.translateText('Thêm vị trí mới'),
         },
       },
       action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const containerId = this.commonService.getObjectId(formGroup.get('Container').value);
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        const currentUnit = this.commonService.getObjectId(formGroup.get('Unit').value);
+        const containerId = this.cms.getObjectId(formGroup.get('Container').value);
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        const currentUnit = this.cms.getObjectId(formGroup.get('Unit').value);
         if (containerId) {
-          this.commonService.openDialog(WarehouseGoodsContainerFormComponent, {
+          this.cms.openDialog(WarehouseGoodsContainerFormComponent, {
             context: {
               inputMode: 'dialog',
               // inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
@@ -855,7 +855,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             closeOnBackdropClick: false,
           });
         } else {
-          this.commonService.openDialog(AssignNewContainerFormComponent, {
+          this.cms.openDialog(AssignNewContainerFormComponent, {
             context: {
               inputMode: 'dialog',
               inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
@@ -878,7 +878,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa...',
       prepareReaultItem: (item) => {
@@ -980,12 +980,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   ];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'SUPPLIER', text: this.commonService.translateText('Common.supplier') }] }],
+          data: [{ Groups: [{ id: 'SUPPLIER', text: this.cms.translateText('Common.supplier') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -1002,12 +1002,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -1080,7 +1080,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           this.unitMap[unit['Sequence']] = unit;
         }
         console.log(this.unitMap);
-        // this.commonService.toastService.show('Đã tải danh sách đơn vị tính', 'POS Thương mại', { status: 'success' });
+        // this.cms.toastService.show('Đã tải danh sách đơn vị tính', 'POS Thương mại', { status: 'success' });
         return true;
       });
 
@@ -1131,7 +1131,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         let page = 1;
         const limit = 50;
         // while (true) {
-        //   const ids = itemFormData.Details.slice((page - 1) * limit, page * limit).map(m => `${this.commonService.getObjectId(m.Product)}-${this.commonService.getObjectId(m.Unit)}`);
+        //   const ids = itemFormData.Details.slice((page - 1) * limit, page * limit).map(m => `${this.cms.getObjectId(m.Product)}-${this.cms.getObjectId(m.Unit)}`);
         //   if (ids.length == 0) break;
         //   const pageList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
         //     select: 'Code',
@@ -1151,14 +1151,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
         // const goodsListIndex = {};
         // for (const goods of goodsList) {
-        //   goodsListIndex[`${goods.Code}-${this.commonService.getObjectId(goods.ConversionUnit)}`] = goods;
+        //   goodsListIndex[`${goods.Code}-${this.cms.getObjectId(goods.ConversionUnit)}`] = goods;
         // }
 
 
         // for (let id = 0; id < itemFormData.Details.length; id++) {
         //   const detail = itemFormData.Details[id];
-        //   // detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
-        //   detail.AccessNumbers = Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
+        //   // detail.AccessNumbers = Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
+        //   detail.AccessNumbers = Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.cms.getObjectId(m)) : [];
 
         //   // const item = itemFormData.Details[id];
         //   let detailFormGroup: FormGroup;
@@ -1170,7 +1170,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         //     if (detail.Product) {
         //       this.onSelectProduct(detailFormGroup, detail.Product, true);
         //       let seelctedUnit = detail.Product?.Units?.find(f => f.id == detail.Unit.id);
-        //       const relateGoods = goodsListIndex[`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}`];
+        //       const relateGoods = goodsListIndex[`${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}`];
         //       if (relateGoods) {
         //         seelctedUnit.IsManageByAccessNumber = relateGoods.IsManageByAccessNumber;
         //         seelctedUnit['Containers'] = relateGoods.Containers;
@@ -1215,7 +1215,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       if (data.Details) {
         for (const detail of data.Details) {
           if (Array.isArray(detail.AccessNumbers)) {
-            detail.AccessNumbers = detail.AccessNumbers.map(m => this.commonService.getObjectId(m));
+            detail.AccessNumbers = detail.AccessNumbers.map(m => this.cms.getObjectId(m));
           }
           // this.getDetails(formGroup).push(this.makeNewDetailFormGroup(formGroup));
         }
@@ -1308,8 +1308,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     if (data) {
 
       if (Array.isArray(data.AccessNumbers)) {
-        // data.AccessNumbers = Array.isArray(data.AccessNumbers) && data.AccessNumbers.length > 0 ? (data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
-        data.AccessNumbers = Array.isArray(data.AccessNumbers) ? data.AccessNumbers.map(ac => this.commonService.getObjectId(ac)) : [];
+        // data.AccessNumbers = Array.isArray(data.AccessNumbers) && data.AccessNumbers.length > 0 ? (data.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
+        data.AccessNumbers = Array.isArray(data.AccessNumbers) ? data.AccessNumbers.map(ac => this.cms.getObjectId(ac)) : [];
       }
       newForm.patchValue(data);
       if (!data['Type']) {
@@ -1348,7 +1348,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     let unitField: FormControl = null;
     let unitList: UnitModel[] = [];
     let containerList: WarehouseGoodsContainerModel[] = [];
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Thêm hàng hóa theo tên',
         onInit: async (form, dialog) => {
@@ -1364,8 +1364,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               includeUnit: true,
               includeContainers: true,
               includeAccessNumbers: true,
-              eq_Code: this.commonService.getObjectId(goodsField.value),
-              eq_ConversionUnit: this.commonService.getObjectId(unitField.value),
+              eq_Code: this.cms.getObjectId(goodsField.value),
+              eq_ConversionUnit: this.cms.getObjectId(unitField.value),
             }).then(goodsList => {
               // const results = [];
               if (goodsList && goodsList.length > 0) {
@@ -1453,7 +1453,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: unitList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
+                    results: unitList.filter(unit => !params.term || this.cms.smartFilter(unit.text, params.term)),
                   };
                 },
               },
@@ -1483,7 +1483,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 delay: 0,
                 processResults: (data: any, params: any) => {
                   return {
-                    results: containerList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
+                    results: containerList.filter(unit => !params.term || this.cms.smartFilter(unit.text, params.term)),
                   };
                 },
               },
@@ -1526,7 +1526,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 let container = null;
                 if (goods.Containers && goods.Containers.length > 0) {
 
-                  const selectedShelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+                  const selectedShelf = this.cms.getObjectId(this.array.controls[0].get('Shelf').value);
 
                   if (selectedShelf) {
                     container = goods.Containers.find(f => f.Shelf == selectedShelf);
@@ -1534,14 +1534,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       container.selected = true;
                       this.playNewPipSound();
                     } else {
-                      this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
+                      this.cms.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
                       this.playErrorPipSound();
                     }
                   } else {
                     if (accessNumber) {
                       container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
                       if (!container) {
-                        this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
+                        this.cms.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
                         this.playErrorPipSound();
                       } else {
                         container.selected = true;
@@ -1551,7 +1551,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                   }
                 } else {
                   this.playErrorPipSound();
-                  this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
+                  this.cms.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
                 }
                 const newRowNodeTrans = this.gridApi.applyTransaction({
                   add: [
@@ -1663,7 +1663,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
 
     console.log(selectedData);
-    const productId = this.commonService.getObjectId(selectedData);
+    const productId = this.cms.getObjectId(selectedData);
     if (productId) {
       if (!doNotAutoFill) {
         const descriptionControl = detail.get('Description');
@@ -1682,8 +1682,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   async onSelectUnit(detail: FormGroup, selectedData: any, force?: boolean) {
-    const unitId = this.commonService.getObjectId(selectedData);
-    const productId = this.commonService.getObjectId(detail.get('Product').value);
+    const unitId = this.cms.getObjectId(selectedData);
+    const productId = this.cms.getObjectId(detail.get('Product').value);
     if (selectedData?.IsManageByAccessNumber) {
       detail['IsManageByAccessNumber'] = selectedData.IsManageByAccessNumber;
     } else {
@@ -1754,9 +1754,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   async onSelectContainer(detail: FormGroup, selectedData: ProductModel, force?: boolean, parentForm?: FormGroup) {
     // console.log(selectedData);
-    const selectedShelf = parentForm && this.commonService.getObjectId(parentForm.get('Shelf').value) || null;
+    const selectedShelf = parentForm && this.cms.getObjectId(parentForm.get('Shelf').value) || null;
     if (selectedShelf && selectedData?.ContainerShelf && selectedData?.ContainerShelf != selectedShelf) {
-      this.commonService.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning', duration: 10000 });
+      this.cms.toastService.show('Vị trí hàng hóa không đúng kệ đã chọn', 'Vị trí hàng hóa không đúng kệ đã chọn', { status: 'warning', duration: 10000 });
       // this.errorSound.nativeElement.pause();
       // this.errorSound.nativeElement.currentTime = 0;
       this.playErrorPipSound();
@@ -1765,10 +1765,10 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     if (false) if (selectedData && selectedData['AccessNumbers']) {
       detail['AccessNumberList'] = selectedData['AccessNumbers'].map(accessNumber => {
         // const coreEmbedId = this.systemConfigs.ROOT_CONFIGS.coreEmbedId;
-        // let goodsId = this.commonService.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
+        // let goodsId = this.cms.getObjectId(detail.get('Product').value).replace(new RegExp(`^118${coreEmbedId}`), '');
         // let an = accessNumber.replace(/^127/, '');
 
-        accessNumber = { origin: true, id: accessNumber, text: this.commonService.compileAccessNumber(accessNumber, this.commonService.getObjectId(detail.get('Product').value)) };
+        accessNumber = { origin: true, id: accessNumber, text: this.cms.compileAccessNumber(accessNumber, this.cms.getObjectId(detail.get('Product').value)) };
         return accessNumber;
       });
     } else {
@@ -1786,7 +1786,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     // if (selectedData && selectedData.length > 0) {
     //   for (const an of selectedData) {
     //     if (!an?.origin && an.id == an.text) {
-    //       const { accessNumber, goodsId } = this.commonService.decompileAccessNumber(this.commonService.getObjectId(an));
+    //       const { accessNumber, goodsId } = this.cms.decompileAccessNumber(this.cms.getObjectId(an));
     //       console.log(accessNumber, goodsId);
     //       an.id = accessNumber;
     //       hadChanged = true;
@@ -1840,7 +1840,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   //   //     }
   //   //   }
   //   // });
-  //   this.commonService.openDialog(WarehouseInventoryAdjustNotePrintComponent, {
+  //   this.cms.openDialog(WarehouseInventoryAdjustNotePrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',
@@ -1862,13 +1862,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     for (const item of data.array) {
       for (const prop in item) {
         if (prop != 'Details') {
-          item[prop] = this.commonService.getObjectId(item[prop]);
+          item[prop] = this.cms.getObjectId(item[prop]);
         }
       }
       // for (const detail of item.Details) {
       //   for (const prop in detail) {
       //     if (prop != 'AccessNumbers') {
-      //       detail[prop] = this.commonService.getObjectId(detail[prop]);
+      //       detail[prop] = this.cms.getObjectId(detail[prop]);
       //     }
       //   }
       //   if (typeof detail.AccessNumbers == 'string') {
@@ -1876,7 +1876,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       //       if (/^127/.test(ac)) {
       //         return { id: ac, text: ac };
       //       }
-      //       const acd = this.commonService.decompileAccessNumber(ac);
+      //       const acd = this.cms.decompileAccessNumber(ac);
       //       return { id: acd.accessNumber, text: acd.accessNumber };
       //     });
       //   }
@@ -1889,9 +1889,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         const rawDetail = {};
         for (const prop in rowNode.data) {
           if (prop == 'AccessNumbers') {
-            rawDetail[prop] = Array.isArray(rowNode.data[prop]) ? rowNode.data[prop].map(m => this.commonService.getObjectId(m)) : [];
+            rawDetail[prop] = Array.isArray(rowNode.data[prop]) ? rowNode.data[prop].map(m => this.cms.getObjectId(m)) : [];
           } else {
-            rawDetail[prop] = this.commonService.getObjectId(rowNode.data[prop]);
+            rawDetail[prop] = this.cms.getObjectId(rowNode.data[prop]);
           }
         }
         item.Details.push(rawDetail);
@@ -1901,7 +1901,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
       context: {
         components: {
           'PURCHASE': { title: 'Phiếu mua hàng' },
@@ -1922,13 +1922,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 // get purchase order
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu nhập kho'), this.cms.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                     continue;
                   }
                 } else {
@@ -1966,13 +1966,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                 // get purchase order
                 const voucher = await this.apiService.getPromise<SalesVoucherModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.commonService.getObjectId(voucher.State)) < 0) {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(voucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.commonService.translateText('Common.warning'), { status: 'warning', duration: 10000 });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Đối tượng theo dõi trong phiếu nhập không giống với phiếu nhập xuất'), this.cms.translateText('Common.warning'), { status: 'warning', duration: 10000 });
                     continue;
                   }
                 } else {
@@ -2012,13 +2012,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
-    //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+    //   this.cms.openDialog(PurchaseVoucherPrintComponent, {
     //     context: {
     //       showLoadinng: true,
     //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       id: [this.cms.getObjectId(relativeVocher)],
     //       // data: data,
     //       idKey: ['Code'],
     //       // approvedConfirm: true,
@@ -2033,14 +2033,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 
   public barcode = '';
   // barcodeScanDetective(key: string, callback: (barcode: string) => void) {
   //   this.barcode += key;
-  //   this.commonService.takeUntil('barcode-scan-detective', 100, () => {
+  //   this.cms.takeUntil('barcode-scan-detective', 100, () => {
   //     this.barcode = '';
   //   });
   //   console.log(this.barcode);
@@ -2052,7 +2052,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   //       }
   //       // this.findOrderKeyInput = '';
   //     } catch (err) {
-  //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+  //       this.cms.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
   //     }
   //     this.barcode = '';
   //   }
@@ -2061,7 +2061,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   onKeyboardEvent(event: KeyboardEvent) {
     // if (this.ref && document.activeElement.tagName == 'BODY') {
     //   this.barcode += event.key;
-    //   this.commonService.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
+    //   this.cms.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
     //     this.barcode = '';
     //   });
     //   console.log(this.barcode);
@@ -2071,11 +2071,11 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     //         this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
     //       }
     //     } catch (err) {
-    //       this.commonService.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
+    //       this.cms.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
     //     }
     //     this.barcode = '';
     //   }
-    this.commonService.barcodeScanDetective(event.key, barcode => {
+    this.cms.barcodeScanDetective(event.key, barcode => {
       this.barcodeProcess(barcode);
     });
     // }
@@ -2111,18 +2111,18 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       tmpcode = tmpcode.substring(1);
       unitSeq = tmpcode.substring(0, unitSeqLength);
       unit = this.unitMap[unitSeq];
-      unitId = this.commonService.getObjectId(unit);
+      unitId = this.cms.getObjectId(unit);
       tmpcode = tmpcode.substring(unitSeqLength);
       productId = tmpcode;
       productId = '118' + coreId + productId;
     } else {
 
-      const extracted = this.commonService.extractGoodsBarcode(barcode);
+      const extracted = this.cms.extractGoodsBarcode(barcode);
       accessNumber = extracted.accessNumber;
       productId = extracted.productId;
       unitSeq = extracted.unitSeq;
       unit = this.unitMap[unitSeq];
-      unitId = this.commonService.getObjectId(unit);
+      unitId = this.cms.getObjectId(unit);
 
       // const productIdLength = parseInt(barcode.substring(0, 2)) - 10;
       // accessNumber = barcode.substring(productIdLength + 2);
@@ -2133,7 +2133,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // let unitIdLength = parseInt(productId.slice(0, 1));
       // unitSeq = productId.slice(1, unitIdLength + 1);
       // unit = this.unitMap[unitSeq];
-      // unitId = this.commonService.getObjectId(unit);
+      // unitId = this.cms.getObjectId(unit);
       // productId = productId.slice(unitIdLength + 1);
       // productId = '118' + coreId + productId;
     }
@@ -2159,7 +2159,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         let container = null;
         if (goods.Containers && goods.Containers.length > 0) {
 
-          const selectedShelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+          const selectedShelf = this.cms.getObjectId(this.array.controls[0].get('Shelf').value);
 
           if (selectedShelf) {
             container = goods.Containers.find(f => f.ContainerShelf == selectedShelf);
@@ -2167,14 +2167,14 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               container.selected = true;
               this.playNewPipSound();
             } else {
-              this.commonService.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
+              this.cms.toastService.show(`Không có vị trí nào phù hợp cho ${goods.Code} !`, 'Không có vị trí nào phù hợp !', { status: 'warning', duration: 10000 });
               this.playErrorPipSound();
             }
           } else {
             if (accessNumber) {
               container = goods.Containers.find(f => Array.isArray(f.AccessNumbers) && f.AccessNumbers.some(s => s == accessNumber));
               if (!container) {
-                this.commonService.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
+                this.cms.toastService.show(`Số truy xuất ${accessNumber} không có trong kho !`, 'Số truy xuất không có trong kho !', { status: 'warning', duration: 10000 });
                 this.playErrorPipSound();
               } else {
                 container.selected = true;
@@ -2184,7 +2184,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           }
         } else {
           this.playErrorPipSound();
-          this.commonService.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
+          this.cms.toastService.show(`${goods.Name} chưa được cài đặt vị trí !`, 'Hàng hóa chưa được cài đặt vị trí', { status: 'warning', duration: 10000 });
         }
         const newRowNodeTrans = this.gridApi.applyTransaction({
           add: [
@@ -2245,7 +2245,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           existsGoods.setDataValue('Quantity', currentAccessNumbers.length);
           this.playIncreasePipSound();
         } else {
-          this.commonService.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning', duration: 10000 });
+          this.cms.toastService.show(`${accessNumber} đang có trong danh sách rồi !`, 'Số truy xuất đang trong danh sánh !', { status: 'warning', duration: 10000 });
           this.playErrorPipSound();
         }
       } else {
@@ -2264,7 +2264,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   addGoodsOfShelf(parentFormGroup: FormGroup) {
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Chọn kệ cần thêm hàng hóa',
         onInit: async (form, dialog) => {
@@ -2328,13 +2328,13 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
               // Get all container of shelf
               this.isProcessing = true;
-              this.apiService.getPromise<any[]>('/warehouse/goods-containers', { includeGoods: true, eq_Shelf: this.commonService.getObjectId(form.value?.Shelf), limit: 'nolimit' }).then(rs => {
+              this.apiService.getPromise<any[]>('/warehouse/goods-containers', { includeGoods: true, eq_Shelf: this.cms.getObjectId(form.value?.Shelf), limit: 'nolimit' }).then(rs => {
                 console.log(rs);
 
                 if (rs && rs.length > 0) {
                   // const details = this.getDetails(this.array.controls[0] as FormGroup);
 
-                  // if (!this.commonService.getObjectId(details.controls[0]?.get('Product').value)) {
+                  // if (!this.cms.getObjectId(details.controls[0]?.get('Product').value)) {
                   //   details.removeAt(0);
                   // }
                   let totalRows = this.gridApi.getDisplayedRowCount();
@@ -2353,7 +2353,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       continue;
                     }
                     const goods = goodsInContainer.Goods;
-                    const productId = this.commonService.getObjectId(goods), unitId = this.commonService.getObjectId(goodsInContainer.Unit);
+                    const productId = this.cms.getObjectId(goods), unitId = this.cms.getObjectId(goodsInContainer.Unit);
 
                     if (!productId || !unitId) {
                       // Skip not enoungh condition
@@ -2361,12 +2361,12 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                     }
                     i++;
 
-                    // let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(goods) && this.commonService.getObjectId(f.get('Unit').value) == goods.Unit);
+                    // let existGoodsIndex = details.controls.findIndex(f => this.cms.getObjectId(f.get('Product').value) == this.cms.getObjectId(goods) && this.cms.getObjectId(f.get('Unit').value) == goods.Unit);
                     // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
                     let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
                     if (!existsGoods) {
                       // existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
-                      //   Product: { Code: this.commonService.getObjectId(goods), id: this.commonService.getObjectId(goods), text: this.commonService.getObjectText(goods) },
+                      //   Product: { Code: this.cms.getObjectId(goods), id: this.cms.getObjectId(goods), text: this.cms.getObjectText(goods) },
                       //   Unit: { id: goods.Unit, text: goods.UnitLabel },
                       //   Container: { id: container.Code, text: container.Path },
                       //   AccessNumbers: [],
@@ -2438,7 +2438,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   barcodeScan(formItem: FormGroup) {
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'BarCode Scan',
         onInit: async (form, dialog) => {
@@ -2490,16 +2490,16 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
   createAlternateAdjustVoucher(formItem: FormGroup) {
     if (!formItem.get('Code').value) {
-      this.commonService.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning', duration: 10000 });
+      this.cms.toastService.show(`Bạn phải lưu phiếu trước khi tạo phiếu phụ !`, 'Phiếu chưa được lưu !', { status: 'warning', duration: 10000 });
       this.playErrorPipSound();
       return false;
     }
     if (!formItem.get('Title').value) {
-      this.commonService.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning', duration: 10000 });
+      this.cms.toastService.show(`Bạn phải điền tiêu đề trước khi tạo phiếu phụ !`, 'Phiếu chưa có tiêu đề !', { status: 'warning', duration: 10000 });
       this.playErrorPipSound();
       return false;
     }
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Thông tin phiếu kiểm kho phụ cho trường hợp teamwork',
         onInit: async (form, dialog) => {
@@ -2544,8 +2544,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
               this.apiService.postPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, {}, [
                 {
                   Type: 'SUB',
-                  Object: this.commonService.getObjectId(object),
-                  ObjectName: this.commonService.getObjectText(object),
+                  Object: this.cms.getObjectId(object),
+                  ObjectName: this.cms.getObjectText(object),
                   Title: formItem.get('Title').value + ' (phiếu phụ)',
                   Shelf: formItem.get('Shelf').value
                 }
@@ -2570,7 +2570,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     const relativeVoucher: { id: string, text: string, type: string }[] = formItem.get('RelativeVouchers').value;
     if (relativeVoucher && relativeVoucher.length > 0) {
       try {
-        this.commonService.showDialog('Đồng bộ với phiếu phụ', 'Hệ thống sẽ lấy chi tiết của các phiếu phụ và đồng bộ với chi tiết của phiếu chính, bạn có chắc là muốn đồng bộ ?', [
+        this.cms.showDialog('Đồng bộ với phiếu phụ', 'Hệ thống sẽ lấy chi tiết của các phiếu phụ và đồng bộ với chi tiết của phiếu chính, bạn có chắc là muốn đồng bộ ?', [
           {
             label: 'Trở về',
             status: 'basic',
@@ -2584,7 +2584,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
             status: 'primary',
             action: () => {
 
-              this.apiService.getPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, { id: relativeVoucher.map(m => this.commonService.getObjectId(m)), includeDetails: true, includeAccessNumbers: true }).then(subVouchers => {
+              this.apiService.getPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, { id: relativeVoucher.map(m => this.cms.getObjectId(m)), includeDetails: true, includeAccessNumbers: true }).then(subVouchers => {
 
                 console.log(subVouchers);
                 // const details = this.getDetails(this.array.controls[0] as FormGroup);
@@ -2594,7 +2594,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                     if (subVoucher.Type != 'SUB') {
                       return Promise.reject('Phiếu liên quan không phải phiếu phụ');
                     }
-                    if (this.commonService.getObjectId(subVoucher.Shelf) != this.commonService.getObjectId(formItem.get('Shelf').value)) {
+                    if (this.cms.getObjectId(subVoucher.Shelf) != this.cms.getObjectId(formItem.get('Shelf').value)) {
                       return Promise.reject('Phiếu phụ không chung kệ với phiếu chính');
                     }
 
@@ -2602,9 +2602,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                       for (const detail of subVoucher.Details) {
 
 
-                        // let existGoodsIndex = details.controls.findIndex(f => this.commonService.getObjectId(f.get('Product').value) == this.commonService.getObjectId(detail.Product) && this.commonService.getObjectId(f.get('Unit').value) == this.commonService.getObjectId(detail.Unit));
+                        // let existGoodsIndex = details.controls.findIndex(f => this.cms.getObjectId(f.get('Product').value) == this.cms.getObjectId(detail.Product) && this.cms.getObjectId(f.get('Unit').value) == this.cms.getObjectId(detail.Unit));
                         // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
-                        const productId = this.commonService.getObjectId(detail.Product), unitId = this.commonService.getObjectId(detail.Unit);
+                        const productId = this.cms.getObjectId(detail.Product), unitId = this.cms.getObjectId(detail.Unit);
                         let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
 
 
@@ -2630,7 +2630,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                                   id: detail.Container?.Warehouse,
                                   text: detail.Container?.WarehouseName,
                                 },
-                                AccessNumbers: Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [],
+                                AccessNumbers: Array.isArray(detail.AccessNumbers) ? detail.AccessNumbers.map(m => this.cms.getObjectId(m)) : [],
                                 Quantity: Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? detail.AccessNumbers.length : detail.Quantity,
                                 Image: detail.Image,
                                 Business: detail.Business
@@ -2642,11 +2642,11 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
                         } else {
                           if (detail.Quantity > 0) {
-                            this.commonService.toastService.show(`Phát hiện trùng hàng hóa ${detail.Description}, hệ thống tự động hợp nhất dữ liệu !`, 'Phát hiện trùng hàng hóa', { status: 'warning', duration: 15000 });
+                            this.cms.toastService.show(`Phát hiện trùng hàng hóa ${detail.Description}, hệ thống tự động hợp nhất dữ liệu !`, 'Phát hiện trùng hàng hóa', { status: 'warning', duration: 15000 });
                             if (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0) {
                               let currentAccessNumbers: string[] = existsGoods.data.AccessNumbers || [];
                               for (const ac of detail.AccessNumbers) {
-                                const accessNumber = this.commonService.getObjectId(ac);
+                                const accessNumber = this.cms.getObjectId(ac);
                                 if (currentAccessNumbers.indexOf(accessNumber) < 0) {
                                   // currentAccessNumbers = currentAccessNumbers.replace(/\n$/, '') + '\n' + (accessNumber) + '\n';
                                   currentAccessNumbers.push(accessNumber);
@@ -2676,7 +2676,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
           },
         ])
       } catch (err) {
-        this.commonService.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning', duration: 10000 });
+        this.cms.toastService.show(err, 'Lỗi trong lúc đồng bộ phiếu phụ !', { status: 'warning', duration: 10000 });
       }
     }
   }
@@ -2739,7 +2739,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Update ag-grid
       this.gridApi.forEachNode((rowNode, index) => {
         const rspDetail = newFormData[0].Details[index];
-        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m))
+        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.cms.getObjectId(m))
         rowNode.setData({ ...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
       });
     }
@@ -2754,10 +2754,10 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     }
     this.id = newFormData.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {
@@ -2766,7 +2766,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   }
 
   convertAccessNumberToStringList(accessNumbers: any[]) {
-    return accessNumbers && Array.isArray(accessNumbers) ? accessNumbers.map(m => this.commonService.getObjectId(m)) : [];
+    return accessNumbers && Array.isArray(accessNumbers) ? accessNumbers.map(m => this.cms.getObjectId(m)) : [];
   }
 
   /** Affter main form update event: Override to disable formLoad and execute patch value to formItem */
@@ -2785,7 +2785,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // Update ag-grid
       this.gridApi.forEachNode((rowNode, index) => {
         const rspDetail = newFormData[0].Details[index];
-        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.commonService.getObjectId(m))
+        rspDetail.AccessNumbers = rspDetail.AccessNumbers.map(m => this.cms.getObjectId(m))
         rowNode.setData({ ...rowNode.data, SystemUuid: rspDetail.SystemUuid, AccessNumbers: rspDetail.AccessNumbers });
       });
     }
@@ -2799,10 +2799,10 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     }
     this.id = newFormData?.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {

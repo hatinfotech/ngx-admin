@@ -99,7 +99,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   };
 
   select2OptionForParam = {
-    placeholder: this.commonService.translateText('Common.param'),
+    placeholder: this.cms.translateText('Common.param'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -112,7 +112,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   };
 
   select2OptionForOperator = {
-    placeholder: this.commonService.translateText('Common.param'),
+    placeholder: this.cms.translateText('Common.param'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: false,
@@ -159,10 +159,10 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SystemRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async init() {
@@ -414,7 +414,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   }
 
   calculateDataInputType(dataType: string, operator: string | { id: string, text: string }) {
-    return this.commonService.getObjectId(operator) === 'IN' ? 'select2'
+    return this.cms.getObjectId(operator) === 'IN' ? 'select2'
       : ((['ENV_PARAM'].indexOf(dataType) > -1) ? 'select2remotesource'
         : ((['OBJECTS'].indexOf(dataType) > -1) ? 'select2multi'
           : ((['OBJECT'].indexOf(dataType) > -1) ? 'select2'
@@ -427,13 +427,13 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
 
   getSlect2OptionForData(dataType: string, remoteDataSource?: string, operator?: string | { id: string, text: string }) {
     const option = {
-      placeholder: this.commonService.translateText('Common.param'),
+      placeholder: this.cms.translateText('Common.param'),
       allowClear: true,
       width: '100%',
       dropdownAutoWidth: true,
       minimumInputLength: 0,
       tags: true,
-      multiple: dataType === 'OBJECTS' || this.commonService.getObjectId(operator) === 'IN',
+      multiple: dataType === 'OBJECTS' || this.cms.getObjectId(operator) === 'IN',
       keyMap: {
         id: 'id',
         text: 'text',
@@ -489,7 +489,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   /** Action Form */
   actionList: SystemActionModel[];
   select2OptionForAction = {
-    placeholder: this.commonService.translateText('Common.param'),
+    placeholder: this.cms.translateText('Common.param'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -558,7 +558,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     },
   ];
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Common.dataType'),
+    placeholder: this.cms.translateText('Common.dataType'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -571,47 +571,47 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   typeList = [
     {
       id: 'STRING',
-      text: this.commonService.translateText('Common.DataType.string'),
+      text: this.cms.translateText('Common.DataType.string'),
     },
     {
       id: 'INTEGER',
-      text: this.commonService.translateText('Common.DataType.int'),
+      text: this.cms.translateText('Common.DataType.int'),
     },
     {
       id: 'BOOLEAN',
-      text: this.commonService.translateText('Common.DataType.boolean'),
+      text: this.cms.translateText('Common.DataType.boolean'),
     },
     {
       id: 'DOUBLE',
-      text: this.commonService.translateText('Common.DataType.float'),
+      text: this.cms.translateText('Common.DataType.float'),
     },
     {
       id: 'DATE',
-      text: this.commonService.translateText('Common.DataType.date'),
+      text: this.cms.translateText('Common.DataType.date'),
     },
     {
       id: 'TIME',
-      text: this.commonService.translateText('Common.DataType.time'),
+      text: this.cms.translateText('Common.DataType.time'),
     },
     {
       id: 'DATE_TIME',
-      text: this.commonService.translateText('Common.DataType.datetime'),
+      text: this.cms.translateText('Common.DataType.datetime'),
     },
     {
       id: 'OBJECT',
-      text: this.commonService.translateText('Common.DataType.object'),
+      text: this.cms.translateText('Common.DataType.object'),
     },
     {
       id: 'OBJECTS',
-      text: this.commonService.translateText('Common.DataType.objects'),
+      text: this.cms.translateText('Common.DataType.objects'),
     },
     {
       id: 'ENV_PARAM',
-      text: this.commonService.translateText('Common.DataType.environment'),
+      text: this.cms.translateText('Common.DataType.environment'),
     },
     {
       id: 'STRING',
-      text: this.commonService.translateText('Common.DataType.string'),
+      text: this.cms.translateText('Common.DataType.string'),
     },
   ];
   convertDataTypeToInputType(dataType: string) {
@@ -640,16 +640,16 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
       if (parameter.Type && !type) {
         newForm.get('Type').patchValue(parameter.Type);
       }
-      // this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.commonService.getObjectId(type) || parameter.Type }, '=');
+      // this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.cms.getObjectId(type) || parameter.Type }, '=');
     });
     newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((type: { id?: string, text?: string }) => {
       const parameter = newForm.get('Parameter').value || {};
-      this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.commonService.getObjectId(type) || parameter.Type }, '=');
+      this.onVariableFieldChange(newForm, 'Data', { ...parameter, DataType: this.cms.getObjectId(type) || parameter.Type }, '=');
     });
 
     if (data) {
       newForm['inputType'] = this.calculateDataInputType(data.Parameter?.Type, '=');
-      if (!this.commonService.getObjectId(data.Type)) {
+      if (!this.cms.getObjectId(data.Type)) {
         data.Type = data.Parameter.Type;
       }
       newForm.patchValue(data);
@@ -694,7 +694,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
 
   getSlect2ForActionParameterData(param: SystemActionParamModel) {
     const option = {
-      placeholder: this.commonService.translateText('Common.param'),
+      placeholder: this.cms.translateText('Common.param'),
       allowClear: true,
       width: '100%',
       dropdownAutoWidth: true,

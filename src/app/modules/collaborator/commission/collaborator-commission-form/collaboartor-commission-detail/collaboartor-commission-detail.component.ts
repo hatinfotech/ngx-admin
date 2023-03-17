@@ -45,18 +45,18 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboartorCommissionDetailComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     // this.tabs = [
     //   {
     //     title: 'Liabilities',
@@ -102,22 +102,22 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
       actions: false,
       columns: {
         Product: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '5%',
         },
         Unit: {
-          title: this.commonService.translateText('ĐVT'),
+          title: this.cms.translateText('ĐVT'),
           type: 'string',
           width: '5%',
         },
         Description: {
-          title: this.commonService.translateText('Sản phẩm'),
+          title: this.cms.translateText('Sản phẩm'),
           type: 'string',
           width: '40%', 
         },
         SumOfQuantity: {
-          title: this.commonService.translateText('SL Bán'),
+          title: this.cms.translateText('SL Bán'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: string, row: any) => {
@@ -125,13 +125,13 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           },
         },
         SumOfNetRevenue: {
-          title: this.commonService.translateText('Doanh số'),
+          title: this.cms.translateText('Doanh số'),
           type: 'currency',
           width: '10%',
           valuePrepareFunction:(value) => value,
         },
         Level1CommissionRatio: {
-          title: this.commonService.translateText('TL Chiết khấu'),
+          title: this.cms.translateText('TL Chiết khấu'),
           width: '10%',
           valuePrepareFunction:(value) => value + '%',
           type: 'custom',
@@ -143,12 +143,12 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
           }
         },
         CommissionAmount: {
-          title: this.commonService.translateText('Chiết khấu'),
+          title: this.cms.translateText('Chiết khấu'),
           type: 'currency',
           width: '10%',
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -160,8 +160,8 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            // instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            // instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';

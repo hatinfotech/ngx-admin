@@ -25,12 +25,12 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -125,7 +125,7 @@ export class CallBlockListComponent extends IvoipBaseListComponent<PbxCallBlockM
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PbxCallBlockModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(CallBlockFormComponent, {
+  //   this.cms.openDialog(CallBlockFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

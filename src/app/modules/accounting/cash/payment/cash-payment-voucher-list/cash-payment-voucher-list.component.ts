@@ -42,13 +42,13 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CashPaymentVoucherListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {
@@ -71,7 +71,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.commonService.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -84,7 +84,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
+                  this.cms.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -104,7 +104,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.commonService.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -117,7 +117,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
+                  this.cms.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -149,15 +149,15 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           title: 'No.',
           type: 'string',
           width: '1%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
           valuePrepareFunction: (cell: any, row: CashVoucherModel) => {
@@ -170,7 +170,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
                   placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                     item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                     return item;
@@ -184,13 +184,13 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '25%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           // filter: {
@@ -198,7 +198,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -244,23 +244,23 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
           valuePrepareFunction: (cell: any, row: any) => {
             return Array.isArray(cell) && cell.map(m => ({
               ...m,
-              id: (this.commonService.voucherTypeMap[m.type]?.symbol || m.type) + ': ' + m.id,
-              type: this.commonService.voucherTypeMap[m.type]?.text || m.type,
+              id: (this.cms.voucherTypeMap[m.type]?.symbol || m.type) + ': ' + m.id,
+              type: this.cms.voucherTypeMap[m.type]?.text || m.type,
             })) || cell as any;
           },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.cms.previewVoucher(tag.type, tag.id));
           },
           width: '10%',
         },
         DateOfVoucher: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfVoucher'), 'head-title'),
           type: 'custom',
           width: '15%',
           filter: {
@@ -273,7 +273,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -285,7 +285,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.cms.translateText('Common.approve'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -296,14 +296,14 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.cashVoucher[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
-              instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
+              instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
               // this.apiService.getPromise<CashVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
@@ -331,14 +331,14 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.cashVoucher).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.cashVoucher[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.cashVoucher[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -351,7 +351,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -359,12 +359,12 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Purchase.PurchaseVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
+                  resourceName: this.cms.translateText('Purchase.PurchaseVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -377,7 +377,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -389,7 +389,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -461,7 +461,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
   }
 
   // preview(data: CashVoucherModel[]) {
-  //   this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
+  //   this.cms.openDialog(CashPaymentVoucherPrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

@@ -36,13 +36,13 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<PurchaseOrderVoucherListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
 
     if (this.ref && Object.keys(this.ref).length > 0) {
       for (const actionButton of this.actionButtonList) {
@@ -79,12 +79,12 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
       pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.supplier'), 'head-title'),
           type: 'string',
           width: '15%',
           valuePrepareFunction: (cell: any, row: PurchaseOrderVoucherModel) => {
@@ -97,8 +97,8 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
               delay: 0,
               condition: 'eq',
               select2Option: {
-                // ...this.commonService.select2OptionForContact,
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                // ...this.cms.select2OptionForContact,
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -110,12 +110,12 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         DateOfOrder: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Purchase.dateOfOrder'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Purchase.dateOfOrder'), 'head-title'),
           type: 'custom',
           width: '15%',
           filter: {
@@ -128,7 +128,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         DateOfCreated: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '15%',
           filter: {
@@ -141,11 +141,11 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -191,13 +191,13 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '15%',
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.amount'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.amount'), 'head-title'),
           type: 'currency',
           width: '5%',
           class: 'align-right',
@@ -212,7 +212,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
+            // instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
             instance.status = 'warning';
             instance.valueChange.subscribe(value => {
@@ -224,7 +224,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
             });
             instance.click.subscribe(async (row: PurchaseVoucherModel) => {
 
-              this.commonService.openDialog(PurchaseOrderVoucherFormComponent, {
+              this.cms.openDialog(PurchaseOrderVoucherFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
@@ -243,7 +243,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -256,11 +256,11 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
             instance.disabled = this.ref && Object.keys(this.ref).length > 0;
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.purchaseOrder[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -288,14 +288,14 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.purchaseOrder).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.purchaseOrder[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.purchaseOrder[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -308,7 +308,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -316,12 +316,12 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PurchaseVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Purchase.Order.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -334,7 +334,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -346,7 +346,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -394,7 +394,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
   }
 
   // async preview(data: PurchaseVoucherModel[]) {
-  //   this.commonService.openDialog(PurchaseOrderVoucherPrintComponent, {
+  //   this.cms.openDialog(PurchaseOrderVoucherPrintComponent, {
   //     context: {
   //       showLoadinng: true,
   //       title: 'Xem trước',

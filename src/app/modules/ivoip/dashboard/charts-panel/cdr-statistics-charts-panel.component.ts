@@ -48,7 +48,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   //     status: 'success',
   //     label: 'Tạo',
   //     icon: 'plus',
-  //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+  //     title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
   //     size: 'medium',
   //     select2: { data: this.domainList, option: this.select2OptionForDoaminList },
   //     value: () => this.ivoipService.activeDomainUuid,
@@ -67,7 +67,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   //     status: 'success',
   //     // label: 'Refresh',
   //     icon: 'sync',
-  //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+  //     title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
   //     size: 'medium',
   //     disabled: () => {
   //       return false;
@@ -84,7 +84,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
     public dialogService: NbDialogService,
     public apiService: ApiService,
     public ivoipService: IvoipService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
   ) {
     this.ordersProfitChartService.getOrderProfitChartSummary()
@@ -109,7 +109,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
           status: 'success',
           label: 'Tạo',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
           size: 'medium',
           select2: { data: this.domainList, option: this.select2OptionForDoaminList },
           value: () => this.ivoipService.activeDomainUuid,
@@ -128,7 +128,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
           status: 'success',
           // label: 'Refresh',
           icon: 'sync',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           size: 'medium',
           disabled: () => {
             return false;
@@ -197,7 +197,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   }
 
   refresh(): false {
-    this.commonService.takeUntil('ivoip_dashboard_refresh', 1000, () => {
+    this.cms.takeUntil('ivoip_dashboard_refresh', 1000, () => {
       this.ivoipService.loadDomainList(domains => {
         this.domainList = domains;
         this.activePbxDoamin = this.ivoipService.getPbxActiveDomainUuid();
@@ -208,7 +208,7 @@ export class CdrStatisticsChartsPanelComponent implements OnInit, OnDestroy {
   }
 
   onSettingClick(): false {
-    this.commonService.openDialog(PbxFormComponent, {
+    this.cms.openDialog(PbxFormComponent, {
       // context: {
       //   onSave: () => {
 

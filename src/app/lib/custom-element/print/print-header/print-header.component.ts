@@ -11,15 +11,15 @@ export class PrintHeaderComponent implements OnInit {
 
   env = environment;
   registerInfo: any = {
-    voucherInfo: this.commonService.translateText('Information.Voucher.register'),
+    voucherInfo: this.cms.translateText('Information.Voucher.register'),
     voucherLogo: environment.register.logo.voucher,
     voucherLogoHeight: 60,
   };
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    this.commonService.systemConfigs$.subscribe(settings => {
+    this.cms.systemConfigs$.subscribe(settings => {
       if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
         this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
         this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;

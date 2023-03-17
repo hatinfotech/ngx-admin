@@ -43,13 +43,13 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccMasterBookListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -67,48 +67,48 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         Branch: {
-          title: this.commonService.translateText('Common.branch'),
+          title: this.cms.translateText('Common.branch'),
           type: 'string',
           width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Year: {
-          title: this.commonService.translateText('Accounting.MasterBook.year'),
+          title: this.cms.translateText('Accounting.MasterBook.year'),
           type: 'string',
           width: '10%',
         },
         Creator: {
-          title: this.commonService.translateText('Common.creator'),
+          title: this.cms.translateText('Common.creator'),
           type: 'string',
           width: '10%',
         },
         DateOfCreate: {
-          title: this.commonService.translateText('Common.dateOfCreated'),
+          title: this.cms.translateText('Common.dateOfCreated'),
           type: 'datetime',
           width: '10%',
         },
         DateOfStart: {
-          title: this.commonService.translateText('Accounting.MasterBook.dateOfStart'),
+          title: this.cms.translateText('Accounting.MasterBook.dateOfStart'),
           type: 'datetime',
           width: '10%',
         },
         DateOfEnd: {
-          title: this.commonService.translateText('Accounting.MasterBook.dateOfEnd'),
+          title: this.cms.translateText('Accounting.MasterBook.dateOfEnd'),
           type: 'datetime',
           width: '10%',
         },
         DateOfBeginning: {
-          title: this.commonService.translateText('Accounting.MasterBook.dateOfBeginning'),
+          title: this.cms.translateText('Accounting.MasterBook.dateOfBeginning'),
           type: 'datetime',
           width: '20%',
         },
         Commited: {
-          title: this.commonService.translateText('Chốt sổ'),
+          title: this.cms.translateText('Chốt sổ'),
           type: 'custom',
           width: '5%',
           renderComponent: SmartTableButtonComponent,
@@ -118,8 +118,8 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
             instance.display = true;
             instance.status = 'danger';
             instance.valueChange.subscribe(value => {
-              instance.label = instance.rowData.Commited ? this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.commonService.translateText('Chưa chốt sổ');
-              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
+              instance.label = instance.rowData.Commited ? this.cms.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.cms.translateText('Chưa chốt sổ');
+              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.cms.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
               if (instance.rowData.Commited) {
                 instance.icon = 'lock-outline';
               } else {
@@ -127,7 +127,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
               }
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
-              this.commonService.openDialog(DialogFormComponent, {
+              this.cms.openDialog(DialogFormComponent, {
                 context: {
                   title: 'Chốt sổ kế toán',
                   cardStyle: { width: '377px' },
@@ -171,7 +171,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã chốt sổ kế toán đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.cms.toastService.show('Đã chốt sổ kế toán đến ngày ' + this.cms.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -191,7 +191,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/accounting/master-books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã mở chốt sổ kế toán !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
+                          this.cms.toastService.show('Đã mở chốt sổ kế toán !', 'Chốt sổ kế toán', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -209,7 +209,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '10%',
           // class: 'align-right',
@@ -220,26 +220,26 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.init.subscribe(initRowData => {
               // instance.label = value.State;
               const processMap = AppModule.processMaps.accMasterBook[initRowData.State || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
               if (initRowData.State === 'CLOSE') instance.disabled = true;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
               if (!rowData.State) {
-                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.openConfirm'), [
+                this.cms.showDialog(this.cms.translateText('Accounting.MasterBook.label'), this.cms.translateText('Accounting.MasterBook.openConfirm'), [
                   {
-                    label: this.commonService.translateText('Common.goback'),
+                    label: this.cms.translateText('Common.goback'),
                     status: 'danger',
                     action: () => { },
                   },
                   {
-                    label: this.commonService.translateText('Accounting.MasterBook.open'),
+                    label: this.cms.translateText('Accounting.MasterBook.open'),
                     status: 'primary',
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { open: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
@@ -248,21 +248,21 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                 ]);
               }
               if (rowData.State === 'OPEN') {
-                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
+                this.cms.showDialog(this.cms.translateText('Accounting.MasterBook.label'), this.cms.translateText('Accounting.MasterBook.confirmLockOrClose'), [
                   {
-                    label: this.commonService.translateText('Common.goback'),
+                    label: this.cms.translateText('Common.goback'),
                     status: 'danger',
                     action: () => { },
                   },
                   {
-                    label: this.commonService.translateText('Accounting.MasterBook.close'),
+                    label: this.cms.translateText('Accounting.MasterBook.close'),
                     status: 'success',
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
                     },
                   },
                   {
-                    label: this.commonService.translateText('Accounting.MasterBook.lock'),
+                    label: this.cms.translateText('Accounting.MasterBook.lock'),
                     status: 'primary',
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { lock: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
@@ -271,21 +271,21 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                 ]);
               }
               if (rowData.State === 'LOCK') {
-                this.commonService.showDialog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmUnlockOrClose'), [
+                this.cms.showDialog(this.cms.translateText('Accounting.MasterBook.label'), this.cms.translateText('Accounting.MasterBook.confirmUnlockOrClose'), [
                   {
-                    label: this.commonService.translateText('Common.goback'),
+                    label: this.cms.translateText('Common.goback'),
                     status: 'danger',
                     action: () => { },
                   },
                   {
-                    label: this.commonService.translateText('Accounting.MasterBook.close'),
+                    label: this.cms.translateText('Accounting.MasterBook.close'),
                     status: 'success',
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
                     },
                   },
                   {
-                    label: this.commonService.translateText('Accounting.MasterBook.unlock'),
+                    label: this.cms.translateText('Accounting.MasterBook.unlock'),
                     status: 'primary',
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { unlock: true }, [{ Code: rowData.Code }]).then(() => this.refresh());
@@ -294,21 +294,21 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
                 ]);
               }
               if (rowData.State === 'CLOSE') {
-                // this.commonService.showDiaplog(this.commonService.translateText('Accounting.MasterBook.label'), this.commonService.translateText('Accounting.MasterBook.confirmLockOrClose'), [
+                // this.cms.showDiaplog(this.cms.translateText('Accounting.MasterBook.label'), this.cms.translateText('Accounting.MasterBook.confirmLockOrClose'), [
                 //   {
-                //     label: this.commonService.translateText('Common.goback'),
+                //     label: this.cms.translateText('Common.goback'),
                 //     status: 'danger',
                 //     action: () => { },
                 //   },
                 //   {
-                //     label: this.commonService.translateText('Accounting.MasterBook.close'),
+                //     label: this.cms.translateText('Accounting.MasterBook.close'),
                 //     status: 'success',
                 //     action: () => {
                 //       this.apiService.putPromise(this.apiPath, { close: true }, [{ Code: rowData.Code }]);
                 //     },
                 //   },
                 //   {
-                //     label: this.commonService.translateText('Accounting.MasterBook.lock'),
+                //     label: this.cms.translateText('Accounting.MasterBook.lock'),
                 //     status: 'primary',
                 //     action: () => {
                 //       this.apiService.putPromise(this.apiPath, { lock: true }, [{ Code: rowData.Code }]);
@@ -320,7 +320,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -332,15 +332,15 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.label = this.commonService.translateText('Accounting.MasterBook.headAmount');
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.label = this.cms.translateText('Accounting.MasterBook.headAmount');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: AccMasterBookModel) => {
-              this.commonService.openDialog(AccMasterBookHeadAmountComponent, {
+              this.cms.openDialog(AccMasterBookHeadAmountComponent, {
                 context: {
                   inputMode: 'dialog',
                   masterBook: rowData,

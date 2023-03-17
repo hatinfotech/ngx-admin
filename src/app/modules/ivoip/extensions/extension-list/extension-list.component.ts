@@ -55,12 +55,12 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -83,7 +83,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
           title: 'Diễn giải',
           type: 'string',
           width: '30%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         call_group: {
           title: 'Nhóm',
@@ -105,13 +105,13 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
             instance.icon = 'globe-outline';
             instance.display = true;
             instance.status = 'success';
-            instance.label = this.commonService.translateText('Common.offline');
+            instance.label = this.cms.translateText('Common.offline');
             instance.title = 'Không có thiết bị nào đăng ký cho extension này !';
             instance.valueChange.subscribe((value: any[]) => {
               if (!value || value.length == 0) {
                 instance.disabled = true;
               } else {
-                instance.label = this.commonService.translateText('Common.online') + ' (' + value.length + ')';
+                instance.label = this.cms.translateText('Common.online') + ' (' + value.length + ')';
                 instance.title = 'Có ' + value.length + ' thiết bị đăng ký cho extension này, bấm vào để kiểm tra !';
               }
             });
@@ -124,9 +124,9 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
 
               if (rowData.registrations && rowData.registrations.length > 0) {
                 // Show table dialog
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
-                    title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
+                    title: this.cms.translateText('Ivoip.deviceRegisterInfo'),
                     tableContent: {
                       header: [
                         { name: '#', title: '#' },
@@ -145,10 +145,10 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
                 });
                 instance.disabled = false;
               } else {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
-                    title: this.commonService.translateText('Ivoip.deviceRegisterInfo'),
-                    content: this.commonService.translateText('Ivoip.noRegisterDevices'),
+                    title: this.cms.translateText('Ivoip.deviceRegisterInfo'),
+                    content: this.cms.translateText('Ivoip.noRegisterDevices'),
                   },
                 });
               }
@@ -175,7 +175,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
           },
         },
         sip_info: {
-          class: this.commonService.translateText('Ivoip.sipInfo'),
+          class: this.cms.translateText('Ivoip.sipInfo'),
           title: 'Sip Info',
           type: 'custom',
           width: '10%',
@@ -186,9 +186,9 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
             instance.pack = 'eva';
             instance.status = 'danger';
             instance.click.subscribe((row: PbxExtensionModel) => {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
+              this.cms.openDialog(ShowcaseDialogComponent, {
                 context: {
-                  title: this.commonService.translateText('Ivoip.sipInfo'),
+                  title: this.cms.translateText('Ivoip.sipInfo'),
                   content: '<div style="border-radius: 1rem; border: 1px solid #eee">' + row['sip_info'].replace(/\n/g, '<br>') + '</div>',
                 },
                 closeOnBackdropClick: true,
@@ -208,7 +208,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
   showQrCode(extensionUuid: string, extension: string, regenerate?: boolean) {
     this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, result => {
 
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'QR Code',
           content: `<img src="${result[0].qr_code}" class="full-width">`,

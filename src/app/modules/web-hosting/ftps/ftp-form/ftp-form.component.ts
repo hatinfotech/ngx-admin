@@ -42,10 +42,10 @@ export class FtpFormComponent extends WebHostingBaseFormComponent<WhFtpModel> im
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public webHostingService: WebHostingService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, webHostingService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
   }
 
   async ngOnInit() {

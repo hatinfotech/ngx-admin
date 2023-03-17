@@ -44,13 +44,13 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorCommissionListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -58,11 +58,11 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     return super.init().then(rs => {
       const addButton = this.actionButtonList.find(f => f.name === 'add');
       if (addButton) {
-        addButton.label = this.commonService.translateText('Collaborator.Commission.label');
+        addButton.label = this.cms.translateText('Collaborator.Commission.label');
         addButton.icon = 'flash-outline';
         addButton.status = 'primary';
         // addButton.click = () => {
-        //   this.commonService.openDialog(CollaboartorCommissionDetailComponent, {
+        //   this.cms.openDialog(CollaboartorCommissionDetailComponent, {
         //     context: {
 
         //     }
@@ -92,49 +92,49 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // Cycle: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.cycle'), 'head-title'),
         //   type: 'string',
         //   width: '5%',
-        //   filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+        //   filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         // },
         PublisherName: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '10%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '25%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '10%',
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         CommissionFrom: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.fromDate'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.fromDate'), 'head-title'),
           type: 'datetime',
           width: '10%',
         },
         CommissionTo: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.toDate'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.toDate'), 'head-title'),
           type: 'datetime',
           width: '10%',
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -146,7 +146,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.cms.translateText('Common.approve'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -157,14 +157,14 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             instance.display = true;
             instance.status = 'success';
             // instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.init.subscribe(awardVoucher => {
               const processMap = AppModule.processMaps.commissionVoucher[awardVoucher.State || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
-              instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
+              instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
               // this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
@@ -174,7 +174,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -186,17 +186,17 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   apiPath: this.apiPath,
                 }
               });
@@ -204,7 +204,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -216,7 +216,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -292,7 +292,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
   }
 
   async preview(ids: any[]) {
-    this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
+    this.cms.openDialog(CollaboratorCommissionPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
@@ -315,22 +315,22 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.goback'),
+          label: this.cms.translateText('Common.goback'),
           status: 'primary',
           action: () => {
             resolve(false);
           },
         },
         {
-          label: this.commonService.translateText(processMap?.nextStateLabel),
+          label: this.cms.translateText(processMap?.nextStateLabel),
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
             return this.apiService.putPromise<CollaboratorCommissionVoucherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Phân quyền', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Phân quyền', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

@@ -30,10 +30,10 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SmsPhoneNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.columnDefs = [
@@ -160,7 +160,7 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
   loadList(callback?: (list: SmsReceipientModel[]) => void) {
 
     if (this.gridApi) {
-      this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+      this.cms.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
     }
 
   }
@@ -298,7 +298,7 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
   resetSentCount() {
 
     // if (this.id[0]) {
-    //   this.commonService.openDialog(ShowcaseDialogComponent, {
+    //   this.cms.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Xác nhận',
     //       content: 'Bạn có muốn đặt lại trạng thái gửi cho danh sách này không ?',

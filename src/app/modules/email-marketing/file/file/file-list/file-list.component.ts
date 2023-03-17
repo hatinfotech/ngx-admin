@@ -44,12 +44,12 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
 
     // Update card header: action control list
     this.actionButtonList = this.actionButtonList.filter(btn => !['add', 'edit'].some(test => test === btn.name));
@@ -58,7 +58,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
       status: 'danger',
       // label: 'Refresh',
       icon: 'cloud-upload',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
       size: 'medium',
       disabled: () => false,
       hidden: () => false,
@@ -85,7 +85,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
       status: 'success',
       label: 'File Store',
       icon: 'plus',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',
       select2: { data: this.fileStoreList, option: this.fileStoreListConfig },
       value: () => '',
@@ -233,7 +233,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: FileModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(FileFormComponent, {
+    this.cms.openDialog(FileFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

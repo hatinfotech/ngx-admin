@@ -32,7 +32,7 @@ export class SmartTableBaseComponent implements ViewCell, OnInit {
   init?: EventEmitter<any> = new EventEmitter();
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
   ) { }
 
   ngOnInit() {
@@ -390,11 +390,11 @@ export class SmartTableRelativeVouchersComponent extends SmartTableBaseComponent
   @Output() click = new EventEmitter<{ id: string, text: string, type: string }>();
 
   labelAsText(tag: SmartTableCompoentTagModel) {
-    return (this.commonService.voucherTypeMap[tag.type]?.symbol || tag.type) + ':' + tag.id;
+    return (this.cms.voucherTypeMap[tag.type]?.symbol || tag.type) + ':' + tag.id;
   };
 
   renderToolTip(tag: SmartTableCompoentTagModel) {
-    return (tag.type ? `${this.commonService.voucherTypeMap[tag.type]?.text || tag.type}: ` : '') + tag.text;
+    return (tag.type ? `${this.cms.voucherTypeMap[tag.type]?.text || tag.type}: ` : '') + tag.text;
   }
 
   nowrap = true;
@@ -406,7 +406,7 @@ export class SmartTableRelativeVouchersComponent extends SmartTableBaseComponent
 
   protected onClick(tag: { id: string, text: string, type: string }) {
     this.click.emit(tag);
-    this.commonService.previewVoucher(tag.type, tag.id);
+    this.cms.previewVoucher(tag.type, tag.id);
   }
 
   onChange(value: any) {
@@ -467,7 +467,7 @@ export class SmartTableTagComponent extends SmartTableBaseComponent implements V
 export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
 
   renderValue: boolean;
   // disabled: boolean = false;
@@ -483,8 +483,8 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
 
   jqueryInput: JQuery;
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -548,9 +548,9 @@ export class SmartTableCurrencyEditableComponent extends SmartTableBaseComponent
 export class SmartTableNumberEditableComponent extends SmartTableBaseComponent implements ViewCell, OnInit, AfterViewInit {
 
   inputControl = new FormControl;
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -569,8 +569,8 @@ export class SmartTableNumberEditableComponent extends SmartTableBaseComponent i
 
   jqueryInput: JQuery;
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -652,8 +652,8 @@ export class SmartTableTextEditableComponent extends SmartTableBaseComponent imp
 
   jqueryInput: JQuery;
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),
@@ -748,8 +748,8 @@ export class SmartTableSelect2EditableComponent extends SmartTableBaseComponent 
 
   jqueryInput: JQuery;
 
-  constructor(public commonService: CommonService) {
-    super(commonService);
+  constructor(public cms: CommonService) {
+    super(cms);
     this.inputControl.valueChanges
       .pipe(
         distinctUntilChanged(),

@@ -52,13 +52,13 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public minierpService: MinierpService,
     public ref: NbDialogRef<MinierpListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -110,7 +110,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
         title: 'Cập nhật phiên bản phát hành',
         size: 'medium',
         click: () => {
-          this.commonService.openDialog(DialogFormComponent, {
+          this.cms.openDialog(DialogFormComponent, {
             context: {
               title: 'Cập nhật phiên bản phát hành',
               controls: [
@@ -258,7 +258,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -334,7 +334,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.requireUpdateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.requireUpdateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -377,7 +377,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.autoUpdateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.autoUpdateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -395,7 +395,7 @@ export class MinierpListComponent extends ServerDataManagerListComponent<MiniErp
   }
 
   setUpdateUpdate() {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Mini-ERP',
         content: 'Đặt chế độ tự động cập nhật cho các site đã chọn',

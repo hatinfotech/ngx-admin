@@ -24,12 +24,12 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -48,32 +48,32 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
       // pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '10%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '40%',
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '25%',
         },
         // Branch: {
-        //   title: this.commonService.translateText('Common.branch'),
+        //   title: this.cms.translateText('Common.branch'),
         //   type: 'string',
         //   width: '20%',
         // },
         FindOrder: {
-          title: this.commonService.translateText('Số nhận thức'),
+          title: this.cms.translateText('Số nhận thức'),
           type: 'string',
           width: '5%',
         },
         AccAccountName: {
-          title: this.commonService.translateText('Warehouse.account'),
+          title: this.cms.translateText('Warehouse.account'),
           type: 'string',
           width: '20%',
         },
@@ -98,7 +98,7 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
       //   item.Content = item.Content.substring(0, 256) + '...';
       // });
       if (callback) callback(rs.map(item => {
-        item.Branch = this.commonService.getObjectText(item.Branch);
+        item.Branch = this.cms.getObjectText(item.Branch);
         return item;
       }));
     });
@@ -106,7 +106,7 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: WarehouseModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(ProductCategoryFormComponent, {
+  //   this.cms.openDialog(ProductCategoryFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

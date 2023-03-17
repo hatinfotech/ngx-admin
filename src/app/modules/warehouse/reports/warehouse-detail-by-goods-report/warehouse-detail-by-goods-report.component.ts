@@ -49,19 +49,19 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseDetailByGoodsReportComponent>,
     public accountingService: WarehouseService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -102,7 +102,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
         summaryReportBtn.status = 'info';
         summaryReportBtn.disabled = () => false;
         summaryReportBtn.click = () => {
-          this.commonService.openDialog(this.reportComponent, {
+          this.cms.openDialog(this.reportComponent, {
             context: {
               showLoadinng: true,
               // title: 'Xem trước',
@@ -135,12 +135,12 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
       actions: false,
       columns: {
         VoucherDate: {
-          title: this.commonService.translateText('Warehouse.voucherDate'),
+          title: this.cms.translateText('Warehouse.voucherDate'),
           type: 'datetime',
           width: '10%',
         },
         Object: {
-          title: this.commonService.translateText('Common.contact'),
+          title: this.cms.translateText('Common.contact'),
           type: 'string',
           width: '13%',
           valuePrepareFunction: (cell: any, row: any) => {
@@ -153,7 +153,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
                   placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                     item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                     return item;
@@ -167,31 +167,31 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
           },
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '12%',
         },
         Voucher: {
-          title: this.commonService.translateText('Common.voucher'),
+          title: this.cms.translateText('Common.voucher'),
           type: 'custom',
           renderComponent: SmartTableTagsComponent,
           valuePrepareFunction: (cell: string, row: any) => {
             return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
           },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.commonService.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
+            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.cms.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
               this.refresh();
             }));
           },
           width: '10%',
         },
         Account: {
-          title: this.commonService.translateText('Warehouse.account'),
+          title: this.cms.translateText('Warehouse.account'),
           type: 'string',
           width: '5%',
         },
         Quantity: {
-          title: this.commonService.translateText('Số lượng'),
+          title: this.cms.translateText('Số lượng'),
           type: 'number',
           width: '5%',
           valuePrepareFunction: (cell, row) => {
@@ -199,7 +199,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
           },
         },
         Unit: {
-          title: this.commonService.translateText('ĐVT'),
+          title: this.cms.translateText('ĐVT'),
           type: 'text',
           width: '5%',
           valuePrepareFunction: (cell, row) => {
@@ -207,7 +207,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
           },
         },
         Price: {
-          title: this.commonService.translateText('Giá'),
+          title: this.cms.translateText('Giá'),
           type: 'acc-currency',
           width: '5%',
           valuePrepareFunction: (cell, row) => {
@@ -216,17 +216,17 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
           },
         },
         HeadAmount: {
-          title: this.commonService.translateText('Warehouse.headAmount'),
+          title: this.cms.translateText('Warehouse.headAmount'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateDebit: {
-          title: this.commonService.translateText('Warehouse.debitGenerate'),
+          title: this.cms.translateText('Warehouse.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateCredit: {
-          title: this.commonService.translateText('Warehouse.creditGenerate'),
+          title: this.cms.translateText('Warehouse.creditGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
@@ -234,19 +234,19 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
     };
     if (this.balance == 'debt') {
       settings.columns['IncrementAmount'] = {
-        title: this.commonService.translateText('Warehouse.increment'),
+        title: this.cms.translateText('Warehouse.increment'),
         type: 'acc-currency',
         width: '10%',
       };
     } else if (this.balance == 'credit') {
       settings.columns['IncrementAmount'] = {
-        title: this.commonService.translateText('Warehouse.increment'),
+        title: this.cms.translateText('Warehouse.increment'),
         type: 'acc-currency',
         width: '10%',
       };
     } else if (this.balance == 'both') {
       settings.columns['DebitIncrementAmount'] = {
-        title: this.commonService.translateText('Warehouse.tailDebit'),
+        title: this.cms.translateText('Warehouse.tailDebit'),
         type: 'acc-currency',
         width: '10%',
         valuePrepareFunction: (cel: string, row: any) => {
@@ -257,7 +257,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
         }
       };
       settings.columns['CreditIncrementAmount'] = {
-        title: this.commonService.translateText('Warehouse.tailCredit'),
+        title: this.cms.translateText('Warehouse.tailCredit'),
         type: 'acc-currency',
         width: '10%',
         valuePrepareFunction: (cel: string, row: any) => {
@@ -269,7 +269,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
       };
     } else {
       settings.columns['IncrementAmount'] = {
-        title: this.commonService.translateText('Warehouse.increment'),
+        title: this.cms.translateText('Warehouse.increment'),
         type: 'acc-currency',
         width: '10%',
         // valuePrepareFunction: (cell, row) => {
@@ -278,7 +278,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
       };
     }
     settings.columns['Preview'] = {
-      title: this.commonService.translateText('Common.detail'),
+      title: this.cms.translateText('Common.detail'),
       type: 'custom',
       width: '10%',
       class: 'align-right',
@@ -290,8 +290,8 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
         instance.status = 'primary';
         instance.style = 'text-align: right';
         instance.class = 'align-right';
-        instance.title = this.commonService.translateText('Common.preview');
-        // instance.label = this.commonService.translateText('Common.detail');
+        instance.title = this.cms.translateText('Common.preview');
+        // instance.label = this.cms.translateText('Common.detail');
         instance.valueChange.subscribe(value => {
           // instance.icon = value ? 'unlock' : 'lock';
           // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -301,7 +301,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
           // this.getFormData([rowData.Code]).then(rs => {
           //   this.preview(rs);
           // });
-          this.commonService.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
+          this.cms.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
         });
       },
     }

@@ -14,12 +14,12 @@ export abstract class MinierpBaseListComponent<M> extends DataManagerListCompone
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public miniErpService: MinierpService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

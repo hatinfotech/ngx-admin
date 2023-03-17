@@ -24,12 +24,12 @@ export class HelpdeskProcedureListComponent extends DataManagerListComponent<Hel
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -48,17 +48,17 @@ export class HelpdeskProcedureListComponent extends DataManagerListComponent<Hel
       pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '40%',
         },
         Description: {
-          title: this.commonService.translateText('Common.decription'),
+          title: this.cms.translateText('Common.decription'),
           type: 'string',
           width: '50%',
         },

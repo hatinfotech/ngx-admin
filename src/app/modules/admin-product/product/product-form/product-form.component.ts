@@ -43,7 +43,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   propertyList: ProductPropertyModel[] = [];
   propertyValueList: ProductPropertyValueModel[] = [];
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -62,11 +62,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<ProductFormComponent>,
     public adminProductService?: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
 
@@ -82,7 +82,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     simpleUpload: {
       uploadUrl: () => {
         // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
-        return this.commonService.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+        return this.cms.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
           return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
         });
       },
@@ -110,8 +110,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   unitControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductUnitFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
           onDialogSave: (newData: UnitModel[]) => {
@@ -302,7 +302,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         details.clear();
         itemFormData.Properties.forEach(property => {
           // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
-          property.Property.Values = this.propertyList.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(property))?.Values;
+          property.Property.Values = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(property))?.Values;
           const newPropertyFormGroup = this.makeNewPropertyFormGroup(property, newForm);
           details.push(newPropertyFormGroup);
           const comIndex = details.length - 1;
@@ -337,7 +337,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Sku: [''],
       Barcode: [''],
       WarehouseUnit: ['n/a', (control: FormControl) => {
-        if (newForm && !this.commonService.getObjectId(control.value)) {
+        if (newForm && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
@@ -349,7 +349,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       Technical: [''],
       Categories: [''],
       Type: ['PRODUCT', (control: FormControl) => {
-        if (newForm && !this.commonService.getObjectId(control.value)) {
+        if (newForm && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
@@ -395,7 +395,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // setTimeout(() => {
     //   nameControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: string) => {
     //     if (!this.isProcessing && !data?.Sku) {
-    //       let sku = this.commonService.convertUnicodeToNormal(value).toLowerCase();
+    //       let sku = this.cms.convertUnicodeToNormal(value).toLowerCase();
     //       let nameParse = sku.replace(/[^a-z0-9]/, ' ').split(/ +/).map(m => m.substring(0, 1));
     //       sku = nameParse.join('');
     //       skuControl.setValue(sku);
@@ -535,11 +535,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     if (data) {
       newForm.patchValue(data);
       setTimeout(() => {
-        newForm['dataList'] = this.propertyList.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(data.Property))?.Values || [];
+        newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(data.Property))?.Values || [];
       }, 300);
     }
     newForm.get('Property').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      newForm['dataList'] = this.propertyList.find(f => this.commonService.getObjectId(f) == this.commonService.getObjectId(value))?.Values || [];
+      newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(value))?.Values || [];
     })
     return newForm;
   }
@@ -624,26 +624,26 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   onThumbnailPcitureClick(file: FileModel, form: FormGroup) {
     console.log(file);
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
-        title: this.commonService.translateText('Common.action'),
+        title: this.cms.translateText('Common.action'),
         actions: [
           {
-            label: this.commonService.translateText('Common.close'),
+            label: this.cms.translateText('Common.close'),
             status: 'danger',
             action: () => {
 
             },
           },
           {
-            label: this.commonService.translateText('Common.preview'),
+            label: this.cms.translateText('Common.preview'),
             status: 'success',
             action: () => {
               // window.open(file.OriginImage, '_blank');
               const pictures = form.get('Pictures').value;
               // console.log(pictures);
               if (pictures && pictures.length > 0) {
-                this.commonService.openDialog(ImagesViewerComponent, {
+                this.cms.openDialog(ImagesViewerComponent, {
                   context: {
                     images: pictures.map(m => m.OriginImage),
                     imageIndex: pictures.findIndex(f => f.Id == file.Id)
@@ -653,7 +653,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
             },
           },
           {
-            label: this.commonService.translateText('Common.setFeaturePicture'),
+            label: this.cms.translateText('Common.setFeaturePicture'),
             status: 'primary',
             action: () => {
               form.get('FeaturePicture').setValue(file);
@@ -734,10 +734,10 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     }
     this.id = newFormData.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {
@@ -764,10 +764,10 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     }
     this.id = newFormData?.map(item => this.makeId(item));
     if (this.mode === 'page') {
-      this.commonService.location.go(this.generateUrlByIds(this.id));
+      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
-      this.commonService.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
+      this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
     }
 
     if (this.mode === 'dialog' && this.onDialogSave) {

@@ -53,10 +53,10 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SystemActionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -132,7 +132,7 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
     if (childName === 'Main.Params') {
       newFormGroup.get('Type').valueChanges.subscribe(value => {
         if (!this.isProcessing) {
-          if (this.commonService.getObjectId(value) == 'ENV_PARAM') {
+          if (this.cms.getObjectId(value) == 'ENV_PARAM') {
             newFormGroup.get('RemoteDataSource').setValue('/system/params');
             newFormGroup.get('RemoteDataResource').setValue('System_Resource_Params');
           } else {

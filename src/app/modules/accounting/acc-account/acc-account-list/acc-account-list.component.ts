@@ -35,13 +35,13 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccAccountListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -59,54 +59,54 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '5%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '20%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '20%',
         },
         Debit: {
-          title: this.commonService.translateText('Common.debit'),
+          title: this.cms.translateText('Common.debit'),
           type: 'currency',
           width: '8%',
         },
         Credit: {
-          title: this.commonService.translateText('Common.credit'),
+          title: this.cms.translateText('Common.credit'),
           type: 'currency',
           width: '8%',
         },
         Currency: {
-          title: this.commonService.translateText('Common.currency'),
+          title: this.cms.translateText('Common.currency'),
           type: 'string',
           width: '8%',
         },
         Property: {
-          title: this.commonService.translateText('Common.property'),
+          title: this.cms.translateText('Common.property'),
           type: 'string',
           width: '8%',
         },
         Type: {
-          title: this.commonService.translateText('Common.type'),
+          title: this.cms.translateText('Common.type'),
           type: 'string',
           width: '5%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Level: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.level'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.level'), 'head-title'),
           type: 'string',
           width: '5%',
         },
         Group: {
-          title: this.commonService.translateText('Common.group'),
+          title: this.cms.translateText('Common.group'),
           type: 'string',
           width: '8%',
         },

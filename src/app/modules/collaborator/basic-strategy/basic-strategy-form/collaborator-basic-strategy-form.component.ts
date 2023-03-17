@@ -37,13 +37,13 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<CollaboratorBasicStrategyFormComponent>,
     public collaboratorService?: CollaboratorService,
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
     const $this = this;
@@ -144,14 +144,14 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
             console.log(params);
 
             // Setting for product
-            this.commonService.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+            this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
               context: {
                 data: [
                   params.data,
                 ],
                 onDialogSave(newData) {
                   console.log(newData);
-                  let currentNode: RowNode = $this.gridApi.getRowNode($this.commonService.getObjectId(params.data.Product) + '-' + $this.commonService.getObjectId(params.data.Unit));
+                  let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
                   currentNode.setData(newData[0]);
                 },
               }
@@ -292,14 +292,14 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   };
   public getRowNodeId = (item: CollaboratorAddonStrategyProductModel) => {
-    return this.commonService.getObjectId(item.Product) + '-' + this.commonService.getObjectId(item.Unit);
+    return this.cms.getObjectId(item.Product) + '-' + this.cms.getObjectId(item.Unit);
   }
   public getRowStyle = (params: { node: RowNode }) => {
   };
 
   async createNewContainer(productId: string, unitId: string): Promise<WarehouseGoodsContainerModel> {
     return new Promise((resolve, reject) => {
-      this.commonService.openDialog(AssignNewContainerFormComponent, {
+      this.cms.openDialog(AssignNewContainerFormComponent, {
         context: {
           inputMode: 'dialog',
           inputGoodsList: [{ Code: productId, WarehouseUnit: unitId as any }],
@@ -318,7 +318,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   async openCreateOfPreviewContainersDialog(productId: string, productName: string, unitId: string, containers: string[]) {
     return new Promise<WarehouseGoodsContainerModel>((resolve, reject) => {
-      this.commonService.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
+      this.cms.showDialog('Vị trí hàng hóa', `«${productName}» đã có vị trí! Bạn vẫn muốn tạo thêm vị trí mới hay xem lại các vị trí liên quan ?`, [
         {
           label: 'Tạo mới',
           status: 'danger',
@@ -333,7 +333,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
           label: 'Xem lại',
           status: 'primary',
           action: () => {
-            this.commonService.openDialog(WarehouseGoodsContainerListComponent, {
+            this.cms.openDialog(WarehouseGoodsContainerListComponent, {
               context: {
                 // isChoosedMode: true,
                 inputFilter: {
@@ -356,20 +356,20 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   public cellDoubleClicked = (params: CellDoubleClickedEvent) => {
     console.log(params);
-    const shelf = this.commonService.getObjectId(this.array.controls[0].get('Shelf').value);
+    const shelf = this.cms.getObjectId(this.array.controls[0].get('Shelf').value);
     if (params.colDef.field == 'Shelf' || params.colDef.field == 'Container') {
       if (!params.data.Containers || params.data.Containers.length == 0) {
 
-        this.createNewContainer(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectId(params.data.Unit)).then(container => {
+        this.createNewContainer(this.cms.getObjectId(params.data.Product), this.cms.getObjectId(params.data.Unit)).then(container => {
           params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
           params.node.setDataValue('Warehouse', container.Warehouse);
           params.node.setDataValue('Container', { id: container.Code, text: container.Path, Shelf: { id: container.Shelf, text: container.ShelfName }, Warehouse: container.Warehouse });
         });
 
       } else {
-        this.openCreateOfPreviewContainersDialog(this.commonService.getObjectId(params.data.Product), this.commonService.getObjectText(params.data.Product), this.commonService.getObjectId(params.data.Unit), params.data.Containers.map(m => this.commonService.getObjectId(m))).then(container => {
-          if (this.commonService.getObjectId(shelf) && container.Shelf != this.commonService.getObjectId(shelf)) {
-            this.commonService.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.commonService.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
+        this.openCreateOfPreviewContainersDialog(this.cms.getObjectId(params.data.Product), this.cms.getObjectText(params.data.Product), this.cms.getObjectId(params.data.Unit), params.data.Containers.map(m => this.cms.getObjectId(m))).then(container => {
+          if (this.cms.getObjectId(shelf) && container.Shelf != this.cms.getObjectId(shelf)) {
+            this.cms.toastService.show(`Vị trí vừa chọn không thuộc kệ «${this.cms.getObjectText(shelf)}»`, 'Không đúng kệ đang kiểm kho', { status: 'warning', duration: 10000 });
           } else {
             params.node.setDataValue('Shelf', { id: container.Shelf, text: container.ShelfName });
             params.node.setDataValue('Warehouse', container.Warehouse);
@@ -383,7 +383,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
       }
     }
     if (params.colDef.field == 'AccessNumbers') {
-      this.commonService.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
+      this.cms.showDialog('Số truy xuất', Array.isArray(params.data.AccessNumbers) ? params.data.AccessNumbers.join(', ') : '', []);
     }
   };
 
@@ -398,16 +398,16 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     },
     textRender: (params) => {
       if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectText(m)).join(', ');
+        return params.value.map(m => this.cms.getObjectText(m)).join(', ');
       } else {
-        return this.commonService.getObjectText(params.value);
+        return this.cms.getObjectText(params.value);
       }
     },
     idRender: (params) => {
       if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
+        return params.value.map(m => this.cms.getObjectId(m)).join(', ');
       } else {
-        return this.commonService.getObjectId(params.value);
+        return this.cms.getObjectId(params.value);
       }
     },
     numberRender: (params) => {
@@ -448,7 +448,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         // if (detail.Container) {
         //   detail.Shelf = { id: detail.Container.Shelf, text: detail.Container.ShelfName };
         // }
-        // detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.commonService.getObjectId(m)) : [];
+        // detail.AccessNumbers = detail.AccessNumbers ? detail.AccessNumbers.map(m => this.cms.getObjectId(m)) : [];
         return detail;
       });
       this.gridApi.setRowData(products);
@@ -517,22 +517,22 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     },
   };
 
-  percentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 3 };
-  okrPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 1 };
-  kpiPercentFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
-  currencyInputMask = this.commonService.createFloatNumberMaskConfig({
+  percentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 3 };
+  okrPercentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 1 };
+  kpiPercentFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
+  currencyInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 3
   });
-  okrInputMask = this.commonService.createFloatNumberMaskConfig({
+  okrInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 1
   });
-  level1ComissionRatioInputMask = this.commonService.createFloatNumberMaskConfig({
+  level1ComissionRatioInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 1
   });
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -865,7 +865,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         console.log(rowNode, index);
         const rawDetail = {};
         for (const prop in rowNode.data) {
-          rawDetail[prop] = this.commonService.getObjectId(rowNode.data[prop]);
+          rawDetail[prop] = this.cms.getObjectId(rowNode.data[prop]);
         }
         item.Products.push(rawDetail);
       });
@@ -881,13 +881,13 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
   }
 
   onAdvanceTermChange(formItem: FormGroup, data: any, index: number) {
-    formItem.get('ExtendTermLabel').setValue(this.commonService.getObjectText(data));
+    formItem.get('ExtendTermLabel').setValue(this.cms.getObjectText(data));
   }
 
   products = [];
   addProduct(formItem: FormGroup) {
     const $this = this;
-    this.commonService.openDialog(CollaboratorProductListComponent, {
+    this.cms.openDialog(CollaboratorProductListComponent, {
       context: {
         onDialogChoose(chooseItems) {
           console.log(chooseItems);
@@ -915,13 +915,13 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
 
     // Setting for product
-    this.commonService.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+    this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
       context: {
         data: selectedNodes.map(m => m.data),
         onDialogSave(newData) {
           console.log(newData);
           for (const itemData of newData) {
-            let currentNode: RowNode = $this.gridApi.getRowNode($this.commonService.getObjectId(itemData.Product) + '-' + $this.commonService.getObjectId(itemData.Unit));
+            let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
             currentNode.setData(itemData);
           }
         },

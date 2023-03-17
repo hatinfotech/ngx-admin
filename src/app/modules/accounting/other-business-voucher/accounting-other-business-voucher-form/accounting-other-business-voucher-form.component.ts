@@ -31,9 +31,9 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   baseFormUrl = '/accouting/cash-receipt-voucher/form';
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   // accountDebitList: AccountModel[] = [];
   // accountCreditList: AccountModel[] = [];
@@ -49,18 +49,18 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<AccountingOtherBusinessVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -219,12 +219,12 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'CONTACT', text: this.commonService.translateText('Common.contact') }] }],
+          data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
@@ -339,7 +339,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       ObjectAddress: [''],
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
-      DateOfVoucher: [this.commonService.lastVoucherDate, Validators.required],
+      DateOfVoucher: [this.cms.lastVoucherDate, Validators.required],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
@@ -471,7 +471,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
 
   toMoney(formItem: FormGroup) {
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
@@ -488,7 +488,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
 
   // async preview(formItem: FormGroup) {
   //   const data: OtherBusinessVoucherModel = formItem.value;
-  //   this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+  //   this.cms.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
   //     context: {
   //       title: 'Xem trước',
   //       data: [data],
@@ -513,7 +513,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(SalesVoucherListComponent, {
+    this.cms.openDialog(SalesVoucherListComponent, {
       context: {
         inputMode: 'dialog',
         onDialogChoose: async (chooseItems: SalesVoucherModel[]) => {
@@ -529,13 +529,13 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
               // get purchase order
               const purchaseVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-              if (this.commonService.getObjectId(purchaseVoucher.State) != 'APPROVED') {
-                this.commonService.toastService.show(this.commonService.translateText('Phiếu bán hàng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+              if (this.cms.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+                this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                 continue;
               }
-              if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                if (this.commonService.getObjectId(purchaseVoucher.Object, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  this.commonService.toastService.show(this.commonService.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+              if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                if (this.cms.getObjectId(purchaseVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                  this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
               } else {
@@ -555,7 +555,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
                 const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
                 for (const voucherDetail of purchaseVoucher.Details) {
                   if (voucherDetail.Type === 'PRODUCT') {
-                    const tax = this.commonService.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.commonService.getObjectId(voucherDetail.Tax))['Tax'] : null;
+                    const tax = this.cms.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.cms.getObjectId(voucherDetail.Tax))['Tax'] : null;
                     totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
                   }
                 }
@@ -584,13 +584,13 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     // if (relativeVocher && relativeVocher.type == 'SALES') {
-    //   this.commonService.openDialog(SalesVoucherPrintComponent, {
+    //   this.cms.openDialog(SalesVoucherPrintComponent, {
     //     context: {
     //       showLoadinng: true,
     //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       id: [this.cms.getObjectId(relativeVocher)],
     //       // data: data,
     //       idKey: ['Code'],
     //       // approvedConfirm: true,
@@ -605,7 +605,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 

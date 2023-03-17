@@ -60,12 +60,12 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
   processing = false;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AssignNewContainerFormComponent>,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {
@@ -79,7 +79,7 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
   }
 
   async createAndAssign() {
-    let choosedContainer: string = this.commonService.getObjectId(this.containersFormControl.value);
+    let choosedContainer: string = this.cms.getObjectId(this.containersFormControl.value);
     this.processing = true;
     let rs = null;
     for (const inputGoods of this.inputGoodsList) {
@@ -92,7 +92,7 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
           const goods = await this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: inputGoods.Code, updateContainerDescription: true, assignContainers: rs[0].Code }, [
             {
               Code: inputGoods.Code,
-              WarehouseUnit: this.commonService.getObjectId(inputGoods.WarehouseUnit)
+              WarehouseUnit: this.cms.getObjectId(inputGoods.WarehouseUnit)
             }
           ]);
           rs[0].Path = goods[0].Containers[0]['Path'];
@@ -117,13 +117,13 @@ export class AssignNewContainerFormComponent extends BaseComponent implements On
       const ids = [];
       const updateList: GoodsModel[] = [];
       for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Goods: this.inputGoodsList[p].Unit, Unit: this.commonService.getObjectId(this.inputGoodsList[p].Unit) };
+        const product: GoodsModel = { Goods: this.inputGoodsList[p].Unit, Unit: this.cms.getObjectId(this.inputGoodsList[p].Unit) };
         ids.push(product.Code);
-        // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.commonService.getObjectId(choosed) === this.commonService.getObjectId(container['Container'])));
+        // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.cms.getObjectId(choosed) === this.cms.getObjectId(container['Container'])));
 
         updateList.push(product);
       }
-      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, revokeContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
+      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, revokeContainers: choosedContainers.map(container => this.cms.getObjectId(container)).join(',') }, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();

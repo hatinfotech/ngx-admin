@@ -235,15 +235,15 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
     // private chatService: ChatService,
     public mobileAppService: MobileAppService,
     // private apiService: ApiService,
-    // private commonService: CommonService,
-    public commonService: CommonService,
+    // private cms: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     private authService: NbAuthService,
     public themeService: NbThemeService,
   ) {
 
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
     this.mobileAppService.registerMobileApp(this);
 
     // this.apiService.get<{ domain: string, port: number }>('/chat/services/connect-info', {}, rs => {
@@ -256,7 +256,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   async ngOnInit() {
 
-    this.subcriptions.push(this.commonService.authenticated$.subscribe(loginInfo => {
+    this.subcriptions.push(this.cms.authenticated$.subscribe(loginInfo => {
       // if (false) {
       if (loginInfo) {
         this.chatRoomId = 'test';
@@ -295,14 +295,14 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
     this.ready$.subscribe(isReady => {
       if (isReady) {
-        // this.messagePage = new MessagesPage(this, this.commonService, this.authService, this.apiService);
-        // this.chatRoomSettingPage = new ChatRoomSettingPage(this, this.commonService, this.authService, this.apiService);
+        // this.messagePage = new MessagesPage(this, this.cms, this.authService, this.apiService);
+        // this.chatRoomSettingPage = new ChatRoomSettingPage(this, this.cms, this.authService, this.apiService);
         // const routes: any[] = [
         //   this.messagePage.f7Component,
         //   this.chatRoomSettingPage.f7Component,
-        //   new AboutPage(this, this.commonService, this.authService).f7Component,
-        //   new PhonePage(this, this.commonService, this.authService).f7Component,
-        //   new ContactsPage(this, this.commonService, this.authService, this.apiService).f7Component,
+        //   new AboutPage(this, this.cms, this.authService).f7Component,
+        //   new PhonePage(this, this.cms, this.authService).f7Component,
+        //   new ContactsPage(this, this.cms, this.authService, this.apiService).f7Component,
         // ];
 
         // Init Framework7 app
@@ -394,7 +394,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   async openChatRoom(option: any) {
-    this.commonService.openMobileSidebar();
+    this.cms.openMobileSidebar();
     if (typeof option === 'string') {
       option = {
         ChatRoom: option,
@@ -495,12 +495,12 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
   }
 
   switchScreen(screen: string) {
-    this.commonService.openMobileSidebar();
+    this.cms.openMobileSidebar();
     this.mobileScreen = screen;
   }
 
   playMedias(tracks: Track[]) {
-    this.commonService.openMobileSidebar();
+    this.cms.openMobileSidebar();
     this.switchScreen('media-player');
     // this.mediaTracks = [];
     // this.mediaTracks = tracks;

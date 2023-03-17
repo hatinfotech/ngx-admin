@@ -43,14 +43,14 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingContraAccountReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   tabTitle = 'Báo cáo lưu chuyển';
@@ -66,7 +66,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
         this.tabTitle = 'Báo cáo lưu chuyển';
       }
     });
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
         title: 'Liabilities',
@@ -98,7 +98,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
     ];
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
-      this.actionButtonList.find(f => f.name === 'refresh').label = this.commonService.translateText('Common.refresh');
+      this.actionButtonList.find(f => f.name === 'refresh').label = this.cms.translateText('Common.refresh');
 
       const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
       summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo sổ chi tiết tài khoản';
@@ -106,7 +106,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
       summaryReportBtn.status = 'info';
       summaryReportBtn.disabled = () => this.selectedIds.length <= 0;
       summaryReportBtn.click = () => {
-        this.commonService.openDialog(AccountingAccountDetailsReportPrintComponent, {
+        this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
           context: {
             showLoadinng: true,
             // title: 'Xem trước',
@@ -165,7 +165,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
         },
         value: () => null,
         change: (value: any, option: any) => {
-          this.contraAccount$.next((value || []).map(m => this.commonService.getObjectId(m)));
+          this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
           this.refresh();
         },
         disabled: () => {
@@ -183,7 +183,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
       // detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
       // detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
       // detailsReportBtn.click = () => {
-      //   this.commonService.openDialog(AccountingAccountDetailsReportPrintComponent, {
+      //   this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
       //     context: {
       //       showLoadinng: true,
       //       // title: 'Xem trước',
@@ -282,42 +282,42 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
           },
         },
         AccountName: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '40%',
         },
         // HeadDebit: {
-        //   title: '[' + this.commonService.translateText('Accounting.headDebit'),
+        //   title: '[' + this.cms.translateText('Accounting.headDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // HeadCredit: {
-        //   title: this.commonService.translateText('Accounting.headCredit') + ']',
+        //   title: this.cms.translateText('Accounting.headCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // HeadAmount: {
-        //   title: '[' + this.commonService.translateText('Accounting.headAmount') + ']',
+        //   title: '[' + this.cms.translateText('Accounting.headAmount') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         GenerateDebit: {
-          title: this.commonService.translateText('Accounting.creditGenerate'),
+          title: this.cms.translateText('Accounting.creditGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateCredit: {
-          title: this.commonService.translateText('Accounting.debitGenerate'),
+          title: this.cms.translateText('Accounting.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         // TailDebit: {
-        //   title: '[' + this.commonService.translateText('Accounting.tailDebit'),
+        //   title: '[' + this.cms.translateText('Accounting.tailDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // TailCredit: {
-        //   title: this.commonService.translateText('Accounting.tailCredit') + ']',
+        //   title: this.cms.translateText('Accounting.tailCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
@@ -339,7 +339,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
           }
         },
         Preview: {
-          title: this.commonService.translateText('Common.detail'),
+          title: this.cms.translateText('Common.detail'),
           type: 'custom',
           width: '10%',
           class: 'align-right',
@@ -351,8 +351,8 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
-            instance.label = this.commonService.translateText('Common.detail');
+            instance.title = this.cms.translateText('Common.preview');
+            instance.label = this.cms.translateText('Common.detail');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -466,7 +466,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
   }
 
   openInstantDetailReport(rowData: any) {
-    this.commonService.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

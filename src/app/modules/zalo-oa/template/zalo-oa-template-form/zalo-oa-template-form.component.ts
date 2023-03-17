@@ -27,9 +27,9 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
   baseFormUrl = '/zalo-oa/template/form';
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -38,18 +38,18 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<ZaloOaTemplateFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -68,7 +68,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
   // }
 
   select2OptionForZaloOaId = {
-    placeholder: this.commonService.translateText('ZaloOa.Oa.name') + '...',
+    placeholder: this.cms.translateText('ZaloOa.Oa.name') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -148,7 +148,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
     },
   ];
   select2OptionForAccountingBusiness = {
-    placeholder: this.commonService.translateText('Common.dataType') + '...',
+    placeholder: this.cms.translateText('Common.dataType') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -357,7 +357,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
 
   toMoney(formItem: FormGroup) {
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
@@ -374,7 +374,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
 
   async preview(formItem: FormGroup) {
     const data: CashVoucherModel = formItem.value;
-    this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+    this.cms.openDialog(CashReceiptVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],

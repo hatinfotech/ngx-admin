@@ -69,7 +69,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
                   const currentItems = pictureList.splice(currentIndex, 1);
                   pictureList.unshift(currentItems[0]);
                 }
-                this.commonService.openDialog(ImagesViewerComponent, {
+                this.cms.openDialog(ImagesViewerComponent, {
                   context: {
                     images: pictureList.map(m => m['OriginImage']),
                     imageIndex: 0,
@@ -116,7 +116,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -155,7 +155,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -168,7 +168,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
           type: 'html',
           width: '10%',
           valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+            return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.cms.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.cms.getObjectText(product['WarehouseUnit']);
           },
           filter: {
             type: 'custom',
@@ -177,7 +177,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
               condition: 'eq',
               delay: 0,
               select2Option: {
-                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -195,7 +195,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.unitList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.unitList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -204,13 +204,13 @@ export class SalesProductListComponent extends ProductListComponent implements O
           },
         },
         Containers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Warehouse.container'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Warehouse.container'), 'head-title'),
           type: 'html',
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.commonService.previewVoucher(tag.type, tag.id));
+            // instance.click.subscribe((tag: { id: string, text: string, type: string }) => this.cms.previewVoucher(tag.type, tag.id));
           },
           valuePrepareFunction: (cell: any, row) => {
-            return cell ? (cell.map(container => this.commonService.getObjectText(container)).join('<br>')) : '';
+            return cell ? (cell.map(container => this.cms.getObjectText(container)).join('<br>')) : '';
           },
           width: '15%',
         },
@@ -254,7 +254,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
           //       // }
           //     } else {
           //       instance.status = 'danger';
-          //       this.commonService.openDialog(ShowcaseDialogComponent, {
+          //       this.cms.openDialog(ShowcaseDialogComponent, {
           //         context: {
           //           title: 'Cảnh báo',
           //           content: 'Sản phẩm này không có đơn vị tính, để cập nhật giá cho sản phẩm vui lòng cài đặt đơn vị tính trước !',
@@ -274,7 +274,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
           // },
         },
         PriceTemDemo: {
-          title: this.commonService.translateText('Tem demo'),
+          title: this.cms.translateText('Tem demo'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -288,16 +288,16 @@ export class SalesProductListComponent extends ProductListComponent implements O
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('In Tem Demo');
-            instance.label = this.commonService.translateText('In Tem Demo');
+            instance.title = this.cms.translateText('In Tem Demo');
+            instance.label = this.cms.translateText('In Tem Demo');
             instance.init.subscribe(value => {
-              if (!value.Sku || !value.Price || !this.commonService.getObjectId(value.Unit)) {
+              if (!value.Sku || !value.Price || !this.cms.getObjectId(value.Unit)) {
                 instance.disabled = true;
               }
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseGoodsContainerModel) => {
               const editedItems = rowData;
-              this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
+              this.cms.openDialog(SalesProductDemoTemPrintComponent, {
                 context: {
                   priceTable: 'default',
                   id: [this.makeId(editedItems)],
@@ -316,7 +316,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -324,7 +324,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
     public formBuilder: FormBuilder,
     public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref, adminProductService);
+    super(apiService, router, cms, dialogService, toastService, _http, ref, adminProductService);
     this.listControl = this.formBuilder.group({
       Limit: [],
     });
@@ -350,10 +350,10 @@ export class SalesProductListComponent extends ProductListComponent implements O
         if (button.name === 'preview') {
           button.name = 'printQrCode';
           button.icon = 'grid-outline';
-          button.label = this.commonService.translateText('In tem demo');
-          button.title = this.commonService.translateText('In tem demo');
+          button.label = this.cms.translateText('In tem demo');
+          button.title = this.cms.translateText('In tem demo');
           button.click = (event, option) => {
-            this.commonService.openDialog(SalesProductDemoTemPrintComponent, {
+            this.cms.openDialog(SalesProductDemoTemPrintComponent, {
               context: {
                 priceTable: 'default',
                 id: this.selectedItems.map(item => this.makeId(item)),
@@ -388,8 +388,8 @@ export class SalesProductListComponent extends ProductListComponent implements O
                       throw new Error('Search to not instance of date');
                     }
                   }
-                  params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
-                  params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.commonService.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
+                  params[`ge_${fieldConf['field']}`] = this.encodeFilterQuery(this.cms.getBeginOfDate(fieldConf['search']['range'][0]).toISOString());
+                  params[`le_${fieldConf['field']}`] = this.encodeFilterQuery(this.cms.getEndOfDate(fieldConf['search']['range'][1]).toISOString());
                 } else {
                   if (fieldConf['search']['value']) {
                     params[`${fieldConf?.search?.condition || 'filter'}_${fieldConf?.field}`] = this.encodeFilterQuery(fieldConf['search']['value']);
@@ -409,7 +409,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
 
           params.selectedProducts = this.selectedIds.map(m => this.makeId(m));
 
-          this.commonService.openDialog(MasterPriceTablePrintComponent, {
+          this.cms.openDialog(MasterPriceTablePrintComponent, {
             context: {
               id: [],
               params: params,
@@ -423,7 +423,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
       // previewBtn.icon = 'grid-outline';
       // previewBtn.disabled = () => false;
       // previewBtn.click = () => {
-      //   this.commonService.openDialog(ShowcaseDialogComponent, {
+      //   this.cms.openDialog(ShowcaseDialogComponent, {
       //     context: {
       //       title: 'Print Bar Code',
       //       content: 'Chọn hàng hóa cần in Bar Code:',
@@ -437,7 +437,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
       //           status: 'success',
       //           label: 'In QRCode',
       //           action: () => {
-      //             this.commonService.openDialog(SalesProductPrintComponent, {
+      //             this.cms.openDialog(SalesProductPrintComponent, {
       //               context: {
       //                 id: this.selectedItems.map(item => this.makeId(item)),
       //                 // printForType: 'DRAWERS',
@@ -505,7 +505,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
   async openAssignContainersDialog() {
     if (this.selectedIds.length > 0) {
       const editedItems = await this.convertIdsToItems(this.selectedIds);
-      this.commonService.openDialog(AssignContainerFormComponent, {
+      this.cms.openDialog(AssignContainerFormComponent, {
         context: {
           inputMode: 'dialog',
           inputGoodsList: this.selectedItems,
@@ -523,29 +523,29 @@ export class SalesProductListComponent extends ProductListComponent implements O
   }
 
   async calculateCostOfGoodsSold() {
-    this.commonService.showDialog(this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), this.commonService.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
+    this.cms.showDialog(this.cms.translateText('Warehouse.calculateCostOfGoodsSold'), this.cms.translateText('Warehouse.calculateCostOfGoodsSoldConfirm'), [
       {
-        label: this.commonService.translateText('Common.goback'),
+        label: this.cms.translateText('Common.goback'),
         status: 'primary',
         action: () => {
 
         }
       },
       {
-        label: this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'),
+        label: this.cms.translateText('Warehouse.calculateCostOfGoodsSold'),
         status: 'danger',
         action: () => {
           this.toastService.show(
-            this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
-            this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
+            this.cms.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
+            this.cms.translateText('Warehouse.calculateCostOfGoodsSold'), {
             status: 'warning',
             duration: 15000
           })
           this.apiService.putPromise(this.apiPath, { calculateCostOfGoodsSold: true }, []).then(rs => {
             this.refresh();
             this.toastService.show(
-              this.commonService.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
-              this.commonService.translateText('Warehouse.calculateCostOfGoodsSold'), {
+              this.cms.translateText('Tiến trình tính giá vốn đang thực thi, bạn hãy chờ trong giây lát...'),
+              this.cms.translateText('Warehouse.calculateCostOfGoodsSold'), {
               status: 'success',
               duration: 5000
             })

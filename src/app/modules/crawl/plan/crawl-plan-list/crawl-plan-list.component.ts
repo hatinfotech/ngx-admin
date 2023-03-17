@@ -25,12 +25,12 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -102,7 +102,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
         //     });
         //     instance.click.subscribe(async (row: CrawlPlanModel) => {
 
-        //       this.commonService.openDialog(SyncFormComponent, {
+        //       this.cms.openDialog(SyncFormComponent, {
         //         context: {
         //           inputMode: 'dialog',
         //           inputId: [row.Code],
@@ -140,7 +140,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: CrawlPlanModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(CrawlPlanFormComponent, {
+  //   this.cms.openDialog(CrawlPlanFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

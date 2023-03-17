@@ -30,13 +30,13 @@ export class ContactRemovedListComponent extends ContactAllListComponent impleme
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ContactRemovedListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    super(apiService, router, cms, dialogService, toastService, _http, ref);
   }
 
   async init() {
@@ -54,7 +54,7 @@ export class ContactRemovedListComponent extends ContactAllListComponent impleme
     settings.actions = false;
     delete settings.columns['Merge'];
     settings.columns['Restore'] = {
-      title: this.commonService.translateText('Common.restore'),
+      title: this.cms.translateText('Common.restore'),
       type: 'custom',
       width: '5%',
       class: 'align-right',
@@ -66,25 +66,25 @@ export class ContactRemovedListComponent extends ContactAllListComponent impleme
         instance.status = 'success';
         instance.style = 'text-align: right';
         instance.class = 'align-right';
-        instance.title = this.commonService.translateText('Common.restore');
-        instance.label = this.commonService.translateText('Common.restore');
+        instance.title = this.cms.translateText('Common.restore');
+        instance.label = this.cms.translateText('Common.restore');
         instance.valueChange.subscribe(value => {
           // instance.icon = value ? 'unlock' : 'lock';
           // instance.status = value === 'REQUEST' ? 'warning' : 'success';
           // instance.disabled = value !== 'REQUEST';
         });
         instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-          this.commonService.openDialog(ShowcaseDialogComponent, {
+          this.cms.openDialog(ShowcaseDialogComponent, {
             context: {
-              title: this.commonService.translateText('Common.confirm'),
-              content: this.commonService.translateText('Common.restoreConfirm'),
+              title: this.cms.translateText('Common.confirm'),
+              content: this.cms.translateText('Common.restoreConfirm'),
               actions: [
                 {
-                  label: this.commonService.translateText('Common.close'),
+                  label: this.cms.translateText('Common.close'),
                   status: 'danger',
                 },
                 {
-                  label: this.commonService.translateText('Common.restore'),
+                  label: this.cms.translateText('Common.restore'),
                   status: 'success',
                   action: () => {
                     this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], restore: true }, [rowData]).then(rs => {

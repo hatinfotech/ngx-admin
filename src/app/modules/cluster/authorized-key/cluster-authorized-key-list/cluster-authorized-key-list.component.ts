@@ -40,35 +40,35 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ClusterAuthorizedKeyListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     // this.cycleMap = {
-    //   MONTHLY: this.commonService.translateText('Common.monthly'),
-    //   YEARLY: this.commonService.translateText('Common.yearly'),
+    //   MONTHLY: this.cms.translateText('Common.monthly'),
+    //   YEARLY: this.cms.translateText('Common.yearly'),
     // };
     this.stateList = [
       {
         id: 'VERIFIED',
-        text: this.commonService.translateText('Common.verified'),
+        text: this.cms.translateText('Common.verified'),
       },
       {
         id: 'EXPIRED',
-        text: this.commonService.translateText('Common.expired'),
+        text: this.cms.translateText('Common.expired'),
       },
       {
         id: 'ERROR',
-        text: this.commonService.translateText('Common.expiredSoon'),
+        text: this.cms.translateText('Common.expiredSoon'),
       },
     ];
     return super.init();
@@ -81,24 +81,24 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
     return this.configSetting({
       columns: {
         Issuer: {
-          title: this.commonService.translateText('Common.node'),
+          title: this.cms.translateText('Common.node'),
           type: 'string',
           width: '10%',
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '40%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         ApiUrl: {
-          title: this.commonService.translateText('Common.api'),
+          title: this.cms.translateText('Common.api'),
           type: 'string',
           width: '30%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '10%',
           // class: 'align-right',
@@ -109,11 +109,11 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.state');
-            instance.label = this.commonService.translateText('Common.state');
+            instance.title = this.cms.translateText('Common.state');
+            instance.label = this.cms.translateText('Common.state');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -130,7 +130,7 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
               delay: 0,
               condition: 'eq',
               select2Option: {
-                placeholder: this.commonService.translateText('Common.state') + '...',
+                placeholder: this.cms.translateText('Common.state') + '...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -147,7 +147,7 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -156,13 +156,13 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
           },
         },
         IsEnabled: {
-          title: this.commonService.translateText('Common.enable'),
+          title: this.cms.translateText('Common.enable'),
           type: 'boolean',
           width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // Permission: {
-        //   title: this.commonService.translateText('Common.permission'),
+        //   title: this.cms.translateText('Common.permission'),
         //   type: 'custom',
         //   width: '5%',
         //   class: 'align-right',
@@ -174,7 +174,7 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
         //     instance.status = 'danger';
         //     instance.style = 'text-align: right';
         //     instance.class = 'align-right';
-        //     instance.title = this.commonService.translateText('Common.preview');
+        //     instance.title = this.cms.translateText('Common.preview');
         //     instance.valueChange.subscribe(value => {
         //       // instance.icon = value ? 'unlock' : 'lock';
         //       // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -182,12 +182,12 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
         //     });
         //     instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: ClusterAuthorizedModel) => {
 
-        //       this.commonService.openDialog(ResourcePermissionEditComponent, {
+        //       this.cms.openDialog(ResourcePermissionEditComponent, {
         //         context: {
         //           inputMode: 'dialog',
         //           inputId: [rowData.Code],
         //           note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-        //           resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+        //           resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
         //           // resrouce: rowData,
         //           apiPath: this.apiPath,
         //         }
@@ -228,22 +228,22 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.goback'),
+          label: this.cms.translateText('Common.goback'),
           status: 'primary',
           action: () => {
             resolve(false);
           },
         },
         {
-          label: this.commonService.translateText(processMap?.nextStateLabel),
+          label: this.cms.translateText(processMap?.nextStateLabel),
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
             return this.apiService.putPromise<ClusterAuthorizedModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

@@ -101,11 +101,11 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<IvrMenuFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

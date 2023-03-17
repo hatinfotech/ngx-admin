@@ -48,7 +48,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -56,7 +56,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
     public collaboratorService: CollaboratorService,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
 
@@ -74,7 +74,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', { action: this.commonService.translateText('Common.choose'), definition: '' }), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Page.title', { action: this.cms.translateText('Common.choose'), definition: '' }), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {
@@ -185,11 +185,11 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
           type: 'string',
           width: '20%',
           valuePrepareFunction: (cell, row) => {
-            return `${this.commonService.datePipe.transform(row.DateOfStart, 'short')} - ${this.commonService.datePipe.transform(row.DateOfEnd, 'short')}`;
+            return `${this.cms.datePipe.transform(row.DateOfStart, 'short')} - ${this.cms.datePipe.transform(row.DateOfEnd, 'short')}`;
           }
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -200,17 +200,17 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
             instance.display = true;
             instance.status = 'success';
             instance.outline = true;
-            instance.title = this.commonService.translateText('Common.unknown');
-            instance.label = this.commonService.translateText('Common.unknown');
+            instance.title = this.cms.translateText('Common.unknown');
+            instance.label = this.cms.translateText('Common.unknown');
             instance.valueChange.subscribe(value => {
               const processMap = this.processMap[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
-              instance.title = 'Chuyển sang ' + this.commonService.translateText(processMap.nextStates.find(f => f.state == processMap.nextState)?.label);
+              instance.title = 'Chuyển sang ' + this.cms.translateText(processMap.nextStates.find(f => f.state == processMap.nextState)?.label);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorBasicStrategyModel) => {
               if (instance.rowData.State == 'NOTJUSTAPPROVED' || instance.rowData.State == 'UNRECORDED') {
-                this.commonService.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                this.cms.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
                   {
                     label: 'Đóng',
                     status: 'basic',
@@ -224,13 +224,13 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.cms.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
                       });
                     }
                   }
                 ]);
               } else if (instance.rowData.State == 'APPROVED') {
-                this.commonService.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
+                this.cms.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
                   {
                     label: 'Đóng',
                     status: 'basic',
@@ -244,7 +244,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.cms.toastService.show(instance.rowData.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                       });
                     }
                   },
@@ -255,13 +255,13 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.cms.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                       });
                     }
                   },
                 ]);
               } else if (instance.rowData.State == 'RUNNING') {
-                this.commonService.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
+                this.cms.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
                   {
                     label: 'Đóng',
                     status: 'basic',
@@ -275,7 +275,7 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.cms.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
                       });
                     }
                   },
@@ -286,13 +286,13 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
                     action: () => {
                       this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
                         this.refresh();
-                        this.commonService.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                        this.cms.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                       });
                     }
                   },
                 ]);
               } else {
-                this.commonService.toastService.show(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
+                this.cms.toastService.show(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
               }
             });
           },
@@ -345,8 +345,8 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
-    this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();
     });
   }

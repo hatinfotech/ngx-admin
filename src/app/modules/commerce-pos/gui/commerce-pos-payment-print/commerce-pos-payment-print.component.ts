@@ -97,14 +97,14 @@ export class CommercePosPaymnentPrintComponent extends DataManagerPrintComponent
   registerInfo: any;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosPaymnentPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
-    this.commonService.systemConfigs$.subscribe(registerInfo => {
+    super(cms, router, apiService, ref);
+    this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
     });
   }
@@ -160,7 +160,7 @@ export class CommercePosPaymnentPrintComponent extends DataManagerPrintComponent
   toMoney(detail: WarehouseGoodsDeliveryNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');

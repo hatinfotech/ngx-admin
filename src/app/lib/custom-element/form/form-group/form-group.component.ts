@@ -49,7 +49,7 @@ export class FormGroupComponent implements OnInit, OnDestroy {
 
   warningText = null;
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
   ) { }
 
   ngOnInit(): void {
@@ -82,10 +82,10 @@ export class FormGroupComponent implements OnInit, OnDestroy {
   }
 
   getState(value: string, states: any) {
-    if (states['<>'] && this.commonService.getObjectId(value)) {
+    if (states['<>'] && this.cms.getObjectId(value)) {
       return states['<>'];
     }
-    return states[this.commonService.getObjectId(value) || ''];
+    return states[this.cms.getObjectId(value) || ''];
   }
 
   formControlValidate(formControl: AbstractControl, invalidText: string, valideText?: string): string {

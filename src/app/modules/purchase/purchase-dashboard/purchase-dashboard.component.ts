@@ -84,7 +84,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
   constructor(
     private themeService: NbThemeService,
     private solarService: SolarData,
-    public commonService: CommonService,
+    public cms: CommonService,
     public formBuilder: FormBuilder,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
@@ -201,7 +201,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
     });
     this.formItem.get('DateReport').valueChanges.subscribe(value => {
       console.log(value);
-      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.commonService.getObjectId(value)).range);
+      this.formItem.get('DateRange').setValue(this.dateReportList.find(f => f.id === this.cms.getObjectId(value)).range);
     });
 
     setTimeout(() => {
@@ -211,14 +211,14 @@ export class PurchaseDashboardComponent implements OnDestroy {
       this.refresh();
     });
 
-    this.commonService.waitForReady().then(async () => {
+    this.cms.waitForReady().then(async () => {
       this.actionButtonList = [
         {
           name: 'refresh',
           status: 'success',
-          label: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          label: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           icon: 'sync',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
           size: 'medium',
           disabled: () => {
             return false;
@@ -307,7 +307,7 @@ export class PurchaseDashboardComponent implements OnDestroy {
   };
 
   select2OptionForProduct: Select2Option = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa/dịch vụ...',
       prepareReaultItem: (item) => {
@@ -429,13 +429,13 @@ export class PurchaseDashboardComponent implements OnDestroy {
   }
 
   async refresh() {
-    const reportType = this.commonService.getObjectId(this.formItem.get('DateReport').value);
+    const reportType = this.cms.getObjectId(this.formItem.get('DateReport').value);
     let pages = this.formItem.get('Page').value;
     if (pages) {
-      pages = pages.map(page => this.commonService.getObjectId(page));
+      pages = pages.map(page => this.cms.getObjectId(page));
       pages = pages.join(',');
     }
-    let products = this.formItem.get('Products')?.value?.map(m => this.commonService.getObjectId(m)) || [];
+    let products = this.formItem.get('Products')?.value?.map(m => this.cms.getObjectId(m)) || [];
     const dateRange: Date[] = this.formItem.get('DateRange').value;
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
@@ -556,8 +556,8 @@ export class PurchaseDashboardComponent implements OnDestroy {
 
     /** Goods compare */
     if (extendproductsQuery?.eq_Product && extendproductsQuery?.eq_Product.length > 0) {
-      const eqUnit = this.commonService.getObjectId(this.formItem.get('Unit').value);
-      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', {includeObject: true, eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, ...(eqUnit ? { eq_ProductUnit: this.commonService.getObjectId(this.formItem.get('Unit').value) } : {}), limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery, groupBy: '[Object]' });
+      const eqUnit = this.cms.getObjectId(this.formItem.get('Unit').value);
+      let statisticsData = await this.apiService.getPromise<any[]>('/accounting/statistics', {includeObject: true, eq_Account: "[1561,152,153,632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, ...(eqUnit ? { eq_ProductUnit: this.cms.getObjectId(this.formItem.get('Unit').value) } : {}), limit: 'nolimit', entryGroup: 'PURCHASE', ...extendproductsQuery, groupBy: '[Object]' });
       let linesData: any = {};
       timeline = [];
       for (let entry of statisticsData) {

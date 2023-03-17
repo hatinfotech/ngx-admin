@@ -28,11 +28,11 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref: NbDialogRef<CallBlockFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   blockActions: { id: string, text: string, Code: string, Name: string }[];

@@ -23,12 +23,12 @@ export class EmailAddressListComponent extends DataManagerListComponent<EmailAdd
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -81,7 +81,7 @@ export class EmailAddressListComponent extends DataManagerListComponent<EmailAdd
         //       });
         //       instance.click.subscribe(async (row: EmailAddressListModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -124,7 +124,7 @@ export class EmailAddressListComponent extends DataManagerListComponent<EmailAdd
 
   /** Implement required */
   openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailAddressListModel[]) => void, onDialogClose?: () => void) {
-    this.commonService.openDialog(EmailAddressFormComponent, {
+    this.cms.openDialog(EmailAddressFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: ids,

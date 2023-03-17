@@ -26,11 +26,11 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorOrderTeleCommitFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref, adminProductService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref, adminProductService);
   }
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
@@ -93,7 +93,7 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
   }
 
   saveAndClose() {
-    this.commonService.showDialog('Chốt đơn', 'Bạn có chắc là muốn chốt đơn hàng này không ? sau khi chốt đơn, báo giá liên quan cũng sẽ được duyệt.', [
+    this.cms.showDialog('Chốt đơn', 'Bạn có chắc là muốn chốt đơn hàng này không ? sau khi chốt đơn, báo giá liên quan cũng sẽ được duyệt.', [
       {
         status: 'basic',
         label: 'Trở về',

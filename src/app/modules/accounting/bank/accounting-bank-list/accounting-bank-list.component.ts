@@ -34,13 +34,13 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingBankListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -55,29 +55,29 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         ShortName: {
-          title: this.commonService.translateText('Common.shortName'),
+          title: this.cms.translateText('Common.shortName'),
           type: 'string',
           width: '20%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '30%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         EnglishName: {
-          title: this.commonService.translateText('Common.englishName'),
+          title: this.cms.translateText('Common.englishName'),
           type: 'string',
           width: '20%',
         },
         Address: {
-          title: this.commonService.translateText('Accounting.debitAccount'),
+          title: this.cms.translateText('Accounting.debitAccount'),
           type: 'string',
           width: '20%',
         },
@@ -89,7 +89,7 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
         //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
         //     instance.iconPack = 'eva';
         //     instance.icon = 'copy';
-        //     // instance.label = this.commonService.translateText('Common.copy');
+        //     // instance.label = this.cms.translateText('Common.copy');
         //     instance.display = true;
         //     instance.status = 'warning';
         //     instance.valueChange.subscribe(value => {
@@ -101,7 +101,7 @@ export class AccountingBankListComponent extends ServerDataManagerListComponent<
         //     });
         //     instance.click.subscribe(async (row: AccBankModel) => {
 
-        //       this.commonService.openDialog(AccBusinessFormComponent, {
+        //       this.cms.openDialog(AccBusinessFormComponent, {
         //         context: {
         //           inputMode: 'dialog',
         //           inputId: [row.Code],

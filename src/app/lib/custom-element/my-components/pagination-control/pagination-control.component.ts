@@ -35,7 +35,7 @@ export class PaginationControlComponent implements OnChanges, AfterViewInit {
   pages: any[] = [];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
 
 

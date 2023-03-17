@@ -1,7 +1,7 @@
 <div class="form-group" [attr.state]="formControlValidate(formGroup.get(name), 'warning')">
   <label class="label" *ngIf="!hideLabel" [ngStyle]="{'justify-content': align && align == 'right' && 'flex-end' || 'flex-start'}">
     <span class="valid" [ngStyle]="{'text-align': align && align || 'left'}">{{label | translate | headtitlecase}}</span>
-    <span class="invalid">{{ warningText ? ((label | translate:{field: commonService.translate.instant(label)} | headtitlecase) + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: commonService.translate.instant(label)} | headtitlecase)}}
+    <span class="invalid">{{ warningText ? ((label | translate:{field: cms.translate.instant(label)} | headtitlecase) + ': (' + warningText + ')') : ('Form.requireLabel' | translate:{field: cms.translate.instant(label)} | headtitlecase)}}
     </span>
     <span *ngIf="required" class="text-danger">&nbsp;(*)</span>
     &nbsp;

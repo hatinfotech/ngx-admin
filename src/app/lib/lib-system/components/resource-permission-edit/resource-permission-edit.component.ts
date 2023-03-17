@@ -38,9 +38,9 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
   idKeys?: string[];
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -49,18 +49,18 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<ResourcePermissionEditComponent<M>>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'save',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.save'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.save'), 'head-title'),
       icon: 'save',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.save'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.save'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -174,7 +174,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
 
 
   select2OptionForUser = {
-    placeholder: this.commonService.translateText('Common.chooseSomething', { something: this.commonService.translateText('Common.user') }),
+    placeholder: this.cms.translateText('Common.chooseSomething', { something: this.cms.translateText('Common.user') }),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -201,7 +201,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
   };
 
   select2OptionForPms = {
-    placeholder: this.commonService.translateText('Common.chooseSomething', { something: this.commonService.translateText('Common.permission') }),
+    placeholder: this.cms.translateText('Common.chooseSomething', { something: this.cms.translateText('Common.permission') }),
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
@@ -213,13 +213,13 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     },
   };
   pmsList = [
-    { id: 'V', text: this.commonService.translateText('Common.Pms.view') },
-    { id: 'L', text: this.commonService.translateText('Common.Pms.list') },
-    { id: 'E', text: this.commonService.translateText('Common.Pms.edit') },
-    { id: 'D', text: this.commonService.translateText('Common.Pms.delete') },
-    { id: 'M', text: this.commonService.translateText('Common.Pms.manage') },
-    { id: 'P', text: this.commonService.translateText('Common.Pms.print') },
-    { id: 'S', text: this.commonService.translateText('Thay đổi trạng thái') },
+    { id: 'V', text: this.cms.translateText('Common.Pms.view') },
+    { id: 'L', text: this.cms.translateText('Common.Pms.list') },
+    { id: 'E', text: this.cms.translateText('Common.Pms.edit') },
+    { id: 'D', text: this.cms.translateText('Common.Pms.delete') },
+    { id: 'M', text: this.cms.translateText('Common.Pms.manage') },
+    { id: 'P', text: this.cms.translateText('Common.Pms.print') },
+    { id: 'S', text: this.cms.translateText('Thay đổi trạng thái') },
   ];
 
   makeNewFormGroup(data?: M): FormGroup {
@@ -344,7 +344,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
 
   // toMoney(formItem: FormGroup) {
   //   // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-  //   this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+  //   this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
   //     // Call culate total
   //     const details = formItem.get('Permission') as FormArray;
   //     let total = 0;
@@ -361,7 +361,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
 
   // preview(formItem: FormGroup) {
   //   const data: CashVoucherModel = formItem.value;
-  //   this.commonService.openDialog(CashReceiptVoucherPrintComponent, {
+  //   this.cms.openDialog(CashReceiptVoucherPrintComponent, {
   //     context: {
   //       title: 'Xem trước',
   //       data: [data],

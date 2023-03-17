@@ -25,12 +25,12 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -78,7 +78,7 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
           title: 'Diễn giải',
           type: 'string',
           width: '30%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // number_alias: {
         //   title: 'Alias',
@@ -133,7 +133,7 @@ export class CallRouteListComponent extends IvoipBaseListComponent<PbxExtensionM
   // showQrCode(extensionUuid: string, extension: string, regenerate?: boolean) {
   //   this.apiService.get<{ extension: string, extension_uuid: string, qr_code: string }[]>('/ivoip/extensions/' + extensionUuid, { resptype: 'qrcode', regenerate: regenerate ? 1 : 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, result => {
 
-  //     this.commonService.openDialog(ShowcaseDialogComponent, {
+  //     this.cms.openDialog(ShowcaseDialogComponent, {
   //       context: {
   //         title: 'QR Code',
   //         content: `<img src="${result[0].qr_code}" class="full-width">`,

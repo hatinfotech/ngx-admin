@@ -38,12 +38,12 @@ export class WebHostingService {
   constructor(
     private apiService: ApiService,
     // private authService: NbAuthService,
-    private commonService: CommonService,
+    private cms: CommonService,
   ) {
     const oldActiveHosting = this.activeHosting;
     // this.activeHosting = Date.now().toString();
     this.apiService.getPromise<WhHostingModel[]>('/web-hosting/hostings', {}).then(hostings => {
-      this.hostingList = this.commonService.convertOptionList(hostings, 'Code', 'Host');
+      this.hostingList = this.cms.convertOptionList(hostings, 'Code', 'Host');
       // this.activeHosting = oldActiveHosting;
 
       for (const hosting of this.hostingList) {
@@ -79,7 +79,7 @@ export class WebHostingService {
   }
 
   reloadHostingData(callback?: () => void, force?: boolean) {
-    this.commonService.takeUntil('webhosting_reload_hosting_data', force ? 0 : 300, () => {
+    this.cms.takeUntil('webhosting_reload_hosting_data', force ? 0 : 300, () => {
       this.apiService.getPromise<WhWebsiteModel[]>('/web-hosting/websites', { hosting: this.activeHosting }).then(websites => {
         this.websiteMap = {};
         websites.forEach(website => {
@@ -164,7 +164,7 @@ export class WebHostingService {
 
   reloadCache() {
     this.apiService.getPromise<WhHostingModel[]>('/web-hosting/hostings', {}).then(hostings => {
-      this.hostingList = this.commonService.convertOptionList(hostings, 'Code', 'Host');
+      this.hostingList = this.cms.convertOptionList(hostings, 'Code', 'Host');
       this.hostingList.forEach(hosting => {
         this.hostingMap[hosting.Code] = hosting;
       });

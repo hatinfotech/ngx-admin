@@ -27,10 +27,10 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<WarehouseFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
   
   accountList = [
@@ -54,7 +54,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
     {id: '157', text: 'Hàng gửi đi bán (157)'},
   ];
   select2OptionForAccAccount = {
-    placeholder: this.commonService.translateText('Chọn tài khoản kho...'),
+    placeholder: this.cms.translateText('Chọn tài khoản kho...'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,

@@ -15,7 +15,7 @@ import { MobileAppService } from '../mobile-app/mobile-app.service';
 })
 export class SmartBotComponent implements OnInit, AfterViewInit {
 
-  frameSource = this.commonService.env.localApp.url;
+  frameSource = this.cms.env.localApp.url;
   frameSafeSource: SafeResourceUrl;
 
   @ViewChild('frameRef') frameRef: ElementRef;
@@ -28,13 +28,13 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
   constructor(
     public sanitizer: DomSanitizer,
     public apiService: ApiService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public authService: NbAuthService,
     public mobileService: MobileAppService,
   ) { }
 
   ngOnInit(): void {
-    this.commonService.theme$.pipe(filter(f => !!f), take(1)).toPromise().then(config => {
+    this.cms.theme$.pipe(filter(f => !!f), take(1)).toPromise().then(config => {
       this.frameSafeSource = this.sanitizer.bypassSecurityTrustResourceUrl(`${this.frameSource}?id=${this.id}&theme=${config.theme}&version=${this.env.version}`);
     });
   }
@@ -45,12 +45,12 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
     this.frame = this.frameRef.nativeElement;
     this.frameSocket = new FrameSocket(this.frame.contentWindow, this.id);
     this.frameSocket.on<boolean>('ready').pipe(filter(request => request.data), take(1)).subscribe(request => {
-      this.frameSocket.emit('set-token', { ...this.apiService.token, api_url: this.commonService.getApiUrl() }).then(rsp => {
+      this.frameSocket.emit('set-token', { ...this.apiService.token, api_url: this.cms.getApiUrl() }).then(rsp => {
         console.debug(rsp);
       });
 
       setTimeout(() => {
-        this.commonService.theme$.pipe(filter(f => !!f)).subscribe(config => {
+        this.cms.theme$.pipe(filter(f => !!f)).subscribe(config => {
           this.frameSocket.emit('change-theme', { theme: config.theme }).then(rsp => {
             console.debug(rsp);
           });
@@ -65,7 +65,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
         });
 
         this.authService.onTokenChange().subscribe(token => {
-          this.frameSocket.emit('set-token', { ...token.getPayload(), api_url: this.commonService.getApiUrl() }).then(rsp => {
+          this.frameSocket.emit('set-token', { ...token.getPayload(), api_url: this.cms.getApiUrl() }).then(rsp => {
             console.debug(rsp);
           });
         });
@@ -83,7 +83,7 @@ export class SmartBotComponent implements OnInit, AfterViewInit {
 
     this.frameSocket.on<{ id: string, type: string, text: string }>('request-open-voucher').subscribe(request => {
       console.log('smart-bot send request open voucher', request);
-      this.commonService.previewVoucher(request.data?.type, request.data?.id);
+      this.cms.previewVoucher(request.data?.type, request.data?.id);
       request.callback('callback', true);
     });
 

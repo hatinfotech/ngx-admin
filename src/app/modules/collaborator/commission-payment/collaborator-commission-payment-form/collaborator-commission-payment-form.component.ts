@@ -36,16 +36,16 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   apiPath = '/collaborator/commission-payment-vouchers';
 
   // variables
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  // numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   accountingBusinessList: BusinessModel[] = [];
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(AccBusinessFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
@@ -72,19 +72,19 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorCommissionPaymentFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -140,7 +140,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   // };
 
   select2OptionForBankAccounting = {
-    placeholder: this.commonService.translateText('Common.bankAccount'),
+    placeholder: this.cms.translateText('Common.bankAccount'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -371,7 +371,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
     if (data) {
       data[this.idKey + '_old'] = data.Code;
       this.prepareRestrictedData(newForm, data);
-      const accoutnGroup = this.commonService.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
+      const accoutnGroup = this.cms.getObjectId(data.BankAccount) ? 'CASHINBANK' : 'CASH';
       newForm['creditAccounts'] = this.accountList.filter(f => f.Group === accoutnGroup);
       newForm.patchValue(data);
     } else {
@@ -521,7 +521,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
 
   toMoney(formItem: FormGroup) {
     // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-    this.commonService.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
+    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = this.getDetails(formItem);
       let total = 0;
@@ -543,7 +543,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
       //   detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       // }
     });
-    this.commonService.openDialog(CashPaymentVoucherPrintComponent, {
+    this.cms.openDialog(CashPaymentVoucherPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],
@@ -569,7 +569,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.commonService.openDialog(ReferenceChoosingDialogComponent, {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
       context: {
         // inputMode: 'dialog',
         // filter: {
@@ -603,13 +603,13 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 // get purchase order
                 const commissionVoucher = await this.apiService.getPromise<CollaboratorCommissionVoucherModel[]>('/collaborator/commission-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
 
-                if (this.commonService.getObjectId(commissionVoucher.State) != 'APPROVED') {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu kết chuyển chiết khấu chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(commissionVoucher.State) != 'APPROVED') {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu kết chuyển chiết khấu chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(commissionVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(commissionVoucher.Publisher, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Cộng tác viên trong phiếu hoa hồng không giống với phiếu thanh toán hoa hồng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -647,13 +647,13 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 // get purchase order
                 const awardVoucher = await this.apiService.getPromise<CollaboratorAwardVoucherModel[]>('/collaborator/award-vouchers/' + chooseItems[i].Code, { includeContact: true }).then(rs => rs[0]);
 
-                if (this.commonService.getObjectId(awardVoucher.State) != 'APPROVED') {
-                  this.commonService.toastService.show(this.commonService.translateText('Phiếu thưởng chưa được duyệt'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(awardVoucher.State) != 'APPROVED') {
+                  this.cms.toastService.show(this.cms.translateText('Phiếu thưởng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
-                if (this.commonService.getObjectId(formGroup.get('Object').value)) {
-                  if (this.commonService.getObjectId(awardVoucher.Publisher, 'Code') != this.commonService.getObjectId(formGroup.get('Object').value)) {
-                    this.commonService.toastService.show(this.commonService.translateText('Cộng tác viên trong phiếu thưởng không giống với phiếu thanh toán hoa hồng'), this.commonService.translateText('Common.warning'), { status: 'warning' });
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(awardVoucher.Publisher, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Cộng tác viên trong phiếu thưởng không giống với phiếu thanh toán hoa hồng'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -696,13 +696,13 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
-    //   this.commonService.openDialog(PurchaseVoucherPrintComponent, {
+    //   this.cms.openDialog(PurchaseVoucherPrintComponent, {
     //     context: {
     //       showLoadinng: true,
     //       title: 'Xem trước',
-    //       id: [this.commonService.getObjectId(relativeVocher)],
+    //       id: [this.cms.getObjectId(relativeVocher)],
     //       // data: data,
     //       idKey: ['Code'],
     //       // approvedConfirm: true,
@@ -717,7 +717,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 

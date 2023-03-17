@@ -29,12 +29,12 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -80,7 +80,7 @@ export class DeviceListComponent extends IvoipBaseListComponent<PbxDeviceModel> 
           title: 'Mô tả',
           type: 'string',
           width: '50%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
       },
     });

@@ -24,12 +24,12 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   /** Api get funciton */
@@ -54,17 +54,17 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
       pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         Name: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.name'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.name'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '50%',
         },
@@ -85,7 +85,7 @@ export class ProductGroupListComponent extends DataManagerListComponent<ProductG
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductGroupModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(ProductGroupFormComponent, {
+  //   this.cms.openDialog(ProductGroupFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

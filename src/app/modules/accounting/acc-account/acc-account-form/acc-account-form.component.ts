@@ -23,7 +23,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
 
   reportByObjectList: { id: string, text: string }[] = [];
   reportByObjectSelect2Option = {
-    placeholder: this.commonService.translateText('Accounting.reportByObject') + '...',
+    placeholder: this.cms.translateText('Accounting.reportByObject') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -38,7 +38,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
 
   accountPropertyList: { id: string, text: string }[] = [];
   accountTypeListSelect2Option = {
-    placeholder: this.commonService.translateText('Accounting.property') + '...',
+    placeholder: this.cms.translateText('Accounting.property') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -53,7 +53,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
 
   currencyList: { id: string, text: string }[] = [];
   currencyListSelect2Option = {
-    placeholder: this.commonService.translateText('Accounting.property') + '...',
+    placeholder: this.cms.translateText('Accounting.property') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -73,10 +73,10 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<AccAccountFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {
@@ -88,47 +88,47 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
   }
 
   async init() {
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.reportByObjectList = [
       {
         id: '',
-        text: this.commonService.translateText('Common.none'),
+        text: this.cms.translateText('Common.none'),
       },
       {
         id: 'CUSTOMER',
-        text: this.commonService.translateText('Common.customer'),
+        text: this.cms.translateText('Common.customer'),
       },
       {
         id: 'SUPPLIER',
-        text: this.commonService.translateText('Common.supplier'),
+        text: this.cms.translateText('Common.supplier'),
       },
       {
         id: 'EMPLOYEE',
-        text: this.commonService.translateText('Common.employee'),
+        text: this.cms.translateText('Common.employee'),
       },
     ];
     this.accountPropertyList = [
       {
         id: 'DEBIT',
-        text: this.commonService.translateText('Accounting.debit'),
+        text: this.cms.translateText('Accounting.debit'),
       },
       {
         id: 'CREDIT',
-        text: this.commonService.translateText('Accounting.credit'),
+        text: this.cms.translateText('Accounting.credit'),
       },
       {
         id: 'BOTH',
-        text: this.commonService.translateText('Accounting.both'),
+        text: this.cms.translateText('Accounting.both'),
       },
     ];
     this.currencyList = [
       {
         id: 'VND',
-        text: this.commonService.translateText('Common.Currency.Vnd.label'),
+        text: this.cms.translateText('Common.Currency.Vnd.label'),
       },
       {
         id: 'USD',
-        text: this.commonService.translateText('Common.Currency.Usd.label'),
+        text: this.cms.translateText('Common.Currency.Usd.label'),
       },
     ];
     return super.init();

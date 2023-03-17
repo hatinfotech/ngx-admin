@@ -11,23 +11,23 @@ import { CommonService } from '../../services/common.service';
 */
 @Pipe({ name: 'objecttext' })
 export class ObjectTextPipe implements PipeTransform {
-  constructor(public commonService: CommonService) {
+  constructor(public cms: CommonService) {
 
   }
   transform(value: any): string {
-    return this.commonService.getObjectText(value);
+    return this.cms.getObjectText(value);
   }
 }
 
 @Pipe({ name: 'objectstext' })
 export class ObjectsTextPipe implements PipeTransform {
-  constructor(public commonService: CommonService) {
+  constructor(public cms: CommonService) {
 
   }
   transform(value: any[]): string {
     if (value && !Array.isArray(value)) {
       value = [value];
     }
-    return value ? value.map(val => this.commonService.getObjectText(val)).join(', ') : '';
+    return value ? value.map(val => this.cms.getObjectText(val)).join(', ') : '';
   }
 }

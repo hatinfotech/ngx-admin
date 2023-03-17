@@ -26,20 +26,20 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
 
     /** Append print button to head card */
     this.actionButtonList.unshift({
       name: 'print',
       status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.import'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.import'), 'head-title'),
       icon: 'code-download',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.import'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.import'), 'head-title'),
       size: 'medium',
       disabled: () => false,
       hidden: () => false,
@@ -71,22 +71,22 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
       pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '30%',
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         DateOfCreate: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfcreated'), 'head-title'),
           type: 'custom',
           width: '10%',
           renderComponent: SmartTableDateTimeComponent,
@@ -95,12 +95,12 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
           },
         },
         SupplierName: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.supplier'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.supplier'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         IsApprove: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.isApprove'), 'head-title'),
           type: 'string',
           width: '10%',
         },
@@ -124,7 +124,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
         //       });
         //       instance.click.subscribe(async (row: PurchasePriceTableModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -165,7 +165,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: PurchasePriceTableModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(PurchasePriceTableImportComponent, {
+  //   this.cms.openDialog(PurchasePriceTableImportComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -189,7 +189,7 @@ export class PurchasePriceTableListComponent extends DataManagerListComponent<Pu
   // }
 
   openImportForm() {
-    this.commonService.openDialog(PurchasePriceTableImportComponent, {
+    this.cms.openDialog(PurchasePriceTableImportComponent, {
       context: {
         showLoadinng: true,
         inputMode: 'dialog',

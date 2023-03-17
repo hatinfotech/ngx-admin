@@ -77,7 +77,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
 
     constructor(
         private apiService: ApiService,
-        private commonService: CommonService,
+        private cms: CommonService,
         // private mobileAppService: MobileAppService,
         private notificationService: NotificationService,
         private datePipe: DatePipe,
@@ -131,7 +131,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
         this.notificationService.openNotification(notification).then(rs => {
             this.context.onItemClick.next(true);
         });
-        // this.commonService.openMobileSidebar();
+        // this.cms.openMobileSidebar();
         // if (notification.Type === 'CHATROOM') {
         //   this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room });
         //   this.context.onItemClick.next(true);
@@ -198,7 +198,7 @@ export class HeaderNotificationContextComponent extends NbPositionedContainerCom
         //   this.notificaitonUpdateQueue.push(n);
         // }
         this.notificaitonUpdateQueue.push(...notifications);
-        this.commonService.takeUntil('update_notifications_state', 10000).then(rs => {
+        this.cms.takeUntil('update_notifications_state', 10000).then(rs => {
             this.notificationService.updateReceiverState(this.notificaitonUpdateQueue.map(item => item.Id), 'READ').then(rs => {
                 console.log('update notifications state to read');
                 for (const notification of this.notificaitonUpdateQueue) {

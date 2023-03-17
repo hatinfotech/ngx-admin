@@ -19,13 +19,13 @@ export class SocketManager {
   chatRoomList: { [key: string]: SocketNamespace } = {};
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public user?: User,
     public socketServerUri?: string,
   ) {
     // this.initIoConnection();
     if (!socketServerUri) {
-      this.socketServerUri = this.commonService.mainSocketInfo$.getValue().url;
+      this.socketServerUri = this.cms.mainSocketInfo$.getValue().url;
     }
   }
 
@@ -34,7 +34,7 @@ export class SocketManager {
 
     // Main socket
     // this.mainSocket = new MySocket(this.socketServerUri);
-    this.mainSocket = await this.commonService.getMainSocket();
+    this.mainSocket = await this.cms.getMainSocket();
 
     this.mainSocket.socket.on('reconnect_attempt', (att: number) => {
       console.info('main socket - reconnect_attempt : ' + att);

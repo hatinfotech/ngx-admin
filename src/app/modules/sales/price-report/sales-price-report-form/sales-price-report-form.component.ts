@@ -51,12 +51,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
-  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
+  locale = this.cms.getCurrentLoaleDataset();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
+  quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
 
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -77,7 +77,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     simpleUpload: {
       uploadUrl: () => {
         // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
-        return this.commonService.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+        return this.cms.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
           return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
         });
       },
@@ -91,20 +91,20 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SalesPriceReportFormComponent>,
     public adminProductService: AdminProductService,
     public datePipe?: DatePipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -116,23 +116,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Object').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Object').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -154,23 +154,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
   contactControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
-    title: this.commonService.translateText('Common.addNewContact'),
+    title: this.cms.translateText('Common.addNewContact'),
     status: 'success',
     states: {
       '<>': {
         icon: 'edit-outline',
         status: 'primary',
-        title: this.commonService.translateText('Common.editContact'),
+        title: this.cms.translateText('Common.editContact'),
       },
       '': {
         icon: 'plus-square-outline',
         status: 'success',
-        title: this.commonService.translateText('Common.addNewContact'),
+        title: this.cms.translateText('Common.addNewContact'),
       },
     },
     action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.commonService.getObjectId(formGroup.get('Contact').value);
-      this.commonService.openDialog(ContactFormComponent, {
+      const currentObject = this.cms.getObjectId(formGroup.get('Contact').value);
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           inputId: currentObject ? [currentObject] : null,
@@ -276,7 +276,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   select2OptionForProduct = {
-    ...this.commonService.makeSelect2AjaxOption('/admin-product/products', {
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', {
       select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
       includeSearchResultLabel: true,
       includeUnits: true,
@@ -715,12 +715,12 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   async onChangePriceTable(formItem: FormGroup, selectedData: SalesPriceTableModel) {
-    const priceTableId = this.commonService.getObjectId(selectedData);
+    const priceTableId = this.cms.getObjectId(selectedData);
     if (priceTableId) {
       const details = this.getDetails(formItem);
       const productsId = [];
       for (const detail of details.controls) {
-        const productId = this.commonService.getObjectId(detail.get('Product').value);
+        const productId = this.cms.getObjectId(detail.get('Product').value);
         if (productId) {
           productsId.push(productId);
         }
@@ -733,15 +733,15 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       }).then(rs => {
         const productPriceIndex = {};
         for (const product of rs) {
-          const unitId = this.commonService.getObjectId(product.UnitCode);
+          const unitId = this.cms.getObjectId(product.UnitCode);
           productPriceIndex[`${product.Product}-${unitId}`] = product.Price;
         }
         return productPriceIndex;
       })) : {};
       for (const detail of details.controls) {
-        const unitId = this.commonService.getObjectId(detail.get('Unit').value);
-        const productId = this.commonService.getObjectId(detail.get('Product').value);
-        const typeId = this.commonService.getObjectId(detail.get('Type').value);
+        const unitId = this.cms.getObjectId(detail.get('Unit').value);
+        const productId = this.cms.getObjectId(detail.get('Product').value);
+        const typeId = this.cms.getObjectId(detail.get('Type').value);
         if (typeId !== 'CATEGORY' && productId && unitId) {
           const price = productProceIndex[`${productId}-${unitId}`];
           if (price !== null) {
@@ -757,7 +757,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   /** Choose product event */
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
-    const productId = this.commonService.getObjectId(selectedData);
+    const productId = this.cms.getObjectId(selectedData);
     if (productId) {
       const descriptionControl = detail.get('Description');
       descriptionControl.setValue(selectedData['OriginName']);
@@ -771,8 +771,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     //   detail.get('Description').setValue(selectedData.Name);
     //   if (parentForm.get('PriceTable').value) {
     //     this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-    //       priceTable: this.commonService.getObjectId(parentForm.get('PriceTable').value),
-    //       product: this.commonService.getObjectId(selectedData),
+    //       priceTable: this.cms.getObjectId(parentForm.get('PriceTable').value),
+    //       product: this.cms.getObjectId(selectedData),
     //       includeUnit: true,
     //     }).then(rs => {
     //       console.log(rs);
@@ -816,13 +816,13 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   /** Choose unit event */
   onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
     if (!this.isProcessing) {
-      const unitId = this.commonService.getObjectId(selectedData);
-      const priceTableId = this.commonService.getObjectId(formItem.get('PriceTable').value);
+      const unitId = this.cms.getObjectId(selectedData);
+      const priceTableId = this.cms.getObjectId(formItem.get('PriceTable').value);
       if (priceTableId && unitId) {
-        if (this.commonService.getObjectId(detail.get('Type').value) !== 'CATEGORY') {
+        if (this.cms.getObjectId(detail.get('Type').value) !== 'CATEGORY') {
           this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
             priceTable: priceTableId,
-            product: this.commonService.getObjectId(detail.get('Product').value),
+            product: this.cms.getObjectId(detail.get('Product').value),
             includeUnit: true,
           }).then(rs => {
             console.log(rs);
@@ -833,7 +833,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
                   item.Price = rs.find(f => f.UnitCode == item.id)?.Price;
                   return item;
                 });
-                const choosed = detail['unitList'].find(f => f.id == this.commonService.getObjectId(selectedData));
+                const choosed = detail['unitList'].find(f => f.id == this.cms.getObjectId(selectedData));
                 detail.get('Price').setValue(choosed.Price);
                 this.toMoney(formItem, detail);
               }
@@ -904,7 +904,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.commonService.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+    this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
       if (source === 'ToMoney') {
         detail.get('Price').setValue(this.calculatToMoney(detail, source));
       } else {
@@ -922,7 +922,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   calulateTotal(formItem: FormGroup) {
-    this.commonService.takeUntil('calulcate_sales_price_report', 300).then(rs => {
+    this.cms.takeUntil('calulcate_sales_price_report', 300).then(rs => {
       let total = 0;
       const details = this.getDetails(formItem);
       for (let i = 0; i < details.controls.length; i++) {
@@ -936,10 +936,10 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   async preview(formItem: FormGroup) {
     const data: SalesPriceReportModel = formItem.value;
     for (const detail of data.Details) {
-      detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
-      detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
+      detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
+      detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
     };
-    this.commonService.openDialog(SalesPriceReportPrintComponent, {
+    this.cms.openDialog(SalesPriceReportPrintComponent, {
       context: {
         title: 'Xem trước',
         mode: 'preview',
@@ -963,15 +963,15 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   // customIcons: CustomIcon[] = [{
-  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-  //     this.commonService.openDialog(ProductFormComponent, {
+  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.cms.openDialog(ProductFormComponent, {
   //       context: {
   //         inputMode: 'dialog',
   //         // inputId: ids,
   //         onDialogSave: (newData: ProductModel[]) => {
   //           console.log(newData);
   //           // const formItem = formGroupComponent.formGroup;
-  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
   //           formGroup.get('Product').patchValue(newProduct);
   //           this.onSelectProduct(formGroup, newProduct, option.parentForm)
   //         },
@@ -990,23 +990,23 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     if (this.customIcons[name]) return this.customIcons[name];
     return this.customIcons[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Common.addNewProduct'),
+      title: this.cms.translateText('Common.addNewProduct'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Common.editProduct'),
+          title: this.cms.translateText('Common.editProduct'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Common.addNewProduct'),
+          title: this.cms.translateText('Common.addNewProduct'),
         },
       },
       action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        this.commonService.openDialog(ProductFormComponent, {
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        this.cms.openDialog(ProductFormComponent, {
           context: {
             inputMode: 'dialog',
             inputId: currentProduct ? [currentProduct] : null,
@@ -1014,7 +1014,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
             onDialogSave: (newData: ProductModel[]) => {
               console.log(newData);
               // const formItem = formGroupComponent.formGroup;
-              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
               formGroup.get('Product').patchValue(newProduct);
             },
             onDialogClose: () => {
@@ -1029,8 +1029,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ProductUnitFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
@@ -1056,13 +1056,13 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 

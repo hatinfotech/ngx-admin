@@ -58,12 +58,12 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   processing = false;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AssignCategoriesFormComponent>,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {

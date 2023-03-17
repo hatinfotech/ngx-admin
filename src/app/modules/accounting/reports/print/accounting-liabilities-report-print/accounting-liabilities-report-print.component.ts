@@ -29,14 +29,14 @@ export class AccountingLiabilitiesReportPrintComponent extends DataManagerPrintC
   // formDialog = CashPaymentVoucherFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<AccountingLiabilitiesReportPrintComponent>,
     private datePipe: DatePipe,
     public accountingService: AccountingService,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {

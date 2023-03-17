@@ -27,13 +27,13 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
   processMapList: ProcessMap[] = [];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorCommissionDetailPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -109,16 +109,16 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
     const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
     params['changeState'] = processMap?.nextState;
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
+        label: this.cms.translateText(data.State == 'APPROVE' ? 'Common.complete' : 'Common.approve'),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -127,7 +127,7 @@ export class CollaboratorCommissionDetailPrintComponent extends DataManagerPrint
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
           }).catch(err => {

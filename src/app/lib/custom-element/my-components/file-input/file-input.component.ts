@@ -49,7 +49,7 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
 
   constructor(
     public apiService: ApiService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
 
     /** ngx-uploader */
@@ -121,7 +121,7 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
         }
 
         // this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', eq_IsAvailable: true, eq_IsUpload: true, requestUploadToken: true, weight, limit: 1 }).then(fileStores => {
-        this.commonService.getAvailableFileStores().then(fileStores => {
+        this.cms.getAvailableFileStores().then(fileStores => {
           const event: UploadInput = {
             type: 'uploadAll',
             url: this.apiService.buildApiUrl(fileStores[0].Path + '/v1/file/files', { token: fileStores[0]['UploadToken'] }),
@@ -208,7 +208,7 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
   }
 
   uploadByLink() {
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Upload hình bằng link',
         width: '600px',
@@ -268,7 +268,7 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
   preview() {
     // window.open(this.value.OriginImage, '_blank');
     // Open photo browser
-    this.commonService.openDialog(ImagesViewerComponent, {
+    this.cms.openDialog(ImagesViewerComponent, {
       context: {
         images: [this.value?.OriginImage],
         imageIndex: 0

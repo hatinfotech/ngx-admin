@@ -75,7 +75,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
         //       });
         //       instance.click.subscribe(async (row: FileStoreModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -93,7 +93,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
         //     },
         //   },
         Token: {
-          title: this.commonService.translateText('Common.token'),
+          title: this.cms.translateText('Common.token'),
           type: 'custom',
           width: '10%',
           renderComponent: SmartTableButtonComponent,
@@ -103,16 +103,16 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
             instance.icon = 'unlock';
             instance.display = true;
             instance.status = 'danger';
-            instance.title = this.commonService.translateText('ZaloOa.Webhook.token');
+            instance.title = this.cms.translateText('ZaloOa.Webhook.token');
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((fileStore: FileStoreModel) => {
               this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { 'generateToken': true, id: [fileStore.Code] }).then(token => {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
-                    title: this.commonService.translateText('File.FileStore.token'),
+                    title: this.cms.translateText('File.FileStore.token'),
                     content: token[0].Token,
                     actions: [
                       {
-                        label: this.commonService.translateText('Common.close'),
+                        label: this.cms.translateText('Common.close'),
                         status: 'danger',
                       },
                     ],
@@ -129,12 +129,12 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {
@@ -159,7 +159,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: FileStoreModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(FileStoreFormComponent, {
+  //   this.cms.openDialog(FileStoreFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

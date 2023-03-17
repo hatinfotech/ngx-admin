@@ -31,14 +31,14 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
   idKey = ['Code', 'Page'];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorEducationArticlePrintComponent>,
     public datePipe: DatePipe,
     public sanitizer: DomSanitizer
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {

@@ -64,11 +64,11 @@ export class SystemLocaleConfigComponent extends DataManagerFormComponent<Locale
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public translate: TranslateService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
-    this.commonService.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    this.cms.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
       this.tz = (timezones as Timezone[]).map((timezon) => {
         return {
           id: timezon.value,

@@ -52,7 +52,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -61,7 +61,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     public collaboratorService: CollaboratorService,
     // public mobileService: MobileAppService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -74,7 +74,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Page.title', { action: this.commonService.translateText('Common.choose'), definition: '' }), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Page.title', { action: this.cms.translateText('Common.choose'), definition: '' }), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, 
@@ -111,12 +111,12 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
   rows = [];
 
   stateDic = {
-    APPROVED: { label: this.commonService.translateText('Common.approved'), status: 'success', outline: false },
-    DEPLOYMENT: { label: this.commonService.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.commonService.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.commonService.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.commonService.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.commonService.translateText('Common.cancel'), status: 'info', outline: true },
+    APPROVED: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
+    DEPLOYMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
+    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
+    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
+    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
+    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
   };
 
   loadListSetting(): SmartTableSetting {
@@ -135,38 +135,38 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         // Code: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
         //   type: 'string',
         //   width: '10%',
         // },
         ObjectPhone: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'html',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
           valuePrepareFunction: (cell, row) => {
             return 'KH: ' + row.ObjectName + (row.ObjectPhone ? ` <br>SĐT: ${row.ObjectPhone}` : '');
           },
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Order.label'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Order.label'), 'head-title'),
           type: 'html',
           width: '25%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
           valuePrepareFunction: (cell, row) => {
             return '<b>Mã Đơn Hàng: ' + row.Code + '</b><br>' + row.Title + '';
           },
         },
         // RelationVoucher: {
-        //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
         //   type: 'string',
         //   width: '20%',
         // },
         PublisherName: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Publisher.label'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Publisher.label'), 'head-title'),
           type: 'string',
           width: '15%',
           // filter: {
@@ -174,11 +174,11 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
           // valuePrepareFunction: (cell: string, row?: any) => {
-          //   return this.commonService.getObjectText(cell);
+          //   return this.cms.getObjectText(cell);
           // },
         },
         DateOfOrder: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Collaborator.Order.dateOforder'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Order.dateOforder'), 'head-title'),
           type: 'custom',
           width: '15%',
           filter: {
@@ -191,7 +191,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Tiền hàng'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Tiền hàng'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -202,7 +202,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         },
         Total: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Tổng tiền'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Tổng tiền'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -213,13 +213,13 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
               if (tag.type === 'PRICEREPORT') {
-                this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
                   context: {
                     inputId: [tag.id],
                     // inputMode: 'dialog',
@@ -228,7 +228,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
                   }
                 });
               } else {
-                this.commonService.previewVoucher(tag.type, tag.id);
+                this.cms.previewVoucher(tag.type, tag.id);
               }
             });
           },
@@ -250,7 +250,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
         //       const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
         //       if (priceReportRef) {
-        //         this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+        //         this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
         //           {
         //             status: 'basic',
         //             label: 'Trở về',
@@ -287,7 +287,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
         //       let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
         //       if (task) {
-        //         this.commonService.openMobileSidebar();
+        //         this.cms.openMobileSidebar();
         //         this.mobileAppService.openChatRoom({ ChatRoom: task.id });
         //       } else {
         //         // Assign resource to chat room
@@ -310,12 +310,12 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         //             this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
         //               ChatRoom: rs[0].Code as any,
         //               Type: 'CONTACT',
-        //               RefUserUuid: this.commonService.getObjectId(row.Publisher),
+        //               RefUserUuid: this.cms.getObjectId(row.Publisher),
         //               Name: row.PublisherName,
         //               Page: row.Page,
         //               RefPlatform: 'PROBOXONE',
         //               RefType: 'PUBLISHER',
-        //               id: this.commonService.getObjectId(row.Publisher),
+        //               id: this.cms.getObjectId(row.Publisher),
         //             }]).then(rs2 => {
 
         //               // Connect publisher
@@ -323,7 +323,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         //                 Type: 'CONTACT',
         //                 Contact: rs2[0].Contact,
         //               }]).then(rs3 => {
-        //                 this.commonService.openMobileSidebar();
+        //                 this.cms.openMobileSidebar();
         //                 this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
         //               });
 
@@ -338,7 +338,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         //   },
         // },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -350,14 +350,14 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.status = 'success';
             // instance.style = 'text-align: right';
             // instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.collaboratoOrder[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap.outline;
-              if (false) instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);// Todo: tmp disabled
+              if (false) instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);// Todo: tmp disabled
               // instance.disabled = (value === 'APPROVE');
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -369,7 +369,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
               if (rowData.State == 'PROCESSING') {
                 // const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
                 // if (priceReportRef) {
-                //   this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+                //   this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
                 //     context: {
                 //       inputId: [priceReportRef.id],
                 //       inputMode: 'dialog',
@@ -391,7 +391,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -403,17 +403,17 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   apiPath: this.apiPath,
                 }
               });
@@ -421,7 +421,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -433,7 +433,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -499,7 +499,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
   }
 
   async preview(data: CollaboratorOrderModel[], source?: string) {
-    this.commonService.openDialog(CollaboratorOrderPrintComponent, {
+    this.cms.openDialog(CollaboratorOrderPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',
@@ -519,7 +519,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
             // if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
             // const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
             // if (priceReportRef) {
-            // this.commonService.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+            // this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
             //   context: {
             //     inputId: [priceReportRef.id],
             //     inputMode: 'dialog',
@@ -552,8 +552,8 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
-    this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();
     });
   }

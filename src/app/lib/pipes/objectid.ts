@@ -11,21 +11,21 @@ import { CommonService } from '../../services/common.service';
 */
 @Pipe({name: 'objectid'})
 export class ObjectIdPipe implements PipeTransform {
-  constructor(public commonService: CommonService) {
+  constructor(public cms: CommonService) {
 
   }
   transform(value: string): string {
-    return this.commonService.getObjectId(value);
+    return this.cms.getObjectId(value);
   }
 }
 
 @Pipe({name: 'objectsid'})
 export class ObjectsIdPipe implements PipeTransform {
-  constructor(public commonService: CommonService) {
+  constructor(public cms: CommonService) {
 
   }
   transform(value: any[]): string {
-    return value ? value.map(val => this.commonService.getObjectId(val)).join(', ') : '';
+    return value ? value.map(val => this.cms.getObjectId(val)).join(', ') : '';
   }
 }
 

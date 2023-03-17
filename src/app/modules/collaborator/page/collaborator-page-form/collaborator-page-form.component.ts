@@ -29,10 +29,10 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorPageFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   select2SalesPriceReportOption = {
@@ -107,15 +107,15 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
   cycleList: { id: string, text: string }[] = [
     {
       id: 'MONTHLY',
-      text: this.commonService.translateText('Common.monthly'),
+      text: this.cms.translateText('Common.monthly'),
     },
     {
       id: 'YEARLY',
-      text: this.commonService.translateText('Common.yearly'),
+      text: this.cms.translateText('Common.yearly'),
     },
   ];
   select2CycleOption = {
-    placeholder: this.commonService.translateText('Common.cycle') + '...',
+    placeholder: this.cms.translateText('Common.cycle') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -144,7 +144,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
   };
 
   select2OptionForWeekend = {
-    placeholder: this.commonService.translateText('Common.dayOfWeek') + '...',
+    placeholder: this.cms.translateText('Common.dayOfWeek') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,

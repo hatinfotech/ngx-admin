@@ -33,13 +33,13 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   formDialog = SalesVoucherFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -91,7 +91,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   toMoney(detail: SalesVoucherDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      // detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       // if (detail.Tax) {
       //   if (typeof detail.Tax.Tax == 'undefined') {
       //     throw Error('tax not as tax model');
@@ -132,7 +132,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   prepareCopy(data: SalesVoucherModel) {
     this.close();
-    this.commonService.openDialog(SalesVoucherFormComponent, {
+    this.cms.openDialog(SalesVoucherFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [data.Code],
@@ -152,9 +152,9 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   approvedConfirm(data: SalesVoucherModel) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
-    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
-    //       label: this.commonService.translateText('Common.close'),
+    //       label: this.cms.translateText('Common.close'),
     //       status: 'success',
     //       action: () => {
     //         this.onClose(data);
@@ -181,16 +181,16 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
     //     break;
     // }
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(processMap?.nextStateLabel),
+        label: this.cms.translateText(processMap?.nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -199,12 +199,12 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },
@@ -220,24 +220,24 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
 
   approvedConfirmX(data: SalesVoucherModel) {
     if (data.State === 'COMPLETE') {
-      this.commonService.showDialog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
+      this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
         {
-          label: this.commonService.translateText('Common.ok'),
+          label: this.cms.translateText('Common.ok'),
           status: 'success',
         }
       ]);
       return;
     }
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.cms.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
+        label: this.cms.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
         status: 'danger',
         action: () => {
           const params = { id: [data.Code] };
@@ -247,9 +247,9 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
             params['complete'] = true;
           }
           this.apiService.putPromise<SalesVoucherModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
-            this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedSuccess', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
-                label: this.commonService.translateText('Common.close'),
+                label: this.cms.translateText('Common.close'),
                 status: 'success',
                 action: () => {
                   this.onClose(data);
@@ -292,7 +292,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
       item['Total'] = 0;
       item['Title'] = this.renderTitle(item);
 
-      // if (this.commonService.getObjectId(item['State']) !== 'COMPLETE') {
+      // if (this.cms.getObjectId(item['State']) !== 'COMPLETE') {
       //   item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
       // }
 
@@ -305,7 +305,7 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   }
 
   receipt(item: SalesVoucherModel) {
-    this.commonService.openDialog(CashReceiptVoucherFormComponent, {
+    this.cms.openDialog(CashReceiptVoucherFormComponent, {
       context: {
         onDialogSave: (items: CashVoucherModel[]) => {
           this.refresh();

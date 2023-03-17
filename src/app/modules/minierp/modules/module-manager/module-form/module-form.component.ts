@@ -29,9 +29,9 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.idKey = 'Name';
     this.apiPath = '/module/modules';
 

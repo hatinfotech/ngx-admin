@@ -31,13 +31,13 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   formDialog = WarehouseGoodsReceiptNoteFormComponent;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsReceiptNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -62,9 +62,9 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     this.actionButtonList.unshift({
       name: 'print-access-numbers',
       status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.printBarCode'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.printBarCode'), 'head-title'),
       icon: 'grid-outline',
-      title: this.commonService.textTransform(this.commonService.translate.instant('In mã vạch cho hàng hóa quản lý bằng số truy xuất'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('In mã vạch cho hàng hóa quản lý bằng số truy xuất'), 'head-title'),
       size: 'medium',
       disabled: () => {
         return false;
@@ -73,9 +73,9 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
         const item = this.data[option.index];
 
 
-        const productList = item.Details.filter(f => this.commonService.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.commonService.getObjectId(m.Product) + '-' + this.commonService.getObjectId(m.Unit), text: m.Description + ' (' + this.commonService.getObjectText(m.Unit) + ')', ...m }));
+        const productList = item.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.cms.getObjectId(m.Product) + '-' + this.cms.getObjectId(m.Unit), text: m.Description + ' (' + this.cms.getObjectText(m.Unit) + ')', ...m }));
 
-        this.commonService.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+        this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
           context: {
             voucher: item.Code,
             id: ['xxx'],
@@ -108,7 +108,7 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   toMoney(detail: WarehouseGoodsReceiptNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');
@@ -174,9 +174,9 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
 
   approvedConfirm(data: WarehouseGoodsReceiptNoteModel, index: number) {
     // if (['BOOKKEEPING'].indexOf(data.State) > -1) {
-    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
-    //       label: this.commonService.translateText('Common.close'),
+    //       label: this.cms.translateText('Common.close'),
     //       status: 'success',
     //       action: () => {
     //         this.onClose(data);
@@ -203,16 +203,16 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
     //     break;
     // }
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(this.processMapList[index].nextStateLabel),
+        label: this.cms.translateText(this.processMapList[index].nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -221,12 +221,12 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },
@@ -258,10 +258,10 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   }
 
   printContainerTemp(detail: WarehouseGoodsReceiptNoteDetailModel) {
-    this.commonService.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
+    this.cms.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
       context: {
         priceTable: 'default',
-        id: [`${this.commonService.getObjectId(detail.Product)}-${this.commonService.getObjectId(detail.Unit)}-${this.commonService.getObjectId(detail.Container)}`],
+        id: [`${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}-${this.cms.getObjectId(detail.Container)}`],
       }
     });
   }

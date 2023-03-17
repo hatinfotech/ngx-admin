@@ -30,13 +30,13 @@ export class ContactEmployeeListComponent extends ContactAllListComponent implem
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ContactEmployeeListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, _http, ref);
+    super(apiService, router, cms, dialogService, toastService, _http, ref);
   }
 
   async init() {

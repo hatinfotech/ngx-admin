@@ -25,12 +25,12 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   /** Api get funciton */
@@ -56,22 +56,22 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
       // pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         Title: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         DateOfCreate: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfcreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfcreated'), 'head-title'),
           type: 'custom',
           width: '10%',
           renderComponent: SmartTableDateTimeComponent,
@@ -80,17 +80,17 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
           },
         },
         ObjectName: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.customer'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.customer'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         Parent: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.parent'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.parent'), 'head-title'),
           type: 'string',
           width: '15%',
         },
         IsApprove: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.isApprove'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.isApprove'), 'head-title'),
           type: 'string',
           width: '5%',
         },
@@ -114,7 +114,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
         //       });
         //       instance.click.subscribe(async (row: SalesPriceTableModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -155,7 +155,7 @@ export class PriceTableListComponent extends DataManagerListComponent<SalesPrice
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesPriceTableModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(PriceTableFormComponent, {
+  //   this.cms.openDialog(PriceTableFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

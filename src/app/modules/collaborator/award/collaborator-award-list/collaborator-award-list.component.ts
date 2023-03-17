@@ -45,13 +45,13 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorAwardListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -59,11 +59,11 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
     return super.init().then(rs => {
       const addButton = this.actionButtonList.find(f => f.name === 'add');
       if (addButton) {
-        addButton.label = this.commonService.translateText('Collaborator.Award.label');
+        addButton.label = this.cms.translateText('Collaborator.Award.label');
         addButton.icon = 'flash-outline';
         addButton.status = 'primary';
         // addButton.click = () => {
-        //   this.commonService.openDialog(CollaboartorAwardDetailComponent, {
+        //   this.cms.openDialog(CollaboartorAwardDetailComponent, {
         //     context: {
 
         //     }
@@ -93,49 +93,49 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Cycle: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.cycle'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.cycle'), 'head-title'),
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         PublisherName: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '10%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         RelativeVouchers: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.relationVoucher'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
           type: 'custom',
           renderComponent: SmartTableRelativeVouchersComponent,
           width: '10%',
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         AwardFrom: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.fromDate'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.fromDate'), 'head-title'),
           type: 'datetime',
           width: '10%',
         },
         AwardTo: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.toDate'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.toDate'), 'head-title'),
           type: 'datetime',
           width: '10%',
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -147,7 +147,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.cms.translateText('Common.approve'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -158,14 +158,14 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
             instance.display = true;
             instance.status = 'success';
             // instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.init.subscribe(awardVoucher => {
               const processMap = AppModule.processMaps.awardVoucher[awardVoucher.State || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
-              instance.disabled = !this.commonService.checkPermission(this.componentName, processMap.nextState);
+              instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherModel) => {
               // this.apiService.getPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
@@ -175,7 +175,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -187,7 +187,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -263,7 +263,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
   }
 
   async preview(ids: any[]) {
-    this.commonService.openDialog(CollaboratorAwardPrintComponent, {
+    this.cms.openDialog(CollaboratorAwardPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',

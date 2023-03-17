@@ -35,7 +35,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // matcher: (term, text, option) => {
-    //   return this.commonService.smartFilter(text, term);
+    //   return this.cms.smartFilter(text, term);
     // },
     keyMap: {
       id: 'id',
@@ -48,12 +48,12 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
   processing = false;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AssignContainerFormComponent>,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {
@@ -72,14 +72,14 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
     const ids = [];
     const updateList: GoodsModel[] = [];
     for (let p = 0; p < this.inputGoodsList.length; p++) {
-      const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+      const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.cms.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
       ids.push(product.Code);
       updateList.push(product);
     }
     if (!choosedContainers || choosedContainers.length == 0) {
       choosedContainers = await (async () => {
         return new Promise<WarehouseGoodsContainerModel[]>((resolve, reject) => {
-          this.commonService.openDialog(ShowcaseDialogComponent, {
+          this.cms.openDialog(ShowcaseDialogComponent, {
             context: {
               title: 'Tạo mới vị trí hàng hóa',
               content: 'Bạn có muốn tạo mới vị trí hàng hóa không?',
@@ -95,7 +95,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
                   label: 'Tạo và gán',
                   status: 'primary',
                   action: () => {
-                    this.commonService.openDialog(WarehouseGoodsContainerFormComponent, {
+                    this.cms.openDialog(WarehouseGoodsContainerFormComponent, {
                       context: {
                         inputMode: 'dialog',
                         // inputGoodsList: [editedItems],
@@ -121,7 +121,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
 
     if (choosedContainers && choosedContainers.length > 0) {
       this.processing = true;
-      this.commonService.openDialog(ShowcaseDialogComponent, {
+      this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           actions: [
             {
@@ -134,7 +134,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
               label: 'Gán',
               status: 'primary',
               action: () => {
-                this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, assignContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
+                this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, assignContainers: choosedContainers.map(container => this.cms.getObjectId(container)).join(',') }, updateList).then(rs => {
                   this.onDialogSave(rs);
                   this.processing = false;
                   this.close();
@@ -145,7 +145,7 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
               label: 'Gán và cập nhật mô tả cho vị trí',
               status: 'danger',
               action: () => {
-                this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, updateContainerDescription: true, assignContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
+                this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, updateContainerDescription: true, assignContainers: choosedContainers.map(container => this.cms.getObjectId(container)).join(',') }, updateList).then(rs => {
                   this.onDialogSave(rs.map(m => {
                     m.Containers = m.Containers;
                     return m;
@@ -168,13 +168,13 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
       const ids = [];
       const updateList: GoodsModel[] = [];
       for (let p = 0; p < this.inputGoodsList.length; p++) {
-        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.commonService.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
+        const product: GoodsModel = { Code: this.inputGoodsList[p].Code, WarehouseUnit: this.cms.getObjectId(this.inputGoodsList[p].WarehouseUnit) };
         ids.push(product.Code);
-        // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.commonService.getObjectId(choosed) === this.commonService.getObjectId(container['Container'])));
+        // product.Containers = product.Containers.filter(container => !choosedContainers.some(choosed => this.cms.getObjectId(choosed) === this.cms.getObjectId(container['Container'])));
 
         updateList.push(product);
       }
-      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, revokeContainers: choosedContainers.map(container => this.commonService.getObjectId(container)).join(',') }, updateList).then(rs => {
+      this.apiService.putPromise<GoodsModel[]>('/warehouse/goods', { id: ids, revokeContainers: choosedContainers.map(container => this.cms.getObjectId(container)).join(',') }, updateList).then(rs => {
         this.onDialogSave(rs);
         this.processing = false;
         this.close();

@@ -25,12 +25,12 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};
@@ -66,7 +66,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
           title: 'Gateway',
           type: 'string',
           width: '20%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         context: {
           title: 'Context',

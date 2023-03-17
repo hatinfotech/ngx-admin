@@ -32,10 +32,10 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   // localeExtra = localeViExtra;
-  curencyFormat: CurrencyMaskConfig = this.commonService.getCurrencyMaskConfig();
-  numberFormat: CurrencyMaskConfig = this.commonService.getNumberMaskConfig();
+  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
 
   /** Tax list */
@@ -92,16 +92,16 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SimpleSalesVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -495,7 +495,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    // this.commonService.openDialog(SalesVoucherPrintComponent, {
+    // this.cms.openDialog(SalesVoucherPrintComponent, {
     //   context: {
     //     title: 'Xem trước',
     //     data: data,

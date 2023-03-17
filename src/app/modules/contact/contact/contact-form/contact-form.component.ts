@@ -63,7 +63,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   };
 
   select2OptionForPage = {
-    placeholder: this.commonService.translateText('Common.page') + '...',
+    placeholder: this.cms.translateText('Common.page') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -103,7 +103,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
 
   groupList: ContactGroupModel[];
   select2GroupsOption = {
-    placeholder: this.commonService.translateText('Common.group') + '...',
+    placeholder: this.cms.translateText('Common.group') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -134,7 +134,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
 
   typeList: ContactDetailTypeModel[];
   select2OptionForType = {
-    placeholder: this.commonService.translateText('Common.type') + '...',
+    placeholder: this.cms.translateText('Common.type') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -152,7 +152,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     { id: 'TELEGRAM', text: 'Telegram' },
   ];
   select2OptionForPlatForm = {
-    placeholder: this.commonService.translateText('Common.platform') + '...',
+    placeholder: this.cms.translateText('Common.platform') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -164,7 +164,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     },
   };
   select2BaseOption = {
-    placeholder: this.commonService.translateText('Common.select') + '...',
+    placeholder: this.cms.translateText('Common.select') + '...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -184,10 +184,10 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<ContactFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

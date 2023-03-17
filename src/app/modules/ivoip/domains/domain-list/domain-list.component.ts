@@ -40,12 +40,12 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ivoipService);
+    super(apiService, router, cms, dialogService, toastService, ivoipService);
     // this.apiPath = '/user/groups';
     // this.idKey = 'Code';
   }
@@ -97,7 +97,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
           title: 'Mô tả',
           type: 'string',
           width: '40%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
       },
     });
@@ -107,7 +107,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
     this.restrict();
     this.ivoipService.getPbxList(pbxList => {
 
-      this.pbxList = this.commonService.convertOptionList(pbxList, 'Code', 'Description');
+      this.pbxList = this.cms.convertOptionList(pbxList, 'Code', 'Description');
       this.activePbx = this.ivoipService.getActivePbx();
       super.ngOnInit();
 
@@ -123,7 +123,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
       status: 'success',
       label: 'Tạo',
       icon: 'plus',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.selectPbx'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.selectPbx'), 'head-title'),
       size: 'medium',
       select2: { data: this.pbxList, option: this.pbxListConfig },
       value: () => this.activePbx,
@@ -158,7 +158,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
   onReloadBtnClick(): false {
     this.ivoipService.getPbxList(pbxList => {
 
-      this.pbxList = this.commonService.convertOptionList(pbxList, 'Code', 'Description');
+      this.pbxList = this.cms.convertOptionList(pbxList, 'Code', 'Description');
       this.activePbx = this.ivoipService.getActivePbx();
       this.loadList();
 

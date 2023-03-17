@@ -3,11 +3,11 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.ThemeConfig.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('User.ThemeConfig.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
 
                     <!-- <nav>
-            {{ 'System.Config.userLocale' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+            {{ 'System.Config.userLocale' | translate:{definition: '', action: cms.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
             <button nbButton status="primary" hero size="tiny" (click)="onFormReload()" style="float: right;"
               [disabled]="isProcessing" title="{{'Common.reload' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="refresh"></nb-icon>{{'Common.reload' | translate | headtitlecase}}
@@ -21,7 +21,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Theme'), 'warning')">
                                     <label class="label"><span class="valid">{{'Common.theme' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.theme')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.theme')} | headtitlecase }}
                       (*)</span></label>
                                     <nb-select size="medium" formControlName="Theme" fullWidth>
                                         <nb-option value="default">Default - Giao diện sáng</nb-option>

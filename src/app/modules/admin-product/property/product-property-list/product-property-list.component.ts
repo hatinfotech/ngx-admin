@@ -24,12 +24,12 @@ export class ProductPropertyListComponent extends DataManagerListComponent<Produ
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -87,7 +87,7 @@ export class ProductPropertyListComponent extends DataManagerListComponent<Produ
         //       });
         //       instance.click.subscribe(async (row: ProductCategoryModel) => {
 
-        //         this.commonService.openDialog(SyncFormComponent, {
+        //         this.cms.openDialog(SyncFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputId: [row.Code],
@@ -130,7 +130,7 @@ export class ProductPropertyListComponent extends DataManagerListComponent<Produ
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductCategoryModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(ProductPropertyFormComponent, {
+  //   this.cms.openDialog(ProductPropertyFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

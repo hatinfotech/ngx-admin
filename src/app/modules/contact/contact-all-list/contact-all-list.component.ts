@@ -41,19 +41,19 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ContactAllListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
     this.actionButtonList.unshift({
       name: 'merge',
       status: 'danger',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.merge'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
       icon: 'checkmark-square',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.merge'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
       size: 'medium',
       disabled: () => this.selectedIds.length === 0,
       hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
@@ -97,23 +97,23 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
             });
             instance.click.subscribe(async (row: ContactModel) => {
             });
-            instance.title = this.commonService.translateText('click to change main contact avatar');
+            instance.title = this.cms.translateText('click to change main contact avatar');
           },
         },
         Name: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Groups: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.groups'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.groups'), 'head-title'),
           type: 'html',
           width: '20%',
           valuePrepareFunction: (cell: any) => {
             return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.text}</div></div>`).join('');
           },
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
           filter: {
             type: 'custom',
             component: SmartTableSelect2FilterComponent,
@@ -121,7 +121,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
               delay: 0,
               condition: 'eq',
               select2Option: {
-                placeholder: this.commonService.translateText('Common.groups') + '...',
+                placeholder: this.cms.translateText('Common.groups') + '...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -138,7 +138,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.groupsList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupsList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -147,23 +147,23 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
           },
         },
         Phone: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.phone'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.phone'), 'head-title'),
           type: 'string',
           width: '10%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Email: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.email'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.email'), 'head-title'),
           type: 'string',
           width: '20%',
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -176,12 +176,12 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
           },
         },
         Note: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.note'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.note'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Merge: {
-          title: this.commonService.translateText('Common.preview'),
+          title: this.cms.translateText('Common.preview'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -193,24 +193,24 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
             instance.status = 'warning';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.approve');
+            instance.title = this.cms.translateText('Common.approve');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
               // instance.disabled = value !== 'REQUEST';
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-              this.commonService.openDialog(ShowcaseDialogComponent, {
+              this.cms.openDialog(ShowcaseDialogComponent, {
                 context: {
-                  title: this.commonService.translateText('Common.confirm'),
+                  title: this.cms.translateText('Common.confirm'),
                   content: 'Contact.mergeConfirm',
                   actions: [
                     {
-                      label: this.commonService.translateText('Common.close'),
+                      label: this.cms.translateText('Common.close'),
                       status: 'primary',
                     },
                     {
-                      label: this.commonService.translateText('Common.merge'),
+                      label: this.cms.translateText('Common.merge'),
                       status: 'danger',
                       action: () => {
                         this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], mergeContact: true, fromContacts: this.selectedItems.map(item => item.Code).join(',') }, [rowData]).then(rs => {

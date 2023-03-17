@@ -62,14 +62,14 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ProductListComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async loadCache() {
@@ -99,9 +99,9 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       this.actionButtonList.unshift({
         name: 'assignCategories',
         status: 'info',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
         icon: 'pricetags',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         hidden: () => false,
@@ -113,14 +113,14 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       this.actionButtonList.unshift({
         name: 'copyProducts',
         status: 'danger',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Copy'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Copy'), 'head-title'),
         icon: 'copy-outline',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Copy'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Copy'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         hidden: () => false,
         click: () => {
-          this.commonService.openDialog(ProductFormComponent, {
+          this.cms.openDialog(ProductFormComponent, {
             context: {
               showLoadinng: true,
               inputMode: 'dialog',
@@ -144,14 +144,14 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
       this.actionButtonList.unshift({
         name: 'importProducts',
         status: 'primary',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Import'), 'head-title'),
         icon: 'download-outline',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Import'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Import'), 'head-title'),
         size: 'medium',
         disabled: () => false,
         hidden: () => false,
         click: () => {
-          this.commonService.openDialog(ImportProductDialogComponent, {
+          this.cms.openDialog(ImportProductDialogComponent, {
             context: {
               // showLoadinng: true,
               inputMode: 'dialog',
@@ -263,7 +263,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                   const currentItems = pictureList.splice(currentIndex, 1);
                   pictureList.unshift(currentItems[0]);
                 }
-                this.commonService.openDialog(ImagesViewerComponent, {
+                this.cms.openDialog(ImagesViewerComponent, {
                   context: {
                     images: pictureList.map(m => m['OriginImage']),
                     imageIndex: 0,
@@ -276,21 +276,21 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                 this.uploadForProduct = row;
                 this.uploadBtn.nativeElement.click();
               } else {
-                this.commonService.toastService.show(
-                  this.commonService.translateText('Common.uploadInProcess'),
-                  this.commonService.translateText('Common.upload'),
+                this.cms.toastService.show(
+                  this.cms.translateText('Common.uploadInProcess'),
+                  this.cms.translateText('Common.upload'),
                   {
                     status: 'warning',
                   });
-                // this.commonService.openDialog(ShowcaseDialogComponent, {
+                // this.cms.openDialog(ShowcaseDialogComponent, {
                 //   context: {
-                //     title: this.commonService.translateText('Common.upload'),
-                //     content: this.commonService.translateText('Common.uploadInProcess'),
+                //     title: this.cms.translateText('Common.upload'),
+                //     content: this.cms.translateText('Common.uploadInProcess'),
                 //   },
                 // });
               }
             });
-            instance.title = this.commonService.translateText('click to change main product picture');
+            instance.title = this.cms.translateText('click to change main product picture');
           },
         },
         Name: {
@@ -329,7 +329,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -367,7 +367,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -381,27 +381,27 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           renderComponent: SmartTableTagsComponent,
           width: '10%',
           // valuePrepareFunction: (value: string, product: ProductModel) => {
-          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.commonService.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.commonService.getObjectText(product['WarehouseUnit']);
+          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.cms.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.cms.getObjectText(product['WarehouseUnit']);
           // },
           onComponentInitFunction: (component: SmartTableTagsComponent) => {
             component.labelAsText = (tag) => {
               return tag.text + ' (' + tag.ConversionRatio + ')';
             };
             component.renderToolTip = (tag) => {
-              return (tag.tip || tag.text) + ((tag.id != this.commonService.getObjectId(component.rowData?.WarehouseUnit)) && (', tỷ lệ chuyển đổi: ' + tag.ConversionRatio + ' ' + this.commonService.getObjectText(component.rowData?.WarehouseUnit)) || ' ,ĐVT Cơ bản') + (tag.IsAutoAdjustInventory && ', Trừ kho tự động' || '') + (tag.IsExpirationGoods && ', Có hạn sử dụng' || '') + (tag.IsDefaultSales && ', Mặc định mua' || '') + (tag.IsDefaultPurchase && ', Mặc định bán' || '');
+              return (tag.tip || tag.text) + ((tag.id != this.cms.getObjectId(component.rowData?.WarehouseUnit)) && (', tỷ lệ chuyển đổi: ' + tag.ConversionRatio + ' ' + this.cms.getObjectText(component.rowData?.WarehouseUnit)) || ' ,ĐVT Cơ bản') + (tag.IsAutoAdjustInventory && ', Trừ kho tự động' || '') + (tag.IsExpirationGoods && ', Có hạn sử dụng' || '') + (tag.IsDefaultSales && ', Mặc định mua' || '') + (tag.IsDefaultPurchase && ', Mặc định bán' || '');
             };
             // component.labelAsText = (tag) => {
-            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text}`;
+            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text}`;
             // };
             // component.renderToolTip = (tag) => {
-            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.commonService.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
+            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
             // };
             // component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
             // });
             component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
               if (!tag.Container) {
-                this.commonService.openDialog(AssignContainerFormComponent, {
+                this.cms.openDialog(AssignContainerFormComponent, {
                   context: {
                     inputMode: 'dialog',
                     inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
@@ -443,7 +443,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             config: {
               delay: 0,
               select2Option: {
-                placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+                placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -461,7 +461,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.unitList.filter(unit => !params.term || this.commonService.smartFilter(unit.text, params.term)),
+                      results: this.unitList.filter(unit => !params.term || this.cms.smartFilter(unit.text, params.term)),
                     };
                   },
                 },
@@ -481,7 +481,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         //       delay: 0,
         //       condition: 'bleft',
         //       select2Option: {
-        //         placeholder: this.commonService.translateText('AdminProduct.Unit.title', { action: this.commonService.translateText('Common.choose'), definition: '' }),
+        //         placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
         //         allowClear: true,
         //         width: '100%',
         //         dropdownAutoWidth: true,
@@ -499,7 +499,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         //           delay: 0,
         //           processResults: (data: any, params: any) => {
         //             return {
-        //               results: this.shelfList.filter(shelf => !params.term || this.commonService.smartFilter(shelf.text, params.term)),
+        //               results: this.shelfList.filter(shelf => !params.term || this.cms.smartFilter(shelf.text, params.term)),
         //             };
         //           },
         //         },
@@ -521,7 +521,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
         //     });
         //     component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
         //       if (!tag.Container) {
-        //         this.commonService.openDialog(AssignContainerFormComponent, {
+        //         this.cms.openDialog(AssignContainerFormComponent, {
         //           context: {
         //             inputMode: 'dialog',
         //             inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
@@ -569,11 +569,11 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           width: '15%',
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '5%',
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -619,7 +619,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           },
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.dateOfCreated'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
           type: 'custom',
           width: '5%',
           filter: {
@@ -632,11 +632,11 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           },
         },
         LastUpdateBy: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Người cập nhật'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Người cập nhật'), 'head-title'),
           type: 'string',
           width: '5%',
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -682,7 +682,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
           },
         },
         LastUpdate: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Cập nhật'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Cập nhật'), 'head-title'),
           type: 'custom',
           width: '5%',
           filter: {
@@ -773,7 +773,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   async openAssignCategoiesDialplog() {
     if (this.selectedIds.length > 0) {
       const editedItems = await this.convertIdsToItems(this.selectedIds);
-      this.commonService.openDialog(AssignCategoriesFormComponent, {
+      this.cms.openDialog(AssignCategoriesFormComponent, {
         context: {
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
@@ -808,7 +808,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     switch (output.type) {
       case 'allAddedToQueue':
         // uncomment this if you want to auto upload files when added
-        this.commonService.getAvailableFileStores().then(fileStores => {
+        this.cms.getAvailableFileStores().then(fileStores => {
           if (fileStores && fileStores.length > 0) {
             const event: UploadInput = {
               type: 'uploadAll',
@@ -818,7 +818,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             };
             this.uploadInput.emit(event);
           } else {
-            this.commonService.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
+            this.cms.toastService.show('Không tìm thấy file store nào !', 'File Store', { status: 'warning' });
           }
         });
         break;

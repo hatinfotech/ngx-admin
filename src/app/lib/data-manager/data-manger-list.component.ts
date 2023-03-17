@@ -116,12 +116,12 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ref?: NbDialogRef<DataManagerListComponent<M>>,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   async getFormData(ids: string[]): Promise<M[]> {
@@ -135,14 +135,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   async init(): Promise<boolean> {
 
     // Wait for langluage service loaded
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.actionButtonList = [
       {
         name: 'choose',
         status: 'success',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
         icon: 'checkmark-square',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.choose'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
@@ -156,7 +156,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'success',
         label: 'Tạo',
         icon: 'plus',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
         size: 'medium',
         disabled: () => {
           return false;
@@ -171,7 +171,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'danger',
         label: 'Xoá',
         icon: 'trash-2',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.delete'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.delete'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         click: () => {
@@ -183,7 +183,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'warning',
         label: 'Chỉnh',
         icon: 'edit-2',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.edit'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         click: () => {
@@ -195,7 +195,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'primary',
         label: 'Xem',
         icon: 'external-link',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.preview'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.preview'), 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         click: () => {
@@ -210,7 +210,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       //   status: 'info',
       //   // label: 'Reset',
       //   icon: 'refresh',
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.reset'), 'head-title'),
+      //   title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
       //   size: 'small',
       //   disabled: () => {
       //     return false;
@@ -225,7 +225,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'success',
         // label: 'Refresh',
         icon: 'sync',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.refresh'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
         size: 'medium',
         disabled: () => {
           return false;
@@ -240,7 +240,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         status: 'danger',
         // label: 'Refresh',
         icon: 'close',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.close'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
         size: 'medium',
         disabled: () => false,
         hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
@@ -259,7 +259,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   /** List init event */
   ngOnInit() {
     super.ngOnInit();
-    this.subcriptions.push(this.commonService.componentChange$.subscribe(info => {
+    this.subcriptions.push(this.cms.componentChange$.subscribe(info => {
       if (info.componentName === this.componentName) {
         this.refreshPendding = true;
       }
@@ -272,7 +272,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   getList(callback: (list: M[]) => void) {
-    this.commonService.takeUntil(this.componentName, 300, () => {
+    this.cms.takeUntil(this.componentName, 300, () => {
       // this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
       this.executeGet({ limit: 'nolimit', offset: 0 }, results => callback(results));
     });
@@ -300,7 +300,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   showFilter(event) {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Tìm kiếm nâng cao',
         content: 'Filter',
@@ -338,7 +338,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       if (this.idKey instanceof Array) {
         const id: any = {};
         for (let i = 0; i < this.idKey.length; i++) {
-          id[this.idKey[i]] = this.commonService.getObjectId(item[this.idKey[i]]);
+          id[this.idKey[i]] = this.cms.getObjectId(item[this.idKey[i]]);
         }
         return id;
       }
@@ -383,7 +383,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   editChoosedItems(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
@@ -418,7 +418,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   deleteConfirm(ids: string[], callback?: () => void) {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận xoá dữ liệu',
         content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
@@ -575,7 +575,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       }
       const column = settings.columns[key];
       if (!settings.columns[key]['filterFunction']) {
-        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.commonService.smartFilter(value, query);
+        settings.columns[key]['filterFunction'] = (value: string, query: string) => this.cms.smartFilter(value, query);
       }
 
       if (column.type === 'boolean') {
@@ -654,14 +654,14 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
     if (this.isChoosedMode) {
       settings.columns['Choose'] = {
-        title: this.commonService.translateText('Common.choose'),
+        title: this.cms.translateText('Common.choose'),
         type: 'custom',
         width: '10%',
         renderComponent: SmartTableButtonComponent,
         onComponentInitFunction: (instance: SmartTableButtonComponent) => {
           instance.iconPack = 'eva';
           instance.icon = 'checkmark-square';
-          instance.label = this.commonService.translateText('Common.choose');
+          instance.label = this.cms.translateText('Common.choose');
           instance.display = true;
           instance.status = 'success';
           instance.valueChange.subscribe(value => {
@@ -702,7 +702,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       // const editedItems = (await this.source.getElements()).filter((f: M) => ids.some(id => id === f[this.idKey]));
       // this.source['isLocalUpdate'] = false;
       try {
-        this.commonService.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
+        this.cms.openDialog<DataManagerFormComponent<M>>(formDialog || this.formDialog, {
           context: {
             showLoadinng: true,
             inputMode: 'dialog',
@@ -769,7 +769,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     const rows = this.table.grid.getRows()
       .filter(row => this.selectedItems
         .some(item => this.idKey instanceof Array
-          ? (this.idKey.filter(idKey => this.commonService.getObjectId(item[idKey]) === this.commonService.getObjectId(row.getData()[idKey]))
+          ? (this.idKey.filter(idKey => this.cms.getObjectId(item[idKey]) === this.cms.getObjectId(row.getData()[idKey]))
             .length === this.idKey.length)
           : item[this.idKey as string] === row.getData()[this.idKey as string]));
     for (let i = 0; i < rows.length; i++) {
@@ -825,7 +825,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       console.log('Print dialog was not set');
       return false;
     };
-    this.commonService.openDialog(this.printDialog, {
+    this.cms.openDialog(this.printDialog, {
       // closeOnEsc: false,
       context: {
         showLoadinng: true,

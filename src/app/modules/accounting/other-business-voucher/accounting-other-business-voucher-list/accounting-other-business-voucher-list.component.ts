@@ -40,13 +40,13 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingOtherBusinessVoucherListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -64,7 +64,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.commonService.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -77,7 +77,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
+                  this.cms.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -97,7 +97,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.commonService.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -110,7 +110,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.commonService.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
+                  this.cms.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -142,10 +142,10 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           title: 'No.',
           type: 'string',
           width: '5%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Object: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.Object.title'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
           type: 'string',
           width: '20%',
           valuePrepareFunction: (cell: any, row: OtherBusinessVoucherModel) => {
@@ -158,7 +158,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', {includeIdText: true, includeGroups: true}, { placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                   item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }}),
@@ -170,13 +170,13 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         Description: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.description'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
           type: 'string',
           width: '20%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Creator: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.creator'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
           type: 'string',
           width: '10%',
           // filter: {
@@ -184,7 +184,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           //   component: SmartTableDateTimeRangeFilterComponent,
           // },
           valuePrepareFunction: (cell: string, row?: any) => {
-            return this.commonService.getObjectText(cell);
+            return this.cms.getObjectText(cell);
           },
           filter: {
             type: 'custom',
@@ -230,12 +230,12 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         Code: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.code'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
           type: 'string',
           width: '10%',
         },
         Created: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.created'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.created'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -248,7 +248,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         DateOfVoucher: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Accounting.voucherDate'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Accounting.voucherDate'), 'head-title'),
           type: 'custom',
           width: '10%',
           filter: {
@@ -261,7 +261,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         Amount: {
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.numOfMoney'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
           type: 'custom',
           class: 'align-right',
           width: '10%',
@@ -273,7 +273,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         State: {
-          title: this.commonService.translateText('Common.approve'),
+          title: this.cms.translateText('Common.approve'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -284,11 +284,11 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.approved');
-            instance.label = this.commonService.translateText('Common.approved');
+            instance.title = this.cms.translateText('Common.approved');
+            instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.otherBusinessVoucher[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -318,14 +318,14 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
                 multiple: true,
                 data: Object.keys(AppModule.processMaps.otherBusinessVoucher).map(stateId => ({
                   id: stateId,
-                  text: this.commonService.translateText(AppModule.processMaps.otherBusinessVoucher[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps.otherBusinessVoucher[stateId].label)
                 })).filter(f => f.id != '')
               },
             },
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -338,7 +338,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -346,12 +346,12 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: OtherBusinessVoucherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Accounting.PaymentVoucher.title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
+                  resourceName: this.cms.translateText('Accounting.PaymentVoucher.title', { action: '', definition: '' }) + ` ${rowData.Description || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -364,7 +364,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
           },
         },
         Preview: {
-          title: this.commonService.translateText('Common.show'),
+          title: this.cms.translateText('Common.show'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -376,7 +376,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
             instance.status = 'primary';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -448,7 +448,7 @@ export class AccountingOtherBusinessVoucherListComponent extends ServerDataManag
   }
 
   async preview(ids: any[]) {
-    this.commonService.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+    this.cms.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',

@@ -23,11 +23,11 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -85,7 +85,7 @@ export class SmsTemplateListComponent extends DataManagerListComponent<SmsTempla
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: SmsTemplateModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(SmsTemplateFormComponent, {
+  //   this.cms.openDialog(SmsTemplateFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

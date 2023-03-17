@@ -26,11 +26,11 @@ export class WarehouseGoodsFormComponent extends ProductFormComponent implements
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref?: NbDialogRef<WarehouseGoodsFormComponent>,
     public adminProductService?: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit(): void {

@@ -114,7 +114,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
     //     return false;
     //   },
     //   click: () => {
-    //     this.commonService.openMenuSidebar();
+    //     this.cms.openMenuSidebar();
     //     this.mobileAppService.switchScreen('phone');
     //     // this.refresh();
     //     return false;
@@ -218,7 +218,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
   quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public themeService: NbThemeService,
@@ -228,7 +228,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
     public dialogService: NbDialogService,
     // private mobileAppService: MobileAppService,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
 
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
 
@@ -247,11 +247,11 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-    // this.commonService.openMobileSidebar();
+    // this.cms.openMobileSidebar();
   }
 
   onFilterChange() {
-    this.commonService.takeUntil('email-sent-filter-change', 500, () => {
+    this.cms.takeUntil('email-sent-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);
@@ -303,12 +303,12 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
       if (!checkpoint && helpdeskHeaderOffset.top < 50) {
         checkpoint = helpdeskDashboardOffset.top;
 
-        this.commonService.pushHeaderActionControlList(this.actionButtonList);
+        this.cms.pushHeaderActionControlList(this.actionButtonList);
 
       }
 
       if (checkpoint && helpdeskDashboardOffset.top > checkpoint) {
-        this.commonService.pushHeaderActionControlList([]);
+        this.cms.pushHeaderActionControlList([]);
         checkpoint = null;
       }
 
@@ -330,7 +330,7 @@ export class EmailSentListComponent extends BaseComponent implements OnInit, OnD
   }
 
   async refresh() {
-    this.commonService.takeUntil('email-filter-change', 500, () => {
+    this.cms.takeUntil('email-filter-change', 500, () => {
       this.infiniteLoadModel.pageToLoadNext = 1;
       this.infiniteLoadModel.data = [];
       this.loadNext(this.infiniteLoadModel);

@@ -34,13 +34,13 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   @Input('params') params: any;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<MasterPriceTablePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   style = /*css*/ `
@@ -104,7 +104,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   toMoney(detail: SalesMasterPriceTableDetailModel) {
     // if (detail.Type !== 'CATEGORY') {
     //   let toMoney = detail['Quantity'] * detail['Price'];
-    //   // detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+    //   // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
     //   // if (detail.Tax) {
     //   //   if (typeof detail.Tax.Tax == 'undefined') {
     //   //     throw Error('tax not as tax model');
@@ -145,7 +145,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
 
   prepareCopy(data: SalesMasterPriceTableModel) {
     // this.close();
-    // this.commonService.openDialog(MasterPriceTableFormComponent, {
+    // this.cms.openDialog(MasterPriceTableFormComponent, {
     //   context: {
     //     inputMode: 'dialog',
     //     inputId: [data.Code],
@@ -165,9 +165,9 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
 
   approvedConfirm(data: SalesMasterPriceTableModel) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
-    //   this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
-    //       label: this.commonService.translateText('Common.close'),
+    //       label: this.cms.translateText('Common.close'),
     //       status: 'success',
     //       action: () => {
     //         this.onClose(data);
@@ -194,16 +194,16 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
     //     break;
     // }
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(processMap?.nextStateLabel),
+        label: this.cms.translateText(processMap?.nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -212,12 +212,12 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },
@@ -233,24 +233,24 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
 
   approvedConfirmX(data: SalesMasterPriceTableModel) {
     if (data.State === 'COMPLETE') {
-      this.commonService.showDialog(this.commonService.translateText('Common.notice'), this.commonService.translateText('Common.completedNotice', { resource: this.commonService.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
+      this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
         {
-          label: this.commonService.translateText('Common.ok'),
+          label: this.cms.translateText('Common.ok'),
           status: 'success',
         }
       ]);
       return;
     }
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.commonService.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.cms.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
+        label: this.cms.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
         status: 'danger',
         action: () => {
           const params = { id: [data.Code] };
@@ -260,9 +260,9 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
             params['complete'] = true;
           }
           this.apiService.putPromise<SalesMasterPriceTableModel[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
-            this.commonService.showDialog(this.commonService.translateText('Common.completed'), this.commonService.translateText('Common.completedSuccess', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedSuccess', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
-                label: this.commonService.translateText('Common.close'),
+                label: this.cms.translateText('Common.close'),
                 status: 'success',
                 action: () => {
                   this.onClose(data);
@@ -308,7 +308,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
 
               const newDetail = detail;
               newDetail.Container = container;
-              findOrderIds.push(`${newDetail.Code}-${this.commonService.getObjectId(newDetail.Unit)}-${this.commonService.getObjectId(newDetail.Container)}`);
+              findOrderIds.push(`${newDetail.Code}-${this.cms.getObjectId(newDetail.Unit)}-${this.cms.getObjectId(newDetail.Container)}`);
               newDetails.push(newDetail);
             }
           } else {
@@ -331,7 +331,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
           limit: 'nolimit',
         }).then(rs => {
           return newDetails.map(newDetail => {
-            const findOrderTemData = rs.find(f => f.Code = newDetail.Code && this.commonService.getObjectId(f.Container) == this.commonService.getObjectId(newDetail.Container) && this.commonService.getObjectId(f.Unit) == this.commonService.getObjectId(newDetail.Unit))
+            const findOrderTemData = rs.find(f => f.Code = newDetail.Code && this.cms.getObjectId(f.Container) == this.cms.getObjectId(newDetail.Container) && this.cms.getObjectId(f.Unit) == this.cms.getObjectId(newDetail.Unit))
             newDetail.FindOrderTem = {
               Code: newDetail.Code,
               Sku: newDetail.Sku,
@@ -389,7 +389,7 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   }
 
   // receipt(item: SalesVoucherModel) {
-  //   this.commonService.openDialog(CashReceiptVoucherFormComponent, {
+  //   this.cms.openDialog(CashReceiptVoucherFormComponent, {
   //     context: {
   //       onDialogSave: (items: CashVoucherModel[]) => {
   //         this.refresh();

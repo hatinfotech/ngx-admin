@@ -19,7 +19,7 @@ export class ListComponent implements OnInit {
     public apiService: ApiService,
     public dialogService: NbDialogService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     ) {
     console.info('construct');
   }
@@ -87,7 +87,7 @@ export class ListComponent implements OnInit {
 
     this.apiService.get<EmployeeModel[]>('/hr/employees', { limit: 1000000, ofset: 0 },
       empployees => this.source.load(empployees), e => {
-        this.commonService.openDialog(ShowcaseDialogComponent, {
+        this.cms.openDialog(ShowcaseDialogComponent, {
           context: {
             title: 'Error',
             content: e.error.logs[0],
@@ -99,7 +99,7 @@ export class ListComponent implements OnInit {
     //   .subscribe(data => this.source.load(data));
 
     // return this.dataService.getEmployees(data => this.source.load(data), (error) => {
-    //   this.commonService.openDialog(ShowcaseDialogComponent, {
+    //   this.cms.openDialog(ShowcaseDialogComponent, {
     //     context: {
     //       title: 'Error',
     //       content: error.logs[0],

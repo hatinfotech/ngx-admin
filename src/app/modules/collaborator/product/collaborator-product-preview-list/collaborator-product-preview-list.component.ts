@@ -47,14 +47,14 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorProductPreviewListComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
 
@@ -71,9 +71,9 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
       // this.actionButtonList.unshift({
       //   name: 'assignCategories',
       //   status: 'info',
-      //   label: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   label: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
       //   icon: 'pricetags',
-      //   title: this.commonService.textTransform(this.commonService.translate.instant('Common.tag/untag'), 'head-title'),
+      //   title: this.cms.textTransform(this.cms.translate.instant('Common.tag/untag'), 'head-title'),
       //   size: 'medium',
       //   disabled: () => this.selectedIds.length === 0,
       //   hidden: () => false,
@@ -94,7 +94,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {
@@ -158,21 +158,21 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
             //     this.uploadForProduct = row;
             //     this.uploadBtn.nativeElement.click();
             //   } else {
-            //     this.commonService.toastService.show(
-            //       this.commonService.translateText('Common.uploadInProcess'),
-            //       this.commonService.translateText('Common.upload'),
+            //     this.cms.toastService.show(
+            //       this.cms.translateText('Common.uploadInProcess'),
+            //       this.cms.translateText('Common.upload'),
             //       {
             //         status: 'warning',
             //       });
-            //     // this.commonService.openDialog(ShowcaseDialogComponent, {
+            //     // this.cms.openDialog(ShowcaseDialogComponent, {
             //     //   context: {
-            //     //     title: this.commonService.translateText('Common.upload'),
-            //     //     content: this.commonService.translateText('Common.uploadInProcess'),
+            //     //     title: this.cms.translateText('Common.upload'),
+            //     //     content: this.cms.translateText('Common.uploadInProcess'),
             //     //   },
             //     // });
             //   }
             // });
-            // instance.title = this.commonService.translateText('click to change main product picture');
+            // instance.title = this.cms.translateText('click to change main product picture');
           },
         },
         Name: {
@@ -210,7 +210,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.categoryList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -248,7 +248,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.groupList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -325,7 +325,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   // executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductModel[] | HttpErrorResponse) => void) {
   //   params['includeCategories'] = true;
   //   if (this.currentPage) {
-  //     params['page'] = this.commonService.getObjectId(this.currentPage);
+  //     params['page'] = this.cms.getObjectId(this.currentPage);
   //   }
   //   super.executeGet(params, success, error, complete);
   // }
@@ -347,7 +347,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   async openAssignCategoiesDialplog() {
     if (this.selectedIds.length > 0) {
       const editedItems = await this.convertIdsToItems(this.selectedIds);
-      this.commonService.openDialog(AssignCategoriesFormComponent, {
+      this.cms.openDialog(AssignCategoriesFormComponent, {
         context: {
           inputMode: 'dialog',
           inputProducts: this.selectedItems,
@@ -366,7 +366,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
 
   onChangePage(page: PageModel) {
     // this.currentPage = page;
-    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
     this.refresh();
   }
 

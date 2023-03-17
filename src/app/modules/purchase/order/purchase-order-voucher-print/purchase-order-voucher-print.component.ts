@@ -36,13 +36,13 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   showPicture = true;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<PurchaseOrderVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -124,7 +124,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   toMoney(detail: PurchaseOrderVoucherDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
-      detail.Tax = typeof detail.Tax === 'string' ? (this.commonService.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       if (detail.Tax) {
         if (typeof detail.Tax.Tax == 'undefined') {
           throw Error('tax not as tax model');
@@ -179,9 +179,9 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
 
   approvedConfirm(data: PurchaseOrderVoucherModel, index: number) {
     if (['COMPLETE'].indexOf(data.State) > -1) {
-      this.commonService.showDialog(this.commonService.translateText('Common.approved'), this.commonService.translateText('Common.completedAlert', { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.close'),
+          label: this.cms.translateText('Common.close'),
           status: 'success',
           action: () => {
             this.onClose(data);
@@ -208,16 +208,16 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     //     break;
     // }
 
-    this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
+        label: this.cms.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -226,12 +226,12 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
-            // this.commonService.showDiaplog(this.commonService.translateText('Common.approved'), this.commonService.translateText(responseText, { object: this.commonService.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+            // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
             //   {
-            //     label: this.commonService.translateText('Common.close'),
+            //     label: this.cms.translateText('Common.close'),
             //     status: 'success',
             //     action: () => {
             //     },
@@ -269,24 +269,24 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   async updateSalePrice(detail: PurchaseOrderVoucherDetailModel) {
     const unitPriceControls = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
       masterPriceTable: 'default',
-      eq_Code: this.commonService.getObjectId(detail?.Product),
-      // eq_Unit: this.commonService.getObjectId(detail?.Unit) 
+      eq_Code: this.cms.getObjectId(detail?.Product),
+      // eq_Unit: this.cms.getObjectId(detail?.Unit) 
       group_Unit: true,
     }).then(rs => {
       return rs.map(unitPrice => {
         return {
-          name: this.commonService.getObjectId(unitPrice.Unit),
-          label: 'Giá thay đổi cho ĐVT: ' + this.commonService.getObjectText(unitPrice.Unit),
-          placeholder: 'Giá thay đổi cho ĐVT: ' + this.commonService.getObjectText(unitPrice.Unit),
+          name: this.cms.getObjectId(unitPrice.Unit),
+          label: 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPrice.Unit),
+          placeholder: 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPrice.Unit),
           type: 'currency',
           initValue: unitPrice.Price,
-          focus: this.commonService.getObjectId(detail.Unit) == this.commonService.getObjectId(unitPrice.Unit),
+          focus: this.cms.getObjectId(detail.Unit) == this.cms.getObjectId(unitPrice.Unit),
           masterPriceTable: unitPrice.MasterPriceTable || 'default',
         };
       });
     });
 
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         width: '500px',
         title: 'Cập nhật giá bán',
@@ -294,8 +294,8 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
           // const price = form.get('Price');
           // await this.apiService.getPromise('/sales/master-price-table-details', {
           //   masterPriceTable: 'default',
-          //   eq_Code: this.commonService.getObjectId(detail?.Product),
-          //   // eq_Unit: this.commonService.getObjectId(detail?.Unit) 
+          //   eq_Code: this.cms.getObjectId(detail?.Product),
+          //   // eq_Unit: this.cms.getObjectId(detail?.Unit) 
           // }).then(rs => {
           //   console.log(rs);
           //   price.setValue(rs[0]?.Price);
@@ -343,7 +343,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
                 if (unitPriceControl.initValue != newPrice) {
                   updatePrice.push({
                     MasterPriceTable: unitPriceControl.masterPriceTable,
-                    Product: this.commonService.getObjectId(detail.Product),
+                    Product: this.cms.getObjectId(detail.Product),
                     Unit: unitPriceControl.name,
                     Price: newPrice
                   });
@@ -387,14 +387,14 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
         STT: no,
         'STT DATA': no,
         'Sku': detail['Product']['Sku'],
-        'ProductID': this.commonService.getObjectId(detail['Product']),
+        'ProductID': this.cms.getObjectId(detail['Product']),
         'ProductName/Tên Sản Phẩm': detail['Product']['Name'],
         'SupplierSku/Mã SP nội bộ NCC': detail['SupplierSku'],
         'SupplierProductName/Tên SP nội bộ NCC': detail['SupplierProductName'],
         'SupplierProductTaxName/Tên SP theo thuế': detail['ProductTaxName'],
         'SupplierTax/thuế suất %': detail['Tax'],
-        'Unit/Mã ĐVT': this.commonService.getObjectId(detail['Unit']),
-        'UnitName/Tên ĐVT': this.commonService.getObjectText(detail['Unit']),
+        'Unit/Mã ĐVT': this.cms.getObjectId(detail['Unit']),
+        'UnitName/Tên ĐVT': this.cms.getObjectText(detail['Unit']),
         'Price/Đơn Giá': detail['Price'],
         'Quantity/Số lượng': detail['Quantity'],
         'ToMoney/Thành tiền': detail['ToMoney'],
@@ -403,7 +403,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     const sheet = XLSX.utils.json_to_sheet(details);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, sheet, 'Chi tiết đơn đặt mua hàng');
-    XLSX.writeFile(workbook, 'DDMH-' + data.Code + ' - ' + data.Title + ' - NCC: ' + this.commonService.getObjectId(data.Object) + ' - ' + data.ObjectName + '.xlsx');
+    XLSX.writeFile(workbook, 'DDMH-' + data.Code + ' - ' + data.Title + ' - NCC: ' + this.cms.getObjectId(data.Object) + ' - ' + data.ObjectName + '.xlsx');
   }
   // }
 

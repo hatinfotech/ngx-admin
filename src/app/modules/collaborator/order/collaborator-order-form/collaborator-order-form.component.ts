@@ -39,21 +39,21 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<CollaboratorOrderFormComponent>,
     public collaboratorService: CollaboratorService,
     public adminProductService: AdminProductService,
     public mobileAppService: MobileAppService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -71,11 +71,11 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
-  priceCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
-  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.commonService.getCurrencyMaskConfig(), precision: 0 };
-  quantityFormat: CurrencyMaskConfig = { ...this.commonService.getNumberMaskConfig(), precision: 2 };
-  towDigitsInputMask = this.commonService.createFloatNumberMaskConfig({
+  locale = this.cms.getCurrentLoaleDataset();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
   });
@@ -93,23 +93,23 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     if (this.customIcons[name]) return this.customIcons[name];
     return this.customIcons[name] = [{
       icon: 'plus-square-outline',
-      title: this.commonService.translateText('Common.addNewProduct'),
+      title: this.cms.translateText('Common.addNewProduct'),
       status: 'success',
       states: {
         '<>': {
           icon: 'edit-outline',
           status: 'primary',
-          title: this.commonService.translateText('Common.editProduct'),
+          title: this.cms.translateText('Common.editProduct'),
         },
         '': {
           icon: 'plus-square-outline',
           status: 'success',
-          title: this.commonService.translateText('Common.addNewProduct'),
+          title: this.cms.translateText('Common.addNewProduct'),
         },
       },
       action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-        const currentProduct = this.commonService.getObjectId(formGroup.get('Product').value);
-        this.commonService.openDialog(ProductFormComponent, {
+        const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
+        this.cms.openDialog(ProductFormComponent, {
           context: {
             inputMode: 'dialog',
             inputId: currentProduct ? [currentProduct] : null,
@@ -117,7 +117,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
             onDialogSave: (newData: ProductModel[]) => {
               console.log(newData);
               // const formItem = formGroupComponent.formGroup;
-              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+              const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
               formGroup.get('Product').patchValue(newProduct);
             },
             onDialogClose: () => {
@@ -149,12 +149,12 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.commonService.translateText('Common.company') }] }],
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.cms.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.cms.translateText('Common.company') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
@@ -173,12 +173,12 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }];
 
   contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.commonService.openDialog(ContactFormComponent, {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          data: [{ Groups: [{ id: 'CUSTOMER', text: this.commonService.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.commonService.translateText('Common.personal') }] }],
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.cms.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.cms.translateText('Common.personal') }] }],
           onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
@@ -404,7 +404,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     ajax: {
       url: (params, options: any) => {
         const formGroup = options?.formGroup;
-        const provice = formGroup && this.commonService.getObjectId(formGroup.get('Province').value);
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('Province').value);
         return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
       },
       delay: 300,
@@ -430,7 +430,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     ajax: {
       url: (params: any, options: any) => {
         const formGroup = options?.formGroup;
-        const district = formGroup && this.commonService.getObjectId(formGroup.get('District').value);
+        const district = formGroup && this.cms.getObjectId(formGroup.get('District').value);
         return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
       },
       delay: 300,
@@ -504,7 +504,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         title: 'Gọi cho khách',
         size: 'medium',
         click: () => {
-          this.commonService.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+          this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
             {
               status: 'basic',
               label: 'Trở về',
@@ -533,7 +533,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         title: 'Chat với CTV Bán hàng',
         size: 'medium',
         click: () => {
-          this.commonService.showDialog('Chat với CTV Bán hàng', 'Bạn có muốn chát với CTV Bán hàng không ? hệ thống sẽ tạo task và add CTV Bán hàng liên quan vào !', [
+          this.cms.showDialog('Chat với CTV Bán hàng', 'Bạn có muốn chát với CTV Bán hàng không ? hệ thống sẽ tạo task và add CTV Bán hàng liên quan vào !', [
             {
               status: 'basic',
               label: 'Trở về',
@@ -546,7 +546,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
                 const voucher = this.array.controls[0].value;
                 let task = voucher.RelativeVouchers?.find(f => f.type == 'CHATROOM');
                 if (task) {
-                  this.commonService.openMobileSidebar();
+                  this.cms.openMobileSidebar();
                   this.mobileAppService.openChatRoom({ ChatRoom: task.id });
                 } else {
                   // Assign resource to chat room
@@ -569,12 +569,12 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
                       this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
                         ChatRoom: rs[0].Code as any,
                         Type: 'CONTACT',
-                        RefUserUuid: this.commonService.getObjectId(voucher.Publisher),
+                        RefUserUuid: this.cms.getObjectId(voucher.Publisher),
                         Name: voucher.PublisherName,
                         Page: voucher.Page,
                         RefPlatform: 'PROBOXONE',
                         RefType: 'PUBLISHER',
-                        id: this.commonService.getObjectId(voucher.Publisher),
+                        id: this.cms.getObjectId(voucher.Publisher),
                       }]).then(rs2 => {
 
                         // Connect publisher
@@ -582,7 +582,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
                           Type: 'CONTACT',
                           Contact: rs2[0].Contact,
                         }]).then(rs3 => {
-                          this.commonService.openMobileSidebar();
+                          this.cms.openMobileSidebar();
                           this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
                         });
 
@@ -608,7 +608,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       //     status: 'success',
       //     label: 'Select page',
       //     icon: 'plus',
-      //     title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      //     title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       //     size: 'medium',
       //     select2: {
       //       data: pageList, option: {
@@ -701,7 +701,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         details.clear();
         itemFormData.Details.forEach(detailData => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
-          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.commonService.getObjectId(ac)).join('\n') + '\n') : '';
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
@@ -1019,8 +1019,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       detail.get('Description').setValue(selectedData.Name);
       // if (parentForm.get('PriceTable').value) {
       // this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-      //   priceTable: this.commonService.getObjectId(parentForm.get('PriceTable').value),
-      //   product: this.commonService.getObjectId(selectedData),
+      //   priceTable: this.cms.getObjectId(parentForm.get('PriceTable').value),
+      //   product: this.cms.getObjectId(selectedData),
       //   includeUnit: true,
       // }).then(rs => {
       // console.log(rs);
@@ -1043,7 +1043,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         }
       // });
       // } else {
-      //   detail['unitList'] = this.commonService.unitList;
+      //   detail['unitList'] = this.cms.unitList;
       //   const detaultUnit = selectedData.Units?.find(f => f['IsDefaultSales'] === true);
       //   if (detaultUnit) {
       //     detail.get('Unit').setValue(detaultUnit);
@@ -1092,7 +1092,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   calulateTotal(formItem: FormGroup) {
-    this.commonService.takeUntil('calulcate_sales_price_report', 300).then(rs => {
+    this.cms.takeUntil('calulcate_sales_price_report', 300).then(rs => {
       let total = 0;
       const details = this.getDetails(formItem);
       for (let i = 0; i < details.controls.length; i++) {
@@ -1106,10 +1106,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   async preview(formItem: FormGroup) {
     const data: SalesPriceReportModel = formItem.value;
     for (const detail of data.Details) {
-      detail['Tax'] = this.commonService.getObjectText(this.taxList.find(t => t.Code === this.commonService.getObjectId(detail['Tax'])), 'Lable2');
-      detail['Unit'] = this.commonService.getObjectText(this.unitList.find(f => f.id === this.commonService.getObjectId(detail['Unit'])));
+      detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
+      detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
     };
-    this.commonService.openDialog(CollaboratorOrderPrintComponent, {
+    this.cms.openDialog(CollaboratorOrderPrintComponent, {
       context: {
         title: 'Xem trước',
         mode: 'preview',
@@ -1135,7 +1135,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
             if (/^127/.test(ac)) {
               return { id: ac, text: ac };
             }
-            const acd = this.commonService.decompileAccessNumber(ac);
+            const acd = this.cms.decompileAccessNumber(ac);
             return acd.accessNumber;
           });
         }
@@ -1151,15 +1151,15 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   // }
 
   // customIcons: CustomIcon[] = [{
-  //   icon: 'plus-square-outline', title: this.commonService.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-  //     this.commonService.openDialog(ProductFormComponent, {
+  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.cms.openDialog(ProductFormComponent, {
   //       context: {
   //         inputMode: 'dialog',
   //         // inputId: ids,
   //         onDialogSave: (newData: ProductModel[]) => {
   //           console.log(newData);
   //           // const formItem = formGroupComponent.formGroup;
-  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.commonService.getObjectId(unit?.Unit), text: this.commonService.getObjectText(unit?.Unit) })) };
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
   //           formGroup.get('Product').patchValue(newProduct);
   //           this.onSelectProduct(formGroup, newProduct, option.parentForm)
   //         },
@@ -1178,13 +1178,13 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
     return false;
   }
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.commonService.getObjectId(relativeVocher)));
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
   }
 
@@ -1198,7 +1198,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   // async save(): Promise<ProductModel[]> {
   //   if (!this.collaboratorService?.currentpage$?.value) {
-  //     this.commonService.toastService.show(this.commonService.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+  //     this.cms.toastService.show(this.cms.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
   //       status: 'danger',
   //     });
   //   }
@@ -1206,7 +1206,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   // }
 
   // onChangePage(page: CollaboratorPageModel) {
-  //   this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
+  //   this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
   // }
 
   saveAndClose() {
@@ -1216,7 +1216,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
       //   this.preview(this.makeId(rs[0]), 'list', 'print');
       // }
-      this.commonService.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
+      this.cms.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
         {
           label: 'Trở về',
           status: 'basic',
@@ -1229,7 +1229,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           status: 'success',
           action: () => {
             this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
-              this.commonService.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
+              this.cms.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
               this.goback();
             });
           }

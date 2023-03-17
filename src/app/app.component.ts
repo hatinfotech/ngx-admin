@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     private analytics: AnalyticsService,
     private seoService: SeoService,
     public iconsLibrary: NbIconLibraries,
-    public commonService: CommonService,
+    public cms: CommonService,
     public authService: NbAuthService,
     public translate: TranslateService,
     public notificatinoSerivce: NotificationService,
@@ -45,16 +45,16 @@ export class AppComponent implements OnInit {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
-    this.commonService.configReady$.subscribe(ready => {
+    this.cms.configReady$.subscribe(ready => {
       if (ready) {
-        this.commonService.getMenuTree(menuTree => {
-          this.commonService.languageLoaded$.pipe(filter(f => f)).subscribe(() => this.menu = this.translateMenu(menuTree));
+        this.cms.getMenuTree(menuTree => {
+          this.cms.languageLoaded$.pipe(filter(f => f)).subscribe(() => this.menu = this.translateMenu(menuTree));
         });
       }
     });
 
     // Set title
-    this.commonService.systemConfigs$.pipe(filter(f => !!f), take(1)).toPromise().then(systemConfigs => {
+    this.cms.systemConfigs$.pipe(filter(f => !!f), take(1)).toPromise().then(systemConfigs => {
       if (systemConfigs?.ROOT_CONFIGS?.coreName) {
         this.titleService.setTitle(systemConfigs.ROOT_CONFIGS.coreName);
       };
@@ -64,8 +64,8 @@ export class AppComponent implements OnInit {
 
     this.authService.onAuthenticationChange().pipe(filter(state => state === true), take(1)).toPromise().then(state => {
       if (state) {
-        this.commonService.getMenuTree(menuTree => this.menu = this.translateMenu(menuTree));
-        // this.commonService.langCode$.subscribe(langCode => {
+        this.cms.getMenuTree(menuTree => this.menu = this.translateMenu(menuTree));
+        // this.cms.langCode$.subscribe(langCode => {
         //   if (langCode) {
         //     this.locale = langCode;
         //   }
@@ -87,7 +87,7 @@ export class AppComponent implements OnInit {
   translateMenu(menuTree: NbMenuItem[]) {
     for (let i = 0; i < menuTree.length; i++) {
       if (/\./.test(menuTree[i].title)) {
-        menuTree[i].title = this.commonService.textTransform(this.translate.instant(menuTree[i].title), 'head-title');
+        menuTree[i].title = this.cms.textTransform(this.translate.instant(menuTree[i].title), 'head-title');
       }
       if (menuTree[i].children) {
         this.translateMenu(menuTree[i].children);

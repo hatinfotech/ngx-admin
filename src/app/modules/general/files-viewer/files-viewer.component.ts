@@ -14,12 +14,12 @@
 
 
 //   constructor(
-//     public commonService: CommonService,
+//     public cms: CommonService,
 //     public router: Router,
 //     public apiService: ApiService,
 //     // public ref?: NbDialogRef<BaseComponent> & { [key: string]: any },
 //   ) { 
-//     super(commonService, router, apiService);
+//     super(cms, router, apiService);
 //   }
 
 //   ngOnInit(): void {

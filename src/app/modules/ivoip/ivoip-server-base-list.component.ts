@@ -19,12 +19,12 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {
@@ -44,7 +44,7 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
       status: 'success',
       label: 'Select pbx domain',
       icon: 'plus',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',
       select2: { data: this.domainList, option: this.select2OptionForDoaminList },
       value: () => this.ivoipService.activeDomainUuid,
@@ -97,7 +97,7 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
 
   getList(callback: (list: M[]) => void) {
     if (this.ivoipService.getPbxActiveDomainUuid()) {
-      this.commonService.takeUntil('pbx_ext_get_list', 300, () => {
+      this.cms.takeUntil('pbx_ext_get_list', 300, () => {
         // this.ivoipService.activeDomainUuid$.subscribe(activeDoaminUUid => {
         this.apiService.get<M[]>(this.apiPath, { limit: 999999999, offset: 0, domainId: this.ivoipService.getPbxActiveDomainUuid() }, results => callback(results));
         // });

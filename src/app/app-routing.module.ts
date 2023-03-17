@@ -128,7 +128,7 @@ import { PurchaseProductListComponent } from './modules/purchase/product/purchas
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
 
-  constructor(public translate: TranslateService, public commonService: CommonService) { }
+  constructor(public translate: TranslateService, public cms: CommonService) { }
 
   resolve(route: ActivatedRouteSnapshot): Promise<any> {
     const $this = this;
@@ -143,8 +143,8 @@ export class RoutingResolve implements Resolve<any> {
           // $this.locale$.next({locale: locale, skipUpdate: true});
           $this.translate.use(locale).subscribe(res => {
             resolve(locale);
-            if (!$this.commonService.configReady$.value) {
-              $this.commonService.configReady$.next(true);
+            if (!$this.cms.configReady$.value) {
+              $this.cms.configReady$.next(true);
             }
           });
 

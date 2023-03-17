@@ -52,13 +52,13 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref?: NbDialogRef<ServerDataManagerListComponent<M>>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -161,7 +161,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   }
 
   async preview(ids: any[]) {
-    this.commonService.openDialog(CollaboratorCommissionPrintComponent, {
+    this.cms.openDialog(CollaboratorCommissionPrintComponent, {
       context: {
         showLoadinng: true,
         title: 'Xem trước',

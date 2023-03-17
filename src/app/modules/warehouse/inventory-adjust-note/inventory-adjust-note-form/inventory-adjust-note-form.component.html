@@ -12,7 +12,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card [nbSpinner]="isProcessing" class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.InventoryAdjustNote.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.InventoryAdjustNote.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -75,7 +75,7 @@
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="DateOfAdjusted" label="{{validateVoucherDate(formItem.get('DateOfAdjusted'), 'Warehouse.dateOfAdjusted')}}" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" [owlDateTime]="DateOfReceipted" [owlDateTimeTrigger]="DateOfReceipted" nbInput fullWidth formControlName="DateOfAdjusted" placeholder="{{'Warehouse.dateOfAdjusted' | translate | headtitlecase}}">
-                                    <owl-date-time #DateOfReceipted [startAt]="formItem.get('DateOfAdjusted')?.value || this.commonService.lastVoucherDate"></owl-date-time>
+                                    <owl-date-time #DateOfReceipted [startAt]="formItem.get('DateOfAdjusted')?.value || this.cms.lastVoucherDate"></owl-date-time>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-9">

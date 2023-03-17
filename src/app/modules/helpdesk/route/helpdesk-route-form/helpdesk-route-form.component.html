@@ -5,7 +5,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
-            [title]="title ? title : ('Helpdesk.Route.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [title]="title ? title : ('Helpdesk.Route.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
             [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
@@ -45,7 +45,7 @@
                   <label class="label">
                     <span class="valid">{{'Helpdesk.Route.priority' | translate | headtitlecase}}</span>
                     <span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Route.priority')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Helpdesk.Route.priority')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Priority"
                     placeholder="{{'Helpdesk.Route.priority' | translate | headtitlecase}}">
@@ -55,7 +55,7 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}
                       (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.description')} | headtitlecase }}
                       (*)</span></label>
                   <textarea nbInput fullWidth formControlName="Description" placeholder="Mô tả" rows="3"></textarea>
                 </div>

@@ -43,7 +43,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
@@ -51,36 +51,36 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.cycleMap = {
-      MONTHLY: this.commonService.translateText('Common.monthly'),
-      YEARLY: this.commonService.translateText('Common.yearly'),
+      MONTHLY: this.cms.translateText('Common.monthly'),
+      YEARLY: this.cms.translateText('Common.yearly'),
     };
     this.stateList = [
       {
         id: 'ACTIVE',
-        text: this.commonService.translateText('Common.activated'),
+        text: this.cms.translateText('Common.activated'),
       },
       {
         id: 'INACTIVE',
-        text: this.commonService.translateText('Common.inactivated'),
+        text: this.cms.translateText('Common.inactivated'),
       },
       {
         id: 'EXPIREDSOON',
-        text: this.commonService.translateText('Common.expiredSoon'),
+        text: this.cms.translateText('Common.expiredSoon'),
       },
       {
         id: 'OVEREXPIRED',
-        text: this.commonService.translateText('Common.overExpired'),
+        text: this.cms.translateText('Common.overExpired'),
       },
       {
         id: 'EXPIRED',
-        text: this.commonService.translateText('Common.expired'),
+        text: this.cms.translateText('Common.expired'),
       },
     ];
     return super.init().then(rs => {
@@ -92,7 +92,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           status: 'success',
           label: 'Select page',
           icon: 'plus',
-          title: this.commonService.textTransform(this.commonService.translate.instant('Common.createNew'), 'head-title'),
+          title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
           size: 'medium',
           select2: {
             data: pageList, option: {
@@ -131,22 +131,22 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     return this.configSetting({
       columns: {
         Publisher: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '15%',
         },
         Phone: {
-          title: this.commonService.translateText('Common.phone'),
+          title: this.cms.translateText('Common.phone'),
           type: 'string',
           width: '20%',
         },
         Email: {
-          title: this.commonService.translateText('Common.email'),
+          title: this.cms.translateText('Common.email'),
           type: 'string',
           width: '15%',
           valuePrepareFunction: (cell: any, rowData: CollaboratorPublisherModel) => {
@@ -154,7 +154,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           }
         },
         Address: {
-          title: this.commonService.translateText('Common.address'),
+          title: this.cms.translateText('Common.address'),
           type: 'string',
           width: '15%',
           valuePrepareFunction: (cell: any, rowData: CollaboratorPublisherModel) => {
@@ -162,12 +162,12 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           }
         },
         Assigned: {
-          title: this.commonService.translateText('Collaborator.Publisher.assigned'),
+          title: this.cms.translateText('Collaborator.Publisher.assigned'),
           type: 'datetime',
           width: '15%',
         },
         Level: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -179,7 +179,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
             instance.outline = true
-            // instance.label = this.commonService.translateText('Common.state');
+            // instance.label = this.cms.translateText('Common.state');
             instance.init.subscribe((row: CollaboratorPublisherModel) => {
               // const processMap = AppModule.processMaps.commerceServiceByCycle[row.State || ''];
               instance.title = row.LevelLabel;
@@ -200,7 +200,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
               delay: 0,
               condition: 'eq',
               select2Option: {
-                placeholder: this.commonService.translateText('Common.state') + '...',
+                placeholder: this.cms.translateText('Common.state') + '...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -217,7 +217,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -226,7 +226,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -238,7 +238,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -246,12 +246,12 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorPublisherModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -293,22 +293,22 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.goback'),
+          label: this.cms.translateText('Common.goback'),
           status: 'primary',
           action: () => {
             resolve(false);
           },
         },
         {
-          label: this.commonService.translateText(processMap?.nextStateLabel),
+          label: this.cms.translateText(processMap?.nextStateLabel),
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
             return this.apiService.putPromise<CollaboratorPublisherModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);
@@ -327,8 +327,8 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.commonService.getObjectId(page));
-    this.commonService.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();
     });
   }

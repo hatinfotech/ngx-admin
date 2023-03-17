@@ -5,7 +5,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon"
-            [title]="title ? title : ('Helpdesk.Param.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+            [title]="title ? title : ('Helpdesk.Param.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
             [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
@@ -15,7 +15,7 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}} (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.name')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Name"
                     placeholder="{{'Common.name'}}">
@@ -24,7 +24,7 @@
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('DefaultOperator'), 'warning')">
                   <label class="label"><span class="valid">{{'Helpdesk.Param.defaultOperator' | translate | headtitlecase}} (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Param.defaultOperator')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Helpdesk.Param.defaultOperator')} | headtitlecase }}
                       (*)</span></label>
                       <nb-select size="medium" formControlName="DefaultOperator" fullWidth placeholder="{{'Common.compare' | translate | headtitlecase}}">
                         <nb-option value="LT">{{'Common.Compare.lt' | translate | headtitlecase}}</nb-option>
@@ -42,7 +42,7 @@
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('DefaultDataType'), 'warning')">
                   <label class="label"><span class="valid">{{'Helpdesk.Param.defaultDataType' | translate | headtitlecase}} (*)</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Helpdesk.Param.defaultDataType')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Helpdesk.Param.defaultDataType')} | headtitlecase }}
                       (*)</span></label>
                       <nb-select size="medium" formControlName="DefaultDataType" fullWidth placeholder="{{'Common.dataType' | translate | headtitlecase}}">
                         <nb-option value="STRING">{{'Common.DataType.string' | translate | headtitlecase}}</nb-option>
@@ -59,7 +59,7 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('RemoteDataSource'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.remoteDataSource' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.remoteDataSource')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.remoteDataSource')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="RemoteDataSource"
                     placeholder="{{'Common.remoteDataSource'}}">
@@ -68,7 +68,7 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('RemoteDataResource'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.remoteDataResource' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.remoteDataResource')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.remoteDataResource')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="RemoteDataResource"
                     placeholder="{{'Common.remoteDataResource'}}">
@@ -76,7 +76,7 @@
               </div>
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
-                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}} (*)</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }} (*)</span></label>
+                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}} (*)</span><span class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.description')} | headtitlecase }} (*)</span></label>
                   <textarea nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}" rows="3"></textarea>
                 </div>
               </div>

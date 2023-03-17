@@ -28,7 +28,7 @@ import { BtnCellRenderer } from './ag-list.lib';
 export class AgListComponent implements ControlValueAccessor, Validator, OnChanges {
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public themeService: NbThemeService,
   ) {
 
@@ -91,13 +91,13 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
       }
     },
     textRender: (params) => {
-      return this.commonService.getObjectText(params.value);
+      return this.cms.getObjectText(params.value);
     },
     idRender: (params) => {
       if (Array.isArray(params.value)) {
-        return params.value.map(m => this.commonService.getObjectId(m)).join(', ');
+        return params.value.map(m => this.cms.getObjectId(m)).join(', ');
       } else {
-        return this.commonService.getObjectId(params.value);
+        return this.cms.getObjectId(params.value);
       }
     },
     numberRender: (params) => {

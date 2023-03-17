@@ -1519,3 +1519,11 @@ export class CommonService {
   }
 
 }
+
+
+// export function __objectid(obj: any) {
+//   return __cms.getObjectId(obj);
+// }
+// export function __obtext(obj: any) {
+//   return __cms.getObjectText(obj);
+// }

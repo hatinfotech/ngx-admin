@@ -59,11 +59,11 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<IvoipBaseFormComponent<M>>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit() {

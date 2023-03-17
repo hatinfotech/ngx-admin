@@ -20,14 +20,14 @@ export class AccountingReportComponent extends BaseComponent {
   formItem: FormGroup;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AccountingReportComponent>,
     public accountingService?: AccountingService,
     public formBuilder?: FormBuilder,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
 
     const reportFromDate = localStorage.getItem('Accounting.ReportFromDate');
     const reportToDate = localStorage.getItem('Accounting.ReportToDate');
@@ -76,49 +76,49 @@ export class AccountingReportComponent extends BaseComponent {
   }
 
   async init() {
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
-        title: this.commonService.translateText('Accounting.SummaryReport.label'),
+        title: this.cms.translateText('Accounting.SummaryReport.label'),
         route: '/accounting/report/summary',
         icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Lưu chuyển tiền tệ'),
+        title: this.cms.translateText('Lưu chuyển tiền tệ'),
         route: '/accounting/report/contra-account',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Đối soát công nợ'),
+        title: this.cms.translateText('Đối soát công nợ'),
         route: '/accounting/report/cash-flow',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Accounting.LiabilitiesReport.label'),
+        title: this.cms.translateText('Accounting.LiabilitiesReport.label'),
         route: '/accounting/report/liabilities',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Accounting.ReceivablesFromCustomersReport.label'),
+        title: this.cms.translateText('Accounting.ReceivablesFromCustomersReport.label'),
         route: '/accounting/report/receivables-from-customers-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Accounting.ReceivablesFromEmployeeReport.label'),
+        title: this.cms.translateText('Accounting.ReceivablesFromEmployeeReport.label'),
         route: '/accounting/report/receivables-from-employee-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Góp vốn'),
+        title: this.cms.translateText('Góp vốn'),
         route: '/accounting/report/contributed-capital-report',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Accounting.ProfitReport.label'),
+        title: this.cms.translateText('Accounting.ProfitReport.label'),
         route: '/accounting/report/profit-report',
         // icon: 'pie-chart',
       },

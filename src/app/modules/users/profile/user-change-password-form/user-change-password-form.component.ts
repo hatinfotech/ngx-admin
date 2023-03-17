@@ -43,13 +43,13 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Remove close button */
     const closeBtn = this.actionButtonList.filter(btn => btn.name === 'close')[0];
-    closeBtn.label = commonService.textTransform(commonService.translate.instant('Common.goback'), 'head-title');
+    closeBtn.label = cms.textTransform(cms.translate.instant('Common.goback'), 'head-title');
     closeBtn.icon = 'arrow-back';
     closeBtn.status = 'primary';
 
@@ -59,7 +59,7 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
     this.restrict();
     super.ngOnInit();
     // this.formLoad();
-    // this.id = [this.commonService.loginInfo.user.Code];
+    // this.id = [this.cms.loginInfo.user.Code];
   }
 
   async init(): Promise<boolean> {

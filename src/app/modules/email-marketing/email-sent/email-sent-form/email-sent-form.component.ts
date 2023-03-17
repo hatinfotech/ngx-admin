@@ -296,10 +296,10 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public elRef: ElementRef,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];
@@ -433,7 +433,7 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
       var3.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
       var4.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => obs.next(value));
     }).pipe(takeUntil(this.destroy$)).subscribe(value => {
-      this.commonService.takeUntil('email-sengding', 300).then(r => {
+      this.cms.takeUntil('email-sengding', 300).then(r => {
         setTimeout(() => {
           previewEditor.patchValue(this.generatePreview(newForm));
           subjectPreview.patchValue(this.generateSubjectPreview(newForm));
@@ -450,7 +450,7 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
 
   }
   goback(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Phiếu yêu cầu hỗ trợ',
         content: 'Bạn có muốn đóng phiếu yêu cầu hỗ trợ, dữ liệu sẽ được tự dđộng lưu lại!',

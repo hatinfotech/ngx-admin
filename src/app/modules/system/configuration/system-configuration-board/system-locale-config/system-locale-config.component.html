@@ -5,7 +5,7 @@
       <nb-card class="small-header popup">
         <nb-card-header>
           <nav>
-            {{ 'System.Config.locale' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+            {{ 'System.Config.locale' | translate:{definition: '', action: cms.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
           </nav>
         </nb-card-header>
         <nb-card-body>
@@ -15,7 +15,7 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Locale'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.name')} | headtitlecase }}
                       (*)</span></label>
                   <nb-select size="medium" formControlName="Locale" fullWidth>
                     <nb-option value="vi-VN">Việt Name (vi)</nb-option>
@@ -26,7 +26,7 @@
               <div class="col-sm-6">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Timezone'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.value' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.value')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.value')} | headtitlecase }}
                       (*)</span></label>
                   <ngx-select2 [data]="tz" formControlName="Timezone" [select2Option]="select2OptionTimezone">
                   </ngx-select2>

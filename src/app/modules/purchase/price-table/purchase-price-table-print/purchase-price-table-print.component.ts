@@ -21,13 +21,13 @@ export class PurchasePriceTablePrintComponent extends DataManagerPrintComponent<
   env = environment;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<PurchasePriceTablePrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {

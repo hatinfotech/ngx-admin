@@ -16,51 +16,51 @@ export class CollaboratorPublisherComponent extends BaseComponent {
   tabs: any[];
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<CollaboratorPublisherComponent>,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   async init() {
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.tabs = [
       {
-        title: this.commonService.translateText('Common.summary'),
+        title: this.cms.translateText('Common.summary'),
         route: '/collaborator/publisher/dashboard',
         icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Collaborator.Page.label'),
+        title: this.cms.translateText('Collaborator.Page.label'),
         route: '/collaborator/publisher/subscription-page/list',
         // icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
       {
-        title: this.commonService.translateText('Collaborator.Product.label'),
+        title: this.cms.translateText('Collaborator.Product.label'),
         route: '/collaborator/publisher/product/list',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Collaborator.Order.label'),
+        title: this.cms.translateText('Collaborator.Order.label'),
         route: '/collaborator/publisher/order/list',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Collaborator.Commission.label'),
+        title: this.cms.translateText('Collaborator.Commission.label'),
         route: '/collaborator/publisher/commission/list',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Collaborator.Award.label'),
+        title: this.cms.translateText('Collaborator.Award.label'),
         route: '/collaborator/publisher/award/list',
         // icon: 'pie-chart',
       },
       {
-        title: this.commonService.translateText('Collaborator.PaymentCommission.paymentLabel'),
+        title: this.cms.translateText('Collaborator.PaymentCommission.paymentLabel'),
         route: '/collaborator/publisher/commission-payment/list',
         // icon: 'pie-chart',
       },

@@ -98,7 +98,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   };
 
   select2OptionForParam = {
-    placeholder: this.commonService.translateText('Common.param'),
+    placeholder: this.cms.translateText('Common.param'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -111,7 +111,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
   getSlect2ForConditionData(param: HelpdeskParamModel) {
     const option = {
-      placeholder: this.commonService.translateText('Common.param'),
+      placeholder: this.cms.translateText('Common.param'),
       allowClear: true,
       width: '100%',
       dropdownAutoWidth: true,
@@ -154,10 +154,10 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<HelpdeskRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async init() {
@@ -314,7 +314,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   /** Action Form */
   actionList: HelpdeskActionModel[];
   select2OptionForAction = {
-    placeholder: this.commonService.translateText('Common.param'),
+    placeholder: this.cms.translateText('Common.param'),
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -420,7 +420,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
 
   getSlect2ForActionParameterData(param: HelpdeskActionParamModel) {
     const option = {
-      placeholder: this.commonService.translateText('Common.param'),
+      placeholder: this.cms.translateText('Common.param'),
       allowClear: true,
       width: '100%',
       dropdownAutoWidth: true,

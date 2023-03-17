@@ -4,10 +4,10 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Group.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('AdminProduct.Group.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
           <!-- <nav>
-            {{ 'Sales.PriceReport.title' | translate:{definition: '', action: commonService.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
+            {{ 'Sales.PriceReport.title' | translate:{definition: '', action: cms.translate.instant('Common.' + (this.id && this.id[0] ? 'update' : 'create'))} | headtitlecase }}
             <button nbButton status="danger" hero size="tiny" (click)="goback()" style="float: right;"
               title="{{'Common.close' | translate | headtitlecase}}">
               <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
@@ -30,7 +30,7 @@
               <div class="col-sm-3">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.code' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.code')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.code')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Code"
                     placeholder="{{'Common.code' | translate | headtitlecase}}">
@@ -40,7 +40,7 @@
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
                   <label class="label"><span
                       class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.name')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.name')} | headtitlecase }}
                       (*)</span></label>
                   <input type="text" nbInput fullWidth formControlName="Name"
                     placeholder="{{'Common.name' | translate | headtitlecase}}">
@@ -49,7 +49,7 @@
               <div class="col-sm-12">
                 <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
                   <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}</span><span
-                      class="invalid">{{ 'Form.requireLabel' | translate:{field: commonService.translate.instant('Common.description')} | headtitlecase }}
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.description')} | headtitlecase }}
                       (*)</span></label>
                   <textarea nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}"></textarea>
                 </div>

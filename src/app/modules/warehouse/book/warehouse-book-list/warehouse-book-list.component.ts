@@ -29,26 +29,26 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
 
     this.actionButtonList.map(button => {
       if (button.name === 'add') {
         button.name = 'openbook';
         button.icon = 'book-open';
-        button.label = this.commonService.translateText('Common.openBook');
-        button.title = this.commonService.translateText('Common.openBook');
+        button.label = this.cms.translateText('Common.openBook');
+        button.title = this.cms.translateText('Common.openBook');
         // button.click = () => {};
       }
       if (button.name === 'delete') {
         button.name = 'closebook';
         button.icon = 'lock';
-        button.label = this.commonService.translateText('Common.lockBook');
-        button.title = this.commonService.translateText('Common.lockBook');
+        button.label = this.cms.translateText('Common.lockBook');
+        button.title = this.cms.translateText('Common.lockBook');
         button.click = () => { };
       }
       return button;
@@ -57,13 +57,13 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       {
         name: 'commit',
         status: 'primary',
-        label: this.commonService.translateText('Warehouse.Book.commit', 'head-title'),
+        label: this.cms.translateText('Warehouse.Book.commit', 'head-title'),
         icon: 'lock',
-        title: this.commonService.translateText('Warehouse.Book.commit', 'head-title'),
+        title: this.cms.translateText('Warehouse.Book.commit', 'head-title'),
         size: 'medium',
         disabled: () => this.selectedIds.length === 0,
         click: () => {
-          this.commonService.openDialog(WarehouseBookCommitComponent, {
+          this.cms.openDialog(WarehouseBookCommitComponent, {
             context: {
               inputWarehouseBooks: this.selectedItems,
               onDialogSave: (rs) => {
@@ -96,27 +96,27 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       // pager: this.configPaging(),
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '5%',
         },
         Warehouse: {
-          title: this.commonService.translateText('Common.warehouse'),
+          title: this.cms.translateText('Common.warehouse'),
           type: 'string',
           width: '30%',
         },
         Note: {
-          title: this.commonService.translateText('Common.note'),
+          title: this.cms.translateText('Common.note'),
           type: 'string',
           width: '50%',
         },
         // Commited: {
-        //   title: this.commonService.translateText('Warehouse.Book.commit'),
+        //   title: this.cms.translateText('Warehouse.Book.commit'),
         //   type: 'datetime',
         //   width: '15%',
         // },
         Commited: {
-          title: this.commonService.translateText('Chốt sổ'),
+          title: this.cms.translateText('Chốt sổ'),
           type: 'custom',
           width: '5%',
           renderComponent: SmartTableButtonComponent,
@@ -126,8 +126,8 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
             instance.display = true;
             instance.status = 'danger';
             instance.valueChange.subscribe(value => {
-              instance.label = instance.rowData.Commited ? this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.commonService.translateText('Chưa chốt sổ');
-              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.commonService.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
+              instance.label = instance.rowData.Commited ? this.cms.datePipe.transform(instance.rowData.Commited, 'shortDate') : this.cms.translateText('Chưa chốt sổ');
+              instance.title = instance.rowData.Commited ? ('Chốt sổ đến hết ngày: ' + this.cms.datePipe.transform(instance.rowData.Commited, 'shortDate')) : 'Chưa chốt sổ';
               if (instance.rowData.Commited) {
                 instance.icon = 'lock-outline';
               } else {
@@ -135,7 +135,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
               }
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseBookModel) => {
-              this.commonService.openDialog(DialogFormComponent, {
+              this.cms.openDialog(DialogFormComponent, {
                 context: {
                   title: 'Chốt sổ kho',
                   cardStyle: { width: '377px' },
@@ -179,7 +179,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: commited.toISOString() }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã chốt sổ kho đến ngày ' + this.commonService.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.cms.toastService.show('Đã chốt sổ kho đến ngày ' + this.cms.datePipe.transform(commited.toISOString(), 'short') + ', các chứng từ trước ngày chốt sổ sẽ không thể điều chỉnh được nữa !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -199,7 +199,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
                         formDialogConpoent.startProcessing();
                         await this.apiService.putPromise('/warehouse/books/' + instance.rowData.Code, {}, [{ Code: instance.rowData.Code, Commited: null }]).then(rs => {
                           console.log(rs);
-                          this.commonService.toastService.show('Đã mở chốt sổ kho !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
+                          this.cms.toastService.show('Đã mở chốt sổ kho !', 'Chốt sổ kho', { status: 'success', duration: 15000 });
                           this.refresh();
                           return rs;
                         }).catch(err => {
@@ -217,7 +217,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
           },
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'string',
           width: '15%',
         },
@@ -243,7 +243,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';
       // });
-      if (callback) callback(rs.map(item => ({ ...item, Warehouse: this.commonService.getObjectText(item.Warehouse) })));
+      if (callback) callback(rs.map(item => ({ ...item, Warehouse: this.cms.getObjectText(item.Warehouse) })));
     });
   }
 

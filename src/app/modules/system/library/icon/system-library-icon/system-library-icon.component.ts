@@ -11,7 +11,7 @@ export class SystemLibraryIconComponent implements OnInit {
   evaIcons = [];
   constructor(
     public iconsLibrary: NbIconLibraries,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
     // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     // iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
@@ -26,7 +26,7 @@ export class SystemLibraryIconComponent implements OnInit {
   }
 
   showIconInfo(icon: string, pack?: string) {
-    this.commonService.showDialog('Icon info', `Pack: ${pack}<br>Name: ${icon}<br><span class="tag">&lt;nb-icon icon=&quot;${icon}&quot; pack=&quot;${pack}&quot;&gt;&lt;/nb-icon&gt;</span>`, []);
+    this.cms.showDialog('Icon info', `Pack: ${pack}<br>Name: ${icon}<br><span class="tag">&lt;nb-icon icon=&quot;${icon}&quot; pack=&quot;${pack}&quot;&gt;&lt;/nb-icon&gt;</span>`, []);
   }
 
   icons = {

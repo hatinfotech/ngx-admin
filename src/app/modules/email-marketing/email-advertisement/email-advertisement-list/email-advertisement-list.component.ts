@@ -34,12 +34,12 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -139,7 +139,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
             });
             instance.click.subscribe(async (row: EmailModel) => {
               if (row.State !== 'SENDING') {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Xác nhận',
                     content: 'Bạn có muốn bắt đầu tiến trình gửi mail ?',
@@ -170,7 +170,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
                   },
                 });
               } else {
-                this.commonService.openDialog(ShowcaseDialogComponent, {
+                this.cms.openDialog(ShowcaseDialogComponent, {
                   context: {
                     title: 'Xác nhận',
                     content: 'Bạn có muốn dừng trình gửi mail ?',
@@ -236,7 +236,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
 
   // /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(EmailAdvertisementFormComponent, {
+  //   this.cms.openDialog(EmailAdvertisementFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,
@@ -258,7 +258,7 @@ export class EmailAdvertisementListComponent extends DataManagerListComponent<Em
   // }
 
   openSentStateList(email: EmailModel) {
-    this.commonService.openDialog(EmailSentStatsListComponent, {
+    this.cms.openDialog(EmailSentStatsListComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [email.AddressList],

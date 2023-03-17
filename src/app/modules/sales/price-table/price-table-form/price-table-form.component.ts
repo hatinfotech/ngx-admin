@@ -41,7 +41,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -96,12 +96,12 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   printTemplateList: { id: string, text: string, name: Type<DataManagerPrintComponent<SalesPriceTableModel>> }[] = [
     {
       id: 'PriceTablePrintAsListComponent',
-      text: this.commonService.textTransform(this.commonService.translate.instant('Print.listTemplate'), 'head-title'),
+      text: this.cms.textTransform(this.cms.translate.instant('Print.listTemplate'), 'head-title'),
       name: PriceTablePrintAsListComponent,
     },
     {
       id: 'PriceTablePrintComponent',
-      text: this.commonService.textTransform(this.commonService.translate.instant('Print.gridTemplate'), 'head-title'),
+      text: this.cms.textTransform(this.cms.translate.instant('Print.gridTemplate'), 'head-title'),
       name: PriceTablePrintComponent,
     },
   ];
@@ -126,20 +126,20 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<PriceTableFormComponent>,
     // public currencyPipe: CurrencyPipe,
     public decimalPipe: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ref);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => this.isProcessing,
       hidden: () => false,
@@ -224,7 +224,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
           values: ['Porsche', 'Toyota', 'Ford', 'AAA', 'BBB', 'CCC'],
         },
         valueFormatter: (params: { value: number & string }) => {
-          return this.commonService.getObjectText(params.value);
+          return this.cms.getObjectText(params.value);
         },
       },
       {
@@ -342,7 +342,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   loadList(callback?: (list: PurchasePriceTableDetailModel[]) => void) {
 
     // if (this.gridApi) {
-    //   this.commonService.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
+    //   this.cms.takeUntil('reload-contact-list', 500, () => this.gridApi.setDatasource(this.dataSource));
     // }
 
   }
@@ -767,7 +767,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     // });
     const printTemplate = this.printTemplateList.find((item: { id: string }) => item.id === formItem.get('PrintTemplate').value);
     if (printTemplate) {
-      // this.commonService.openDialog(printTemplate.name, {
+      // this.cms.openDialog(printTemplate.name, {
       //   context: {
       //     title: 'Xem trước',
       //     data: data,
@@ -805,12 +805,12 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
 
     try {
       if (ProductListComponent._dialog.componentRef.location.nativeElement) {
-        this.commonService.resumeDialog(ProductListComponent._dialog, { events: events });
+        this.cms.resumeDialog(ProductListComponent._dialog, { events: events });
       } else {
         throw Error;
       }
     } catch (error) {
-      ProductListComponent._dialog = this.commonService.openDialog(ProductListComponent, {
+      ProductListComponent._dialog = this.cms.openDialog(ProductListComponent, {
         context: events as any,
         closeOnEsc: false,
         closeOnBackdropClick: false,
@@ -836,10 +836,10 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
             choosedProducts = choosedProducts.filter(product => product.Code !== node.data['Product']);
           });
 
-          const masterPriceTableDetails = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel)[]>('/sales/master-price-table-details', { id: choosedProducts.map(p => p.Code), masterPriceTable: this.commonService.getObjectId(formItem.get('MasterSalesPriceTable').value) }));
+          const masterPriceTableDetails = (await this.apiService.getPromise<(SalesMasterPriceTableDetailModel & ProductModel)[]>('/sales/master-price-table-details', { id: choosedProducts.map(p => p.Code), masterPriceTable: this.cms.getObjectId(formItem.get('MasterSalesPriceTable').value) }));
           const masterPriceTableDetailsIndex: { [key: string]: (SalesMasterPriceTableDetailModel & ProductModel) } = {};
           masterPriceTableDetails.forEach(detail => {
-            masterPriceTableDetailsIndex[`${detail.Code}-${this.commonService.getObjectId(detail.WarehouseUnit, 'Code')}`] = detail;
+            masterPriceTableDetailsIndex[`${detail.Code}-${this.cms.getObjectId(detail.WarehouseUnit, 'Code')}`] = detail;
           });
 
           if (choosedProducts.length > 0) {

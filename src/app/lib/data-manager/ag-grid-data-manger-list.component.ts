@@ -172,18 +172,18 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public ref?: NbDialogRef<AgGridDataManagerListComponent<M, F>>,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
   }
 
   /** List init event */
   ngOnInit() {
     super.ngOnInit();
-    this.subcriptions.push(this.commonService.componentChange$.subscribe(info => {
+    this.subcriptions.push(this.cms.componentChange$.subscribe(info => {
       if (info.componentName === this.componentName) {
         this.refreshPendding = true;
       }
@@ -239,7 +239,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   getList(callback: (list: M[]) => void) {
-    this.commonService.takeUntil(this.componentName, 300, () => {
+    this.cms.takeUntil(this.componentName, 300, () => {
       this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
     });
   }
@@ -272,7 +272,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   showFilter(event) {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Tìm kiếm nâng cao',
         content: 'Filter',
@@ -352,7 +352,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   editChoosedItems(): false {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận',
         content: 'Bạn muốn chỉnh sửa các dữ liệu đã chọn hay xoá chúng ?',
@@ -403,7 +403,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   deleteConfirm(ids: string[], callback?: () => void) {
-    this.commonService.openDialog(ShowcaseDialogComponent, {
+    this.cms.openDialog(ShowcaseDialogComponent, {
       context: {
         title: 'Xác nhận xoá dữ liệu',
         content: 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',

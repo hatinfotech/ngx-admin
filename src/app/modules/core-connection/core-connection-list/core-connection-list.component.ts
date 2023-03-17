@@ -44,43 +44,43 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<CoreConnectionListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     // await this.loadCache();
-    await this.commonService.waitForReady();
+    await this.cms.waitForReady();
     this.cycleMap = {
-      MONTHLY: this.commonService.translateText('Common.monthly'),
-      YEARLY: this.commonService.translateText('Common.yearly'),
+      MONTHLY: this.cms.translateText('Common.monthly'),
+      YEARLY: this.cms.translateText('Common.yearly'),
     };
     this.stateList = [
       {
         id: 'ACTIVE',
-        text: this.commonService.translateText('Common.activated'),
+        text: this.cms.translateText('Common.activated'),
       },
       {
         id: 'INACTIVE',
-        text: this.commonService.translateText('Common.inactivated'),
+        text: this.cms.translateText('Common.inactivated'),
       },
       {
         id: 'EXPIREDSOON',
-        text: this.commonService.translateText('Common.expiredSoon'),
+        text: this.cms.translateText('Common.expiredSoon'),
       },
       {
         id: 'OVEREXPIRED',
-        text: this.commonService.translateText('Common.overExpired'),
+        text: this.cms.translateText('Common.overExpired'),
       },
       {
         id: 'EXPIRED',
-        text: this.commonService.translateText('Common.expired'),
+        text: this.cms.translateText('Common.expired'),
       },
     ];
     return super.init().then(rs => {
@@ -89,14 +89,14 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
       this.actionButtonList.unshift({
         type: 'button',
         name: 'generateConnectionString',
-        label: this.commonService.translateText('Tạo chuỗi kết nối'),
+        label: this.cms.translateText('Tạo chuỗi kết nối'),
         icon: 'cloud-upload-outline',
         status: 'danger',
         size: 'medium',
-        title: this.commonService.translateText('Tạo chuỗi kết nối'),
+        title: this.cms.translateText('Tạo chuỗi kết nối'),
         click: () => {
           this.apiService.postPromise(this.apiPath, { generateConnectionString: true }, []).then(rs => {
-            this.commonService.showDialog('Chuỗi kết nối core', rs['data'], [
+            this.cms.showDialog('Chuỗi kết nối core', rs['data'], [
               {
                 label: 'Đóng',
                 status: 'basic',
@@ -119,13 +119,13 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
       this.actionButtonList.unshift({
         type: 'button',
         name: 'generateConnectionString',
-        label: this.commonService.translateText('Thêm kết nối'),
+        label: this.cms.translateText('Thêm kết nối'),
         icon: 'link-2-outline',
         status: 'primary',
         size: 'medium',
-        title: this.commonService.translateText('Thêm kết nối'),
+        title: this.cms.translateText('Thêm kết nối'),
         click: () => {
-          this.commonService.openDialog(DialogFormComponent, {
+          this.cms.openDialog(DialogFormComponent, {
             context: {
               title: 'Kết nối core',
               cardStyle: { width: '450px' },
@@ -152,7 +152,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
                   action: async (form: FormGroup) => {
                     const connectionString = form.get('ConnectionString').value;
                     return this.apiService.postPromise(this.apiPath, { connectByConnectionString: true }, [{ ConnectionString: connectionString }]).then(rs => {
-                      this.commonService.toastService.show('Đã kết nối với core xxx', 'Kết nối core thành công', { status: 'success' });
+                      this.cms.toastService.show('Đã kết nối với core xxx', 'Kết nối core thành công', { status: 'success' });
                     }).catch(err => {
                       console.error(err);
                       return false;
@@ -176,27 +176,27 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         RefCore: {
-          title: this.commonService.translateText('RefCode'),
+          title: this.cms.translateText('RefCode'),
           type: 'string',
           width: '20%',
         },
         RefCoreName: {
-          title: this.commonService.translateText('RefCoreName'),
+          title: this.cms.translateText('RefCoreName'),
           type: 'string',
           width: '20%',
         },
         RefCoreNote: {
-          title: this.commonService.translateText('RefCoreNote'),
+          title: this.cms.translateText('RefCoreNote'),
           type: 'string',
           width: '40%',
         },
         State: {
-          title: this.commonService.translateText('Common.state'),
+          title: this.cms.translateText('Common.state'),
           type: 'custom',
           width: '5%',
           // class: 'align-right',
@@ -207,11 +207,11 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
             instance.display = true;
             instance.status = 'success';
             instance.disabled = this.isChoosedMode;
-            instance.title = this.commonService.translateText('Common.state');
-            instance.label = this.commonService.translateText('Common.state');
+            instance.title = this.cms.translateText('Common.state');
+            instance.label = this.cms.translateText('Common.state');
             instance.valueChange.subscribe(value => {
               const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              instance.label = this.commonService.translateText(processMap?.label);
+              instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
@@ -228,7 +228,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
               delay: 0,
               condition: 'eq',
               select2Option: {
-                placeholder: this.commonService.translateText('Common.state') + '...',
+                placeholder: this.cms.translateText('Common.state') + '...',
                 allowClear: true,
                 width: '100%',
                 dropdownAutoWidth: true,
@@ -245,7 +245,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
                   delay: 0,
                   processResults: (data: any, params: any) => {
                     return {
-                      results: this.stateList.filter(cate => !params.term || this.commonService.smartFilter(cate.text, params.term)),
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
                     };
                   },
                 },
@@ -254,7 +254,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
           },
         },
         Permission: {
-          title: this.commonService.translateText('Common.permission'),
+          title: this.cms.translateText('Common.permission'),
           type: 'custom',
           width: '5%',
           class: 'align-right',
@@ -266,7 +266,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
             instance.status = 'danger';
             instance.style = 'text-align: right';
             instance.class = 'align-right';
-            instance.title = this.commonService.translateText('Common.preview');
+            instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
               // instance.icon = value ? 'unlock' : 'lock';
               // instance.status = value === 'REQUEST' ? 'warning' : 'success';
@@ -274,12 +274,12 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
 
-              this.commonService.openDialog(ResourcePermissionEditComponent, {
+              this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [rowData.Code],
                   note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.commonService.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
+                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
                   // resrouce: rowData,
                   apiPath: this.apiPath,
                 }
@@ -320,22 +320,22 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
     params['changeState'] = processMap?.nextState;
 
     return new Promise(resolve => {
-      this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText(processMap?.confirmText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
-          label: this.commonService.translateText('Common.goback'),
+          label: this.cms.translateText('Common.goback'),
           status: 'primary',
           action: () => {
             resolve(false);
           },
         },
         {
-          label: this.commonService.translateText(processMap?.nextStateLabel),
+          label: this.cms.translateText(processMap?.nextStateLabel),
           status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
           action: async () => {
             this.loading = true;
             return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
               this.loading = false;
-              this.commonService.toastService.show(this.commonService.translateText(processMap?.responseText, { object: this.commonService.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.commonService.translateText(processMap?.responseTitle), {
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
               resolve(true);

@@ -35,7 +35,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
 
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<AccountingObjectCashFlowReportPrintComponent>,
@@ -43,8 +43,8 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(commonService, router, apiService, ref);
-    this.commonService.systemConfigs$.subscribe(systemConfigs => {
+    super(cms, router, apiService, ref);
+    this.cms.systemConfigs$.subscribe(systemConfigs => {
       this.systemConfigs = systemConfigs;
       // this.systemConfigs.LICENSE_INFO.register.companyName
     });

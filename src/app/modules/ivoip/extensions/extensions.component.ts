@@ -22,11 +22,11 @@ export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionMo
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -65,7 +65,7 @@ export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionMo
         description: {
           title: 'Diễn giải',
           type: 'string',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         number_alias: {
           title: 'Alias',

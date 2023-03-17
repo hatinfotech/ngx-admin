@@ -61,11 +61,11 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<CallRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService, ivoipService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
 
   }
 
@@ -194,7 +194,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
 
   onAutoGenrateExtensionClick(index: number): false {
 
-    this.commonService.openDialog(DialogFormComponent, {
+    this.cms.openDialog(DialogFormComponent, {
       context: {
         title: 'Tạo tự động dãy số nội bộ',
         controls: [

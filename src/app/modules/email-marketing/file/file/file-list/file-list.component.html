@@ -2,7 +2,7 @@
 
 <nb-card class="small-header smart-table" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" [ngClass]="{ 'is-drop-over': dragOver }">
     <nb-card-header>
-        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('File.File.title' | translate:{action: '', definition: commonService.translate.instant('Common.list')} | headtitlecase) + '(' + 'File.dragAndDropToUpload' | translate) + ')'" [controls]="actionButtonList"></ngx-card-header>
+        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('File.File.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase) + '(' + 'File.dragAndDropToUpload' | translate) + ')'" [controls]="actionButtonList"></ngx-card-header>
         <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách file (kéo & thả file vào để upload)
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">

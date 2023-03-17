@@ -34,13 +34,13 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<AccBusinessListComponent>,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
@@ -57,36 +57,36 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
     return this.configSetting({
       columns: {
         Code: {
-          title: this.commonService.translateText('Common.code'),
+          title: this.cms.translateText('Common.code'),
           type: 'string',
           width: '10%',
         },
         Name: {
-          title: this.commonService.translateText('Common.name'),
+          title: this.cms.translateText('Common.name'),
           type: 'string',
           width: '15%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Description: {
-          title: this.commonService.translateText('Common.description'),
+          title: this.cms.translateText('Common.description'),
           type: 'string',
           width: '20%',
         },
         DebitAccount: {
-          title: this.commonService.translateText('Accounting.debitAccount'),
+          title: this.cms.translateText('Accounting.debitAccount'),
           type: 'string',
           width: '15%',
         },
         CreditAccount: {
-          title: this.commonService.translateText('Accounting.creditAccount'),
+          title: this.cms.translateText('Accounting.creditAccount'),
           type: 'string',
           width: '15%',
         },
         Type: {
-          title: this.commonService.translateText('Common.type'),
+          title: this.cms.translateText('Common.type'),
           type: 'string',
           width: '10%',
-          // filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Copy: {
           title: 'Copy',
@@ -96,7 +96,7 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
             instance.icon = 'copy';
-            // instance.label = this.commonService.translateText('Common.copy');
+            // instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
             instance.status = 'warning';
             instance.valueChange.subscribe(value => {
@@ -108,7 +108,7 @@ export class AccBusinessListComponent extends ServerDataManagerListComponent<Bus
             });
             instance.click.subscribe(async (row: BusinessModel) => {
 
-              this.commonService.openDialog(AccBusinessFormComponent, {
+              this.cms.openDialog(AccBusinessFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],

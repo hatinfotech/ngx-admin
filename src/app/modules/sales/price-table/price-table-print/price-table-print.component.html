@@ -1,10 +1,10 @@
 <div class="dialog-wrap" #dialogWrap>
   <nb-card *ngFor="let data of this.data" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
     <nb-card-header>
-      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceTableOfPrinting.title' | translate:{definition: '', action: commonService.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Sales.PriceTableOfPrinting.title' | translate:{definition: '', action: cms.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
 
       <!-- <nav>
-        {{'Sales.PriceTable.title' | translate:{action:commonService.translate.instant('Common.preview'), definition:''} | headtitlecase}}
+        {{'Sales.PriceTable.title' | translate:{action:cms.translate.instant('Common.preview'), definition:''} | headtitlecase}}
         <button nbButton status="danger" hero size="tiny" (click)="close()" style="float: right;"
           title="{{'Common.goback' | translate | headtitlecase}}">
           <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
@@ -42,7 +42,7 @@
                   <div class="image" style="background-position: center; background-repeat: no-repeat;"
                     [ngStyle]="{backgroundImage: 'url(\''+detail.FeaturePictureLarge + '?token='+apiService.getAccessToken()+'\')'}">
                   </div>
-                  <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{commonService.getObjectText(detail.Unit)}}</span></div>
+                  <div class="price">{{detail.Price | currency:'VND'}}<span class="unit">1 {{cms.getObjectText(detail.Unit)}}</span></div>
                   <div class="name">{{detail.Name}}</div>
                 </div>
               </div>

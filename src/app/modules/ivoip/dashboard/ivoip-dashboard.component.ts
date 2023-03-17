@@ -14,9 +14,9 @@ export class IvoipDashboardComponent extends BaseComponent implements OnInit {
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
   ) {
-    super(commonService, router, apiService);
+    super(cms, router, apiService);
   }
 
   ngOnInit() {

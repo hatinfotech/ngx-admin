@@ -102,11 +102,11 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<SyncFormComponent>,
     public _http: HttpClient,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
   }
 
@@ -142,12 +142,12 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
 
       // Init socket manager
       const user: User = {
-        id: this.commonService.loginInfo.user.Code,
-        name: this.commonService.loginInfo.user.Name,
-        avatar: this.commonService.loginInfo.user.Avatar,
+        id: this.cms.loginInfo.user.Code,
+        name: this.cms.loginInfo.user.Name,
+        avatar: this.cms.loginInfo.user.Avatar,
       };
 
-      this.socketManager = new WpSyncSocketManager(this.commonService, user);
+      this.socketManager = new WpSyncSocketManager(this.cms, user);
       this.socketManager.init().then(rs => {
         this.socketManager.onConnect().then(rs2 => {
           super.ngOnInit();
@@ -160,7 +160,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   /** Execute api get */
   executeGet(params: any, success: (resources: WpSiteModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeSyncTargets'] = true;
-    this.commonService.getMainSocket().then(mainSocket => {
+    this.cms.getMainSocket().then(mainSocket => {
       super.executeGet(params, async (data) => {
 
         for (let i = 0; i < data.length; i++) {
@@ -173,7 +173,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
             rowCount: null,
             getRows: (getRowParams: IGetRowsParams) => {
               console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
-              // this.commonService.getMainSocket().then(mainSocket => {
+              // this.cms.getMainSocket().then(mainSocket => {
               // const query = { limit: 40, offset: getRowParams.startRow };
               mainSocket.emit<{ id: number, text: string }[]>('wp/get/categories', { siteInfo: siteInfo, limit: 40, offset: getRowParams.startRow }, 30000).then((categories: { id: number, text: string }[]) => {
                 // this.originSiteCategories[data.Code] = categories;
@@ -383,9 +383,9 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       rs.forEach(async originSite => {
 
         const user: User = {
-          id: this.commonService.loginInfo.user.Code,
-          name: this.commonService.loginInfo.user.Name,
-          avatar: this.commonService.loginInfo.user.Avatar,
+          id: this.cms.loginInfo.user.Code,
+          name: this.cms.loginInfo.user.Name,
+          avatar: this.cms.loginInfo.user.Avatar,
         };
 
         originSite.SyncTargets.forEach(async syncTarget => {
@@ -430,9 +430,9 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
       rs.forEach(async originSite => {
 
         const user: User = {
-          id: this.commonService.loginInfo.user.Code,
-          name: this.commonService.loginInfo.user.Name,
-          avatar: this.commonService.loginInfo.user.Avatar,
+          id: this.cms.loginInfo.user.Code,
+          name: this.cms.loginInfo.user.Name,
+          avatar: this.cms.loginInfo.user.Avatar,
         };
 
         originSite.SyncTargets.forEach(async syncTarget => {
@@ -522,9 +522,9 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     if (syncTarget.Resources.some(i => i.id === 'POSTS')) {
 
       const user = {
-        id: this.commonService.loginInfo.user.Code,
-        name: this.commonService.loginInfo.user.Name,
-        avatar: this.commonService.loginInfo.user.Avatar,
+        id: this.cms.loginInfo.user.Code,
+        name: this.cms.loginInfo.user.Name,
+        avatar: this.cms.loginInfo.user.Avatar,
       };
 
       const targetSite = (await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { id: syncTarget.TargetSite }))[0];

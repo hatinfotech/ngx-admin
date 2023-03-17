@@ -31,13 +31,13 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public decimalPipe: DecimalPipe,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -95,7 +95,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
                   const currentItems = pictureList.splice(currentIndex, 1);
                   pictureList.unshift(currentItems[0]);
                 }
-                this.commonService.openDialog(ImagesViewerComponent, {
+                this.cms.openDialog(ImagesViewerComponent, {
                   context: {
                     images: pictureList.map(m => m['OriginImage']),
                     imageIndex: 0,
@@ -103,7 +103,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
                 });
               }
             });
-            instance.title = this.commonService.translateText('click to change main product picture');
+            instance.title = this.cms.translateText('click to change main product picture');
           },
         },
         Product: {
@@ -120,7 +120,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
+                ...this.cms.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
                   placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
                     // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                     return item;
@@ -147,7 +147,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
               delay: 0,
               condition: 'eq',
               select2Option: {
-                ...this.commonService.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
                   placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
                     item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                     return item;
@@ -205,7 +205,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
           },
           onComponentInitFunction: (instance: SmartTableTagsComponent) => {
             instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
-              tag.type && this.commonService.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
+              tag.type && this.cms.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
                 // this.refresh();
               });
             });

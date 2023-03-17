@@ -81,7 +81,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     // private ivoipService: IvoipService,
-    public commonService: CommonService,
+    public cms: CommonService,
     private virtualPhoneService: VirtualPhoneService,
     public translate: TranslateService,
     public router: Router,
@@ -91,7 +91,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // translate.setDefaultLang('en');
     // const browserLang = translate.getBrowserLang();
     // translate.use(browserLang.match(/en|vi/) ? browserLang : 'en');
-    // commonService.langCode$.subscribe(langCode => {
+    // cms.langCode$.subscribe(langCode => {
     //   translate.use(langCode);
     // });
 
@@ -127,16 +127,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.commonService.pushHeaderActionControlList$.subscribe(actionControlList => {
+    this.cms.pushHeaderActionControlList$.subscribe(actionControlList => {
       if (actionControlList && actionControlList.length > 0) {
         this.headerActionControlList = actionControlList;
         // this.headerActionControlListStack.push(actionControlList);
       }
     });
-    this.commonService.popHeaderActionControlList$.subscribe(() => {
+    this.cms.popHeaderActionControlList$.subscribe(() => {
       this.headerActionControlList = [];
     });
-    this.commonService.clearHeaderActionControlList$.subscribe(() => {
+    this.cms.clearHeaderActionControlList$.subscribe(() => {
       this.headerActionControlList = [];
       // this.headerActionControlListStack = [];
     });
@@ -148,7 +148,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
       }
     });
 
-    // this.commonService.loginInfo$.subscribe(loginInfo => {
+    // this.cms.loginInfo$.subscribe(loginInfo => {
     //   if (loginInfo) {
     //     this.user['picture'] = loginInfo.user.Avatar;
     //     this.user['name'] = loginInfo.user.Name;
@@ -180,7 +180,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     //   this.domainList = domainList;
     // });
 
-    // this.commonService.loginInfo$.subscribe(loginInfo => {
+    // this.cms.loginInfo$.subscribe(loginInfo => {
     //   this.notifications$.next([
     //     { name: 'Triet', title: 'Tình hình triển khai tới đâu ròi mọi người', link: '/', picture: loginInfo?.user?.Avatar },
     //     { name: 'Lam', title: 'Báo cáo tính hình nha ae', link: '/', picture: loginInfo?.user?.Avatar },
@@ -224,7 +224,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   changeTheme(themeName: string) {
     // this.themeService.changeTheme(themeName);
-    this.commonService.theme$.next({ theme: themeName });
+    this.cms.theme$.next({ theme: themeName });
   }
 
   collapseMenu() {
@@ -291,6 +291,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
   }
 
   changeLanguage(localeCode: any) {
-    this.commonService.locale$.next({ locale: localeCode });
+    this.cms.locale$.next({ locale: localeCode });
   }
 }

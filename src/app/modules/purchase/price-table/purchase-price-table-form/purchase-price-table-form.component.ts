@@ -31,7 +31,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
 
   env = environment;
 
-  locale = this.commonService.getCurrentLoaleDataset();
+  locale = this.cms.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = { prefix: '', suffix: ' ' + this.locale[15], thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   numberFormat: CurrencyMaskConfig = { prefix: '', suffix: '', thousands: this.locale[13][1], decimal: this.locale[13][0], precision: 0, align: 'right', allowNegative: false };
   // numberFormat = getLocaleNumberFormat('vi', NumberFormatStyle.Decimal);
@@ -90,10 +90,10 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
     public apiService: ApiService,
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
-    public commonService: CommonService,
+    public cms: CommonService,
     public ref: NbDialogRef<PurchasePriceTableFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, commonService);
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -420,7 +420,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
         detail['Tax'] = this.taxList.filter(t => t.Code === detail['Tax'])[0] as any;
       }
     });
-    // this.commonService.openDialog(PurchasePriceTablePrintComponent, {
+    // this.cms.openDialog(PurchasePriceTablePrintComponent, {
     //   context: {
     //     title: 'Xem trước',
     //     data: data,

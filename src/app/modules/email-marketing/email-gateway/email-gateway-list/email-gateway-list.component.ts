@@ -23,11 +23,11 @@ export class EmailGatewayListComponent extends DataManagerListComponent<EmailGat
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -100,7 +100,7 @@ export class EmailGatewayListComponent extends DataManagerListComponent<EmailGat
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: EmailGatewayModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(EmailGatewayFormComponent, {
+  //   this.cms.openDialog(EmailGatewayFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

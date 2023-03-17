@@ -31,7 +31,7 @@ export class NotificationService {
   constructor(
     private angularFireMessaging: AngularFireMessaging,
     public authService: NbAuthService,
-    // public commonService: CommonService,
+    // public cms: CommonService,
     private toastrService: NbToastrService,
     private mobileAppService: MobileAppService,
     private apiService: ApiService,
@@ -53,7 +53,7 @@ export class NotificationService {
         console.log('request notifications permission');
         // this.requestPermission().then(token => {
         //   //Register device
-        //   this.commonService.registerDevice({ pushRegId: token });
+        //   this.cms.registerDevice({ pushRegId: token });
         // });
 
 
@@ -312,7 +312,7 @@ export class NotificationService {
     //       // home page
     //       this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'large-smart-bot');
     //     } else {
-    //       this.commonService.openMobileSidebar();
+    //       this.cms.openMobileSidebar();
     //       this.mobileAppService.openChatRoom({ ChatRoom: notification.Data?.room }, 'small-smart-bot');
     //     }
     //   });
@@ -321,7 +321,7 @@ export class NotificationService {
     // // Activity case
     // if (notification.Type === 'ACTIVITY') {
     //   if (notification?.Action === 'OPENTICKET') {
-    //     this.commonService.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
+    //     this.cms.openTicketForm({ Code: notification?.Data?.ticket, UuidIndex: notification?.Data?.uuid });
     //   }
     // }
 

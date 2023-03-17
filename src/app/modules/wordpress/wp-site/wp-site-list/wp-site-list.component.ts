@@ -27,12 +27,12 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, commonService, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};
@@ -109,7 +109,7 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
             });
             instance.click.subscribe(async (row: WpSiteModel) => {
 
-              this.commonService.openDialog(SyncFormComponent, {
+              this.cms.openDialog(SyncFormComponent, {
                 context: {
                   inputMode: 'dialog',
                   inputId: [row.Code],
@@ -143,7 +143,7 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
 
   /** Implement required */
   // openFormDialplog(ids?: string[], onDialogSave?: (newData: WpSiteModel[]) => void, onDialogClose?: () => void) {
-  //   this.commonService.openDialog(WpSiteFormComponent, {
+  //   this.cms.openDialog(WpSiteFormComponent, {
   //     context: {
   //       inputMode: 'dialog',
   //       inputId: ids,

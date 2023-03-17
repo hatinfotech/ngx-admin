@@ -35,14 +35,14 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
   constructor(
     public apiService: ApiService,
     public router: Router,
-    public commonService: CommonService,
+    public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<ZaloOaFollowerListComponent>,
     public mobileAppService: MobileAppService,
   ) {
-    super(apiService, router, commonService, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
 
   }
 
@@ -52,9 +52,9 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
       this.actionButtonList.unshift({
         name: 'sync',
         status: 'primary',
-        label: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
+        label: this.cms.textTransform(this.cms.translate.instant('Common.sync'), 'head-title'),
         icon: 'sync',
-        title: this.commonService.textTransform(this.commonService.translate.instant('Common.sync'), 'head-title'),
+        title: this.cms.textTransform(this.cms.translate.instant('Common.sync'), 'head-title'),
         size: 'medium',
         disabled: (option) => false,
         hidden: () => false,
@@ -91,10 +91,10 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
           title: 'Name',
           type: 'string',
           width: '75%',
-          filterFunction: (value: string, query: string) => this.commonService.smartFilter(value, query),
+          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
         Chat: {
-          title: this.commonService.translateText('Common.refreshToken'),
+          title: this.cms.translateText('Common.refreshToken'),
           type: 'custom',
           width: '10%',
           renderComponent: SmartTableButtonComponent,
@@ -103,7 +103,7 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
             instance.icon = 'message-circle';
             instance.display = true;
             instance.status = 'primary';
-            instance.title = this.commonService.translateText('Common.refreshToken');
+            instance.title = this.cms.translateText('Common.refreshToken');
             instance.click.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
               if (contact.Details && contact.Details.ZALO_CHAT_ROOM) {
                 this.mobileAppService.openChatRoom({ ChatRoom: contact.Details.ZALO_CHAT_ROOM }).then(f7MessageComponent => {

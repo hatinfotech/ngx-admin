@@ -37,40 +37,40 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   style: string;
 
   constructor(
-    public commonService: CommonService,
+    public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<DataManagerPrintComponent<M>>,
   ) {
-    super(commonService, router, apiService, ref);
+    super(cms, router, apiService, ref);
     this.actionButtonList.unshift({
       name: 'print',
       status: 'primary',
-      label: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       icon: 'printer',
-      title: this.commonService.textTransform(this.commonService.translate.instant('Common.print'), 'head-title'),
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
       size: 'medium',
       disabled: () => false,
       hidden: () => false,
       click: (event?: any, option?: ActionControlListOption) => {
         if (this.data.length > 1) {
-          this.commonService.showDialog(this.commonService.translateText('Common.confirm'), this.commonService.translateText('Print.multiPrintConfirm?'), [
+          this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText('Print.multiPrintConfirm?'), [
             {
-              label: this.commonService.translateText('Common.close'),
+              label: this.cms.translateText('Common.close'),
               status: 'primary',
               action: () => {
 
               },
             },
             {
-              label: this.commonService.translateText('Common.all'),
+              label: this.cms.translateText('Common.all'),
               status: 'danger',
               action: () => {
                 this.print();
               },
             },
             {
-              label: this.commonService.translateText('Common.current'),
+              label: this.cms.translateText('Common.current'),
               status: 'success',
               action: () => {
                 this.print(option?.index);
@@ -109,13 +109,13 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         try {
           this.data = await this.getFormData(this.id);
           if (!this.data || this.data.length === 0) {
-            this.commonService.toastService.show('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
+            this.cms.toastService.show('Không tải được dữ liệu', 'Common.warning', { status: 'warning' });
             this.close();
           }
           for (const item of this.data) {
             if (Array.isArray(item['RelativeVouchers'])) {
               for (const relativeVoucher of item['RelativeVouchers']) {
-                relativeVoucher.type = this.commonService.voucherTypeMap[relativeVoucher.type];
+                relativeVoucher.type = this.cms.voucherTypeMap[relativeVoucher.type];
               }
             }
           }
@@ -183,7 +183,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         data = this.data[index];
         // Todo: restrict only print created voucher  
         // if(!data['Id']) {
-        //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+        //   this.cms.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
         //   console.error('voucher not just created');
         //   return false;
         // }
@@ -259,7 +259,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       data = this.data[index];
       // Todo: restrict only print created voucher  
       // if(!data['Id']) {
-      //   this.commonService.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
+      //   this.cms.toastService.show('Không thể in phiếu chưa được luu', 'Lỗi in phiếu', {status: 'danger'})
       //   console.error('voucher not just created');
       //   return false;
       // }
@@ -341,7 +341,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         console.error('Form Dialog was not defined');
         return;
       }
-      this.commonService.openDialog<DataManagerFormComponent<M>>(this.formDialog || this.formDialog, {
+      this.cms.openDialog<DataManagerFormComponent<M>>(this.formDialog || this.formDialog, {
         context: {
           showLoadinng: true,
           inputMode: 'dialog',
@@ -386,16 +386,16 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       putData[this.idKey] = item[this.idKey];
     }
 
-    this.commonService.showDialog(this.commonService.translateText(nextState.confirmText), nextState.confirmText + ': ' + this.getItemDescription(item), [
+    this.cms.showDialog(this.cms.translateText(nextState.confirmText), nextState.confirmText + ': ' + this.getItemDescription(item), [
       {
-        label: this.commonService.translateText('Common.cancel'),
+        label: this.cms.translateText('Common.cancel'),
         status: 'primary',
         action: () => {
 
         },
       },
       {
-        label: this.commonService.translateText(nextState.confirmLabel),
+        label: this.cms.translateText(nextState.confirmLabel),
         status: nextState.status,
         action: () => {
           this.loading = true;
@@ -415,7 +415,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             if (this.closeAfterStateActionConfirm) {
               this.close();
             }
-            this.commonService.toastService.show(this.commonService.translateText(nextState?.responseText, { object: this.commonService.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.commonService.translateText(nextState?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(nextState?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + this.getItemDescription(item) + '`' }), this.cms.translateText(nextState?.responseTitle), {
               status: 'success',
             });
           }).catch(err => {
@@ -432,7 +432,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
       console.error('Form Dialog was not defined');
       return;
     }
-    this.commonService.openDialog(this.formDialog, {
+    this.cms.openDialog(this.formDialog, {
       context: {
         inputMode: 'dialog',
         inputId: [this.makeId(data)],
@@ -467,7 +467,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.commonService.previewVoucher(this.commonService.getObjectId(relativeVocher.type), relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(this.cms.getObjectId(relativeVocher.type), relativeVocher);
     return false;
   }
 

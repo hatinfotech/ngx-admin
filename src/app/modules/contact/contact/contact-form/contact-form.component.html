@@ -3,7 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.Contact.title' | translate:{definition: '', action: commonService.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.Contact.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
                         [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
@@ -167,7 +167,7 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
-                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.commonService.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.commonService.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.commonService.translateText('Common.znsRequest')}]"></ngx-select2>
+                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.cms.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.cms.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.cms.translateText('Common.znsRequest')}]"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                             </div>
