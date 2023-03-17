@@ -252,7 +252,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   }
 
   private goodsList: ProductSearchIndexModel[] = [];
-  private productSearchIndex: { [key: string]: ProductSearchIndexModel } = {};
+  // private productSearchIndex: { [key: string]: ProductSearchIndexModel } = {};
   private updateGoodsInfoProcessing = false;
   async updateGoodsInfo() {
     this.status = 'Đang tải bảng giá...';
@@ -350,12 +350,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             Keyword: (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase()
           };
           this.goodsList.push(goods);
-          this.productSearchIndex[productSearchIndex.Code] = productSearchIndex;
+          // this.productSearchIndex[`${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`] = productSearchIndex;
 
           if (!this.productMap[productSearchIndex.Code]) this.productMap[productSearchIndex.Code] = productSearchIndex;
           if (!this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit]) this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit] = productSearchIndex;
           if (!this.unitMap[productSearchIndex.UnitSeq]) this.unitMap[productSearchIndex.UnitSeq] = { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq };
           if (!this.findOrderMap[productSearchIndex.ContainerFindOrder]) this.findOrderMap[productSearchIndex.ContainerFindOrder] = productSearchIndex;
+          if (productSearchIndex.BaseUnit == productSearchIndex.Unit) {
+            if (!this.skuBaseUnitMap[(productSearchIndex.Sku || '').toUpperCase()]) this.skuBaseUnitMap[(productSearchIndex.Sku || '').toUpperCase()] = productSearchIndex;
+          }
         }
 
         // offset += 100;
@@ -379,6 +382,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   private unitMap: { [key: string]: ProductUnitModel } = {};
   private productMap: { [key: string]: ProductModel } = {};
   private productUnitMap: { [key: string]: ProductModel } = {};
+  private skuBaseUnitMap: { [key: string]: ProductModel } = {};
   // private findOrderMap: { [key: string]: { Goods: string, Unit: string, UnitLabel: string, Container: string } } = {};
   private findOrderMap: { [key: string]: ProductModel } = {};
   async init() {
@@ -853,7 +857,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                 this.apiService.getPromise<any[]>('/warehouse/goods-in-containers', { id: top10.map(m => m.id), includeAccessNumbers: false }).then(goodsInContainerList => {
                   console.log(goodsInContainerList);
                   for (const goodsInContainer of goodsInContainerList) {
-                    const goods = this.productSearchIndex[`${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`];
+                    // const goods = this.productSearchIndex[`${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`];
+                    const goods = top10.find(f => f.Code === goodsInContainer.Goods && this.cms.getObjectId(f.Unit) === goodsInContainer.Unit && this.cms.getObjectId(f.Container) === goodsInContainer.Container);
                     if (goods) {
                       goods.Inventory = goodsInContainer.Inventory;
                     }
@@ -960,18 +965,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if (!product) {
         if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
           // Search by sku
-          if (this.goodsList) {
-            const products = this.goodsList.filter(f => f.Sku == inputValue.toUpperCase());
-            for (const prod of products) {
-              const productInfo = this.productUnitMap[prod.Code + '-' + prod.Unit];
+          product = this.skuBaseUnitMap[inputValue.toUpperCase()];
+          // if (this.goodsList) {
+          //   const products = this.goodsList.filter(f => f.Sku == inputValue.toUpperCase());
+          //   for (const prod of products) {
+          //     const productInfo = this.productUnitMap[prod.Code + '-' + this.cms.getObjectId(prod.Unit)];
 
-              // Tìm vị trí tương ứng với đơn vị tính cơ bản
-              if (productInfo && this.cms.getObjectId(productInfo.WarehouseUnit) == this.cms.getObjectId(prod.Unit)) {
-                product = prod;
-                break;
-              }
-            }
-          }
+          //     // Tìm vị trí tương ứng với đơn vị tính cơ bản
+          //     if (productInfo && this.cms.getObjectId(productInfo.WarehouseUnit) == this.cms.getObjectId(prod.Unit)) {
+          //       product = prod;
+          //       break;
+          //     }
+          //   }
+          // }
           if (!product) {
             product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
               return rs[0];
@@ -1030,7 +1036,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               tmpcode = tmpcode.substring(unitSeqLength);
               productId = tmpcode;
 
-              product = this.productUnitMap[this.findOrderMap[findOrder].Code + '-' + this.findOrderMap[findOrder].Unit];
+              product = this.productUnitMap[this.findOrderMap[findOrder].Code + '-' + this.cms.getObjectId(this.findOrderMap[findOrder].Unit)];
 
               if (product && unitSeq) {
                 unit = this.unitMap[unitSeq];

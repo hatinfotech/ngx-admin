@@ -5,8 +5,8 @@
  */
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
-  version: '6.4.0.3',
-  // 6.4.0.3:   fix pos order bill print and summary
+  version: '6.4.0.4',
+  // 6.4.0.3:   fix pos search and check inventory
   // 6.4.0.2:   fix price not match with unit
   // 6.4.0.1:   Update POS Module: support multiple payment method
   // 6.3.2.2:   hotupdate speedup POS GUI init
