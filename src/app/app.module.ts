@@ -303,6 +303,8 @@ import { ProductKeywordFormComponent } from './modules/admin-product/keyword/pro
 import { PurchaseProductListComponent } from './modules/purchase/product/purchase-product-list/purchase-product-list.component';
 import { PurchaseProductFormComponent } from './modules/purchase/product/purchase-product-form/purchase-product-form.component';
 import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { WordpressSyncProfileListComponent } from './modules/wordpress/sync-profile/sync-profile-list/sync-profile-list.component';
+import { WordpressSyncProfileFormComponent } from './modules/wordpress/sync-profile/sync-profile-form/sync-profile-form.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -607,6 +609,10 @@ export class DynamicLocaleId extends String {
     // Core connection
     CoreConnectionListComponent,
     CoreConnectionFormComponent,
+
+    // Wordpress
+    WordpressSyncProfileListComponent,
+    WordpressSyncProfileFormComponent,
 
   ],
   imports: [

@@ -15,9 +15,16 @@ import { SortablejsModule } from 'ngx-sortablejs';
 import { SyncFormComponent } from './sync-form/sync-form.component';
 import { SmartTableFilterComponent } from '../../lib/custom-element/smart-table/smart-table.filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { WordpressSyncProfileListComponent } from './sync-profile/sync-profile-list/sync-profile-list.component';
+import { WordpressSyncProfileFormComponent } from './sync-profile/sync-profile-form/sync-profile-form.component';
 
 @NgModule({
-  declarations: [WordpressComponent, WpSiteListComponent, WpSiteFormComponent, SyncFormComponent],
+  declarations: [
+    WordpressComponent,
+    WpSiteListComponent,
+    WpSiteFormComponent,
+    SyncFormComponent,
+  ],
   imports: [
     CommonModule,
     NbTabsetModule,

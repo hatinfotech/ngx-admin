@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuardService } from '../../services/auth-guard.service';
+import { WordpressSyncProfileListComponent } from './sync-profile/sync-profile-list/sync-profile-list.component';
 import { WordpressComponent } from './wordpress.component';
 import { WpSiteFormComponent } from './wp-site/wp-site-form/wp-site-form.component';
 import { WpSiteListComponent } from './wp-site/wp-site-list/wp-site-list.component';

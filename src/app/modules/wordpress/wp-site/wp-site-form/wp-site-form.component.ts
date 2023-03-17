@@ -72,6 +72,8 @@ export class WpSiteFormComponent extends DataManagerFormComponent<WpSiteModel> i
       ApiUsername: [''],
       ApiPassword: [''],
       ApiToken: [''],
+      WooConsumerKey: [''],
+      WooConsumerSecret: [''],
     });
     if (data) {
       newForm.patchValue(data);
