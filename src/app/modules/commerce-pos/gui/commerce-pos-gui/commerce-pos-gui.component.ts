@@ -1411,12 +1411,13 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         const priceControl = existsProduct.get('Price');
         const toMoney = existsProduct.get('ToMoney');
         const accessNumbersContorl = existsProduct.get('AccessNumbers');
-        if (accessNumber && accessNumbersContorl.value) {
-          if (!accessNumbersContorl.value.find(f => f == accessNumber)) {
+        const accessNumbers = accessNumbersContorl.value || [];
+        if (accessNumber) {
+          if (!accessNumbers.find(f => f == accessNumber)) {
             quantityControl.setValue(quantityControl.value + 1);
             toMoney.setValue(quantityControl.value * priceControl.value);
-            if (accessNumber && Array.isArray(accessNumbersContorl.value)) {
-              accessNumbersContorl.setValue([...accessNumbersContorl.value, accessNumber]);
+            if (accessNumber) {
+              accessNumbersContorl.setValue([...accessNumbers, accessNumber]);
             }
             // this.calculateTotal(this.orderForm);
 
