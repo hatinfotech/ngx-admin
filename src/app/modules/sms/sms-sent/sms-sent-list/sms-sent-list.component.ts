@@ -54,153 +54,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
 
   hadRowsSelected = false;
   hadMultiRowSelected = false;
-  actionButtonList: ActionControl[] = [
-    {
-      type: 'text',
-      name: 'search',
-      status: 'default',
-      label: 'Search',
-      icon: 'message-square',
-      title: 'Tìm kiếm',
-      size: 'medium',
-      value: () => {
-        return this.keyword;
-      },
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        // this.refresh();
-        return false;
-      },
-      change: (event, option) => {
-        this.keyword = event.target.value;
-        this.onFilterChange();
-        return false;
-      },
-      typing: (event, option) => {
-        this.keyword = event.target.value;
-        return false;
-      },
-    },
-    // {
-    //   type: 'button',
-    //   name: 'chat',
-    //   status: 'success',
-    //   label: 'Chat',
-    //   icon: 'message-square',
-    //   title: 'Vào phòng chat',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.refresh();
-    //     if (this.selectedItems.length > 0) {
-    //       this.openChatRoom(this.selectedItems[0].ChatRoom);
-    //     }
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'call',
-    //   status: 'primary',
-    //   label: 'Gọi',
-    //   icon: 'phone-call',
-    //   title: 'Gọi cho người được hỗ trợ',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.cms.openMenuSidebar();
-    //     this.mobileAppService.switchScreen('phone');
-    //     // this.refresh();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'warning',
-    //   label: 'Tạo',
-    //   icon: 'file-add',
-    //   title: 'Tạo TICKET mới',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'create',
-    //   status: 'info',
-    //   label: 'Cập nhật',
-    //   icon: 'edit',
-    //   title: 'Cập nhật TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return false;
-    //   },
-    //   click: () => {
-    //     this.editItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'view',
-    //   status: 'success',
-    //   label: 'Xem',
-    //   icon: 'external-link',
-    //   title: 'Xem thông tin TICKET',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected || this.hadMultiRowSelected;
-    //   },
-    //   click: () => {
-    //     // this.createNewItem();
-    //     return false;
-    //   },
-    // },
-    // {
-    //   type: 'button',
-    //   name: 'remove',
-    //   status: 'danger',
-    //   label: 'Huỷ',
-    //   icon: 'close-circle',
-    //   title: 'Huỷ yêu cầu',
-    //   size: 'tiny',
-    //   disabled: () => {
-    //     return !this.hadRowsSelected;
-    //   },
-    //   click: () => {
-    //     // this.reset();
-    //     return false;
-    //   },
-    // },
-    {
-      type: 'button',
-      name: 'refresh',
-      status: 'success',
-      label: 'Refresh',
-      icon: 'sync',
-      title: 'Làm mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
+  actionButtonList: ActionControl[];
 
   keyword: string = '';
 
@@ -237,6 +91,152 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
       .subscribe(theme => {
         this.currentTheme = theme.name;
       });
+
+      this.actionButtonList = [
+        {
+          type: 'text',
+          name: 'search',
+          status: 'default',
+          label: 'Search',
+          icon: 'message-square',
+          title: 'Tìm kiếm',
+          size: 'medium',
+          value: this.keyword,
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            // this.refresh();
+            return false;
+          },
+          change: (event, option) => {
+            this.keyword = event.target.value;
+            this.onFilterChange();
+            return false;
+          },
+          typing: (event, option) => {
+            this.keyword = event.target.value;
+            return false;
+          },
+        },
+        // {
+        //   type: 'button',
+        //   name: 'chat',
+        //   status: 'success',
+        //   label: 'Chat',
+        //   icon: 'message-square',
+        //   title: 'Vào phòng chat',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return !this.hadRowsSelected || this.hadMultiRowSelected;
+        //   },
+        //   click: () => {
+        //     // this.refresh();
+        //     if (this.selectedItems.length > 0) {
+        //       this.openChatRoom(this.selectedItems[0].ChatRoom);
+        //     }
+        //     return false;
+        //   },
+        // },
+        // {
+        //   type: 'button',
+        //   name: 'call',
+        //   status: 'primary',
+        //   label: 'Gọi',
+        //   icon: 'phone-call',
+        //   title: 'Gọi cho người được hỗ trợ',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return false;
+        //   },
+        //   click: () => {
+        //     this.cms.openMenuSidebar();
+        //     this.mobileAppService.switchScreen('phone');
+        //     // this.refresh();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   type: 'button',
+        //   name: 'create',
+        //   status: 'warning',
+        //   label: 'Tạo',
+        //   icon: 'file-add',
+        //   title: 'Tạo TICKET mới',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return false;
+        //   },
+        //   click: () => {
+        //     // this.createNewItem();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   type: 'button',
+        //   name: 'create',
+        //   status: 'info',
+        //   label: 'Cập nhật',
+        //   icon: 'edit',
+        //   title: 'Cập nhật TICKET',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return false;
+        //   },
+        //   click: () => {
+        //     this.editItem();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   type: 'button',
+        //   name: 'view',
+        //   status: 'success',
+        //   label: 'Xem',
+        //   icon: 'external-link',
+        //   title: 'Xem thông tin TICKET',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return !this.hadRowsSelected || this.hadMultiRowSelected;
+        //   },
+        //   click: () => {
+        //     // this.createNewItem();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   type: 'button',
+        //   name: 'remove',
+        //   status: 'danger',
+        //   label: 'Huỷ',
+        //   icon: 'close-circle',
+        //   title: 'Huỷ yêu cầu',
+        //   size: 'tiny',
+        //   disabled: () => {
+        //     return !this.hadRowsSelected;
+        //   },
+        //   click: () => {
+        //     // this.reset();
+        //     return false;
+        //   },
+        // },
+        {
+          type: 'button',
+          name: 'refresh',
+          status: 'success',
+          label: 'Refresh',
+          icon: 'sync',
+          title: 'Làm mới',
+          size: 'medium',
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            this.refresh();
+            return false;
+          },
+        },
+      ];
 
     this.loadList();
 

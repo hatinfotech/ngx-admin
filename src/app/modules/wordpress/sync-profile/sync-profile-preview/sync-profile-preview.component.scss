@@ -1,0 +1,15 @@
+.task-table {
+    border-left: 1px solid var(--ck-color-shadow-inner);
+    border-top: 1px solid var(--ck-color-shadow-inner);
+    td, th {
+        border-right: 1px solid var(--ck-color-shadow-inner);
+        border-bottom: 1px solid var(--ck-color-shadow-inner);
+        padding: 0.5rem;
+    }
+    .task {
+        cursor: pointer;
+    }
+    .task.active, .task:hover {
+        background-color: var(--ck-color-button-on-active-shadow);
+    }
+}

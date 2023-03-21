@@ -1351,24 +1351,28 @@ export class CommonService {
   };
 
 
-  makeSelect2AjaxOption(url: string, query: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }): Select2Option {
+  makeSelect2AjaxOption(url: string, query?: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }): Select2Option {
+    query = {
+      ...query,
+      includeIdText: true,
+    }
     return {
       ...this.select2OptionForTemplate,
-      placeholder: option.placeholder || this.select2OptionForTemplate.placeholder,
+      placeholder: option?.placeholder || this.select2OptionForTemplate?.placeholder || null,
       ajax: {
         delay: 300,
         data: function (params: Select2QueryOptions & AnyProps) {
           return {
             ...params,
             offset: params.offset || 0,
-            limit: params.limit || option.limit || 10
+            limit: params?.limit || option?.limit || 10
           };
         },
         transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
           console.log(settings);
           const params = settings.data;
           const offset = settings.data['offset'];
-          const limit = option.limit || settings.data['limit'];
+          const limit = option?.limit || settings.data['limit'];
           this.apiService.getObservable(url, { ...query, 'search': params['term'], offset, limit }).pipe(
             map((res) => {
               const total = +res.headers.get('x-total-count');

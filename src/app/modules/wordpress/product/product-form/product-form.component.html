@@ -3,18 +3,18 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('WP Sync Profile' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('WP Product' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body style="overflow: hidden;">
           <div [formGroup]="formItem">
             <div class="row">
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="Sites" label="Sites" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <ngx-select2 formControlName="Sites" [select2Option]="select2OptionForSites" [data]="groupList">
                   </ngx-select2>
                 </ngx-form-group>
               </div>
-              <!-- <div class="col-sm-6">
+              <div class="col-sm-6">
                 <ngx-form-group [formGroup]="formItem" name="ProductGroups" label="Nhóm sản phẩm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
                   <nb-checkbox class="form-group-icon-control" formControlName="IsNotInGroups" nbTooltip="Ngoài trừ các nhóm này"></nb-checkbox>
                   <ngx-select2 class="form-group-input-control" formControlName="ProductGroups" [select2Option]="select2OptionForGroups" [data]="groupList"></ngx-select2>
@@ -38,7 +38,7 @@
                     <nb-icon pack="eva" icon="download-outline"></nb-icon>Nạp danh sách sản phẩm theo cấu hình
                   </button>
                 </div>
-              </div> -->
+              </div>
             </div>
             <label class="label">{{'Danh sách sản phẩm sẽ được đồng bộ' | translate | headtitlecase}}</label>
             <div class="ag-grid-wrap" style="height: 500px;">

@@ -90,7 +90,7 @@ export class CollaboratorAdvanceStrategyListComponent extends ServerDataManagerL
               },
             }
           },
-          value: () => this.collaboratorService.currentpage$.value,
+          value: this.collaboratorService.currentpage$.value,
           change: (value: any, option: any) => {
             this.onChangePage(value);
           },

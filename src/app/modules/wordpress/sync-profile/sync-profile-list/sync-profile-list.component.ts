@@ -9,6 +9,7 @@ import { AccBankModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { WordpressSyncProfileFormComponent } from '../sync-profile-form/sync-profile-form.component';
+import { WordpressSyncProfilePreviewComponent } from '../sync-profile-preview/sync-profile-preview.component';
 
 @Component({
   selector: 'ngx-sync-profile-list',
@@ -19,7 +20,7 @@ export class WordpressSyncProfileListComponent extends ServerDataManagerListComp
 
   componentName: string = 'WordpressSyncProfileListComponent';
   formPath = '';
-  apiPath = '/wordpress/wp-sync-profile';
+  apiPath = '/wordpress/wp-sync-profiles';
   idKey = 'Code';
   formDialog = WordpressSyncProfileFormComponent;
 
@@ -61,47 +62,51 @@ export class WordpressSyncProfileListComponent extends ServerDataManagerListComp
         Sites: {
           title: 'Sites',
           type: 'string',
-          width: '20%',
-          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-        },
-        Groups: {
-          title: 'Groups',
-          type: 'string',
           width: '30%',
+          valuePrepareFunction: (cell: any, row) => {
+            return (cell || []).map(m => this.cms.getObjectText(m)).join(', ');
+          }
+        },
+        Progress: {
+          title: 'Tiến trình',
+          type: 'string',
+          width: '40%',
           // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
         },
-        Categoreis: {
-          title: 'Categories',
-          type: 'string',
-          width: '25%',
-        },
-        Schedule: {
-          title: this.cms.translateText('Accounting.debitAccount'),
+        State: {
+          title: 'Phê duyệt',
           type: 'string',
           width: '10%',
         },
-        Copy: {
-          title: 'Copy',
+        Status: {
+          title: 'Trạng thái',
+          type: 'string',
+          width: '10%',
+        },
+        Sync: {
+          title: 'Sync',
           type: 'custom',
           width: '5%',
           renderComponent: SmartTableButtonComponent,
           onComponentInitFunction: (instance: SmartTableButtonComponent) => {
             instance.iconPack = 'eva';
-            instance.icon = 'copy';
+            instance.icon = 'cloud-upload-outline';
             // instance.label = this.cms.translateText('Common.copy');
             instance.display = true;
-            instance.status = 'warning';
+            instance.status = 'danger';
             instance.valueChange.subscribe(value => {
-              // if (value) {
-              //   instance.disabled = false;
-              // } else {
-              //   instance.disabled = true;
-              // }
             });
             instance.click.subscribe(async (row: AccBankModel) => {
-
-             
-
+              // await this.apiService.putPromise<any[]>('/wordpress/wp-sync-profiles/' + instance.rowData.Code, { prepare: true }, [
+              //   {
+              //     Code: instance.rowData.Code,
+              //   }
+              // ]).catch(err => console.log(err));
+              this.cms.openDialog(WordpressSyncProfilePreviewComponent, {
+                context: {
+                  inputId: [instance.rowData.Code],
+                }
+              })
             });
           },
         },

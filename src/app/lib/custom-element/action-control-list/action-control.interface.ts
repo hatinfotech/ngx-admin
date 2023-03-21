@@ -11,7 +11,7 @@ export interface ActionControl {
   title: string;
   size: string;
   select2?: { data?: any[], option?: Select2Option };
-  value?: () => any;
+  value?: any;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
   click: (event?: any, option?: ActionControlListOption) => void;

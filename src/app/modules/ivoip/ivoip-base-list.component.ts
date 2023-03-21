@@ -46,7 +46,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
       title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',
       select2: { data: this.domainList, option: this.select2OptionForDoaminList },
-      value: () => this.ivoipService.activeDomainUuid,
+      value: this.ivoipService.activeDomainUuid,
       change: (value: any, option: any) => {
         this.onChangeDomain(value);
       },

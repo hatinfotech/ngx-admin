@@ -125,6 +125,7 @@ import { AccountingContraAccountReportComponent } from './modules/accounting/rep
 import { ProductKeywordListComponent } from './modules/admin-product/keyword/product-keyword-list/product-keyword-list.component';
 import { PurchaseProductListComponent } from './modules/purchase/product/purchase-product-list/purchase-product-list.component';
 import { WordpressSyncProfileListComponent } from './modules/wordpress/sync-profile/sync-profile-list/sync-profile-list.component';
+import { WordpressProductListComponent } from './modules/wordpress/product/product-list/product-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1365,6 +1366,14 @@ const routes: Routes = [
     path: 'wordpress/sync-profile/list',
     canActivate: [AuthGuardService],
     component: WordpressSyncProfileListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'wordpress/product/list',
+    canActivate: [AuthGuardService],
+    component: WordpressProductListComponent,
     data: {
       reuse: true,
     },

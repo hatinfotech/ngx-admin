@@ -64,7 +64,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
       title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
       size: 'medium',
       select2: { data: this.webHostingService.hostingList, option: this.webHostingService.hostingListConfig },
-      value: () => this.webHostingService.activeHosting,
+      value: this.webHostingService.activeHosting,
       change: (value: any, option: any) => {
         this.onChangeHosting(value);
       },

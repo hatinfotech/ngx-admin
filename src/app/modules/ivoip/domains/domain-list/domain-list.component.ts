@@ -126,7 +126,7 @@ export class DomainListComponent extends IvoipBaseListComponent<PbxDomainModel> 
       title: this.cms.textTransform(this.cms.translate.instant('Common.selectPbx'), 'head-title'),
       size: 'medium',
       select2: { data: this.pbxList, option: this.pbxListConfig },
-      value: () => this.activePbx,
+      value: this.activePbx,
       change: (value: any, option: any) => {
         this.onChangePbx(value);
       },

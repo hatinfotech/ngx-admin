@@ -1,7 +1,7 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 90%; margin: 0 auto;">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
-      <nb-card class="small-header popup">
+      <nb-card class="small-header popup" [nbSpinner]="loading">
         <nb-card-header>
           <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('WP Sync Profile' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
@@ -40,6 +40,39 @@
                 </div>
               </div> -->
             </div>
+            <div class="row">
+              <div class="col-md-12">
+                <label class="label">{{'Danh sách task' | translate | headtitlecase}}</label>
+                <table style="width: 100%;" class="task-table">
+                  <thead>
+                    <th>STT</th>
+                    <th>Task</th>
+                    <th>Site</th>
+                    <th>Progress</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>State</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                    <th style="text-align: right;">Action</th>
+                  </thead>
+                  <tr class="task" *ngFor="let task of syncTasks; let i=index" (click)="activeTask(task.id)" [ngClass]="{'active': task.id == activeTaskId}">
+                    <td>{{i+1}}</td>
+                    <td>{{task.Code}}</td>
+                    <td>{{task.SiteName}}</td>
+                    <td>{{task.Loaded/task.Total*100 | number:'1.0-0'}}%</td>
+                    <td>{{task.StartTime | date:'short'}}</td>
+                    <td>{{task.EndTime | date:'short'}}</td>
+                    <td>{{task.State}}</td>
+                    <td>{{task.Status}}</td>
+                    <td>{{task.Message}}</td>
+                    <td style="text-align: right;">
+                      <button [disabled]="task.State !== 'PROCESSING'" nbButton status="danger" hero size="small" (click)="changeState(task) && false">STOP</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
             <label class="label">{{'Danh sách sản phẩm sẽ được đồng bộ' | translate | headtitlecase}}</label>
             <div class="ag-grid-wrap" style="height: 500px;">
               <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination" [getRowStyle]="getRowStyle" (cellDoubleClicked)="cellDoubleClicked($event)">
@@ -51,7 +84,7 @@
           <div class="buttons-row" style="text-align: right;">
             <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
             <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
-            <button nbButton status="danger" [disabled]="!form.valid" style="float: left;" hero (click)="sync()">
+            <button nbButton status="danger" [disabled]="!form.valid" style="float: left;" hero (click)="sync() && false">
               <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>{{'Common.sync' | translate | headtitlecase}}
             </button>
           </div>

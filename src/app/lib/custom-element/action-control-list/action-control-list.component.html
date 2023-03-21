@@ -14,10 +14,10 @@
         [nbTooltip]="control.title" nbTooltipPlacement="bottom"
         [disabled]="control.disabled && control.disabled()" [placeholder]="control.title"
         (change)="control.change($event, option)" (keyup)="control.typing($event, option)"
-        (key.enter)="control.change($event, option)" [value]="control.value()">
+        (key.enter)="control.change($event, option)" [(ngModel)]="control.value">
       <ngx-select2 class="action-list-item select2" *ngIf="control.type === 'select2'" [status]="control?.status"
         [nbTooltip]="control.title" nbTooltipPlacement="bottom"
-        [data]="control.select2.data" [value]="control.value()" [select2Option]="control.select2.option"
+        [data]="control.select2.data" [(ngModel)]="control.value" [select2Option]="control.select2.option"
         (selectChange)="control?.change($event, option)">
       </ngx-select2>
     </ng-template>

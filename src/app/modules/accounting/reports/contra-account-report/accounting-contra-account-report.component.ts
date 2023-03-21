@@ -163,7 +163,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
             // data: [{id: '1111', text: 'Tiền mặt'}]
           }
         },
-        value: () => null,
+        value: null,
         change: (value: any, option: any) => {
           this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
           this.refresh();

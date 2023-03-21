@@ -9,7 +9,7 @@ import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, O
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SmartTableAccCurrencyComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
+import { SmartTableAccCurrencyComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableCurrencyEditableComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
@@ -591,11 +591,29 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         };
       }
 
+      // if (column.type === 'currency-editable') {
+      //   column.type = 'custom';
+      //   column.renderComponent = SmartTableCheckboxComponent;
+      //   column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+      //     instance.disabled = !column.editable;
+      //     instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
+      //       if (column.onChange) {
+      //         column.onChange(value, instance.rowData, instance);
+      //       }
+      //     });
+      //   };
+      // }
+
       if (column.type === 'currency-editable') {
         column.type = 'custom';
-        column.renderComponent = SmartTableCheckboxComponent;
-        column.onComponentInitFunction = (instance: SmartTableCheckboxComponent) => {
+        column.renderComponent = SmartTableCurrencyEditableComponent;
+        column.onComponentInitFunction = (instance: SmartTableCurrencyEditableComponent) => {
           instance.disabled = !column.editable;
+          instance.placeholder = column.title;
+          instance.name = key;
+          if (column.delay) {
+            instance.delay = column.delay;
+          }
           instance.valueChange.asObservable().pipe(takeUntil(this.destroy$)).subscribe(value => {
             if (column.onChange) {
               column.onChange(value, instance.rowData, instance);

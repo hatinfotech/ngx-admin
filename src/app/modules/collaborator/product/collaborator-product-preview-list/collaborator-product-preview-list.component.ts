@@ -109,7 +109,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
               },
             }
           },
-          value: () => this.collaboratorService.currentpage$.value,
+          value: this.collaboratorService.currentpage$.value,
           change: (value: any, option: any) => {
             this.onChangePage(value);
           },

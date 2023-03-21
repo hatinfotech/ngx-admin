@@ -18,7 +18,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   protected subcriptions: Subscription[] = [];
   protected destroy$: Subject<void> = new Subject<void>();
-  public reuseDialog = false;
+  @Input() reuseDialog = false;
   public showLoadinng = true;
   public sourceOfDialog: string = null;
   public loading = false;
@@ -139,7 +139,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   handleKeyupEvent(event: KeyboardEvent) {
     if (this.ref instanceof NbDialogRef) {
       if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
-        if(event.key == 'Escape' && this.ref['originalCloseOnEsc'] === true) {
+        if (event.key == 'Escape' && this.ref['originalCloseOnEsc'] === true) {
           this.ref.close();
         }
         return this.onKeyupEvent(event);
@@ -200,6 +200,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         (this.ref as any).hide = () => {
           this.overlayWraper.fadeOut(100);
           this.overlayBackdrop.fadeOut(100);
+          // this.overlayWraper.removeClass('dialog');
           setTimeout(() => {
             dialog.close();
           }, 100);
@@ -216,9 +217,10 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
           const lastBackdrop = $('.cdk-global-overlay-wrapper:last');
           lastBackdrop.after(this.overlayBackdrop);
           this.overlayBackdrop.after(this.overlayWraper);
+          // this.overlayWraper.addClass('dialog');
           this.overlayWraper.fadeIn(100);
           this.overlayBackdrop.fadeIn(100);
-          if (this.onDialogHide) this.onDialogHide();
+          // if (this.onDialogHide) this.onDialogHide();
         };
 
         compoentNativeEle.closest('.cdk-global-overlay-wrapper').addClass('dialog');
@@ -233,11 +235,11 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
 
   close() {
     if (this.ref) {
-      if (this.reuseDialog && (this.ref as any).hide) {
-        (this.ref as any).hide();
-      } else {
-        this.ref.close();
-      }
+      // if (this.reuseDialog && (this.ref as any).hide) {
+      //   (this.ref as any).hide();
+      // } else {
+      this.ref.close();
+      // }
     }
   }
 
@@ -252,7 +254,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       // if (this.reuseDialog && this.ref.hide) {
       //   this.ref.show();
       // } else {
-      this.ref.close();
+      // this.ref.close();
       // }
     }
   }

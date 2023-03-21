@@ -14,16 +14,16 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 
 @Component({
-  selector: 'ngx-sync-profile-form',
-  templateUrl: './sync-profile-form.component.html',
-  styleUrls: ['./sync-profile-form.component.scss']
+  selector: 'ngx-product-form',
+  templateUrl: './product-form.component.html',
+  styleUrls: ['./product-form.component.scss']
 })
-export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<AccBankModel> implements OnInit {
+export class WordpressProductFormComponent extends DataManagerFormComponent<AccBankModel> implements OnInit {
 
-  componentName: string = 'WordpressSyncProfileFormComponent';
-  idKey = 'Code';
+  componentName: string = 'WordpressProductFormComponent';
+  idKey = 'Id';
   baseFormUrl = '';
-  apiPath = '/wordpress/wp-sync-profiles';
+  apiPath = '/wordpress/products';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -33,7 +33,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public cms: CommonService,
-    public ref: NbDialogRef<WordpressSyncProfileFormComponent>,
+    public ref: NbDialogRef<WordpressProductFormComponent>,
     public themeService: NbThemeService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
@@ -604,6 +604,6 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
   }
 
   sync() {
-
+    
   }
 }

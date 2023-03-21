@@ -1,7 +1,7 @@
 import { IdTextModel } from './../../../../models/common.model';
 import { ProductUnitModel } from './../../../../models/product.model';
 import { AdminProductService } from './../../admin-product.service';
-import { Component, OnInit, EventEmitter, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, ElementRef, ViewChild, AfterViewInit, Input, OnDestroy } from '@angular/core';
 import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel, ProductGroupModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -32,7 +32,7 @@ import { Ng2SmartTableComponent } from 'ng2-smart-table';
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
 })
-export class ProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit, AfterViewInit {
+export class ProductListComponent extends ServerDataManagerListComponent<ProductModel> implements OnInit, AfterViewInit, OnDestroy {
 
   componentName: string = 'ProductListComponent';
   formPath = '/admin-product/product/form';
@@ -40,7 +40,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   idKey: string | string[] = 'Code';
   formDialog = ProductFormComponent;
 
-  reuseDialog = true;
+  @Input() reuseDialog = true;
   static _dialog: NbDialogRef<ProductListComponent>;
 
   // Smart table
@@ -59,6 +59,8 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
 
   // private smartTable: Ng2SmartTableComponent;
 
+  @Input() pagingConfig: { display: boolean, perPage: number }
+
   constructor(
     public apiService: ApiService,
     public router: Router,
@@ -70,6 +72,21 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
     public adminProductService: AdminProductService,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
+  }
+
+  ngOnDestroy(): void {
+      super.ngOnDestroy();
+  }
+
+  /** Config for paging */
+  protected configPaging() {
+    if (this.pagingConfig) {
+      return {
+        ...super.configPaging(),
+        ...this.pagingConfig,
+      };
+    }
+    return super.configPaging();
   }
 
   async loadCache() {

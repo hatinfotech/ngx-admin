@@ -64,88 +64,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   hadRowsSelected = false;
   hadMultiRowSelected = false;
   processing = false;
-  actionButtonList: ActionControl[] = [
-    {
-      type: 'text',
-      name: 'search',
-      status: 'primary',
-      label: 'Search',
-      icon: 'message-square',
-      title: 'Tìm kiếm',
-      size: 'medium',
-      value: () => {
-        return this.keyword;
-      },
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        // this.refresh();
-        return false;
-      },
-      change: (event, option) => {
-        this.keyword = event.target.value;
-        this.onFilterChange();
-        return false;
-      },
-      typing: (event, option) => {
-        this.keyword = event.target.value;
-        return false;
-      },
-    },
-    {
-      type: 'button',
-      name: 'create',
-      status: 'primary',
-      label: 'Tiếp nhận yêu cầu',
-      iconPack: 'ion',
-      icon: 'pricetags',
-      title: 'Tạo TICKET mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.createNewItem();
-        return false;
-      },
-    },
-    // {
-    //   type: 'button',
-    //   name: 'getLostTicket',
-    //   status: 'danger',
-    //   label: 'Lấy yêu cầu nhỡ',
-    //   icon: 'download',
-    //   title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
-    //   size: 'medium',
-    //   disabled: () => {
-    //     return this.processing;
-    //   },
-    //   click: () => {
-    //     this.processing = true;
-    //     this.fetchLostTicketByCallLogs().then(rs => {
-    //       this.processing = false;
-    //     });
-    //     return false;
-    //   },
-    // },
-    {
-      type: 'button',
-      name: 'refresh',
-      status: 'success',
-      // label: 'Refresh',
-      icon: 'sync',
-      title: 'Làm mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
+  actionButtonList: ActionControl[];
 
   keyword: string = '';
 
@@ -202,6 +121,87 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
 
     this.getUserActivity(this.type);
     this.getOrdersChartData('week');
+
+    this.actionButtonList = [
+      {
+        type: 'text',
+        name: 'search',
+        status: 'primary',
+        label: 'Search',
+        icon: 'message-square',
+        title: 'Tìm kiếm',
+        size: 'medium',
+        value: this.keyword,
+        disabled: () => {
+          return false;
+        },
+        click: () => {
+          // this.refresh();
+          return false;
+        },
+        change: (event, option) => {
+          this.keyword = event.target.value;
+          this.onFilterChange();
+          return false;
+        },
+        typing: (event, option) => {
+          this.keyword = event.target.value;
+          return false;
+        },
+      },
+      {
+        type: 'button',
+        name: 'create',
+        status: 'primary',
+        label: 'Tiếp nhận yêu cầu',
+        iconPack: 'ion',
+        icon: 'pricetags',
+        title: 'Tạo TICKET mới',
+        size: 'medium',
+        disabled: () => {
+          return false;
+        },
+        click: () => {
+          this.createNewItem();
+          return false;
+        },
+      },
+      // {
+      //   type: 'button',
+      //   name: 'getLostTicket',
+      //   status: 'danger',
+      //   label: 'Lấy yêu cầu nhỡ',
+      //   icon: 'download',
+      //   title: 'Lấy các yêu cầu từ cuộc gọi nhỡ',
+      //   size: 'medium',
+      //   disabled: () => {
+      //     return this.processing;
+      //   },
+      //   click: () => {
+      //     this.processing = true;
+      //     this.fetchLostTicketByCallLogs().then(rs => {
+      //       this.processing = false;
+      //     });
+      //     return false;
+      //   },
+      // },
+      {
+        type: 'button',
+        name: 'refresh',
+        status: 'success',
+        // label: 'Refresh',
+        icon: 'sync',
+        title: 'Làm mới',
+        size: 'medium',
+        disabled: () => {
+          return false;
+        },
+        click: () => {
+          this.refresh();
+          return false;
+        },
+      },
+    ];
 
     this.loadList();
 
