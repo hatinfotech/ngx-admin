@@ -51,6 +51,7 @@
                     <th>Progress</th>
                     <th>Start Time</th>
                     <th>End Time</th>
+                    <th>Executor</th>
                     <th>State</th>
                     <th>Status</th>
                     <th>Message</th>
@@ -63,6 +64,7 @@
                     <td>{{task.Loaded/task.Total*100 | number:'1.0-0'}}%</td>
                     <td>{{task.StartTime | date:'short'}}</td>
                     <td>{{task.EndTime | date:'short'}}</td>
+                    <td>{{task.ExecutorName}}</td>
                     <td>{{task.State}}</td>
                     <td>{{task.Status}}</td>
                     <td>{{task.Message}}</td>

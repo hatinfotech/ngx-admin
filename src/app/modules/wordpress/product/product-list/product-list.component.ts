@@ -107,11 +107,52 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                   return;
                 }
 
+                const unitType = await new Promise<string>((resolve) => {
+                  this.cms.showDialog('Import theo đơn vị tính', 'Bạn muốn import tất cả đvt hay chỉ đơn vị tính cơ bản hoặc đvt đầu tiên ?', [
+                    {
+                      label: 'Trở về',
+                      status: 'basic',
+                      action: () => {
+                        resolve(null);
+                      }
+                    },
+                    {
+                      label: 'Tất cả',
+                      status: 'danger',
+                      action: () => {
+                        resolve('all');
+                      }
+                    },
+                    {
+                      label: 'ĐVT Cơ bản',
+                      status: 'info',
+                      action: () => {
+                        resolve('base');
+                      }
+                    },
+                    {
+                      label: 'ĐVT đầu tiên',
+                      status: 'primary',
+                      action: () => {
+                        resolve('first');
+                      }
+                    },
+                  ], () => {
+                    resolve(null);
+                  });
+                });
+
+                if (!unitType) {
+                  return;
+                }
+
                 const siteProducts = [];
                 const checkDupplicate = {};
                 for (const product of chooseItems) {
                   product.UnitConversions = product.UnitConversions || product.Units;
-                  for (const unit of product.UnitConversions) {
+
+                  if (unitType === 'first') {
+
                     const item = {
                       Site: this.cms.getObjectId(this.workingSite),
                       SiteName: this.cms.getObjectText(this.workingSite),
@@ -120,13 +161,52 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                       Sku: product.Sku,
                       FeaturePicture: product.FeaturePicture,
                       Pictures: product.Pictures,
-                      Unit: this.cms.getObjectId(unit),
-                      UnitName: this.cms.getObjectText(unit),
+                      Unit: this.cms.getObjectId(product.UnitConversions[0]),
+                      UnitName: this.cms.getObjectText(product.UnitConversions[0]),
                     };
                     if (!checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`]) {
                       siteProducts.push(item);
                       checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`] = true;
                     }
+
+                  } else if (unitType === 'base') {
+
+                    const item = {
+                      Site: this.cms.getObjectId(this.workingSite),
+                      SiteName: this.cms.getObjectText(this.workingSite),
+                      Product: product.Code,
+                      Name: product.Name,
+                      Sku: product.Sku,
+                      FeaturePicture: product.FeaturePicture,
+                      Pictures: product.Pictures,
+                      Unit: this.cms.getObjectId(product.WarehouseUnit),
+                      UnitName: this.cms.getObjectText(product.WarehouseUnit),
+                    };
+                    if (!checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`]) {
+                      siteProducts.push(item);
+                      checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`] = true;
+                    }
+
+                  } else {
+
+                    for (const unit of product.UnitConversions) {
+                      const item = {
+                        Site: this.cms.getObjectId(this.workingSite),
+                        SiteName: this.cms.getObjectText(this.workingSite),
+                        Product: product.Code,
+                        Name: product.Name,
+                        Sku: product.Sku,
+                        FeaturePicture: product.FeaturePicture,
+                        Pictures: product.Pictures,
+                        Unit: this.cms.getObjectId(unit),
+                        UnitName: this.cms.getObjectText(unit),
+                      };
+                      if (!checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`]) {
+                        siteProducts.push(item);
+                        checkDupplicate[`${item.Site}-${item.Product}-${item.Unit}`] = true;
+                      }
+                    }
+
                   }
                 }
 
@@ -388,7 +468,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
 
           // // Get ref categories
           if (this.cms.getObjectId(value)) {
-            this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value) }).then(rs => rs.map(m => {
+            this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
               m.text = m.name;
               return m;
             }));
@@ -479,8 +559,16 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
             return row.UnitName;
           }
         },
-        RefCategories: {
+        Categories: {
           title: 'Danh mục',
+          type: 'string',
+          width: '10%',
+          valuePrepareFunction: (cell: any, row) => {
+            return (cell || []).map(m => this.cms.getObjectText(m)).join(', ');
+          }
+        },
+        RefCategories: {
+          title: 'Danh mục WP',
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: any, row) => {

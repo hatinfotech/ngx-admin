@@ -1,5 +1,5 @@
 import { SmartTableDateTimeRangeFilterComponent } from './../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -13,11 +13,13 @@ import { ContactDetailModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-sync-profile-preview',
   templateUrl: './sync-profile-preview.component.html',
-  styleUrls: ['./sync-profile-preview.component.scss']
+  styleUrls: ['./sync-profile-preview.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class WordpressSyncProfilePreviewComponent extends DataManagerFormComponent<AccBankModel> implements OnInit, OnDestroy {
 
@@ -36,6 +38,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
     public cms: CommonService,
     public ref: NbDialogRef<WordpressSyncProfilePreviewComponent>,
     public themeService: NbThemeService,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -547,7 +550,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       {
         headerName: 'Sync',
         field: 'IsSync',
-        width: 90,
+        width: 80,
         filter: 'agTextColumnFilter',
         pinned: 'left',
         cellRenderer: 'ckbCellRenderer',
@@ -609,14 +612,38 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         cellRenderer: 'textRender',
         // pinned: 'right',
       },
-      // {
-      //   headerName: 'Thương hiệu',
-      //   field: 'Brand',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: 'textRender',
-      //   // pinned: 'right',
-      // },
+      {
+        headerName: 'Giá niêm yết',
+        field: 'Price',
+        width: 110,
+        // cellStyle: { justifyContent: 'flex-end' },
+        filter: 'agTextColumnFilter',
+        // cellRenderer: 'textRender',
+        // pinned: 'right',
+        valueFormatter: (cell: ValueFormatterParams) => {
+          return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
+        }
+      },
+      {
+        headerName: 'Giá sale',
+        field: 'SalePrice',
+        width: 110,
+        // cellStyle: { justifyContent: 'flex-end' },
+        filter: 'agTextColumnFilter',
+        // cellRenderer: 'textRender',
+        // pinned: 'right',
+        valueFormatter: (cell: ValueFormatterParams) => {
+          return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
+        }
+      },
+      {
+        headerName: 'Danh mục WP',
+        field: 'RefCategories',
+        width: 150,
+        filter: 'agTextColumnFilter',
+        cellRenderer: 'textRender',
+        // pinned: 'right',
+      },
       // {
       //   headerName: 'ĐVT cơ bản',
       //   field: 'WarehouseUnit',

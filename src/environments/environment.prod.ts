@@ -6,8 +6,9 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.0.1',
-  // 66.5.0.1:   wordpress-product-sync-v1: algorithm v1, wp product, price management
+  version: '6.5.0.3',
+  // 6.5.0.3:   wordpress-product-sync-v1: algorithm v2 fix only sync available units, import base/first/all unit
+  // 6.5.0.1:   wordpress-product-sync-v1: algorithm v1, wp product, price management
   // 6.4.0.4:   hotfix pos not add access number to detail
   // 6.5.0:   wordpress-product-sync-v1
   // 6.4.0.3:   fix pos search and check inventory

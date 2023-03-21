@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 90%; margin: 0 auto;">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 500px; margin: 0 auto;">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
@@ -40,11 +40,11 @@
                 </div>
               </div> -->
             </div>
-            <label class="label">{{'Danh sách sản phẩm sẽ được đồng bộ' | translate | headtitlecase}}</label>
+            <!-- <label class="label">{{'Danh sách sản phẩm sẽ được đồng bộ' | translate | headtitlecase}}</label>
             <div class="ag-grid-wrap" style="height: 500px;">
               <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination" [getRowStyle]="getRowStyle" (cellDoubleClicked)="cellDoubleClicked($event)">
               </ag-grid-angular>
-            </div>
+            </div> -->
           </div>
         </nb-card-body>
         <nb-card-footer>
