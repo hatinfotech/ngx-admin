@@ -18,7 +18,7 @@
       <ngx-select2 class="action-list-item select2" *ngIf="control.type === 'select2'" [status]="control?.status"
         [nbTooltip]="control.title" nbTooltipPlacement="bottom"
         [data]="control.select2.data" [(ngModel)]="control.value" [select2Option]="control.select2.option"
-        (selectChange)="control?.change($event, option)">
+        (selectChange)="control?.change($event, option)" [disabled]="control.disabled && control.disabled()">
       </ngx-select2>
     </ng-template>
     <!-- <ng-content select="ngx-action-control-end"></ng-content> -->

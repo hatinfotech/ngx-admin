@@ -13,13 +13,13 @@ import { ContactDetailModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-sync-profile-preview',
   templateUrl: './sync-profile-preview.component.html',
   styleUrls: ['./sync-profile-preview.component.scss'],
-  providers: [CurrencyPipe]
+  providers: [CurrencyPipe, DatePipe]
 })
 export class WordpressSyncProfilePreviewComponent extends DataManagerFormComponent<AccBankModel> implements OnInit, OnDestroy {
 
@@ -39,6 +39,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
     public ref: NbDialogRef<WordpressSyncProfilePreviewComponent>,
     public themeService: NbThemeService,
     public currencyPipe: CurrencyPipe,
+    public datePipe: DatePipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -494,20 +495,16 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   loadList(callback?: (list: ProductModel[]) => void) {
 
     if (this.gridApi) {
-
-
       let details: any[] = (this.syncTaskDetails || []).map((detail: any) => {
-
         return detail;
       });
       this.gridApi.setRowData(details);
       // this.gridApi.applyTransaction({update: details});
-
-      this.autoSizeAll(false)
-
+      this.autoSizeAll(false);
     }
 
   }
+
   initDataSource() {
     this.dataSource = {
       rowCount: null,
@@ -533,7 +530,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       {
         headerName: '#',
         width: 52,
-        valueGetter: 'node.data.Id',
+        valueGetter: 'node.data.No',
         cellRenderer: 'loadingCellRenderer',
         sortable: false,
         pinned: 'left',
@@ -677,6 +674,17 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         cellRenderer: 'textRender',
       },
       {
+        headerName: 'SyncTime',
+        field: 'SyncTime',
+        width: 100,
+        filter: 'agTextColumnFilter',
+        pinned: 'right',
+        // cellRenderer: 'textRender',
+        valueFormatter: (cell: ValueFormatterParams) => {
+          return cell && cell.value && this.datePipe.transform(cell.value, 'short') || cell?.value;
+        }
+      },
+      {
         headerName: 'Status',
         field: 'Status',
         width: 100,
@@ -698,7 +706,12 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   syncTaskDetails = [];
   async loadSyncTaskDetails(profile?: string) {
     if (this.activeTaskId) {
-      this.syncTaskDetails = await this.apiService.getPromise('/wordpress/sync-task-details', { eq_Task: this.activeTaskId, sort_No: 'asc', limit: 'nolimit', includeIdText: true });
+      this.syncTaskDetails = await this.apiService.getPromise('/wordpress/sync-task-details', {
+        eq_Task: this.activeTaskId,
+        sort_SyncTime: 'desc',
+        limit: 'nolimit',
+        includeIdText: true,
+      });
       this.loadList();
     }
     return true;

@@ -1,4 +1,5 @@
-export class WpSiteModel {
+import { IdTextModel } from './common.model';
+export interface WpSiteModel extends IdTextModel {
   Code?: string;
   Name?: string;
   Description?: string;

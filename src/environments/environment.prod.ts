@@ -6,7 +6,14 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.0.3',
+  version: '6.5.0.11',
+  // 6.5.0.10:   wordpress-product-sync-v1: show SyncTime for sync task details
+  // 6.5.0.9:   wordpress-product-sync-v1: fix load ref categories
+  // 6.5.0.8:   wordpress-product-sync-v1: fix load ref categories
+  // 6.5.0.7:   wordpress-product-sync-v1: fix can not scroll after clear worksite
+  // 6.5.0.6:   wordpress-product-sync-v1: fix can not scroll after clear worksite
+  // 6.5.0.5:   wordpress-product-sync-v1: update regular price and discount price
+  // 6.5.0.4:   wordpress-product-sync-v1: fix reload ref categories when scroll
   // 6.5.0.3:   wordpress-product-sync-v1: algorithm v2 fix only sync available units, import base/first/all unit
   // 6.5.0.1:   wordpress-product-sync-v1: algorithm v1, wp product, price management
   // 6.4.0.4:   hotfix pos not add access number to detail

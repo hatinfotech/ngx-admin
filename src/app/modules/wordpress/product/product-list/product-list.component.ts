@@ -1,3 +1,4 @@
+import { WpSiteModel } from './../../../../models/wordpress.model';
 import { ProductListComponent } from './../../../admin-product/product/product-list/product-list.component';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -68,7 +69,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     super(apiService, router, cms, dialogService, toastService, ref);
   }
 
-  siteList: [];
+  siteList: WpSiteModel[];
 
   // productListDialog: NbDialogRef<ProductListComponent> = null;
 
@@ -76,7 +77,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     // await this.loadCache();
     return super.init().then(async rs => {
 
-      this.siteList = await this.apiService.getPromise('/wordpress/wp-sites', { includeIdText: true });
+      this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'NONE', text: 'Không chọn' }, ...rs]);
 
       this.actionButtonList.unshift({
         name: 'importProducts',
@@ -288,9 +289,22 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                     const categories = form.get('Categories').value;
 
                     if (categories) {
-                      await this.apiService.putPromise<any[]>('/wordpress/products', { id: this.selectedIds }, this.selectedItems.map(m => ({
+
+                      const selectedItems = this.selectedItems;
+                      for (const selectedItem of selectedItems) {
+                        if (!selectedItem.RefCategories) {
+                          selectedItem.RefCategories = [];
+                        }
+                        for (const cate of categories) {
+                          if (!selectedItem.RefCategories.some(s => this.cms.getObjectId(s) == this.cms.getObjectId(cate))) {
+                            selectedItem.RefCategories.push(cate);
+                          }
+                        }
+                      }
+
+                      await this.apiService.putPromise<any[]>('/wordpress/products', { id: this.selectedIds }, selectedItems.map(m => ({
                         Id: m.Id,
-                        RefCategories: categories.map(m => ({ id: m.id, text: m.text })),
+                        RefCategories: m.RefCategories,
                       })));
                       this.refresh();
                     }
@@ -311,7 +325,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                     if (categories) {
                       await this.apiService.putPromise<any[]>('/wordpress/products', { id: this.selectedIds }, this.selectedItems.map(m => ({
                         Id: m.Id,
-                        RefCategories: (m.RefCategories || []).filter(f => categories.some(s => this.cms.getObjectId(s) != this.cms.getObjectId(f))),
+                        RefCategories: (m.RefCategories || []).filter(f => !categories.some(s => this.cms.getObjectId(s) == this.cms.getObjectId(f))),
                       })));
                       this.refresh();
                     }
@@ -374,9 +388,17 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                   }
                 },
                 {
+                  name: 'IncreaseByPercent',
+                  label: 'Tăng giá niêm yết (%)',
+                  placeholder: 'Tăng giá niêm yết (%)',
+                  type: 'text',
+                  initValue: 0,
+                  // focus: true,
+                },
+                {
                   name: 'DiscountByPercent',
-                  label: 'Giảm giá (%)',
-                  placeholder: 'Giảm giá theo %',
+                  label: 'Giảm giá theo niêm yết (%)',
+                  placeholder: 'Giảm giá theo niêm yết (%)',
                   type: 'text',
                   initValue: 0,
                   // focus: true,
@@ -399,6 +421,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
 
 
                     const masterPriceTable = form.get('MasterPriceTable').value;
+                    const increaseByPercent = form.get('IncreaseByPercent').value;
                     const discountByPercent = form.get('DiscountByPercent').value;
                     this.cms.showDialog('Giá giá từ bảng giá', `Bạn có muốn gán giá từ bảng giá ${this.cms.getObjectText(masterPriceTable)}? Giá hiện tại sẽ bị ghi đè !`, [
                       {
@@ -413,7 +436,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                         status: 'danger',
                         action: () => {
                           if (this.cms.getObjectId(this.workingSite) && this.cms.getObjectId(masterPriceTable)) {
-                            this.apiService.putPromise<any[]>('/wordpress/sites/' + this.cms.getObjectId(this.workingSite), { assignMasterPriceTable: this.cms.getObjectId(masterPriceTable), discountByPercent: discountByPercent }, [
+                            this.apiService.putPromise<any[]>('/wordpress/sites/' + this.cms.getObjectId(this.workingSite), { assignMasterPriceTable: this.cms.getObjectId(masterPriceTable), increaseByPercent: increaseByPercent, discountByPercent: discountByPercent }, [
                               {
                                 Code: this.cms.getObjectId(this.workingSite),
                               }
@@ -449,7 +472,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         select2: {
           option: {
             placeholder: 'Chọn site...',
-            allowClear: true,
+            allowClear: false,
             width: '100%',
             dropdownAutoWidth: true,
             minimumInputLength: 0,
@@ -463,23 +486,48 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         value: this.workingSite,
         change: async (value: any, option: any) => {
           // this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
-          this.workingSite = value;
-          this.refresh();
+          this.cms.takeOnce('wordpress_load_rè_categories', 500).then(async () => {
+            if (this.cms.getObjectId(this.workingSite) != this.cms.getObjectId(value) || this.refCategoryList.length == 0) {
+              this.workingSite = value;
+              await this.refresh();
 
-          // // Get ref categories
-          if (this.cms.getObjectId(value)) {
-            this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
-              m.text = m.name;
-              return m;
-            }));
-            console.log(this.refCategoryList);
-          } else {
-            this.refCategoryList = [];
-          }
+              // Get ref categories
+              if (this.cms.getObjectId(value) != 'NONE') {
+                this.loading = true;
+                const toastRef = this.cms.showToast('Đang tải danh mục wordpress ' + this.cms.getObjectText(value), 'Tải danh mục wordpress', { status: 'info', duration: 60000 });
+                this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
+                  m.text = m.name;
+                  return m;
+                })).catch(err => {
+                  this.loading = false;
+                  toastRef.close();
+                  return Promise.reject(err);
+                });
+                this.loading = false;
+                toastRef.close();
+                console.log(this.refCategoryList);
+              } else {
+                this.refCategoryList = [];
+              }
+            }
+          });
+          //  else {
+          //   if (this.cms.getObjectId(value) && this.refCategoryList.length == 0) {
+          //     if (this.cms.getObjectId(value) != 'NONE') {
+          //       this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
+          //         m.text = m.name;
+          //         return m;
+          //       }));
+          //       console.log(this.refCategoryList);
+          //     } else {
+          //       this.refCategoryList = [];
+          //     }
+          //   }
+          // }
 
         },
         disabled: () => {
-          return false;
+          return this.loading;
         },
         click: () => {
           // this.gotoForm();
@@ -543,7 +591,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         Name: {
           title: this.cms.translateText('Common.name'),
           type: 'string',
-          width: '15%',
+          width: '20%',
         },
         RefId: {
           title: 'RefId',
@@ -634,23 +682,23 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
           type: 'string',
           width: '5%',
         },
-        Sync: {
-          title: 'Sync',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'cloud-upload-outline';
-            instance.display = true;
-            instance.status = 'danger';
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.subscribe(async (row: AccBankModel) => {
+        // Sync: {
+        //   title: 'Sync',
+        //   type: 'custom',
+        //   width: '5%',
+        //   renderComponent: SmartTableButtonComponent,
+        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+        //     instance.iconPack = 'eva';
+        //     instance.icon = 'cloud-upload-outline';
+        //     instance.display = true;
+        //     instance.status = 'danger';
+        //     instance.valueChange.subscribe(value => {
+        //     });
+        //     instance.click.subscribe(async (row: AccBankModel) => {
 
-            });
-          },
-        },
+        //     });
+        //   },
+        // },
       },
     });
   }
