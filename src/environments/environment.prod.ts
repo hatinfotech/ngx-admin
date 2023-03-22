@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.0.11',
+  version: '6.5.0.12',
+  // 6.5.0.12:   wordpress-product-sync-v1: live update sync task details
   // 6.5.0.10:   wordpress-product-sync-v1: show SyncTime for sync task details
   // 6.5.0.9:   wordpress-product-sync-v1: fix load ref categories
   // 6.5.0.8:   wordpress-product-sync-v1: fix load ref categories

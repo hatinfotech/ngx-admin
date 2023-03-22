@@ -495,11 +495,52 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   loadList(callback?: (list: ProductModel[]) => void) {
 
     if (this.gridApi) {
-      let details: any[] = (this.syncTaskDetails || []).map((detail: any) => {
-        return detail;
+
+      const addItems = [];
+      const updateItems = [];
+      const removeItems = [];
+      const currentItemsMap = {};
+
+      // Prepare newDataMap 
+      const newDataMap = {};
+      for (const newItem of this.syncTaskDetails) {
+        newDataMap[newItem.Id] = newItem;
+      }
+
+      this.gridApi.forEachNode(async (rowNode, index) => {
+        const rowData = rowNode.data;
+        currentItemsMap[rowData.Id] = rowData;
+        if (newDataMap[rowData.Id]) {
+          updateItems.push(newDataMap[rowData.Id]);
+        } else {
+          removeItems.push(rowData);
+        }
       });
-      this.gridApi.setRowData(details);
-      // this.gridApi.applyTransaction({update: details});
+
+      // Find insert items
+      for (const newItem of this.syncTaskDetails) {
+        if (!currentItemsMap[newItem.Id]) {
+          addItems.push(newItem);
+        }
+      }
+
+      this.gridApi.applyTransaction({ update: updateItems, add: addItems, remove: removeItems });
+      const columnsState = this.gridColumnApi.getColumnState();
+      const syncTimeColState = columnsState.find(f => f.colId === 'SyncTime');
+      if (syncTimeColState) {
+        syncTimeColState.sort = 'desc';
+      }
+      this.gridColumnApi.applyColumnState({
+        state: columnsState,
+        applyOrder: true,
+      });
+
+
+      // let details: any[] = (this.syncTaskDetails || []).map((detail: any) => {
+      //   return detail;
+      // });
+      // this.gridApi.setRowData(details);
+      // // this.gridApi.applyTransaction({update: details});
       this.autoSizeAll(false);
     }
 
