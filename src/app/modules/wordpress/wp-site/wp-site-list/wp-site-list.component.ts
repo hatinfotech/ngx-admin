@@ -1,3 +1,4 @@
+import { DialogFormComponent } from './../../../dialog/dialog-form/dialog-form.component';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { WpSiteModel } from '../../../../models/wordpress.model';
@@ -10,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { retry, catchError } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SyncFormComponent } from '../../sync-form/sync-form.component';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ngx-wp-site-list',
@@ -123,6 +125,87 @@ export class WpSiteListComponent extends DataManagerListComponent<WpSiteModel> i
                 },
               });
 
+            });
+          },
+        },
+        Webhook: {
+          title: 'Webhook',
+          type: 'custom',
+          width: '10%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'settings-outline';
+            instance.label = 'Tạo webhook';
+            instance.display = true;
+            instance.status = 'danger';
+            instance.valueChange.subscribe(value => {
+              // if (value) {
+              //   instance.disabled = false;
+              // } else {
+              //   instance.disabled = true;
+              // }
+            });
+            instance.click.subscribe(async (row: WpSiteModel) => {
+              this.loading = true;
+              try {
+                const results = await this.apiService.putPromise<WpSiteModel>('/wordpress/sites/' + row.Code, { generateWebhookToken: true }, [
+                  {
+                    Code: row.Code,
+                  }
+                ]);
+                this.loading = false;
+                const result = results[0];
+                // this.cms.showDialog('Thông tin webhook', `Webhook: ${row.BaseUrl}\nToken: ${result.WebhookToken}`, []);
+                const domain = this.cms.systemConfigs$?.value?.LICENSE_INFO?.register?.domain[0];
+                const webhook = `https://${domain}/v3/wordpress/webhooks?token=${result.WebhookToken}`;
+                this.cms.openDialog(DialogFormComponent, {
+                  context: {
+                    cardStyle: { width: '500px' },
+                    title: 'Thông tin webhook',
+                    onInit: async (form, dialog) => {
+                      return true;
+                    },
+                    onClose: async (form, dialog) => {
+                      // ev.target.
+                      return true;
+                    },
+                    controls: [
+                      {
+                        name: 'Webhook',
+                        label: 'Webhook',
+                        placeholder: 'Webhook',
+                        type: 'text',
+                        initValue: webhook,
+                        // focus: true,
+                      },
+                    ],
+                    actions: [
+                      {
+                        label: 'Esc - Trở về',
+                        icon: 'back',
+                        status: 'basic',
+                        keyShortcut: 'Escape',
+                        action: async () => { return true; },
+                      },
+                      {
+                        label: 'Copy',
+                        icon: 'generate',
+                        status: 'primary',
+                        // keyShortcut: 'Enter',
+                        action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+                          this.cms.copyTextToClipboard(webhook);
+                          return false;
+                        },
+                      },
+                    ],
+                  },
+                  closeOnEsc: false,
+                  closeOnBackdropClick: false,
+                });
+              } catch (err) {
+                this.loading = false;
+              }
             });
           },
         },

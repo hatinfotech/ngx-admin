@@ -486,7 +486,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         value: this.workingSite,
         change: async (value: any, option: any) => {
           // this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
-          this.cms.takeOnce('wordpress_load_rè_categories', 500).then(async () => {
+          this.cms.takeOnce('wordpress_load_ref_categories', 500).then(async () => {
             if (this.cms.getObjectId(this.workingSite) != this.cms.getObjectId(value) || this.refCategoryList.length == 0) {
               this.workingSite = value;
               await this.refresh();

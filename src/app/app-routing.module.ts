@@ -1,3 +1,4 @@
+import { WordpressPosOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
 import { ProductObjectReferenceListComponent } from './modules/admin-product/product-object-reference/product-object-reference-list/product-object-reference-list.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
@@ -1374,6 +1375,14 @@ const routes: Routes = [
     path: 'wordpress/product/list',
     canActivate: [AuthGuardService],
     component: WordpressProductListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'wordpress/order/list',
+    canActivate: [AuthGuardService],
+    component: WordpressPosOrderListComponent,
     data: {
       reuse: true,
     },
