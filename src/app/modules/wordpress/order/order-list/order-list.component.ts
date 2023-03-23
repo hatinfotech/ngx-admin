@@ -111,6 +111,7 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
           ]);
         }
       });
+
       this.actionButtonList.unshift({
         type: 'button',
         name: 'writetobook',
@@ -145,7 +146,27 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
         }
       });
 
-
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'downloadOrder',
+        status: 'success',
+        label: 'Tải đơn WP',
+        title: 'Tải các đơn hàng trên wordpress',
+        size: 'medium',
+        icon: 'checkmark-square-outline',
+        disabled: () => {
+          return !this.workingSite;
+        },
+        click: () => {
+          this.apiService.putPromise('/wordpress/orders/' + this.cms.getObjectId(this.workingSite), { pullWpOrder: true }, [
+            {
+              Code: this.cms.getObjectId(this.workingSite),
+            }
+          ]).then(rs => {
+            this.refresh();
+          });
+        }
+      });
 
       this.actionButtonList.unshift({
         type: 'select2',

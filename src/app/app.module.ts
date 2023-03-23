@@ -786,6 +786,17 @@ export class DynamicLocaleId extends String {
 })
 export class AppModule {
 
+  static newState: ProcessMap = {
+    state: 'NEW',
+    label: 'Mới',
+    confirmLabel: 'Mới',
+    status: 'success',
+    outline: false,
+    confirmTitle: 'Chuyển sang trạng thái MỚI',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái MỚI',
+    responseTitle: 'Đã chuyển sang trạng thái MỚI',
+    responseText: 'Đã chuyển sang trạng thái mới',
+  };
   static approvedState: ProcessMap = {
     state: 'APPROVED',
     label: 'Common.approved',
@@ -1853,9 +1864,9 @@ export class AppModule {
           AppModule.unrecordedState,
         ],
       },
-      "NOTJUSTAPPROVED": {
-        ...AppModule.notJustApprodedState,
-        state: 'NOTJUSTAPPROVED',
+      "NEW": {
+        ...AppModule.newState,
+        label: 'Đơn mới',
         nextState: 'APPROVED',
         nextStates: [
           AppModule.approvedState,
@@ -1864,8 +1875,8 @@ export class AppModule {
         ],
       },
       "": {
-        ...AppModule.notJustApprodedState,
-        state: 'NOTJUSTAPPROVED',
+        ...AppModule.newState,
+        label: 'Đơn mới',
         nextState: 'APPROVED',
         nextStates: [
           AppModule.approvedState,
