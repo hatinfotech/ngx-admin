@@ -26,7 +26,7 @@ export class WpSiteSyncTaget {
   Active?: boolean;
 }
 
-export interface WpPosOrderModel {
+export interface WpOrderModel {
   [key: string]: any,
   Id?: string;
   RefId?: string;
@@ -105,10 +105,10 @@ export interface WpPosOrderModel {
   ShippingPostCode?: string;
   ShippingCountry?: string;
   ShippingPhone?: string;
-  details?: WpPosOrderDetailModel[];
+  details?: WpOrderDetailModel[];
 }
 
-export interface WpPosOrderDetailModel {
+export interface WpOrderDetailModel {
   [key: string]: any,
   Id?: string;
   RefId?: string;

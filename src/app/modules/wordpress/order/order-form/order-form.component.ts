@@ -1,13 +1,11 @@
-import { ProductUnitModel } from '../../../../models/product.model'
-import { filter, take, takeUntil } from 'rxjs/operators';
-import { SalesMasterPriceTableDetailModel, SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
+import { SalesPriceReportDetailModel, SalesPriceReportModel } from '../../../../models/sales.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { environment } from '../../../../../environments/environment';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
@@ -15,35 +13,64 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
-import { WordpressPosOrderPrintComponent } from '../order-print/order-print.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
-import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
-import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe } from '@angular/common';
-import { WpPosOrderDetailModel, WpPosOrderModel } from '../../../../models/wordpress.model';
+import { WpOrderModel } from '../../../../models/wordpress.model';
+import { ChatRoomModel, ChatRoomMemberModel } from '../../../../models/chat-room.model';
+import { CollaboratorOrderPrintComponent } from '../../../collaborator/order/collaborator-order-print/collaborator-order-print.component';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { WordpressService } from '../../wordpress.service';
 
 @Component({
-  selector: 'ngx-order-form',
+  selector: 'ngx-wordpress-order-form',
   templateUrl: './order-form.component.html',
   styleUrls: ['./order-form.component.scss'],
   providers: [DatePipe]
 })
-export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpPosOrderModel> implements OnInit {
+export class WordpressOrderFormComponent extends DataManagerFormComponent<WpOrderModel> implements OnInit {
 
-  componentName: string = 'WpPosOrderFormComponent';
+  constructor(
+    public activeRoute: ActivatedRoute,
+    public router: Router,
+    public formBuilder: FormBuilder,
+    public apiService: ApiService,
+    public toastrService: NbToastrService,
+    public dialogService: NbDialogService,
+    public cms: CommonService,
+    public ref: NbDialogRef<WordpressOrderFormComponent>,
+    public wordpressService: WordpressService,
+    public adminProductService: AdminProductService,
+    public mobileAppService: MobileAppService,
+  ) {
+    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+
+    /** Append print button to head card */
+    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
+      name: 'print',
+      status: 'primary',
+      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
+      icon: 'printer',
+      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
+      size: 'medium',
+      disabled: () => this.isProcessing,
+      hidden: () => false,
+      click: (event: any, option: ActionControlListOption) => {
+        this.preview(option.form);
+      },
+    });
+  }
+
+  componentName: string = 'WordpressPosOrderFormComponent';
   idKey = 'Code';
   apiPath = '/wordpress/orders';
   baseFormUrl = '/wordpress/order/form';
-  previewAfterCreate = true;
-  printDialog = WordpressPosOrderPrintComponent;
+  listUrl = '/wordpress/order/list';
 
   env = environment;
 
@@ -51,7 +78,6 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   priceCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
   toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
   quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
-
   towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
     digits: 2
@@ -63,283 +89,7 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
 
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
-  unitList: ProductUnitModel[];
-
-
-
-  objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline',
-    title: this.cms.translateText('Common.addNewContact'),
-    status: 'success',
-    states: {
-      '<>': {
-        icon: 'edit-outline',
-        status: 'primary',
-        title: this.cms.translateText('Common.editContact'),
-      },
-      '': {
-        icon: 'plus-square-outline',
-        status: 'success',
-        title: this.cms.translateText('Common.addNewContact'),
-      },
-    },
-    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.cms.getObjectId(formGroup.get('Object').value);
-      this.cms.openDialog(ContactFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          inputId: currentObject ? [currentObject] : null,
-          showLoadinng: true,
-          onDialogSave: (newData: ContactModel[]) => {
-            console.log(newData);
-            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
-            formGroup.get('Object').patchValue(newContact);
-          },
-          onDialogClose: () => {
-
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    },
-  }];
-
-  contactControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline',
-    title: this.cms.translateText('Common.addNewContact'),
-    status: 'success',
-    states: {
-      '<>': {
-        icon: 'edit-outline',
-        status: 'primary',
-        title: this.cms.translateText('Common.editContact'),
-      },
-      '': {
-        icon: 'plus-square-outline',
-        status: 'success',
-        title: this.cms.translateText('Common.addNewContact'),
-      },
-    },
-    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      const currentObject = this.cms.getObjectId(formGroup.get('Contact').value);
-      this.cms.openDialog(ContactFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          inputId: currentObject ? [currentObject] : null,
-          showLoadinng: true,
-          onDialogSave: (newData: ContactModel[]) => {
-            console.log(newData);
-            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
-            formGroup.get('Contact').patchValue(newContact);
-          },
-          onDialogClose: () => {
-
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    },
-  }];
-
-
-  // select2ContactOption = {
-  //   placeholder: 'Chọn liên hệ...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   // multiple: true,
-  //   // tags: true,
-  //   keyMap: {
-  //     id: 'id',
-  //     text: 'text',
-  //   },
-  //   ajax: {
-  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-  //       console.log(settings);
-  //       const params = settings.data;
-  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
-  //         success(rs);
-  //       }).catch(err => {
-  //         console.error(err);
-  //         failure();
-  //       });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       console.info(data, params);
-  //       return {
-  //         results: data.map(item => {
-  //           item['id'] = item['Code'];
-  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-  //           return item;
-  //         }),
-  //       };
-  //     },
-  //   },
-  // };
-
-  uploadConfig = {
-
-  };
-
-  select2SalesPriceReportOption = {
-    placeholder: 'Chọn bảng giá...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Title',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/sales/master-price-tables', { filter_Title: settings.data['term'] ? settings.data['term'] : '', limit: 20 }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['id'] || item['Code'];
-            item['text'] = (item['DateOfApproved'] ? ('[' + this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
-            return item;
-          }),
-        };
-      },
-    },
-  };
-
-  selectPriceReportOption = {
-    placeholder: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + '...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Title',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/sales/price-reports', { filter_Title: params['term'] ? params['term'] : '', sort_Created: 'desc', limit: 20, eq_State: '[ACCEPTANCE,COMPLETE]' });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/sales/price-reports', { filter_Title: settings.data['term'] ? settings.data['term'] : '', sort_Created: 'desc', limit: 20, eq_State: '[ACCEPTANCE,COMPLETE]' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['id'] || item['Code'];
-            item['text'] = item['Code'] + ': ' + (item['text'] || item['Title'] || item['ObjectName']) + ' (' + this.cms.datePipe.transform(item['Reported'], 'short') + ')';
-            return item;
-          }),
-        };
-      },
-    },
-  };
-
-  selectEmployeeOption = {
-    placeholder: this.cms.translateText('Common.employee') + '...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    // multiple: true,
-    // tags: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/contact/contacts', { filter_Name: params['term'] ? params['term'] : '', sort_Name: 'asc', limit: 20, eq_Group: '[EMPLOYEE]' });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/contact/contacts', { filter_Name: settings.data['term'] ? settings.data['term'] : '', sort_Name: 'asc', limit: 20, eq_Group: '[EMPLOYEE]' }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['id'] || item['Code'];
-            item['text'] = item['text'] || item['Name'];
-            return item;
-          }),
-        };
-      },
-    },
-  };
-
-  accountingBusinessList: BusinessModel[] = [];
-  select2OptionForAccountingBusiness = {
-    placeholder: 'Nghiệp vụ kế toán...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    dropdownCssClass: 'is_tags',
-    multiple: true,
-    // maximumSelectionLength: 1,
-    // tags: true,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-  };
-
-  // customIcons: CustomIcon[] = [{
-  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-  //     this.cms.openDialog(ProductFormComponent, {
-  //       context: {
-  //         inputMode: 'dialog',
-  //         // inputId: ids,
-  //         onDialogSave: (newData: ProductModel[]) => {
-  //           console.log(newData);
-  //           // const formItem = formGroupComponent.formGroup;
-  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
-  //           formGroup.get('Product').patchValue(newProduct);
-  //         },
-  //         onDialogClose: () => {
-
-  //         },
-  //       },
-  //       closeOnEsc: false,
-  //       closeOnBackdropClick: false,
-  //     });
-  //   }
-  // }];
+  unitList: (UnitModel & { id?: string, text?: string })[];
 
   customIcons: { [key: string]: CustomIcon[] } = {};
   getCustomIcons(name: string): CustomIcon[] {
@@ -384,18 +134,36 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     }];
   }
 
-  unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.cms.openDialog(ProductUnitFormComponent, {
+  accountingBusinessList: BusinessModel[] = [];
+  select2OptionForAccountingBusiness = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
+  objectControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
           // inputId: ids,
-          showLoadinng: true,
-          onDialogSave: (newData: UnitModel[]) => {
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.cms.translateText('Common.customer') }, { id: 'COMPANY', 'text': this.cms.translateText('Common.company') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
             console.log(newData);
             // const formItem = formGroupComponent.formGroup;
-            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
-            formGroup.get('Unit').patchValue(newUnit);
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
           },
           onDialogClose: () => {
 
@@ -407,94 +175,161 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     }
   }];
 
-  constructor(
-    public activeRoute: ActivatedRoute,
-    public router: Router,
-    public formBuilder: FormBuilder,
-    public apiService: ApiService,
-    public toastrService: NbToastrService,
-    public dialogService: NbDialogService,
-    public cms: CommonService,
-    public ref: NbDialogRef<WordpressPosOrderFormComponent>,
-    public adminProductService?: AdminProductService,
-    public datePipe?: DatePipe
-  ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+  contactControlIcons: CustomIcon[] = [{
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      this.cms.openDialog(ContactFormComponent, {
+        context: {
+          inputMode: 'dialog',
+          // inputId: ids,
+          data: [{ Groups: [{ id: 'CUSTOMER', text: this.cms.translateText('Common.customer') }, { id: 'PERSONAL', 'text': this.cms.translateText('Common.personal') }] }],
+          onDialogSave: (newData: ContactModel[]) => {
+            console.log(newData);
+            // const formItem = formGroupComponent.formGroup;
+            const newContact: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+            formGroup.get('Object').patchValue(newContact);
+            // this.onSelectProduct(formGroup, newContacgt, option.parentForm)
+          },
+          onDialogClose: () => {
 
-    /** Append print button to head card */
-    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-      name: 'print',
-      status: 'primary',
-      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: (event: any, option: ActionControlListOption) => {
-        this.preview([option.form?.value], 'form');
+          },
+        },
+        closeOnEsc: false,
+        closeOnBackdropClick: false,
+      });
+    }
+  }];
+
+  // select2ContactOption = {
+  //   placeholder: 'Chọn liên hệ...',
+  //   allowClear: true,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   // multiple: true,
+  //   // tags: true,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data.map(item => {
+  //           item['id'] = item['Code'];
+  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+  //           return item;
+  //         }),
+  //       };
+  //     },
+  //   },
+  // };
+
+  select2SalesPriceReportOption = {
+    placeholder: 'Chọn bảng giá...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Title',
+    },
+    ajax: {
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
       },
-    });
-    // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-    //   name: 'print',
-    //   status: 'info',
-    //   label: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
-    //   icon: 'link-2',
-    //   title: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
-    //   size: 'medium',
-    //   disabled: () => this.isProcessing,
-    //   hidden: () => false,
-    //   click: (event: any, option: ActionControlListOption) => {
-    //     this.preview(option.form);
-    //   },
-    // });
-  }
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(item => {
+            item['id'] = item['Code'];
+            item['text'] = item['Title'];
+            return item;
+          }),
+        };
+      },
+    },
+  };
+
+  uploadConfig = {
+
+  };
 
   getRequestId(callback: (id?: string[]) => void) {
-    callback(this.inputId);
+    // callback(this.inputId);
+    return super.getRequestId(callback);
   }
 
   select2OptionForProduct = {
-    ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
-      limit: 10,
-      placeholder: 'Chọn hàng hóa/dịch vụ...',
-      prepareReaultItem: (item) => {
-        item.thumbnail = item?.FeaturePicture?.Thumbnail;
-        return item;
-      }
-    }),
-    withThumbnail: true,
-    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    // allowClear: true,
-    // width: '100%',
-    // dropdownAutoWidth: true,
-    // minimumInputLength: 0,
-    // withThumbnail: true,
-    // // tags: false,
-    // keyMap: {
-    //   id: 'Code',
-    //   text: 'Name',
-    // },
-    // ajax: {
-    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-    //     console.log(settings);
-    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
-    //       success(rs);
-    //     }).catch(err => {
-    //       console.error(err);
-    //       failure();
-    //     });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     return {
-    //       results: data.map(product => {
-    //         product.thumbnail = product?.FeaturePicture?.Thumbnail;
-    //         return product;
-    //       })
-    //     };
-    //   },
-    // },
+    placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: false,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+    ajax: {
+      // url: params => {
+      //   return this.apiService.buildApiUrl('/collaborator/product-subscriptions', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/wordpress/products', {
+          includeIdText: true,
+          limit: 40,
+          includeUnit: false,
+          includeSubscribed: true,
+          includePrice: true,
+          'search': params['term'],
+          site: this.wordpressService.currentSite$?.value,
+          sort_SearchRank: 'desc',
+        }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data.map(product => {
+            product['text'] = `${product['text']} - ${product['id']}`;
+            return product;
+          })
+        };
+      },
+    },
   };
 
   select2OptionForUnit = {
@@ -506,6 +341,108 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     keyMap: {
       id: 'Code',
       text: 'Name',
+    },
+  };
+  select2OptionForSite = {
+    placeholder: 'Chọn site...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+  select2OptionForProvince = {
+    placeholder: 'Chọn tỉnh/TP...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      // url: (params, options: any) => {
+      //   return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
+  select2OptionForDistrict = {
+    placeholder: 'Chọn quận/huyện...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        const formGroup = options?.formGroup;
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('Province').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('District').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
     },
   };
 
@@ -535,7 +472,7 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
-    // { id: 'SERVICE', text: 'Dịch vụ' },
+    { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -544,43 +481,15 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     super.ngOnInit();
   }
 
-  async loadCache() {
-    await Promise.all([
-      this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list),
-    ]);
-  }
-
   async init(): Promise<boolean> {
-    /** Load and cache tax list */
-    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
-      tax['id'] = tax.Code;
-      tax['text'] = tax.Name;
-      return tax;
-    });
-    // if (!WpPosOrderFormComponent._taxList) {
-    // } else {
-    //   this.taxList = WpPosOrderFormComponent._taxList;
-    // }
-
-    /** Load and cache unit list */
-    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
-    //   tax['id'] = tax.Code;
-    //   tax['text'] = tax.Name;
-    //   return tax;
-    // });
-    // if (!WpPosOrderFormComponent._unitList) {
-    // } else {
-    //   this.taxList = WpPosOrderFormComponent._taxList;
-    // }
-
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
-
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
         this.id = [];
         this.array.controls.forEach((formItem, index) => {
           formItem.get('Code').setValue('');
+          formItem.get('RelativeVouchers').setValue('');
           formItem.get('Title').setValue('Copy of: ' + formItem.get('Title').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
@@ -588,129 +497,322 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
           });
         });
       }
+
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'click2call',
+        status: 'danger',
+        label: 'Gọi cho khách',
+        icon: 'phone-call-outline',
+        title: 'Gọi cho khách',
+        size: 'medium',
+        click: () => {
+          this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+            {
+              status: 'basic',
+              label: 'Trở về',
+            },
+            {
+              status: 'danger',
+              icon: 'phone-call-outline',
+              label: 'Gọi ngay',
+              action: () => {
+                this.apiService.putPromise(this.apiPath + '/' + this.id[0], { click2call: true }, [{ Code: this.id[0] }]).then(rs => {
+                  console.log(rs);
+                });
+              },
+            }
+          ]);
+          return false;
+        },
+      });
+
+      if (false) this.actionButtonList.unshift({
+        type: 'button',
+        name: 'opentask',
+        status: 'primary',
+        label: 'Chat với CTV Bán hàng',
+        icon: 'message-circle',
+        title: 'Chat với CTV Bán hàng',
+        size: 'medium',
+        click: () => {
+          this.cms.showDialog('Chat với CTV Bán hàng', 'Bạn có muốn chát với CTV Bán hàng không ? hệ thống sẽ tạo task và add CTV Bán hàng liên quan vào !', [
+            {
+              status: 'basic',
+              label: 'Trở về',
+            },
+            {
+              status: 'primary',
+              icon: 'message-circle',
+              label: 'Chat',
+              action: async () => {
+                const voucher = this.array.controls[0].value;
+                let task = voucher.RelativeVouchers?.find(f => f.type == 'CHATROOM');
+                if (task) {
+                  this.cms.openMobileSidebar();
+                  this.mobileAppService.openChatRoom({ ChatRoom: task.id });
+                } else {
+                  // Assign resource to chat room
+                  task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+                    Code: null,
+                    Resources: [
+                      {
+                        ResourceType: 'CLBRTORDER',
+                        Resource: voucher.Code,
+                        Title: voucher.Title,
+                        Date: voucher.DateOfOrder,
+                      }
+                    ]
+                  }]).then(rs => {
+                    if (rs && rs.length > 0) {
+                      // const link = rs[0].Resources[0];
+                      // if (link && link.ChatRoom) {
+
+                      // Add publisher to chat room
+                      this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
+                        ChatRoom: rs[0].Code as any,
+                        Type: 'CONTACT',
+                        RefUserUuid: this.cms.getObjectId(voucher.Publisher),
+                        Name: voucher.PublisherName,
+                        Page: voucher.Page,
+                        RefPlatform: 'PROBOXONE',
+                        RefType: 'PUBLISHER',
+                        id: this.cms.getObjectId(voucher.Publisher),
+                      }]).then(rs2 => {
+
+                        // Connect publisher
+                        this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
+                          Type: 'CONTACT',
+                          Contact: rs2[0].Contact,
+                        }]).then(rs3 => {
+                          this.cms.openMobileSidebar();
+                          this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
+                        });
+
+                      });
+
+                      // }
+                      return { id: rs[0].Code, text: voucher.Title, type: 'TASK' };
+                    }
+                  });
+                }
+              },
+            }
+          ]);
+          return false;
+        },
+      });
+
+      // Add page choosed
+      // this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      //   this.actionButtonList.unshift({
+      //     type: 'select2',
+      //     name: 'pbxdomain',
+      //     status: 'success',
+      //     label: 'Select page',
+      //     icon: 'plus',
+      //     title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
+      //     size: 'medium',
+      //     select2: {
+      //       data: pageList, option: {
+      //         placeholder: 'Chọn trang...',
+      //         allowClear: false,
+      //         width: '100%',
+      //         dropdownAutoWidth: true,
+      //         minimumInputLength: 0,
+      //         keyMap: {
+      //           id: 'id',
+      //           text: 'text',
+      //         },
+      //       }
+      //     },
+      //     value: () => this.collaboratorService.currentpage$.value,
+      //     change: (value: any, option: any) => {
+      //       this.onChangePage(value);
+      //     },
+      //     disabled: () => {
+      //       return false;
+      //     },
+      //     click: () => {
+      //       // this.gotoForm();
+      //       return false;
+      //     },
+      //   });
+      // });
+
       return status;
     });
   }
 
+  /** Override load cache menthod */
+  async loadCache(): Promise<any> {
+    const rs = await super.loadCache();
+    /** Load and cache tax list */
+    this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesPriceReportFormComponent._taxList) {
+    // } else {
+    //   this.taxList = SalesPriceReportFormComponent._taxList;
+    // }
+
+    /** Load and cache unit list */
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
+      tax['id'] = tax.Code;
+      tax['text'] = tax.Name;
+      return tax;
+    });
+    // if (!SalesPriceReportFormComponent._unitList) {
+    // } else {
+    //   this.taxList = SalesPriceReportFormComponent._taxList;
+    // }
+    return rs;
+  }
+
   /** Execute api get */
-  executeGet(params: any, success: (resources: WpPosOrderModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: WpOrderModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
-    params['includeObject'] = true;
     params['includeDetails'] = true;
-    params['includeRelativeVouchers'] = true;
+    params['includeProductUnitList'] = true;
+    params['includeProductPrice'] = true;
     params['useBaseTimezone'] = true;
-    params['includeEmployee'] = true;
-    params['includeUnit'] = true;
+    params['includeRelativeVouchers'] = true;
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
     super.executeGet(params, success, error);
   }
 
-  async formLoad(formData: WpPosOrderModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WpPosOrderModel) => void) {
+  /** Execute api put */
+  executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePut(params, data, success, error);
+  }
+
+  /** Execute api post */
+  executePost(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
+    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    return super.executePost(params, data, success, error);
+  }
+
+  async formLoad(formData: WpOrderModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WpOrderModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
-      if (itemFormData?.Details) {
+      if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         details.clear();
-        for (const detailData of itemFormData.Details) {
-          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
+        itemFormData.Details.forEach(detailData => {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
+          detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
-          this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
-        }
-        // itemFormData.Details.forEach(detail => {
-        // });
+          this.onAddDetailFormGroup(newForm, newDetailFormGroup);
+        });
       }
 
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
       }
-      return;
     });
 
   }
 
-  makeNewFormGroup(data?: WpPosOrderModel): FormGroup {
+  makeNewFormGroup(data?: WpOrderModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
-      Object: ['', Validators.required],
+      Site: { disabled: true, value: this.wordpressService.currentSite$.value },
+      Code: { disabled: false, value: null },
+      Object: [''],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
       ObjectPhone: [''],
       ObjectAddress: [''],
-      ObjectIdentifiedNumber: [''],
-      Recipient: [''],
-      ObjectTaxCode: [''],
-      DirectReceiverName: [''],
       ObjectBankName: [''],
-      ObjectBankCode: [''],
-      Contact: [''],
-      ContactName: [''],
-      ContactPhone: [''],
-      ContactEmail: [''],
-      ContactAddress: [''],
-      ContactIdentifiedNumber: [''],
-      DateOfDelivery: [''],
-      DeliveryAddress: [''],
-      PriceTable: [''],
-      IsObjectRevenue: [false],
-      // PriceReportVoucher: [''],
-      PriceReport: [''],
-      // Employee: [''],
+      ObjectBankAccount: [''],
+      // ObjectIdentifiedNumber: [''],
+      // Contact: [''],
+      // ContactName: [''],
+      // ContactPhone: [''],
+      // ContactEmail: [''],
+      // ContactAddress: [''],
+      // ContactIdentifiedNumber: [''],
+      // ObjectTaxCode: [''],
+      // DirectReceiverName: [''],
+      // PaymentStep: [''],
+      // PriceTable: [''],
+      Shipper: [''],
+      ShipperName: [''],
+      ShipperPhone: [''],
+      ShipperEmail: [''],
+      ShipperAddress: [''],
+      Publisher: [''],
+      PublisherName: [''],
+      PublisherPhone: [''],
+      PublisherEmail: [''],
+      PublisherAddress: [''],
+      Province: ['', Validators.required],
+      District: ['', Validators.required],
+      Ward: ['', Validators.required],
+      DeliveryAddress: ['', Validators.required],
+      DeliveryCost: [null],
+      OriginDeliveryCost: [null],
+      DateOfOrder: [new Date(), Validators.required],
+      // DateOfDelivery: [''],
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
-      DateOfSale: [null, Validators.required],
+      Reported: [''],
+      RequireInvoice: [false],
       _total: [''],
       RelativeVouchers: [''],
-      RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });
     if (data) {
       // data['Code_old'] = data['Code'];
-      if (!((data.DateOfSale as any) instanceof Date)) {
-        data.DateOfSale = new Date(data.DateOfSale) as any;
-      }
+      // newForm.patchValue(data);
       this.patchFormGroupValue(newForm, data);
+      // this.toMoney(newForm);
     } else {
       this.addDetailFormGroup(newForm);
+      newForm.get('Site').enable();
     }
-
-    const titleControl = newForm.get('Title');
-    newForm.get('ObjectName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
-      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Bán hàng: /.test(titleControl.value))) {
-        titleControl.setValue(`Bán hàng: ${objectName}`);
-      }
-    });
-
-    newForm.get('DateOfSale').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
-      if (dateOfSate) {
-        this.cms.lastVoucherDate = dateOfSate;
-      }
-    });
     return newForm;
   }
 
-  patchFormGroupValue = (formGroup: FormGroup, data: WpPosOrderModel) => {
+  patchFormGroupValue = (formGroup: FormGroup, data: WpOrderModel) => {
 
-    if (data) {
-      formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone'];
-      formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
-      data['ObjectPhone'] = null;
-      data['ObjectAddress'] = null;
+    // for (const propName in data) {
+    //   const prop = data[propName];
+    //   if (prop && prop.restricted) {
+    //     formGroup.get(propName)['placeholder'] = data[propName]['placeholder']
+    //     delete (data[propName]);
+    //   }
+    //   // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
+    // }
 
-      formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
-      formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
-      data['ContactPhone'] = null;
-      data['ContactAddress'] = null;
+    this.prepareRestrictedData(formGroup, data);
+    // if (data['ObjectAddress'] && data['ObjectAddress']['restricted']) formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress']['placeholder']; else formGroup.get('ObjectAddress').patchValue(data['ObjectAddress']);
+    // if (data['ObjectEmail'] && data['ObjectEmail']['restricted']) formGroup.get('ObjectEmail')['placeholder'] = data['ObjectEmail']['placeholder']; else formGroup.get('ObjectEmail').patchValue(data['ObjectEmail']);
+    // if (data['ObjectIdentifiedNumber'] && data['ObjectIdentifiedNumber']['restricted']) formGroup.get('ObjectIdentifiedNumber')['placeholder'] = data['ObjectIdentifiedNumber']['placeholder']; else formGroup.get('ObjectIdentifiedNumber').patchValue(data['ObjectAddress']);
+    // // formGroup.get('ObjectAddress')['placeholder'] = data['ObjectAddress'];
+    // // data['ObjectPhone'] = null;
+    // // data['ObjectAddress'] = null;
 
-      formGroup.patchValue(data);
-    }
+    // if (data['ObjectPhone'] && data['ObjectPhone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = data['ObjectPhone']['placeholder']; else formGroup.get('ObjectPhone').patchValue(data['ObjectPhone']);
+    // formGroup.get('ContactPhone')['placeholder'] = data['ContactPhone'];
+    // formGroup.get('ContactAddress')['placeholder'] = data['ContactAddress'];
+    // data['ContactPhone'] = null;
+    // data['ContactAddress'] = null;
+
+    // if (data.Infos?.Description && Array.isArray(data.Infos?.Description)) {
+    //   (data.Infos?.Description as any).pop();
+    // }
+    formGroup.patchValue(data);
     return true;
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: WpPosOrderModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: WpOrderModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -718,9 +820,9 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   }
 
   goback(): false {
-    super.goback();
+    // super.goback();
     if (this.mode === 'page') {
-      this.router.navigate(['/promotion/promotion/list']);
+      this.router.navigate([this.listUrl]);
     } else {
       this.ref.close();
       // this.dismiss();
@@ -732,56 +834,28 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Detail Form */
-  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WpPosOrderDetailModel): FormGroup {
-    let newForm = null;
-    newForm = this.formBuilder.group({
-      SystemUuid: [''],
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      // Id: [''],
       No: [''],
-      Type: ['PRODUCT', Validators.required],
-      Product: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      Description: ['', Validators.required],
-      Quantity: [1, (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      Price: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      Unit: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      // Tax: ['NOTAX', (control: FormControl) => {
-      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
-      //   }
-      //   return null;
-      // }],
+      Type: ['PRODUCT'],
+      Product: [''],
+      Description: [''],
+      Quantity: [1],
+      Price: [0],
+      Unit: [''],
+      // Tax: ['VAT10'],
       ToMoney: [0],
       Image: [[]],
       // Reason: [''],
-      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
-      Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
-      AccessNumbers: [''],
-      // IsDebt: [false],
+      // AccessNumbers: [],
+      // Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
     if (data) {
       newForm.patchValue(data);
-
-      if (data.Product?.Units && data.Product?.Units?.length > 0) {
+      this.toMoney(parentFormGroup, newForm);
+      if (data.Product && data.Product.Units && data.Product.Units.length > 0) {
         newForm['unitList'] = data.Product.Units;
       } else {
         newForm['unitList'] = this.adminProductService.unitList$.value;
@@ -789,19 +863,6 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     } else {
       newForm['unitList'] = this.adminProductService.unitList$.value;
     }
-
-    const imagesFormControl = newForm.get('Image');
-    newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-      if (value) {
-        if (value.Pictures && value.Pictures.length > 0) {
-          imagesFormControl.setValue(value.Pictures);
-        } else {
-          imagesFormControl.setValue([]);
-        }
-      }
-    });
-    newForm['IsManageByAccessNumber'] = data?.Unit['IsManageByAccessNumber'] || false;
-
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -809,23 +870,17 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    const detailsFormArray = this.getDetails(parentFormGroup);
-    detailsFormArray.push(newChildFormGroup);
-    const noFormControl = newChildFormGroup.get('No');
-    if (!noFormControl.value) {
-      noFormControl.setValue(detailsFormArray.length);
-    }
-    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
+    this.getDetails(parentFormGroup).push(newChildFormGroup);
+    this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     this.getDetails(parentFormGroup).removeAt(index);
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
+    this.calulateTotal(parentFormGroup);
     return false;
   }
-  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
-    this.updateInitialFormPropertiesCache(newChildFormGroup);
-    this.toMoney(parentFormGroup, newChildFormGroup, null, index);
+  onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup) {
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
@@ -876,12 +931,61 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ObjectName').setValue(selectedData.Name);
-          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ObjectPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ObjectPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ObjectEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ObjectEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ObjectAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ObjectAddress').setValue(selectedData['Address']);
+
+          formGroup.get('ObjectIdentifiedNumber').setValue(selectedData.TaxCode);
           formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
+  }
+
+  onPublisherChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('PublisherName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('PublisherPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('PublisherPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('PublisherEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('PublisherEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('PublisherAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('PublisherAddress').setValue(selectedData['Address']);
+
+        }
+      }
+    }
+  }
+
+  onShipperChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ShipperName').setValue(selectedData.Name);
+          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+
+          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ShipperPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ShipperPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ShipperEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ShipperEmail').setValue(selectedData['Email']);
+          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ShipperAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ShipperAddress').setValue(selectedData['Address']);
+
         }
       }
     }
@@ -896,28 +1000,15 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
           formGroup.get('ContactName').setValue(selectedData.Name);
+          // formGroup.get('ContactPhone').setValue(selectedData.Phone);
+          // formGroup.get('ContactEmail').setValue(selectedData.Email);
+          // formGroup.get('ContactAddress').setValue(selectedData.Address);
+
           if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ContactPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ContactPhone').setValue(selectedData['Phone']);
           if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ContactEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ContactEmail').setValue(selectedData['Email']);
           if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ContactAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ContactAddress').setValue(selectedData['Address']);
+
           formGroup.get('ContactIdentifiedNumber').setValue(selectedData.TaxCode);
-        }
-      }
-    }
-  }
-
-  onPriceTableChange(formGroup: FormGroup, selectedData: SalesMasterPriceTableModel, formIndex?: number) {
-    // console.info(item);
-
-    if (!this.isProcessing) {
-      if (selectedData && !selectedData['doNotAutoFill']) {
-
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if (selectedData.Code) {
-          // formGroup.get('ObjectName').setValue(selectedData.Name);
-          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
           // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
@@ -925,203 +1016,46 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
     }
   }
 
-  // onPriceReportVoucherChange(formGroup: FormGroup, selectedData: PriceReportModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-
-  //         this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + selectedData.Code, {
-  //           includeContact: true,
-  //           includeDetails: true,
-  //           includeProductUnitList: true,
-  //           includeProductPrice: true,
-  //         }).then(rs => {
-
-  //           if (rs && rs.length > 0) {
-  //             const salesVoucher: WpPosOrderModel = { ...rs[0] };
-  //             salesVoucher.PriceReportVoucher = selectedData.Code;
-  //             delete salesVoucher.Code;
-  //             delete salesVoucher.Id;
-  //             for (const detail of salesVoucher.Details) {
-  //               delete detail['Id'];
-  //               delete detail['Voucher'];
-  //               detail.Description = detail['Description'];
-  //             }
-  //             this.formLoad([salesVoucher]);
-  //           }
-  //         });
-
-  //         // formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // onSalectPriceReport(formGroup: FormGroup, selectedData: ChatRoomModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-
-  //         // Get first price report => prototype
-  //         // const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
-  //         this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + this.cms.getObjectId(selectedData), {
-  //           includeContact: true,
-  //           includeDetails: true,
-  //           includeProductUnitList: true,
-  //           includeProductPrice: true,
-  //         }).then(rs => {
-
-  //           if (rs && rs.length > 0) {
-  //             const salesVoucher: WpPosOrderModel = { ...rs[0] };
-  //             // salesVoucher.PriceReportVoucher = selectedData.Code;
-  //             delete salesVoucher.Code;
-  //             delete salesVoucher.Id;
-  //             salesVoucher['SalesTask'] = { id: selectedData.Code, text: selectedData?.Description, Code: selectedData.Code, Description: selectedData.Description };
-  //             for (const detail of salesVoucher.Details) {
-  //               delete detail['Id'];
-  //               delete detail['Voucher'];
-  //               detail.Description = detail['Description'];
-  //             }
-  //             this.formLoad([salesVoucher]);
-  //           }
-  //         });
-
-  //         // formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
-
   /** Choose product event */
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
-    const priceTable = this.cms.getObjectId(parentForm.get('PriceTable').value);
-    const unitControl = detail.get('Unit');
-    detail.get('Description').setValue(selectedData.Name);
-    if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
-      const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
-      if (priceTable) {
-        this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-          priceTable: priceTable,
-          product: this.cms.getObjectId(selectedData),
-          includeUnit: true,
-        }).then(rs => {
-          console.log(rs);
-          unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
-          // if (selectedData.Units) {
-          if (detaultUnit) {
-            const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-            detail.get('Unit').setValue('');
-            setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-            setTimeout(() => {
-              detail.get('Price').setValue(choosed.Price);
-              this.toMoney(parentForm, detail);
-            }, 0);
-          }
-          // } else {
-          //   detail['unitList'] = this.cms.unitList;
+    if (selectedData) {
+      detail.get('Description').setValue(selectedData.Name);
+      // if (parentForm.get('PriceTable').value) {
+      // this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+      //   priceTable: this.cms.getObjectId(parentForm.get('PriceTable').value),
+      //   product: this.cms.getObjectId(selectedData),
+      //   includeUnit: true,
+      // }).then(rs => {
+      // console.log(rs);
+      if (selectedData.Units)
+        // detail['unitList'] = selectedData.Unit;
+        if (selectedData.Units) {
+          detail['unitList'] = selectedData.Units;
+          // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true);
+          // if (detaultUnit) {
+          // const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+          detail.get('Unit').setValue('');
+          // setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+          setTimeout(() => {
+            // detail.get('Price').setValue(choosed.Price);
+            this.toMoney(parentForm, detail);
+          }, 0);
           // }
-        });
-      } else {
-        unitControl['UnitList'] = selectedData.Units;
-        // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-        unitControl.setValue(detaultUnit);
-      }
-
+        } else {
+          detail['unitList'] = this.adminProductService.unitList$.value;
+        }
+      // });
+      // } else {
+      //   detail['unitList'] = this.cms.unitList;
+      //   const detaultUnit = selectedData.Units?.find(f => f['IsDefaultSales'] === true);
+      //   if (detaultUnit) {
+      //     detail.get('Unit').setValue(detaultUnit);
+      //   }
+      // }
     } else {
-      // detail.get('Description').setValue('');
+      detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
-
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
-    }
-    // Callculate: Doanh thu bán lẻ dựa triên thu chi
-    if (selectedData && this.cms.getObjectId(selectedData) == 'BANLE' && detailForm) {
-      this.apiService.getPromise('/accounting/reports', {
-        reportSummary: true,
-        Accounts: '1111',
-        toDate: this.cms.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
-      }).then(rs => {
-        console.log(rs);
-        this.cms.openDialog(DialogFormComponent, {
-          context: {
-            title: 'Tính doanh thu bán lẻ',
-            onInit: async (form, dialog) => {
-              const reatilRevenue = form.get('RetailRevenue');
-              form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
-                reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
-              });
-              return true;
-            },
-            controls: [
-              {
-                name: 'RealCash',
-                label: 'Tiền mặt cuối ngày',
-                placeholder: 'Tiền đếm được cuối ngày',
-                type: 'currency',
-                initValue: 0,
-              },
-              {
-                name: 'CurrentCash',
-                label: 'Tiền mặt hiện tại trên phền mềm',
-                placeholder: 'Tiền đếm được cuối ngày',
-                type: 'currency',
-                initValue: rs[0]['TailAmount'],
-                disabled: true,
-              },
-              {
-                name: 'RetailRevenue',
-                label: 'Doanh thu bán lẻ',
-                placeholder: 'Doanh thu bán lẻ',
-                type: 'currency',
-                disabled: true,
-              },
-            ],
-            actions: [
-              {
-                label: 'Trở về',
-                icon: 'back',
-                status: 'basic',
-                action: async () => {
-                  return true;
-                },
-              },
-              {
-                label: 'Tính doanh thu bán lẻ',
-                icon: 'generate',
-                status: 'success',
-                action: async (form: FormGroup) => {
-                  console.log(rs);
-                  detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
-                  this.toMoney(parentForm, detail, 'Product');
-
-                  return true;
-                },
-              },
-            ],
-          },
-        });
-      });
     }
     return false;
   }
@@ -1129,259 +1063,71 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
   /** Choose unit event */
   onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
     if (selectedData && selectedData.Price !== null) {
-      if (selectedData.Price >= 0) {
-        detail.get('Price').setValue(selectedData.Price);
-        this.toMoney(formItem, detail);
-      }
+      detail.get('Price').setValue(selectedData.Price);
+      this.toMoney(formItem, detail);
     }
     return false;
   }
 
-  // calculatToMoney(detail: FormGroup) {
-  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-  //   let tax = detail.get('Tax').value;
-  //   if (tax) {
-  //     if (typeof tax === 'string') {
-  //       tax = this.taxList.filter(t => t.Code === tax)[0];
-  //     }
-  //     toMoney += toMoney * tax.Tax / 100;
-  //   }
-  //   return toMoney;
-  // }
+  calculatToMoney(detail: FormGroup) {
+    let toMoney = detail.get('Quantity').value * detail.get('Price').value;
+    // let tax = detail.get('Tax').value;
+    // if (tax) {
+    //   if (typeof tax === 'string') {
+    //     tax = this.taxList.filter(t => t.Code === tax)[0];
+    //   }
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
+    return toMoney;
+  }
 
-  // toMoney(formItem: FormGroup, detail: FormGroup) {
-  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-  //   this.calulateTotal(formItem);
-  //   return false;
-  // }
+  toMoney(formItem: FormGroup, detail: FormGroup) {
+    detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+
+    // Call culate total
+    // const details = this.getDetails(formItem);
+    // let total = 0;
+    // for (let i = 0; i < details.controls.length; i++) {
+    //   total += this.calculatToMoney(details.controls[i] as FormGroup);
+    // }
+    // formItem.get('_total').setValue(total);
+    this.calulateTotal(formItem);
+    return false;
+  }
 
   calulateTotal(formItem: FormGroup) {
-    this.cms.takeUntil('calulcate_sales_voucher', 300).then(rs => {
+    this.cms.takeUntil('calulcate_sales_price_report', 300).then(rs => {
       let total = 0;
       const details = this.getDetails(formItem);
-      for (let i = 0; i < details.controls.length; i++) {
-        total += this.calculatToMoney(details.controls[i] as FormGroup);
-      }
-      formItem.get('_total').setValue(this.cms.roundUsing(total, Math.floor, 2));
-    });
-  }
-
-  calculatToMoney(detail: FormGroup, source?: string) {
-    // let tax = detail.get('Tax').value;
-    // if (typeof tax === 'string') {
-    //   tax = this.taxList.filter(t => t.Code === tax)[0];
-    // }
-    if (source === 'ToMoney') {
-      const price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      // if (tax) {
-      //   price = price / (1 + parseFloat(tax.Tax) / 100);
-      // }
-      // console.log(detail.value);
-      return price;
-    } else {
-      const toMoney = detail.get('Quantity').value * detail.get('Price').value;
-
-      // if (tax) {
-      //   if (typeof tax === 'string') {
-      //     tax = this.taxList.filter(t => t.Code === tax)[0];
-      //   }
-      //   toMoney += toMoney * tax.Tax / 100;
-      // }
-      // console.log(detail.value);
-      return toMoney;
-    }
-  }
-
-  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
-      if (source === 'ToMoney') {
-        detail.get('Price').setValue(this.calculatToMoney(detail, source));
-      } else {
-        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-      }
-      // Call culate total
-      const details = this.getDetails(formItem);
-      let total = 0;
       for (let i = 0; i < details.controls.length; i++) {
         total += this.calculatToMoney(details.controls[i] as FormGroup);
       }
       formItem.get('_total').setValue(total);
     });
-    return false;
   }
 
-  // preview(formItem: FormGroup) {
-  //   const data: WpPosOrderModel = formItem.value;
-  //   data.Details.forEach(detail => {
-  //     detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
-  //     detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
-  //   });
-  //   this.cms.openDialog(WpPosOrderPrintComponent, {
-  //     context: {
-  //       title: 'Xem trước',
-  //       data: [data],
-  //       mode: 'preview',
-  //       idKey: ['Code'],
-  //       onSaveAndClose: (rs: WpPosOrderModel) => {
-  //         this.saveAndClose();
-  //       },
-  //       onSaveAndPrint: (rs: WpPosOrderModel) => {
-  //         this.save();
-  //       },
-  //     },
-  //   });
-  //   return false;
-  // }
 
-  // getRawFormData() {
-  //   return super.getRawFormData();
-  // }
-
-  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-    this.cms.openDialog(ReferenceChoosingDialogComponent, {
+  async preview(formItem: FormGroup) {
+    const data: SalesPriceReportModel = formItem.value;
+    for (const detail of data.Details) {
+      detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
+      detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
+    };
+    this.cms.openDialog(CollaboratorOrderPrintComponent, {
       context: {
-        components: {
-          'PRICEREPORT': { title: 'Phiếu báo giá' },
-          'GOODSDELIVERY': { title: 'Phiếu xuất kho' },
+        title: 'Xem trước',
+        mode: 'preview',
+        sourceOfDialog: 'form',
+        data: [data],
+        onSaveAndClose: (priceReport: SalesPriceReportModel) => {
+          this.saveAndClose();
         },
-        onDialogChoose: async (chooseItems: any[], type?: string) => {
-          console.log(chooseItems, type);
-          const relationVoucher = formGroup.get('RelativeVouchers');
-          const relationVoucherValue: any[] = (relationVoucher.value || []);
-          const insertList = [];
-          this.onProcessing();
-          if (type === 'GOODSDELIVERY') {
-            for (let i = 0; i < chooseItems.length; i++) {
-              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-              if (index < 0) {
-                const details = this.getDetails(formGroup);
-                // get purchase order
-                const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
-
-                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
-                  this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                  continue;
-                }
-                if (this.cms.getObjectId(formGroup.get('Object').value)) {
-                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                    continue;
-                  }
-                } else {
-                  delete refVoucher.Id;
-                  // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Object: { id: this.cms.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
-                  details.clear();
-                }
-                insertList.push(chooseItems[i]);
-
-                // Insert order details into voucher details
-                if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
-                  for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type !== 'CATEGORY') {
-                      // delete voucherDetail.Id;
-                      // delete voucherDetail.Voucher;
-                      // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
-                      details.push(newDtailFormGroup);
-                    }
-                  }
-                }
-
-              }
-            }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
-          }
-          if (type === 'PRICEREPORT') {
-            for (let i = 0; i < chooseItems.length; i++) {
-              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-              if (index < 0) {
-                const details = this.getDetails(formGroup);
-                // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
-
-                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
-                  this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                  continue;
-                }
-                if (this.cms.getObjectId(formGroup.get('Object').value)) {
-                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                    continue;
-                  }
-                } else {
-                  // delete goodsDeliveryNote.Id;
-                  // formGroup.patchValue(priceReport);
-                  // if (typeof priceReport.Object === 'string') {
-                  //   priceReport.Object = {
-                  //     id: priceReport.Object as string,
-                  //     text: priceReport.ObjectName,
-                  //     Code: priceReport.Object,
-                  //     Name: priceReport.ObjectName,
-                  //   };
-                  // }
-                  delete refVoucher.Id;
-                  // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
-                  details.clear();
-                }
-                insertList.push(chooseItems[i]);
-                if (refVoucher.RelativeVouchers && refVoucher.RelativeVouchers.length > 0) {
-                  for (const relativeVoucher of refVoucher.RelativeVouchers) {
-                    insertList.push(relativeVoucher);
-                  }
-                }
-
-                // Insert order details into voucher details
-                if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
-                  for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type !== 'CATEGORY') {
-                      // delete voucherDetail.Id;
-                      // delete voucherDetail.Voucher;
-                      // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
-                      newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
-                      details.push(newDtailFormGroup);
-                      await new Promise(resolve => setTimeout(() => resolve(true), 300));
-                      this.toMoney(formGroup, newDtailFormGroup);
-                    }
-                  }
-                }
-
-              }
-            }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
-          }
-
-          setTimeout(() => {
-            this.onProcessed();
-          }, 1000);
+        onSaveAndPrint: (priceReport: SalesPriceReportModel) => {
+          this.save();
         },
-      }
+      },
     });
     return false;
-  }
-
-  openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
-    return false;
-  }
-
-  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
-    const relationVoucher = formGroup.get('RelativeVouchers');
-    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
-    return false;
-  }
-
-  async onSelectAccessNumbers(detail: FormGroup, selectedData: ProductModel, force?: boolean) {
-    console.log(selectedData);
-    if (detail['IsManageByAccessNumber']) {
-      detail.get('Quantity').setValue(detail.get('AccessNumbers').value.trim().split('\n').length);
-    }
   }
 
   getRawFormData() {
@@ -1400,6 +1146,101 @@ export class WordpressPosOrderFormComponent extends DataManagerFormComponent<WpP
       }
     }
     return data;
+  }
+
+  // getRawFormData() {
+  //   const data = super.getRawFormData();
+
+  //   return data;
+  // }
+
+  // customIcons: CustomIcon[] = [{
+  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+  //     this.cms.openDialog(ProductFormComponent, {
+  //       context: {
+  //         inputMode: 'dialog',
+  //         // inputId: ids,
+  //         onDialogSave: (newData: ProductModel[]) => {
+  //           console.log(newData);
+  //           // const formItem = formGroupComponent.formGroup;
+  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
+  //           formGroup.get('Product').patchValue(newProduct);
+  //           this.onSelectProduct(formGroup, newProduct, option.parentForm)
+  //         },
+  //         onDialogClose: () => {
+
+  //         },
+  //       },
+  //       closeOnEsc: false,
+  //       closeOnBackdropClick: false,
+  //     });
+  //   }
+  // }];
+
+  openCreateNewProductForm(array: FormArray, index: number, name: string) {
+
+  }
+
+  openRelativeVoucher(relativeVocher: any) {
+    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
+    return false;
+  }
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
+    return false;
+  }
+
+  // getRawFormData() {
+  //   const data = super.getRawFormData();
+  //   for (const item of data.array) {
+  //     item['Page'] = this.collaboratorService.currentpage$.value;
+  //   }
+  //   return data;
+  // }
+
+  // async save(): Promise<ProductModel[]> {
+  //   if (!this.collaboratorService?.currentpage$?.value) {
+  //     this.cms.toastService.show(this.cms.translateText('Common.error'), 'Bạn chưa chọn trang mà sản phẩm sẽ được khai báo !', {
+  //       status: 'danger',
+  //     });
+  //   }
+  //   return super.save();
+  // }
+
+  // onChangePage(page: CollaboratorPageModel) {
+  //   this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+  // }
+
+  saveAndClose() {
+    // const createMode = !this.isEditMode;
+    this.save().then(rs => {
+      // this.goback();
+      // if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
+      //   this.preview(this.makeId(rs[0]), 'list', 'print');
+      // }
+      this.cms.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
+        {
+          label: 'Trở về',
+          status: 'basic',
+          action: () => {
+
+          }
+        },
+        {
+          label: 'Chốt đơn',
+          status: 'success',
+          action: () => {
+            this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
+              this.cms.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
+              this.goback();
+            });
+          }
+        },
+      ])
+    });
+    return false;
   }
 
 }

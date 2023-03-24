@@ -8,32 +8,33 @@ import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { WordpressPosOrderFormComponent } from '../order-form/order-form.component';
-import { WordpressPosOrderPrintComponent } from '../order-print/order-print.component';
+import { WordpressOrderFormComponent } from '../order-form/order-form.component';
+import { WordpressOrderPrintComponent } from '../order-print/order-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { takeUntil } from 'rxjs/operators';
 import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { AppModule } from '../../../../app.module';
-import { WpPosOrderModel, WpSiteModel } from '../../../../models/wordpress.model';
+import { WpOrderModel, WpSiteModel } from '../../../../models/wordpress.model';
+import { WordpressService } from '../../wordpress.service';
 
 @Component({
-  selector: 'ngx-order-list',
+  selector: 'ngx-wordpress-order-list',
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.scss'],
 })
-export class WordpressPosOrderListComponent extends ServerDataManagerListComponent<WpPosOrderModel> implements OnInit {
+export class WordpressOrderListComponent extends ServerDataManagerListComponent<WpOrderModel> implements OnInit {
 
   componentName: string = 'WpPosOrderListComponent';
   formPath = '/wordpress/order/form';
   apiPath = '/wordpress/orders';
   idKey = 'Code';
-  formDialog = WordpressPosOrderFormComponent;
-  printDialog = WordpressPosOrderPrintComponent;
+  formDialog = WordpressOrderFormComponent;
+  printDialog = WordpressOrderPrintComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<WordpressPosOrderListComponent>;
+  static _dialog: NbDialogRef<WordpressOrderListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -42,26 +43,26 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
   loaded = false;
   siteList: WpSiteModel[];
 
-  _workingSite: any;
-  set workingSite(value) {
-    if (!value) {
-      localStorage.setItem('wordpress_workingsite', null);
-    } else {
-      localStorage.setItem('wordpress_workingsite', JSON.stringify({ 'id': this.cms.getObjectId(value), 'text': this.cms.getObjectText(value) }));
-    }
-    this._workingSite = value;
-  }
-  get workingSite() {
-    if (!this._workingSite || !this._workingSite.id) {
-      this._workingSite = localStorage.getItem('wordpress_workingsite');
-      if (typeof this._workingSite === 'string') {
-        this._workingSite = JSON.parse(this._workingSite);
-      } else {
-        this._workingSite = null;
-      }
-    }
-    return this._workingSite;
-  }
+  // _workingSite: any;
+  // set workingSite(value) {
+  //   if (!value) {
+  //     localStorage.setItem('wordpress_workingsite', null);
+  //   } else {
+  //     localStorage.setItem('wordpress_workingsite', JSON.stringify({ 'id': this.cms.getObjectId(value), 'text': this.cms.getObjectText(value) }));
+  //   }
+  //   this._workingSite = value;
+  // }
+  // get workingSite() {
+  //   if (!this._workingSite || !this._workingSite.id) {
+  //     this._workingSite = localStorage.getItem('wordpress_workingsite');
+  //     if (typeof this._workingSite === 'string') {
+  //       this._workingSite = JSON.parse(this._workingSite);
+  //     } else {
+  //       this._workingSite = null;
+  //     }
+  //   }
+  //   return this._workingSite;
+  // }
 
   constructor(
     public apiService: ApiService,
@@ -70,14 +71,18 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<WordpressPosOrderListComponent>,
+    public ref: NbDialogRef<WordpressOrderListComponent>,
+    public wordpressService: WordpressService,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
     return super.init().then(async state => {
-      this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'ALL', text: 'Tất cả' }, ...rs]);
+      // this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'ALL', text: 'Tất cả' }, ...rs]);
+      this.wordpressService.siteList$.pipe(takeUntil(this.destroy$)).subscribe(siteList => {
+        this.siteList = siteList;
+      });
       this.actionButtonList.unshift({
         type: 'button',
         name: 'unrecord',
@@ -155,12 +160,12 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
         size: 'medium',
         icon: 'checkmark-square-outline',
         disabled: () => {
-          return !this.workingSite;
+          return !this.wordpressService.currentSite$?.value;
         },
         click: () => {
-          this.apiService.putPromise('/wordpress/orders/' + this.cms.getObjectId(this.workingSite), { pullWpOrder: true }, [
+          this.apiService.putPromise('/wordpress/orders/' + this.cms.getObjectId(this.wordpressService.currentSite$?.value), { pullWpOrder: true }, [
             {
-              Code: this.cms.getObjectId(this.workingSite),
+              Code: this.cms.getObjectId(this.wordpressService.currentSite$?.value),
             }
           ]).then(rs => {
             this.refresh();
@@ -190,12 +195,13 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
             data: this.siteList,
           }
         },
-        value: this.workingSite,
+        value: this.wordpressService.currentSite$?.value,
         change: async (value: any, option: any) => {
           // this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
           this.cms.takeOnce('wordpress_load_ref_categories', 500).then(async () => {
-            if (this.cms.getObjectId(this.workingSite) != this.cms.getObjectId(value)) {
-              this.workingSite = value;
+            if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != this.cms.getObjectId(value)) {
+              // this.workingSite = value;
+              this.wordpressService.currentSite$?.next(value);
               await this.refresh();
             }
           });
@@ -253,7 +259,7 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
           type: 'string',
           width: '20%',
           // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          valuePrepareFunction: (cell: any, row: WpPosOrderModel) => {
+          valuePrepareFunction: (cell: any, row: WpOrderModel) => {
             return row.ObjectName;
           },
           filter: {
@@ -432,13 +438,18 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
             instance.title = this.cms.translateText('Common.approved');
             instance.label = this.cms.translateText('Common.approved');
             instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.wordpressOrder[value || ''];
+              const processMap = AppModule.processMaps['wordpressOrder'][value || ''];
               instance.label = this.cms.translateText(processMap?.label);
               instance.status = processMap?.status;
               instance.outline = processMap?.outline;
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpPosOrderModel) => {
-              this.preview([rowData]);
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpOrderModel) => {
+              // this.preview([rowData]);
+              if (rowData.State == 'PROCESSING') {
+                this.gotoForm(rowData.Code);
+              } else {
+                this.preview([rowData]);
+              }
             });
           },
           filter: {
@@ -459,9 +470,9 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
                   text: 'text',
                 },
                 multiple: true,
-                data: Object.keys(AppModule.processMaps.wordpressOrder).map(stateId => ({
+                data: Object.keys(AppModule.processMaps['wordpressOrder']).map(stateId => ({
                   id: stateId,
-                  text: this.cms.translateText(AppModule.processMaps.wordpressOrder[stateId].label)
+                  text: this.cms.translateText(AppModule.processMaps['wordpressOrder'][stateId].label)
                 })).filter(f => f.id != '')
               },
             },
@@ -484,7 +495,7 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
             instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpPosOrderModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpOrderModel) => {
 
               this.cms.openDialog(ResourcePermissionEditComponent, {
                 context: {
@@ -515,7 +526,7 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
             instance.title = this.cms.translateText('Common.preview');
             instance.valueChange.subscribe(value => {
             });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpPosOrderModel) => {
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WpOrderModel) => {
               this.preview([rowData]);
             });
           },
@@ -530,7 +541,7 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WpPosOrderModel[]>('/sales/orders', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
+    return this.apiService.getPromise<WpOrderModel[]>('/sales/orders', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
   }
 
   initDataSource() {
@@ -542,8 +553,8 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
       params['includeContact'] = true;
       params['includeRelativeVouchers'] = true;
       params['sort_Id'] = 'desc';
-      if (this.cms.getObjectId(this.workingSite) !== 'ALL') {
-        params['eq_Site'] = this.cms.getObjectId(this.workingSite);
+      if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) !== 'ALL') {
+        params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
       }
       // params['eq_Type'] = 'PAYMENT';
       return params;
@@ -587,5 +598,58 @@ export class WordpressPosOrderListComponent extends ServerDataManagerListCompone
   //   });
   //   return false;
   // }
+
+  async preview(data: WpOrderModel[], source?: string) {
+    this.cms.openDialog(WordpressOrderPrintComponent, {
+      context: {
+        showLoadinng: true,
+        title: 'Xem trước',
+        // data: data,
+        // id: data.map(m => m[this.idKey]),
+        id: data.map(item => this.makeId(item)),
+        sourceOfDialog: 'list',
+        mode: 'print',
+        idKey: ['Code'],
+        // approvedConfirm: true,
+        onChange: async (data: WpOrderModel, printComponent: WordpressOrderPrintComponent) => {
+
+          printComponent.close();
+          if (data.State === 'PROCESSING') {
+            // Get relative vouchers
+            // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
+            // if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
+            // const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
+            // if (priceReportRef) {
+            // this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
+            //   context: {
+            //     inputId: [priceReportRef.id],
+            //     inputMode: 'dialog',
+            //     onDialogSave: async (data) => {
+            //       console.log(data);
+            //       // setTimeout(() => {
+            //       this.refresh();
+            //       // }, 1000);
+            //     },
+            //     onDialogClose: () => { },
+            //   }
+            // });
+            this.gotoForm(data.Code);
+            // }
+            // }
+          } else {
+            this.refresh();
+          }
+
+        },
+        onSaveAndClose: () => {
+          this.refresh();
+        },
+        // onSaveAndClose: () => {
+        //   this.refresh();
+        // },
+      },
+    });
+    return false;
+  }
 
 }

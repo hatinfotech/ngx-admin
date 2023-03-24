@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WordpressPosOrderFormComponent } from './order-form.component';
+import { WordpressOrderFormComponent } from './order-form.component';
 
-describe('WpPosOrderFormComponent', () => {
-  let component: WordpressPosOrderFormComponent;
-  let fixture: ComponentFixture<WordpressPosOrderFormComponent>;
+describe('WordpressOrderFormComponent', () => {
+  let component: WordpressOrderFormComponent;
+  let fixture: ComponentFixture<WordpressOrderFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ WordpressPosOrderFormComponent ],
+      declarations: [ WordpressOrderFormComponent ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(WordpressPosOrderFormComponent);
+    fixture = TestBed.createComponent(WordpressOrderFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,3 +1,4 @@
+import { WpOrderModel } from './../../../../models/wordpress.model';
 import { SystemConfigModel } from './../../../../models/model';
 import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -816,6 +817,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
           'DEPLOYMENT': { title: 'Phiếu triển khai' },
           'PRICEREPORT': { title: 'Phiếu báo giá' },
           'CLBRTORDER': { title: 'Đơn hàng CTV Bán hàng' },
+          'WPORDER': { title: 'Đơn hàng WP' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems, type);
@@ -994,6 +996,53 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: voucherDetail.RelateDetail });
                       details.push(newDtailFormGroup);
+                      this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+          }
+          if (type === 'WPORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const refVoucher = await this.apiService.getPromise<WpOrderModel[]>('/wordpress/orders/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Đơn hàng chưa chốt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong đơn hàng không giống với phiếu xuất kho'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  // delete refVoucher.Id;
+                  // delete refVoucher.Code;
+                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+
+                // Insert order details into voucher details
+                if (refVoucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Đơn hàng WP Bán hàng: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+                  for (const voucherDetail of refVoucher.Details) {
+                    if (voucherDetail.Type === 'PRODUCT') {
+                      // delete voucherDetail.Id;
+                      // delete voucherDetail.Voucher;
+                      // delete voucherDetail.No;
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: [], RelateDetail: `WPsORDER/${refVoucher.Code}/${voucherDetail.Id}` });
+                      newDtailFormGroup.get('Business').setValue([{ id: 'WHTRANSPORT', text: 'Đang vận chuyển (xuất kho hàng đi đường)', 'type': 'WAREHOUSEDELIVERY' }]);
+                      details.push(newDtailFormGroup);
+
                       this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
                     }
                   }

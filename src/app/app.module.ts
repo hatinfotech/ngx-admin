@@ -308,9 +308,9 @@ import { WordpressSyncProfileFormComponent } from './modules/wordpress/sync-prof
 import { WordpressProductListComponent } from './modules/wordpress/product/product-list/product-list.component';
 import { WordpressProductFormComponent } from './modules/wordpress/product/product-form/product-form.component';
 import { WordpressSyncProfilePreviewComponent } from './modules/wordpress/sync-profile/sync-profile-preview/sync-profile-preview.component';
-import { WordpressPosOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
-import { WordpressPosOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
-import { WordpressPosOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
+import { WordpressOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
+import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
+import { WordpressOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -622,9 +622,9 @@ export class DynamicLocaleId extends String {
     WordpressProductListComponent,
     WordpressProductFormComponent,
     WordpressSyncProfilePreviewComponent,
-    WordpressPosOrderListComponent,
-    WordpressPosOrderFormComponent,
-    WordpressPosOrderPrintComponent,
+    WordpressOrderListComponent,
+    WordpressOrderFormComponent,
+    WordpressOrderPrintComponent,
   ],
   imports: [
     BrowserModule,
@@ -1781,108 +1781,117 @@ export class AppModule {
         ],
       },
     },
-    wordpressOrder: {
-      "PROCESSING": {
-        ...AppModule.proccessingState,
-        nextState: 'APPROVED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.approvedState,
-        ],
-      },
-      "PENDING": {
-        ...AppModule.approvedState,
-        nextState: 'APPROVED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.approvedState,
-        ],
-      },
-      "ONHOLD": {
-        ...AppModule.approvedState,
-        nextState: 'APPROVED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.approvedState,
-        ],
-      },
-      "COMPLETED": {
-        ...AppModule.approvedState,
-        nextState: 'UNRECORDED',
-        outline: true,
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "CANCELED": {
-        ...AppModule.approvedState,
-        nextState: 'UNRECORDED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "REFUNDED": {
-        ...AppModule.approvedState,
-        nextState: 'UNRECORDED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "FAILED": {
-        ...AppModule.approvedState,
-        nextState: 'UNRECORDED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "CHECKOUTDRAFT": {
-        ...AppModule.approvedState,
-        nextState: 'UNRECORDED',
-        nextStates: [
-          // { ...AppModule.completeState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "APPROVED": {
-        ...AppModule.approvedState,
-        nextState: 'COMPLETED',
-        nextStates: [
-          { ...AppModule.completeState, status: 'basic', outline: true },
-          AppModule.unrecordedState,
-        ],
-      },
-      "UNRECORDED": {
-        ...AppModule.unrecordedState,
-        nextState: 'APPROVED',
-        nextStates: [
-          AppModule.approvedState,
-          AppModule.priceReportState,
-          AppModule.unrecordedState,
-        ],
-      },
-      "NEW": {
-        ...AppModule.newState,
-        label: 'Đơn mới',
-        nextState: 'APPROVED',
-        nextStates: [
-          AppModule.approvedState,
-          AppModule.priceReportState,
-          AppModule.unrecordedState,
-        ],
-      },
-      "": {
-        ...AppModule.newState,
-        label: 'Đơn mới',
-        nextState: 'APPROVED',
-        nextStates: [
-          AppModule.approvedState,
-          AppModule.unrecordedState,
-        ],
-      },
-    },
+    // wordpressOrder: {
+    //   "PROCESSING": {
+    //     ...AppModule.proccessingState,
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.approvedState,
+    //     ],
+    //   },
+    //   "PENDING": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.approvedState,
+    //     ],
+    //   },
+    //   "ONHOLD": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.approvedState,
+    //     ],
+    //   },
+    //   "COMPLETED": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'UNRECORDED',
+    //     outline: true,
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "CANCELED": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'UNRECORDED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "REFUNDED": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'UNRECORDED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "FAILED": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'UNRECORDED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "CHECKOUTDRAFT": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'UNRECORDED',
+    //     nextStates: [
+    //       // { ...AppModule.completeState, status: 'success' },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "APPROVED": {
+    //     ...AppModule.approvedState,
+    //     nextState: 'COMPLETED',
+    //     nextStates: [
+    //       { ...AppModule.completeState, status: 'basic', outline: true },
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "UNRECORDED": {
+    //     ...AppModule.unrecordedState,
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       AppModule.approvedState,
+    //       AppModule.priceReportState,
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "NEW": {
+    //     ...AppModule.newState,
+    //     label: 'Đơn mới',
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       AppModule.approvedState,
+    //       AppModule.priceReportState,
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    //   "": {
+    //     ...AppModule.newState,
+    //     label: 'Đơn mới',
+    //     nextState: 'APPROVED',
+    //     nextStates: [
+    //       AppModule.approvedState,
+    //       AppModule.unrecordedState,
+    //     ],
+    //   },
+    // },
   };
 }
+
+AppModule.processMaps['wordpressOrder'] = {
+  ...AppModule.processMaps.collaboratoOrder,
+  "NOTJUSTAPPROVED": {
+    ...AppModule.processMaps.collaboratoOrder['NOTJUSTAPPROVED'],
+    label: 'Đơn mới',
+    status: 'danger',
+  }
+};

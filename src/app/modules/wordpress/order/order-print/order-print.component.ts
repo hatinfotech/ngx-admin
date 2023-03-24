@@ -8,17 +8,17 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
-import { WordpressPosOrderFormComponent } from '../order-form/order-form.component';
+import { WordpressOrderFormComponent } from '../order-form/order-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
-import { WpPosOrderDetailModel, WpPosOrderModel } from '../../../../models/wordpress.model';
+import { WpOrderDetailModel, WpOrderModel } from '../../../../models/wordpress.model';
 
 @Component({
-  selector: 'ngx-order-print',
+  selector: 'ngx-wordpress-order-print',
   templateUrl: './order-print.component.html',
   styleUrls: ['./order-print.component.scss'],
 })
-export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<WpPosOrderModel> implements OnInit {
+export class WordpressOrderPrintComponent extends DataManagerPrintComponent<WpOrderModel> implements OnInit {
 
   /** Component name */
   componentName = 'WpPosOrderPrintComponent';
@@ -27,13 +27,13 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
   apiPath = '/wordpress/orders';
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
-  formDialog = WordpressPosOrderFormComponent;
+  formDialog = WordpressOrderFormComponent;
 
   constructor(
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<WordpressPosOrderPrintComponent>,
+    public ref: NbDialogRef<WordpressOrderPrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(cms, router, apiService, ref);
@@ -64,7 +64,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     return result;
   }
 
-  renderTitle(data: WpPosOrderModel) {
+  renderTitle(data: WpOrderModel) {
     return `DonHangWP_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
   }
 
@@ -85,7 +85,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     }
   }
 
-  toMoney(detail: WpPosOrderDetailModel) {
+  toMoney(detail: WpOrderDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
@@ -127,14 +127,14 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     return '';
   }
 
-  prepareCopy(data: WpPosOrderModel) {
+  prepareCopy(data: WpOrderModel) {
     this.close();
-    this.cms.openDialog(WordpressPosOrderFormComponent, {
+    this.cms.openDialog(WordpressOrderFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: WpPosOrderModel[]) => {
+        onDialogSave: (newData: WpOrderModel[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose(newData[0]);
         },
@@ -147,7 +147,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     });
   }
 
-  approvedConfirm(data: WpPosOrderModel) {
+  approvedConfirm(data: WpOrderModel) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
     //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
@@ -161,7 +161,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.wordpressOrder[data.State || ''];
+    const processMap = AppModule.processMaps.collaboratoOrder[data.State || ''];
     params['changeState'] = processMap.nextState;
     // let confirmText = '';
     // let responseText = '';
@@ -191,7 +191,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<WpPosOrderModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<WpOrderModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = false;
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
@@ -215,7 +215,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     ]);
   }
 
-  approvedConfirmX(data: WpPosOrderModel) {
+  approvedConfirmX(data: WpOrderModel) {
     if (data.State === 'COMPLETE') {
       this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.WpPosOrder.title', { action: '', definition: '' }) }), [
         {
@@ -243,7 +243,7 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
           } else if (data.State === 'APPROVED') {
             params['complete'] = true;
           }
-          this.apiService.putPromise<WpPosOrderModel[]>('/sales/orders', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<WpOrderModel[]>('/sales/orders', params, [{ Code: data.Code }]).then(rs => {
             this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedSuccess', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.cms.translateText('Common.close'),
@@ -263,12 +263,12 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WpPosOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
+    return this.apiService.getPromise<WpOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
       for (const item of rs) {
-        const processMap = AppModule.processMaps.wordpressOrder[item.State || ''];
+        const processMap = AppModule.processMaps.collaboratoOrder[item.State || ''];
         item.StateLabel = processMap.label;
         if (item && item.Details) {
-          this.setDetailsNo(item.Details, (detail: WpPosOrderDetailModel) => detail.Type !== 'CATEGORY');
+          this.setDetailsNo(item.Details, (detail: WpOrderDetailModel) => detail.Type !== 'CATEGORY');
           for (const detail of item.Details) {
             item['Total'] += detail['ToMoney'] = this.toMoney(detail);
           }
@@ -279,11 +279,11 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
     });
   }
 
-  getItemDescription(item: WpPosOrderModel) {
+  getItemDescription(item: WpOrderModel) {
     return item?.Description;
   }
 
-  summaryCalculate(data: WpPosOrderModel[]) {
+  summaryCalculate(data: WpOrderModel[]) {
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
@@ -296,12 +296,12 @@ export class WordpressPosOrderPrintComponent extends DataManagerPrintComponent<W
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
-      this.processMapList[i] = AppModule.processMaps.wordpressOrder[item.State || ''];
+      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[item.State || ''];
     }
     return data;
   }
 
-  receipt(item: WpPosOrderModel) {
+  receipt(item: WpOrderModel) {
     this.cms.openDialog(CashReceiptVoucherFormComponent, {
       context: {
         onDialogSave: (items: CashVoucherModel[]) => {

@@ -290,7 +290,7 @@ export class ApiService {
     });
   }
 
-  putProgress<T>(enpoint: string, params: any, resource: T, progress: (progressInfo: {progress: number, loaded: number, total: number}) => void): Promise<T> {
+  putProgress<T>(enpoint: string, params: any, resource: T, progress: (progressInfo: { progress: number, loaded: number, total: number }) => void): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       // const obs = this._http.put(this.buildApiUrl(enpoint, params), resource, { reportProgress: true, responseType: 'text', observe: 'response' })
       //   .pipe(
@@ -503,7 +503,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu quyền truy cập', {
           status: 'danger',
-          // duration: 10000,
+          duration: 15000,
         });
       }
     }
@@ -535,7 +535,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không có quyền', {
           status: 'danger',
-          // duration: 5000,
+          duration: 15000,
         });
       }
     }
@@ -544,7 +544,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu không thể thực thi', {
           status: 'danger',
-          // duration: 30000,
+          duration: 15000,
         });
       }
     }
@@ -552,7 +552,7 @@ export class ApiService {
       if (!silent) {
         this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu chưa được xử lý', {
           status: 'danger',
-          // duration: 30000,
+          duration: 15000,
         });
       }
     }

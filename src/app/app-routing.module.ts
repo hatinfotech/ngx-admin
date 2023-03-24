@@ -1,4 +1,4 @@
-import { WordpressPosOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
+import { WordpressOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
 import { ProductObjectReferenceListComponent } from './modules/admin-product/product-object-reference/product-object-reference-list/product-object-reference-list.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
@@ -127,6 +127,7 @@ import { ProductKeywordListComponent } from './modules/admin-product/keyword/pro
 import { PurchaseProductListComponent } from './modules/purchase/product/purchase-product-list/purchase-product-list.component';
 import { WordpressSyncProfileListComponent } from './modules/wordpress/sync-profile/sync-profile-list/sync-profile-list.component';
 import { WordpressProductListComponent } from './modules/wordpress/product/product-list/product-list.component';
+import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -1382,10 +1383,20 @@ const routes: Routes = [
   {
     path: 'wordpress/order/list',
     canActivate: [AuthGuardService],
-    component: WordpressPosOrderListComponent,
+    component: WordpressOrderListComponent,
     data: {
       reuse: true,
     },
+  },
+  {
+    path: 'wordpress/order/form',
+    canActivate: [AuthGuardService],
+    component: WordpressOrderFormComponent,
+  },
+  {
+    path: 'wordpress/order/form/:id',
+    canActivate: [AuthGuardService],
+    component: WordpressOrderFormComponent,
   },
 
 

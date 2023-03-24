@@ -15,6 +15,8 @@ import { FormGroup } from '@angular/forms';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ProductModel } from '../../../../models/product.model';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { WordpressService } from '../../wordpress.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-product-list',
@@ -35,26 +37,26 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
   static filterConfig: any;
   static sortConf: any;
   static pagingConf = { page: 1, perPage: 40 };
-  _workingSite: any;
-  set workingSite(value) {
-    if (!value) {
-      localStorage.setItem('wordpress_workingsite', null);
-    } else {
-      localStorage.setItem('wordpress_workingsite', JSON.stringify({ 'id': this.cms.getObjectId(value), 'text': this.cms.getObjectText(value) }));
-    }
-    this._workingSite = value;
-  }
-  get workingSite() {
-    if (!this._workingSite || !this._workingSite.id) {
-      this._workingSite = localStorage.getItem('wordpress_workingsite');
-      if (typeof this._workingSite === 'string') {
-        this._workingSite = JSON.parse(this._workingSite);
-      } else {
-        this._workingSite = null;
-      }
-    }
-    return this._workingSite;
-  }
+  // _workingSite: any;
+  // set workingSite(value) {
+  //   if (!value) {
+  //     localStorage.setItem('wordpress_workingsite', null);
+  //   } else {
+  //     localStorage.setItem('wordpress_workingsite', JSON.stringify({ 'id': this.cms.getObjectId(value), 'text': this.cms.getObjectText(value) }));
+  //   }
+  //   this._workingSite = value;
+  // }
+  // get workingSite() {
+  //   if (!this._workingSite || !this._workingSite.id) {
+  //     this._workingSite = localStorage.getItem('wordpress_workingsite');
+  //     if (typeof this._workingSite === 'string') {
+  //       this._workingSite = JSON.parse(this._workingSite);
+  //     } else {
+  //       this._workingSite = null;
+  //     }
+  //   }
+  //   return this._workingSite;
+  // }
   refCategoryList = [];
 
   constructor(
@@ -65,6 +67,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<WordpressProductListComponent>,
+    public wordpressService: WordpressService,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
   }
@@ -77,7 +80,10 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     // await this.loadCache();
     return super.init().then(async rs => {
 
-      this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'NONE', text: 'Không chọn' }, ...rs]);
+      // this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'NONE', text: 'Không chọn' }, ...rs]);
+      this.wordpressService.siteList$.pipe(takeUntil(this.destroy$)).subscribe(siteList => {
+        this.siteList = siteList;
+      });
 
       this.actionButtonList.unshift({
         name: 'importProducts',
@@ -86,7 +92,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         icon: 'download-outline',
         title: this.cms.textTransform(this.cms.translate.instant('Import'), 'head-title'),
         size: 'medium',
-        disabled: () => !this.workingSite,
+        disabled: () => !this.wordpressService.currentSite$?.value,
         hidden: () => false,
         click: () => {
           // if (!this.productListDialog) {
@@ -103,7 +109,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
               onDialogChoose: async (chooseItems) => {
                 console.log(chooseItems);
 
-                if (!this.cms.getObjectId(this.workingSite)) {
+                if (!this.cms.getObjectId(this.wordpressService.currentSite$?.value)) {
                   this.cms.showToast('Bạn phải chọn site làm việc trước khi thêm sản phẩm !', 'Chưa chọn site làm việc', { status: 'danger' })
                   return;
                 }
@@ -155,8 +161,8 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                   if (unitType === 'first') {
 
                     const item = {
-                      Site: this.cms.getObjectId(this.workingSite),
-                      SiteName: this.cms.getObjectText(this.workingSite),
+                      Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value),
+                      SiteName: this.cms.getObjectText(this.wordpressService.currentSite$?.value),
                       Product: product.Code,
                       Name: product.Name,
                       Sku: product.Sku,
@@ -173,8 +179,8 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                   } else if (unitType === 'base') {
 
                     const item = {
-                      Site: this.cms.getObjectId(this.workingSite),
-                      SiteName: this.cms.getObjectText(this.workingSite),
+                      Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value),
+                      SiteName: this.cms.getObjectText(this.wordpressService.currentSite$?.value),
                       Product: product.Code,
                       Name: product.Name,
                       Sku: product.Sku,
@@ -192,8 +198,8 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
 
                     for (const unit of product.UnitConversions) {
                       const item = {
-                        Site: this.cms.getObjectId(this.workingSite),
-                        SiteName: this.cms.getObjectText(this.workingSite),
+                        Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value),
+                        SiteName: this.cms.getObjectText(this.wordpressService.currentSite$?.value),
                         Product: product.Code,
                         Name: product.Name,
                         Sku: product.Sku,
@@ -349,7 +355,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         icon: 'pricetags-outline',
         title: 'Gán giá',
         size: 'medium',
-        disabled: () => !this.workingSite,
+        disabled: () => !this.wordpressService.currentSite$?.value,
         hidden: () => false,
         click: () => {
           this.cms.openDialog(DialogFormComponent, {
@@ -435,10 +441,10 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                         label: 'Gán',
                         status: 'danger',
                         action: () => {
-                          if (this.cms.getObjectId(this.workingSite) && this.cms.getObjectId(masterPriceTable)) {
-                            this.apiService.putPromise<any[]>('/wordpress/sites/' + this.cms.getObjectId(this.workingSite), { assignMasterPriceTable: this.cms.getObjectId(masterPriceTable), increaseByPercent: increaseByPercent, discountByPercent: discountByPercent }, [
+                          if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) && this.cms.getObjectId(masterPriceTable)) {
+                            this.apiService.putPromise<any[]>('/wordpress/sites/' + this.cms.getObjectId(this.wordpressService.currentSite$?.value), { assignMasterPriceTable: this.cms.getObjectId(masterPriceTable), increaseByPercent: increaseByPercent, discountByPercent: discountByPercent }, [
                               {
-                                Code: this.cms.getObjectId(this.workingSite),
+                                Code: this.cms.getObjectId(this.wordpressService.currentSite$?.value),
                               }
                             ]).then(rs => {
                               this.refresh();
@@ -483,12 +489,13 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
             data: this.siteList,
           }
         },
-        value: this.workingSite,
+        value: this.wordpressService.currentSite$?.value,
         change: async (value: any, option: any) => {
           // this.contraAccount$.next((value || []).map(m => this.cms.getObjectId(m)));
           this.cms.takeOnce('wordpress_load_ref_categories', 500).then(async () => {
-            if (this.cms.getObjectId(this.workingSite) != this.cms.getObjectId(value) || this.refCategoryList.length == 0) {
-              this.workingSite = value;
+            if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != this.cms.getObjectId(value) || this.refCategoryList.length == 0) {
+              // this.workingSite = value;
+              this.wordpressService.currentSite$.next(value);
               await this.refresh();
 
               // Get ref categories
@@ -713,7 +720,9 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
 
     // Set DataSource: prepareParams
     source.prepareParams = (params: any) => {
-      params['eq_Site'] = this.cms.getObjectId(this.workingSite);
+      if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'ALL' && this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'NONE') {
+        params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
+      }
       return params;
     };
 

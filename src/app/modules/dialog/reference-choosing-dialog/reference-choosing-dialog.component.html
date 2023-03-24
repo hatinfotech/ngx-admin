@@ -41,6 +41,9 @@
                 <nb-tab *ngIf="components['COMMERCEPOSORDER']" tabTitle="{{components['COMMERCEPOSORDER'].title}}">
                     <ngx-commerce-pos-order-list (onItemsChoosed)="onDialogChoose($event, 'COMMERCEPOSORDER')" [context]="components['COMMERCEPOSORDER']"></ngx-commerce-pos-order-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['WPORDER']" tabTitle="{{components['WPORDER'].title}}">
+                    <ngx-wordpress-order-list (onItemsChoosed)="onDialogChoose($event, 'WPORDER')" [context]="components['WPORDER']"></ngx-wordpress-order-list>
+                </nb-tab>
             </nb-tabset>
         </nb-card-body>
     </nb-card>
