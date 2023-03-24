@@ -67,7 +67,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   idKey = 'Code';
   apiPath = '/collaborator/orders';
   baseFormUrl = '/collaborator/order/form';
-  listUrl = '/collaborator/order/list';
+  listUrl = '/collaborator/page/order/list';
 
   env = environment;
 
