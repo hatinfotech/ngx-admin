@@ -6,7 +6,10 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.2.1',
+  version: '6.5.3.2',
+  // 6.5.3.2:   POS: fix return voucher payment
+  // 6.5.3.1:   POS: new barcode processing queue
+  // 6.5.2.1:   wp-order-processing-v1: clone from collaborator processing
   // 6.5.2.1:   wp-order-processing-v1: clone from collaborator processing
   // 6.5.1.4:   wordpress-webhoook-v1: manual pull wp orders
   // 6.5.1.3:   wordpress-webhoook-v1: dev order hook: new and update order event

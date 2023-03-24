@@ -9,14 +9,14 @@ import { ProductModel, ProductSearchIndexModel, ProductUnitModel } from './../..
 import { ContactModel } from './../../../../models/contact.model';
 import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel, CommercePosOrderDetailModel } from './../../../../models/commerce-pos.model';
 import { FormBuilder, FormGroup, FormArray, AbstractControl } from '@angular/forms';
-import { AfterViewInit, Component, ElementRef, ViewChild, ɵCodegenComponentFactoryResolver } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, ɵCodegenComponentFactoryResolver } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef, NbGlobalPhysicalPosition } from "@nebular/theme";
 import { BaseComponent } from "../../../../lib/base-component";
 import { ApiService } from "../../../../services/api.service";
 import { CommonService } from "../../../../services/common.service";
 import screenfull from 'screenfull';
-import { filter, map, take, takeUntil } from "rxjs/operators";
+import { concatMap, filter, finalize, map, take, takeUntil } from "rxjs/operators";
 import { SystemConfigModel } from "../../../../models/model";
 import { CurrencyMaskConfig } from "ng2-currency-mask";
 import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
@@ -24,7 +24,7 @@ import { CommercePosReturnsPrintComponent } from '../commerce-pos-returns-print/
 import { CommercePosPaymnentPrintComponent } from '../commerce-pos-payment-print/commerce-pos-payment-print.component';
 import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
@@ -68,7 +68,7 @@ class OrderModel {
   styleUrls: ['./commerce-pos-gui.component.scss'],
   providers: [CurrencyPipe]
 })
-export class CommercePosGuiComponent extends BaseComponent implements AfterViewInit {
+export class CommercePosGuiComponent extends BaseComponent implements AfterViewInit, OnDestroy {
 
   /** Component name */
   componentName = 'CommercePosGuiComponent';
@@ -158,6 +158,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       text: 'text',
     },
   }
+  barCodeProcessQueue$ = new Subject<string>();
 
   constructor(
     public cms: CommonService,
@@ -174,6 +175,19 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     });
 
     this.historyOrders.push(this.orderForm);
+    this.barCodeProcessQueue$.pipe(
+      takeUntil(this.destroy$),
+      finalize(() => console.log('stopped processing queue')),
+      concatMap(barcode => {
+        return this.barcodeProcess(barcode);
+      })
+    ).subscribe(result => {
+      console.log('Barcode Queue result: ', result);
+    });
+  }
+
+  barcodeProcessQueue(barcode: string) {
+    this.barCodeProcessQueue$.next(barcode);
   }
 
   toastDefaultConfig = {
@@ -592,6 +606,18 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     newForm['voucherType'] = 'COMMERCEPOSRETURN';
 
     if (data) {
+      // if (data.Object) {
+      //   data.Object = {
+      //     id: this.cms.getObjectId(data.Object),
+      //     text: this.cms.getObjectText(data.Object) || data.ObjectName,
+      //     Phone: data.ObjectPhone,
+      //     Email: data.ObjectEmail,
+      //     Address: data.ObjectAddress,
+      //   };
+      // }
+      if (typeof data.PaymentMethod === 'string') {
+        data.PaymentMethod = this.paymentMethod.find(f => this.cms.getObjectId(f) === data.PaymentMethod);
+      }
       newForm.patchValue(data);
       if (data.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
@@ -940,7 +966,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   isBarcodeProcessing = new BehaviorSubject<number>(0);
   barcodeQueue: { inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel } }[] = [];
   barcodeProcessCount = -1;
-  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel, onHadPrimise?: (promise: Promise<any>) => void }) {
+  async barcodeProcessBK(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel, onHadPrimise?: (promise: Promise<any>) => void }) {
 
     this.barcodeProcessCount++;
     const queueId = this.barcodeProcessCount;
@@ -1510,6 +1536,581 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     } catch (err) {
       console.error(err);
       this.isBarcodeProcessing.next(queueId + 1);
+      return null;
+    }
+  }
+
+  async barcodeProcess(inputValue: string, option?: { searchByFindOrder?: boolean, searchBySku?: boolean, product?: ProductModel, onHadPrimise?: (promise: Promise<any>) => void }) {
+    // await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+    // this.barcodeProcessCount++;
+    // const queueId = this.barcodeProcessCount;
+
+    // Wait for previous barcode process finish
+    // await this.isBarcodeProcessing.pipe(filter(f => {
+    //   console.log(`Barcode processing queue check: ${f} === ${queueId}`);
+    //   return f === queueId;
+    // }), take(1)).toPromise();
+
+    try {
+      this.inputValue = inputValue = inputValue && inputValue.trim() || inputValue;
+      const detailsControls = this.getDetails(this.orderForm).controls
+      const systemConfigs = await this.cms.systemConfigs$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(settings => settings);
+      const coreId = systemConfigs.ROOT_CONFIGS.coreEmbedId;
+      let productId = null;
+      let accessNumber = null;
+      let sku = null;
+      let unit = null;
+      let unitSeq = null;
+      let unitId = null;
+      let existsProduct: FormGroup = null;
+      let product: ProductModel = option?.product || null;
+
+      if (!product) {
+        if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
+          // Search by sku
+          product = this.skuBaseUnitMap[inputValue.toUpperCase()];
+          // if (this.goodsList) {
+          //   const products = this.goodsList.filter(f => f.Sku == inputValue.toUpperCase());
+          //   for (const prod of products) {
+          //     const productInfo = this.productUnitMap[prod.Code + '-' + this.cms.getObjectId(prod.Unit)];
+
+          //     // Tìm vị trí tương ứng với đơn vị tính cơ bản
+          //     if (productInfo && this.cms.getObjectId(productInfo.WarehouseUnit) == this.cms.getObjectId(prod.Unit)) {
+          //       product = prod;
+          //       break;
+          //     }
+          //   }
+          // }
+          if (!product) {
+            product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', { includeUnit: true, includePrice: true, eq_Sku: inputValue, includeInventory: true }).then(rs => {
+              return rs[0];
+            });
+          }
+
+          if (!product) {
+            this.cms.showToast(`Sku không tồn tại !`, 'Sku không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
+            // resolve(true);
+            // return;
+            throw new Error(`Sku không tồn tại !`);
+          }
+          productId = product.Code;
+          unit = product.Unit;
+          unitId = this.cms.getObjectId(product.Unit);
+        } else {
+          if (option?.searchByFindOrder || inputValue.length < 5) {
+            //Tìm hàng hóa theo số nhận thức
+            product = this.findOrderMap[inputValue];
+            // if (goodsInContainer && goodsInContainer.Goods && goodsInContainer.Unit) {
+            //   productId = goodsInContainer.Goods;
+            //   product = this.productMap[productId];
+            //   unitId = goodsInContainer.Unit;
+            //   product.Unit = unit = { id: goodsInContainer.Unit, text: goodsInContainer.UnitLabel };
+            //   product.Container = goodsInContainer.Container;
+            // }
+            if (!product) {
+              product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+                includeUnit: true,
+                includePrice: false,
+                includeInventory: true,
+                findOrder: inputValue,
+              }).then(rs => {
+                return rs[0];
+              });
+            }
+            if (product) {
+              unit = product.Unit;
+              unitId = unitId || this.cms.getObjectId(unit);
+              // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              if (!product.Price) {
+                product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+              }
+              // product.FindOrder = inputValue.trim();
+              product.FindOrder = product.ContainerFindOrder || inputValue.trim();
+              productId = product.Code;
+            }
+          } else {
+            if (/^9\d+/.test(inputValue)) {
+              // Đây là barcode vị trí hàng hóa
+              let tmpcode = inputValue.substring(1);
+              const findOrderLength = parseInt(tmpcode.substring(0, 1));
+              tmpcode = tmpcode.substring(1);
+              const findOrder = tmpcode.substring(0, findOrderLength);
+              tmpcode = tmpcode.substring(findOrderLength);
+              const unitSeqLength = parseInt(tmpcode.substring(0, 1));
+              tmpcode = tmpcode.substring(1);
+              unitSeq = tmpcode.substring(0, unitSeqLength);
+              tmpcode = tmpcode.substring(unitSeqLength);
+              productId = tmpcode;
+
+              product = this.productUnitMap[this.findOrderMap[findOrder].Code + '-' + this.cms.getObjectId(this.findOrderMap[findOrder].Unit)];
+
+              if (product && unitSeq) {
+                unit = this.unitMap[unitSeq];
+                if (unit) {
+                  unitId = unit.Code;
+                  // product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                  product.Unit = unit;
+                }
+              }
+
+              if (!product) {
+                throw new Error('Không tìm thấy hàng hóa !');
+              }
+
+              unitId = this.cms.getObjectId(product.Unit);
+              // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+              if (!product.Price) {
+                product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+              }
+              productId = product.Code;
+              product.FindOrder = findOrder;
+
+            } else {
+              if (new RegExp('^127' + coreId + '\\d+').test(inputValue)) {
+                accessNumber = inputValue;
+              } else {
+                if (new RegExp('^128' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+
+                    this.cms.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Bạn có muốn tạo phiếu trả hàng từ đơn hàng ' + inputValue,
+                        actions: [
+                          {
+                            label: 'ESC - Trở về',
+                            status: 'basic',
+                            action: () => {
+                            }
+                          },
+                          {
+                            label: 'F7 - Tạo phiếu trả hàng',
+                            keyShortcut: 'F7',
+                            status: 'danger',
+                            // focus: true,
+                            action: async () => {
+                              this.orderForm = await this.makeNewReturnsForm(null, inputValue);
+                              this.save(this.orderForm);
+                              this.historyOrders.push(this.orderForm);
+                              this.historyOrderIndex = this.historyOrders.length - 1;
+                            }
+                          },
+                          {
+                            label: 'Mở lại bill (Enter)',
+                            keyShortcut: 'Enter',
+                            status: 'info',
+                            focus: true,
+                            action: async () => {
+                              this.loadVoucher(inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  throw new Error('Trường hợp tạo phiếu trả hàng');
+                } else if (new RegExp('^129' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+                    this.shortcutKeyContext = 'returnspaymentconfirm';
+                    this.cms.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Bạn có muốn tiếp tục bán hàng từ phiếu trả hàng ' + inputValue + ' hay hoàn tiền cho khách',
+                        actions: [
+                          {
+                            label: 'Tiếp tục bán (F4)',
+                            keyShortcut: 'F4',
+                            status: 'success',
+                            action: async () => {
+                              this.makeNewOrder(null, inputValue);
+                            }
+                          },
+                          {
+                            label: 'Mở lại bill (Enter)',
+                            keyShortcut: 'Enter',
+                            status: 'info',
+                            focus: true,
+                            action: async () => {
+                              this.loadVoucher(inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  throw new Error('Trường hợp tạo phiếu bán hàng từ phiếu trả hàng');
+                } else if (new RegExp('^113' + coreId).test(inputValue)) {
+                  setTimeout(() => {
+                    this.cms.openDialog(ShowcaseDialogComponent, {
+                      context: {
+                        title: 'Máy bán hàng',
+                        content: 'Xem lại phiếu triển khai và đơn hàng liên quan',
+                        actions: [
+                          {
+                            label: 'Mở lại bill liên quan (F10)',
+                            keyShortcut: 'F10',
+                            status: 'primary',
+                            action: async () => {
+                              const deploymentVoucher = await this.apiService.getPromise<DeploymentVoucherModel[]>('/deployment/vouchers/' + inputValue, { includeRelativeVouchers: true }).then(rs => rs[0]);
+                              this.loadVoucher(deploymentVoucher?.RelativeVouchers?.find(f => f.type == 'COMMERCEPOSORDER')?.id);
+                            }
+                          },
+                          {
+                            label: 'Xem lại (Enter)',
+                            keyShortcut: 'Enter',
+                            status: 'success',
+                            focus: true,
+                            action: async () => {
+                              this.cms.previewVoucher('DEPLOYMENT80', inputValue);
+                            }
+                          },
+                        ],
+                        onClose: () => {
+                        },
+                      }
+                    });
+                  }, 50);
+                  throw new Error('Trường hợp xem lại phiếu triển khai');
+                } else if (new RegExp('^118' + coreId).test(inputValue)) {
+                  product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + inputValue, {
+                    includeUnit: true,
+                    includePrice: false,
+                    includeInventory: true,
+                  }).then(rs => {
+                    return rs[0];
+                  });
+                  if (product) {
+                    productId = product.Code;
+                    unitId = this.cms.getObjectId(product.WarehouseUnit);
+                    // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                    if (!product.Price) {
+                      product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                    }
+                  }
+                }
+
+                let unitIdLength = null;
+
+                if (!product) {
+
+                  const extracted = this.cms.extractGoodsBarcode(inputValue);
+                  accessNumber = extracted.accessNumber;
+                  productId = extracted.productId;
+                  unitSeq = extracted.unitSeq;
+                  unit = this.unitMap[unitSeq];
+                  unitId = this.cms.getObjectId(unit);
+
+                  product = this.productUnitMap[productId + '-' + unitId];
+
+                  if (product && unitSeq) {
+                    unit = this.unitMap[unitSeq];
+                    if (unit) {
+                      unitId = this.cms.getObjectId(unit);
+                      // product.Unit = { ...unit, id: unit.Code, text: unit.Name };
+                      product.Unit = unit;
+                    }
+                  }
+                }
+
+                // }
+              }
+            }
+
+            // get access number inventory 
+            if (new RegExp('^127' + coreId).test(accessNumber)) {
+              const getProductByAccessNumberPromise = this.apiService.getPromise<ProductModel[]>('/commerce-pos/products', {
+                accessNumber: accessNumber,
+                includeUnit: true,
+                includePrice: false,
+                includeInventory: true,
+                includePreviousOrder: this.orderForm['voucherType'] == 'COMMERCEPOSRETURN',
+              }).then(rs => {
+
+                product = rs[0];
+
+                if (!product) {
+                  this.cms.showToast(`Số truy xuất ${accessNumber} không tồn tại !`, 'Số truy xuất không tồn tại !', { ...this.toastDefaultConfig, status: 'warning' });
+                  existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                  throw new Error(`Số truy xuất ${accessNumber} không tồn tại !`);
+                }
+
+                const addReturnGoodsPromise = new Promise((resolve, reject) => {
+                  setTimeout(async () => {
+                    try {
+                      const existsProductIndex = detailsControls.findIndex(f => this.cms.getObjectId(f.get('Product').value) === productId && this.cms.getObjectId(f.get('Unit').value) == unitId);
+                      existsProduct = detailsControls[existsProductIndex] as FormGroup;
+                      if (existsProduct) {
+
+                        existsProduct.get('Container').setValue(product.Container);
+
+                        if (this.orderForm['voucherType'] == 'COMMERCEPOSRETURN') {
+                          if (product.Inventory && product.Inventory > 0) {
+                            this.cms.showToast(`${product.Name} (${product.Unit.Name}) đang có trong kho! không thể trả hàng với hàng hóa chưa xuất kho !`, 'Hàng hóa chưa xuất bán !', { status: 'warning' });
+                            existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+
+
+                            // return;
+                          } else {
+                            // Update price by previous voucher sales price
+                            if (product['LastAccEntry'] && product['LastWarehouseEntry']) {
+                              existsProduct.get('Price').setValue(product['LastAccEntry']['SalesPrice']);
+
+                              this.calculateToMoney(existsProduct);
+                              this.calculateTotal(this.orderForm);
+
+
+                              // Auto set object
+                              if (product['LastAccEntry']['Object']) {
+                                const object = this.orderForm.get('Object');
+                                if (!object.value) {
+                                  await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + product['LastAccEntry']['Object'], { includeIdText: true, limit: 1 }).then(rs => {
+                                    object.setValue(rs[0]);
+                                  });
+                                } else {
+                                  if (this.cms.getObjectId(product['LastAccEntry']['Object']) != this.cms.getObjectId(object.value)) {
+
+                                    this.cms.showToast('Liên hệ trên đơn bán hàng phải giống với trên đơn trả hàng !', 'Không đúng liên hệ đã mua hàng trước đó', { ...this.toastDefaultConfig, status: 'warning' });
+                                    return false;
+
+                                  }
+                                }
+                              }
+
+                              // Set relative vouchers
+                              const detailsRelativeVouchers = existsProduct.get('RelativeVouchers');
+                              const detailsRelativeVouchersData = detailsRelativeVouchers.value || [];
+
+                              if (!detailsRelativeVouchersData.some(f => this.cms.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                                detailsRelativeVouchersData.push({
+                                  type: 'COMMERCEPOSORDER',
+                                  id: product['LastAccEntry']['Voucher'],
+                                  text: product['LastAccEntry']['Voucher'],
+                                  VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
+                                  'Object': {
+                                    id: product['LastWarehouseEntry']['Object'],
+                                    text: product['LastWarehouseEntry']['ObjectName']
+                                  }
+                                });
+                                detailsRelativeVouchers.setValue([...detailsRelativeVouchersData]);
+                              }
+
+                              const relativeVouchers = this.orderForm.get('RelativeVouchers');
+                              const relativeVouchersData = relativeVouchers.value || [];
+                              if (!relativeVouchersData.some(f => this.cms.getObjectId(f) == product['LastAccEntry']['Voucher'])) {
+                                relativeVouchersData.push({
+                                  type: 'COMMERCEPOSORDER',
+                                  id: product['LastAccEntry']['Voucher'],
+                                  text: product['LastAccEntry']['Voucher'],
+                                  VoucherDate: product['LastWarehouseEntry']['VoucherDate'],
+                                  'Object': {
+                                    id: product['LastWarehouseEntry']['Object'],
+                                    text: product['LastWarehouseEntry']['ObjectName']
+                                  }
+                                });
+                                relativeVouchers.setValue([...relativeVouchersData]);
+
+                                await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+                              }
+
+                              // Trả hàng về vị trí trước đó đã xuất bán
+                              existsProduct.get('Container').setValue(product['LastWarehouseEntry']['Container']);
+
+                            }
+
+                          }
+                        } else {
+                          if (!product.Inventory || product.Inventory < 1) {
+                            this.cms.showToast(`${product.Name} (${product.Unit.Name}) (${accessNumber}) không có trong kho`, 'Hàng hóa không có trong kho !', { ...this.toastDefaultConfig, status: 'warning' });
+                            existsProduct.get('AccessNumbers').setValue((existsProduct.get('AccessNumbers').value || []).filter(f => f != accessNumber));
+                            // return;
+                          }
+                        }
+                      }
+                    } catch (err) {
+                      reject(err);
+                    }
+                    resolve(true);
+                  }, 1000);
+                });
+                option?.onHadPrimise(addReturnGoodsPromise);
+
+                return product;
+              });
+
+              option?.onHadPrimise && option.onHadPrimise(getProductByAccessNumberPromise);
+
+              if (!unitId || !product) { // Nếu tem cũ không có unit sequence thì phải lấy thông tin sản phẩm bằng số truy xuất ngay từ đầu
+                await getProductByAccessNumberPromise;
+              }
+              if (product) {
+                productId = product.Code;
+                unitId = unitId || this.cms.getObjectId(product.Unit);
+                if (!product.Price) {
+                  // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                  product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                }
+              } else {
+                product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+                  includeUnit: true,
+                  includePrice: false,
+                  includeInventory: true,
+                  unitSeq: unitSeq
+                }).then(rs => {
+                  return rs[0];
+                });
+                unitId = this.cms.getObjectId(product.Unit);
+                if (!product.Price) {
+                  // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+                  product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+                }
+              }
+            }
+          }
+        }
+      } else {
+        productId = product.Code;
+        unitId = this.cms.getObjectId(product.Unit);
+      }
+
+      if (!product) { // Nếu không lấy đươc thông tin sản phẩm theo số truy xuất
+        // Case 2: Search by product id
+        productId = inputValue.length < 9 ? `118${coreId}${inputValue}` : inputValue;
+        accessNumber = null;
+        product = await this.apiService.getPromise<ProductModel[]>('/commerce-pos/products/' + productId, {
+          includeUnit: true,
+          includePrice: false,
+          includeInventory: true
+        }).then(rs => {
+          return rs[0];
+        });
+        if (product) {
+          unitId = this.cms.getObjectId(product.Unit);
+          // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+          if (!product.Price) {
+            // product.Price = this.masterPriceTable[`${product.Code}-${unitId}`]?.Price;
+            product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
+          }
+        }
+        // }
+      }
+
+      if (this.orderForm.value?.State == 'APPROVED') {
+        this.cms.showToast('Bạn phải hủy phiếu mới thêm hàng hóa vào được!', 'Đơn hàng đã thanh toán !', { ...this.toastDefaultConfig, status: 'warning' });
+        throw new Error('Bạn phải hủy phiếu mới thêm hàng hóa vào được!');
+      }
+
+      console.log(accessNumber, productId);
+      let existsProductIndex = detailsControls.findIndex(f => this.cms.getObjectId(f.get('Product').value) === productId && this.cms.getObjectId(f.get('Unit').value) == unitId);
+      existsProduct = detailsControls[existsProductIndex] as FormGroup;
+      if (existsProduct) {
+        const quantityControl = existsProduct.get('Quantity');
+        const priceControl = existsProduct.get('Price');
+        const toMoney = existsProduct.get('ToMoney');
+        const accessNumbersContorl = existsProduct.get('AccessNumbers');
+        const accessNumbers = accessNumbersContorl.value || [];
+        if (accessNumber) {
+          if (!accessNumbers.find(f => f == accessNumber)) {
+            quantityControl.setValue(quantityControl.value + 1);
+            toMoney.setValue(quantityControl.value * priceControl.value);
+            if (accessNumber) {
+              accessNumbersContorl.setValue([...accessNumbers, accessNumber]);
+            }
+            // this.calculateTotal(this.orderForm);
+
+            this.playIncreasePipSound();
+            this.calculateToMoney(existsProduct);
+            this.calculateTotal(this.orderForm);
+            this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+          } else {
+            this.playErrorPipSound();
+            this.cms.showToast('Mã truy xuất đã được quét trước đó rồi, mời bạn quét tiếp các mã khác !', 'Trùng mã truy xuất !', { ...this.toastDefaultConfig, status: 'warning' });
+          }
+        } else {
+          quantityControl.setValue(quantityControl.value + 1);
+          this.calculateToMoney(existsProduct);
+          this.calculateTotal(this.orderForm);
+
+          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+          this.playIncreasePipSound();
+        }
+      } else {
+        existsProduct = this.makeNewOrderDetail({
+          Sku: product?.Sku || productId,
+          Product: productId,
+          Unit: product?.Unit || 'n/a',
+          Description: product?.Name || productId,
+          Quantity: 1,
+          Price: product?.Price || 0,
+          ToMoney: (product?.Price * 1) || 0,
+          Image: product?.FeaturePicture || [],
+          AccessNumbers: accessNumber ? [accessNumber] : null,
+          Discount: 0,
+          FindOrder: product?.FindOrder || product?.Container?.FindOrder,
+          Container: product?.Container,
+        });
+        existsProductIndex = detailsControls.length - 1;
+
+        if (product?.Price) {
+          // Nếu đã có giá (trường hợp quét số truy xuất)
+          this.calculateToMoney(existsProduct);
+          detailsControls.push(existsProduct);
+          this.calculateTotal(this.orderForm);
+          this.activeDetail(this.orderForm, existsProduct, existsProductIndex);
+          this.playNewPipSound();
+        } else {
+          // Nếu chưa có giá (trường hợp quét ID sản phẩm)
+          if (product) {
+
+            if (!product.Unit || !this.cms.getObjectId(product.Unit) || this.cms.getObjectId(product.Unit) == 'n/a') {
+              this.playErrorPipSound();
+              this.cms.showToast('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !', 'Sản phẩm chưa cài đặt đơn vị tính !', { ...this.toastDefaultConfig, status: 'danger' });
+              throw new Error('Không thể bán hàng với hàng hóa chưa được cài đặt đơn vị tính !');
+            }
+
+            existsProduct.get('Description').setValue(product.Name);
+            existsProduct.get('Sku').setValue(product.Sku);
+            existsProduct.get('Unit').setValue(product.Unit);
+            existsProduct.get('FeaturePicture').setValue(product.FeaturePicture?.Thumbnail);
+
+            await this.apiService.getPromise<any[]>('/sales/master-price-tables/getProductPriceByUnits', {
+              product: productId,
+              includeUnit: true
+            }).catch(err => {
+              this.cms.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
+              return [];
+            }).then(prices => prices.find(f => this.cms.getObjectId(f.Unit) == this.cms.getObjectId(product.Unit))).then(price => {
+              if (price || true) { // Cho phép chọn sản phẩm không có giá bán
+                price = parseFloat(price?.Price || 0);
+                existsProduct.get('Price').setValue(price);
+                existsProduct.get('ToMoney').setValue(price * existsProduct.get('Quantity').value);
+
+                this.calculateToMoney(existsProduct);
+                detailsControls.push(existsProduct);
+                this.calculateTotal(this.orderForm);
+                this.activeDetail(this.orderForm, existsProduct, 0);
+                this.playNewPipSound();
+              } else {
+                this.cms.showToast('Không thể bán hàng với hàng hóa chưa có giá bán !', 'Hàng hóa chưa có giá bán !', { ...this.toastDefaultConfig, status: 'danger' });
+              }
+            });
+          } else {
+            this.playErrorPipSound();
+            this.cms.showToast('Hàng hóa không tồn tại !', 'Hàng hóa không tồn tại !', { ...this.toastDefaultConfig, status: 'danger' });
+            throw new Error('Hàng hóa không tồn tại !');
+          }
+        }
+      }
+      // this.isBarcodeProcessing.next(queueId + 1);
+      // console.log('Barcode process sucess for queue: ' + queueId);
+      console.log('barcode processed');
+      return existsProduct;
+    } catch (err) {
+      console.error(err);
+      // this.isBarcodeProcessing.next(queueId + 1);
       return null;
     }
   }
@@ -2104,13 +2705,10 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       if ((/^[0-9a-z]$/i.test(event.key) || ['Enter'].indexOf(event.key) > -1) && (document.activeElement as HTMLElement).tagName == 'BODY') {
 
         this.cms.barcodeScanDetective(event.key, barcode => {
-          this.barcodeProcess(barcode, {
-            onHadPrimise: (promise) => {
-              // this.promiseAll.push(promise);
-            }
-          }).then(status => {
-            console.log('Barcode processed');
-          });
+          this.barcodeProcessQueue(barcode);
+          // .then(status => {
+          //   console.log('Barcode processed');
+          // });
         });
 
       }
