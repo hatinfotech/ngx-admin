@@ -68,8 +68,14 @@
                                             <span>{{detail.Product?.Sku}}</span>
                                             <span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span>
                                         </div>
+                                        <div style="margin-left: 10px" class="nowrap">
+                                          <span *ngIf="detail.CustomerSku">Sku KH: {{detail.CustomerSku}}</span>
+                                        </div>
                                     </td>
-                                    <td><span [innerHTML]="renderValue(detail.Description)"></span></td>
+                                    <td>
+                                        <span [innerHTML]="renderValue(detail.Description)"></span>
+                                        <span *ngIf="detail.CustomerProductName"><br>Tên theo khách hàng: {{renderValue(detail.CustomerProductName)}}</span>
+                                    </td>
                                     <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                                     <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
