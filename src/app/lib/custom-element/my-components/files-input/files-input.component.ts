@@ -142,8 +142,9 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         break;
       case 'addedToQueue':
         if (typeof output.file !== 'undefined') {
-          this.files.push(output.file);
+          // if (!this.files) this.files = [];
           if (!Array.isArray(this.value)) this.value = [];
+          this.files.push(output.file);
           this.value.push({ Thumbnail: 'assets/images/no-image-available.png', progress: { percentage: 0 }, uploading: true, file: output.file });
           // output.file['index'] = this.value.length - 1;
         }
@@ -174,7 +175,8 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         const respFile: FileModel = output.file.response[0];
         const imageIndex = this.value.findIndex(f => f.file?.id === output?.file?.id);
         if (respFile) {
-          if (!this.value) this.value = [];
+          // if (!this.value) this.value = [];
+          if (!Array.isArray(this.value)) this.value = [];
           this.value[imageIndex] = respFile;
         } else {
           this.value.splice(imageIndex, 1);
@@ -263,6 +265,10 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
                     // const values = [];
                     const file = await this.apiService.uploadFileByLink(link);
                     if (file) {
+                      // if (!this.value) {
+                      //   this.value = [];
+                      // }
+                      if (!Array.isArray(this.value)) this.value = [];
                       this.value.push(file);
                       this.onChange && this.onChange(this.value);
                     }
@@ -281,6 +287,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
         ],
       },
     });
+    return false;
   }
 
   onFileClick(file: FileModel) {
@@ -292,6 +299,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
 
     // Open photo browser
     if (!this.config?.overrideOnThumbnailClick) {
+      if (!Array.isArray(this.value)) this.value = [];
       this.cms.openDialog(ImagesViewerComponent, {
         context: {
           images: this.value.map(m => m.OriginImage),
@@ -305,6 +313,7 @@ export class FilesInputComponent implements ControlValueAccessor, Validator, OnC
   }
 
   remove(index: number) {
+    if (!Array.isArray(this.value)) this.value = [];
     this.value && this.value.splice(index, 1);
 
     this.onChange(this.value);

@@ -263,6 +263,7 @@ export class FileInputComponent implements ControlValueAccessor, Validator, OnCh
         ],
       },
     });
+    return false;
   }
 
   preview() {

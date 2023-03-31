@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { ContactDetailModel } from '../../../../models/contact.model';
+import { ContactDetailModel, ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-business-form/acc-business-form.component';
@@ -147,6 +147,25 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
     params['includeGroups'] = true;
     params['includeDetails'] = true;
     super.executeGet(params, success, error);
+  }
+  
+  onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        if (selectedData.Code) {
+          formGroup.get('ObjectName').setValue(selectedData.Name);
+          formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+          formGroup.get('ObjectEmail').setValue(selectedData.Email);
+          formGroup.get('ObjectAddress').setValue(selectedData.Address);
+          formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
+          formGroup.get('ObjectBankName').setValue(selectedData.BankName);
+          formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
+        }
+      }
+    }
   }
 
   makeNewFormGroup(data?: BusinessModel): FormGroup {

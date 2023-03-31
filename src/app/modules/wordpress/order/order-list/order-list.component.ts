@@ -11,7 +11,7 @@ import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelat
 import { WordpressOrderFormComponent } from '../order-form/order-form.component';
 import { WordpressOrderPrintComponent } from '../order-print/order-print.component';
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil, filter } from 'rxjs/operators';
 import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
@@ -80,7 +80,7 @@ export class WordpressOrderListComponent extends ServerDataManagerListComponent<
   async init() {
     return super.init().then(async state => {
       // this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'ALL', text: 'Tất cả' }, ...rs]);
-      this.wordpressService.siteList$.pipe(takeUntil(this.destroy$)).subscribe(siteList => {
+      await this.wordpressService.siteList$.pipe(takeUntil(this.destroy$), filter(f => f && f.length > 0), take(1)).toPromise().then(siteList => {
         this.siteList = siteList;
       });
       this.actionButtonList.unshift({

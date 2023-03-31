@@ -211,6 +211,64 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
             });
           }
         },
+        Status: {
+          title: this.cms.translateText('Common.state'),
+          type: 'custom',
+          width: '5%',
+          // class: 'align-right',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'checkmark-circle';
+            instance.display = true;
+            instance.status = 'success';
+            instance.disabled = this.isChoosedMode;
+            instance.title = this.cms.translateText('Common.state');
+            instance.label = this.cms.translateText('Common.state');
+            instance.valueChange.subscribe(value => {
+              const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
+              instance.label = this.cms.translateText(processMap?.label);
+              instance.status = processMap?.status;
+              instance.outline = processMap?.outline;
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CommerceServiceByCycleModel) => {
+              this.changeStateConfirm(instance.rowData).then(status => {
+                if (status) this.refresh();
+              });
+            });
+          },
+          filter: {
+            type: 'custom',
+            component: SmartTableSelect2FilterComponent,
+            config: {
+              delay: 0,
+              condition: 'eq',
+              select2Option: {
+                placeholder: this.cms.translateText('Common.state') + '...',
+                allowClear: true,
+                width: '100%',
+                dropdownAutoWidth: true,
+                minimumInputLength: 0,
+                keyMap: {
+                  id: 'id',
+                  text: 'text',
+                },
+                // multiple: true,
+                ajax: {
+                  url: (params: any) => {
+                    return 'data:text/plan,[]';
+                  },
+                  delay: 0,
+                  processResults: (data: any, params: any) => {
+                    return {
+                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
+                    };
+                  },
+                },
+              },
+            },
+          },
+        },
         State: {
           title: this.cms.translateText('Common.state'),
           type: 'custom',
@@ -354,6 +412,28 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
               this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
                 status: 'success',
               });
+              if (processMap?.nextState === 'ACTIVE') {
+                this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
+                  Code: null,
+                  Resources: [
+                    {
+                      ResourceType: 'SERVICEBYCYCLE',
+                      Resource: data.Code,
+                      Title: data.Description,
+                      Date: data.DateOfStart,
+                    }
+                  ]
+                }]).then(rs => {
+                  if (rs && rs.length > 0 && rs[0].Resources && rs[0].Resources.length > 0) {
+                    const link = rs[0].Resources[0];
+                    if (link && link.ChatRoom) {
+                      this.cms.openMobileSidebar();
+                      this.mobileAppService.openChatRoom({ ChatRoom: link.ChatRoom });
+                      this.refresh();
+                    }
+                  }
+                });
+              }
               resolve(true);
               return true;
             }).catch(err => {
@@ -361,6 +441,7 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
               resolve(false);
               return false;
             });
+
           },
         },
       ], () => {

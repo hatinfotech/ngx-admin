@@ -1048,7 +1048,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   extractToOtherUnits(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
     const formDetails = this.getDetails(parentFormGroup);
-    const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { ...detail.value, Id: null });
+    const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { ...detail.value, Id: null, SystemUuid: null });
     newDetailFormGroup['unitList'] = detail['unitList'];
     newDetailFormGroup['case'] = detail['case'];
     newDetailFormGroup['IsManageByAccessNumber'] = detail['IsManageByAccessNumber'];
