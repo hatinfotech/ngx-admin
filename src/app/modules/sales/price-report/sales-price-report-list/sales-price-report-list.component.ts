@@ -31,7 +31,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
 
   componentName: string = 'SalesPriceReportListComponent';
   formPath = '/sales/price-report/form';
-  apiPath = '/sales/price-reports';
+  apiPath = '/sales/price-quotations';
   idKey = 'Code';
   formDialog = SalesPriceReportFormComponent;
   printDialog = SalesPriceReportPrintComponent;

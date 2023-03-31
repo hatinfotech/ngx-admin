@@ -16,6 +16,7 @@ import { CollaboratorService } from '../../collaborator.service';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { CollaboratorOrderTeleCommitPrintComponent } from '../collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
 import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
+import { filter, take } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-collaborator-order-print',
@@ -51,6 +52,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   }
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     const result = await super.init();
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     // for (const i in this.data) {

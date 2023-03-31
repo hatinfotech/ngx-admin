@@ -6,6 +6,7 @@ import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { Model } from './model';
 import { IdTextModel } from './common.model';
+import { FileModel } from './file.model';
 
 export class SalesVoucherModel extends Model {
   Id?: string & number;
@@ -257,4 +258,22 @@ export class SalesMasterPriceTableDetailModel extends Model  {
   Price?: string | number;
   Currency?: string;
   Discount?: string | number;
+}
+
+
+export interface SalesProductModel {
+  Id?: string;
+  Product?: string;
+  OriginalName?: string;
+  OriginSku?: string;
+  Customer?: string;
+  CustomerName?: string;
+  Name?: string;
+  TaxName?: string;
+  TaxValue?: string;
+  Sku?: string;
+  ReferenceVoucher?: string;
+  LastUpdate?: string;
+  FeaturePicture?: FileModel;
+  Pictures?: FileModel[];
 }

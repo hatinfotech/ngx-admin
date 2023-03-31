@@ -554,6 +554,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
   async init(): Promise<boolean> {
     /** Load and cache tax list */
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;

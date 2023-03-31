@@ -12,7 +12,7 @@ import { SmartTableFilterComponent, SmartTableSelect2FilterComponent } from '../
 import { UnitModel } from '../../../../models/unit.model';
 import { GoodsModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
 import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
@@ -344,6 +344,7 @@ export class SalesProductListComponent extends ProductListComponent implements O
 
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path} - ${container.Description}` })) as any;
     return super.init().then(rs => {
       this.actionButtonList.map(button => {

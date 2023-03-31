@@ -104,6 +104,7 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
   }
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     await this.loadCache();
     return super.init().then(rs => {
 

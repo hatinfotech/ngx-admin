@@ -1,6 +1,6 @@
 import { FileModel } from './../../../../models/file.model';
 import { CurrencyPipe } from '@angular/common';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from './../../admin-product.service';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -75,6 +75,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   }
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     return super.init().then(rs => {
       // this.actionButtonList.unshift({
       //   name: 'chooseFile',

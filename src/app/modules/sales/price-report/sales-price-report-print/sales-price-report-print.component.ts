@@ -12,6 +12,7 @@ import { SalesPriceReportFormComponent } from '../sales-price-report-form/sales-
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { filter, take } from 'rxjs/operators';
 
 declare var $: JQueryStatic;
 
@@ -25,7 +26,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   /** Component name */
   componentName = 'SalesPriceReportPrintComponent';
   title: string = 'Xem trước phiếu báo giá';
-  apiPath = '/sales/price-reports';
+  apiPath = '/sales/price-quotations';
   env = environment;
   processMapList: ProcessMap[] = [];
   formDialog = SalesPriceReportFormComponent;
@@ -48,6 +49,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
   }
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     const result = await super.init().then(rs => {
 
       this.actionButtonList.unshift({
@@ -311,10 +313,10 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         map[obj.Code] = obj;
         return map;
       }, {});
-      const unitMap = this.adminProductService.unitList$.value.reduce(function (map, obj) {
-        map[obj.Code] = obj;
-        return map;
-      }, {});
+      // const unitMap = this.adminProductService.unitList$.value.reduce(function (map, obj) {
+      //   map[obj.Code] = obj;
+      //   return map;
+      // }, {});
       for (const detail of datanium.Details) {
         if (detail.Type !== 'CATEGORT') {
           datanium['Total'] += detail['ToMoney'] = this.toMoney(detail);

@@ -1,3 +1,4 @@
+import { SaleProductListComponent } from './modules/sales/sales-product/sales-product-list/sales-product-list.component';
 import { WordpressOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
 import { ProductObjectReferenceListComponent } from './modules/admin-product/product-object-reference/product-object-reference-list/product-object-reference-list.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
@@ -527,6 +528,11 @@ const routes: Routes = [
     path: 'sales/product/list',
     canActivate: [AuthGuardService],
     component: SalesProductListComponent,
+  },
+  {
+    path: 'sales/sales-product/list',
+    canActivate: [AuthGuardService],
+    component: SaleProductListComponent,
   },
 
   // Purchase routes

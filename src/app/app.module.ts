@@ -311,6 +311,8 @@ import { WordpressSyncProfilePreviewComponent } from './modules/wordpress/sync-p
 import { WordpressOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
 import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
 import { WordpressOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
+import { SaleProductFormComponent } from './modules/sales/sales-product/sales-product-form/sales-product-form.component';
+import { SaleProductListComponent } from './modules/sales/sales-product/sales-product-list/sales-product-list.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -362,6 +364,8 @@ export class DynamicLocaleId extends String {
     MasterPriceTablePrintComponent,
     SalesProductDemoTemPrintComponent,
     SalesDashboardComponent,
+    SaleProductListComponent,
+    SaleProductFormComponent,
 
     // Purchase components
     PurchasePriceTableListComponent,

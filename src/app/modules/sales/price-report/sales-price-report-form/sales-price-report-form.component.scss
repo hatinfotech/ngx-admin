@@ -1,6 +1,14 @@
 [name="ToMoney"] [formcontrolname="ToMoney"],
+[name="Description"] [formcontrolname="Description"],
+[name="Tax"] [formcontrolname="Tax"]{
+  border-right: 4px solid var(--danger);
+}
+[name="ToMoney"] [formcontrolname="ToMoney"],
 [name="Description"] [formcontrolname="Description"]{
-    border-right: 4px solid var(--secondary);
+  border-right: 4px solid var(--danger);
+  &.imported {
+      border-right: 4px solid var(--success);
+  }
 }
 
 [name="Note"] .scrollable-container {

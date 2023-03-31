@@ -12,6 +12,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { CollaboratorOrderTeleCommitFormComponent } from '../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
+import { filter, take } from 'rxjs/operators';
 
 declare var $: JQueryStatic;
 
@@ -48,6 +49,7 @@ export class CollaboratorOrderTeleCommitPrintComponent extends DataManagerPrintC
   }
 
   async init() {
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     const result = await super.init();
     // this.title = `PhieuBaoGia_${this.identifier}` + (this.data.Reported ? ('_' + this.datePipe.transform(this.data.Reported, 'short')) : '');
     // for (const i in this.data) {

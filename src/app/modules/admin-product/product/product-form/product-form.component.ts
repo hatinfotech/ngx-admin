@@ -247,6 +247,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
 
   async init() {
     // await this.loadCache();
+    await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     return super.init().then(rs => {
       if (this.isDuplicate) {
         this.array.controls.forEach((formItem, index) => {
