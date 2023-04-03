@@ -1345,6 +1345,14 @@ const routes: Routes = [
 
   // Commerce POS route
   {
+    path: 'commerce-pos/dashboard',
+    canActivate: [AuthGuardService],
+    component: CommercePosDashboardComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
     path: 'commerce-pos/gui',
     canActivate: [AuthGuardService],
     component: CommercePosGuiComponent,
