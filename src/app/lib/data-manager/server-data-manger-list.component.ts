@@ -39,10 +39,11 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   }
 
   /** Config for paging */
-  protected configPaging() {
+  protected configPaging(): any {
     return {
       display: true,
       perPage: 40,
+      // perPageSelect: [40,80,120]
     };
   }
 

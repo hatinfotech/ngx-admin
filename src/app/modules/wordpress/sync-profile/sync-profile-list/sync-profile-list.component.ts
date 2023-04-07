@@ -78,11 +78,11 @@ export class WordpressSyncProfileListComponent extends ServerDataManagerListComp
           type: 'string',
           width: '10%',
         },
-        Status: {
-          title: 'Trạng thái',
-          type: 'string',
-          width: '10%',
-        },
+        // Status: {
+        //   title: 'Trạng thái',
+        //   type: 'string',
+        //   width: '10%',
+        // },
         Sync: {
           title: 'Sync',
           type: 'custom',
@@ -105,7 +105,8 @@ export class WordpressSyncProfileListComponent extends ServerDataManagerListComp
               this.cms.openDialog(WordpressSyncProfilePreviewComponent, {
                 context: {
                   inputId: [instance.rowData.Code],
-                }
+                },
+                closeOnEsc: false
               })
             });
           },

@@ -48,6 +48,7 @@ import { DataSource } from '../../lib/data-source/data-source';
             <span class="sr-only">Last</span>
           </a>
         </li>
+        <li class="ng2-smart-page-item page-item">{{page * perPage}}/{{count}}</li>
       </ul>
     </nav>
     
@@ -55,7 +56,7 @@ import { DataSource } from '../../lib/data-source/data-source';
       <label for="per-page">
         Per Page:
       </label>
-      <select (change)="onChangePerPage($event)" [(ngModel)]="currentPerPage" id="per-page">
+      <select (change)="onChangePerPage($event)" [(ngModel)]="currentPerPage" id="per-page" style="background: transparent;">
         <option *ngFor="let item of perPageSelect" [value]="item">{{ item }}</option>
       </select>
     </nav>

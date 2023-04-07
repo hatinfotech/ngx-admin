@@ -247,8 +247,8 @@
                                                     <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-is-12">
                                                         <div class="row">
                                                             <div class="col-xl-5 col-lg-5 col-md-4 col-sm-12 col-is-12">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="CustomerProductName" label="Tên theo nhà cung cấp" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                                    <input type="text" nbInput fullWidth formControlName="CustomerProductName" placeholder="{{'Tên theo nhà cung cấp' | translate | headtitlecase}}">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="CustomerProductName" label="Tên theo khách hàng" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                                    <input type="text" nbInput fullWidth formControlName="CustomerProductName" placeholder="{{'Tên theo khách hàng' | translate | headtitlecase}}">
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-xl-5 col-lg-5 col-md-4 col-sm-12 col-is-12">
@@ -279,7 +279,7 @@
                                         <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>{{'Thêm nhiều hàng hóa/dịch vụ' | translate | headtitlecase}}
                                     </button>
                                     <button [disabled]="!formItem.get('Object')?.value?.id || processing" type="button" nbButton status="danger" hero size="medium" (click)="chooseFile.click() && false" title="{{'Common.choose' | translate | headtitlecase}}">
-                                        <nb-icon pack="eva" icon="file"></nb-icon>{{formItem.get('Object')?.value?.id && 'Nhập chi tiết' || 'Chọn nhà cung cấp để nhập chi tiết'}}
+                                        <nb-icon pack="eva" icon="file"></nb-icon>{{formItem.get('Object')?.value?.id && 'Nhập chi tiết' || 'Chọn khách hàng để nhập chi tiết'}}
                                     </button>
                                     <input type="file" #chooseFile (change)="importDetails(formItem, $event)" style="display: none">
                                 </div>

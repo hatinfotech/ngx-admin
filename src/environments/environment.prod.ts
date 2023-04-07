@@ -6,7 +6,9 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.5.2',
+  version: '6.5.6.2',
+  // 6.5.6.2:   sync wp product: allow delete dirty products
+  // 6.5.6.1:   fix for testing 
   // 6.5.5.1:   hotfix update: sales-product
   // 6.5.4.1:   hotfix module Service by cycle
   // 6.5.3.2:   POS: fix return voucher payment

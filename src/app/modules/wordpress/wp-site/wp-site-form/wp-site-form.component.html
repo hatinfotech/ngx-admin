@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 90%; margin: 0 auto;">
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="$event.preventDefault()" (keydown.enter)="$event.preventDefault()" class="dialog-wrap popup" style="width: 720px; margin: 0 auto;">
   <div formArrayName="array">
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
@@ -8,49 +8,136 @@
         <nb-card-body>
           <div [formGroup]="formItem">
             <div class="row">
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="Domain" label="Common.domain" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                   <input type="text" nbInput fullWidth formControlName="Domain" placeholder="{{'Common.domain' | translate | headtitlecase}}">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="BaseUrl" label="Base URL" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="BaseUrl" placeholder="Base URL">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="ApiUrl" label="Api Url" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="ApiUrl" placeholder="Api Url">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="ApiToken" label="Api Token" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="ApiToken" placeholder="Api Token">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="ApiUsername" label="Api Username" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="ApiUsername" placeholder="Api Username">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="ApiPassword" label="Api Password" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="ApiPassword" placeholder="Api Password">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="WooConsumerKey" label="WP Consumer Key" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="WooConsumerKey" placeholder="WP Consomer Key">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-12">
                 <ngx-form-group [formGroup]="formItem" name="WooConsumerSecret" label="Consumer Secret" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                   <input type="text" nbInput fullWidth formControlName="WooConsumerSecret" placeholder="WP Consumer Secret">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Supplier" label="Supplier" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Supplier" placeholder="Supplier">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="ServiceName" label="Service Name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="ServiceName" placeholder="ServiceName">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Hosting" label="Hosting" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Hosting" placeholder="Hosting">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="CpAccessLink1" label="CP Access Link 1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CpAccessLink1" placeholder="CP Access Link 1">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="CpAccessLink2" label="CP Access Link 2" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CpAccessLink2" placeholder="CP Access Link 2">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="CpUsername" label="CP Username" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CpUsername" placeholder="CP Username">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="CpPassword" label="CP Password" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CpPassword" placeholder="CP Password">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Cp2fa" label="CP 2fa" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Cp2fa" placeholder="CP 2fa">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="CpNote" label="CP Note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="CpNote" placeholder="CP Note">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="RegisterDatetime" label="Register Date" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" [owlDateTime]="RegisterDatetime" [owlDateTimeTrigger]="RegisterDatetime" nbInput fullWidth formControlName="RegisterDatetime" placeholder="Register Date">
+                  <owl-date-time #RegisterDatetime></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Exprired" label="Exprired" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" [owlDateTime]="Exprired" [owlDateTimeTrigger]="Exprired" nbInput fullWidth formControlName="Exprired" placeholder="Exprired">
+                  <owl-date-time #Exprired></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="ManagerEmail" label="Manager Email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="ManagerEmail" placeholder="Manager Email">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="ManagerPhone" label="Manager Phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="ManagerPhone" placeholder="Manager Phone">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="SupportAdminObject" label="Support Admin Object" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="SupportAdminObject" placeholder="Support Admin Object">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="SupportHotline" label="Support Hotline" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="SupportHotline" placeholder="Support Hotline">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="SupportEmail" label="Support Email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="SupportEmail" placeholder="Support Email">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="ServiceIdentifed" label="Service Identifed" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="ServiceIdentifed" placeholder="Service Identifed">
                 </ngx-form-group>
               </div>
             </div>

@@ -16,7 +16,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { ProductModel } from '../../../../models/product.model';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { WordpressService } from '../../wordpress.service';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-product-list',
@@ -81,7 +81,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     return super.init().then(async rs => {
 
       // this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'NONE', text: 'Không chọn' }, ...rs]);
-      this.wordpressService.siteList$.pipe(takeUntil(this.destroy$)).subscribe(siteList => {
+      await this.wordpressService.siteList$.pipe(takeUntil(this.destroy$), filter(f => f && f.length > 0), take(1)).toPromise().then(siteList => {
         this.siteList = siteList;
       });
 
@@ -723,6 +723,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
       if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'ALL' && this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'NONE') {
         params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
       }
+      params['sort_Id'] = 'desc';
       return params;
     };
 

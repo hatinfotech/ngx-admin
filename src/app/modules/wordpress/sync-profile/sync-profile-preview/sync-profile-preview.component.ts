@@ -381,7 +381,9 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
 
         return false;
       }
-    }
+    },
+
+    filter: true,
 
   };
   public getRowNodeId = (item: ProductModel) => {
@@ -619,12 +621,32 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
         pinned: 'left',
+        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+        filterParams: {
+          filterOptions: ['contains'],
+          textMatcher: ({ value, filterText }) => {
+            var literalMatch = this.cms.smartFilter(value, filterText);
+            return literalMatch;
+          },
+          trimInput: true,
+          debounceMs: 1000,
+        },
       },
       {
         headerName: 'Sku',
         field: 'Sku',
         width: 80,
         filter: 'agTextColumnFilter',
+        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+        filterParams: {
+          filterOptions: ['contains'],
+          textMatcher: ({ value, filterText }) => {
+            var literalMatch = this.cms.smartFilter(value, filterText);
+            return literalMatch;
+          },
+          trimInput: true,
+          debounceMs: 1000,
+        },
         cellRenderer: 'textRender',
         pinned: 'left',
       },
@@ -633,6 +655,16 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         field: 'ProductName',
         width: 400,
         filter: 'agTextColumnFilter',
+        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+        filterParams: {
+          filterOptions: ['contains'],
+          textMatcher: ({ value, filterText }) => {
+            var literalMatch = this.cms.smartFilter(value, filterText);
+            return literalMatch;
+          },
+          trimInput: true,
+          debounceMs: 1000,
+        }
         // pinned: 'left',
       },
       // {
@@ -676,9 +708,27 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       },
       {
         headerName: 'Danh mục WP',
-        field: 'RefCategories',
+        field: 'RefCategoriesText',
         width: 150,
+        // valueFormatter: (cell: ValueFormatterParams) => {
+        //   if (cell.value == null) return '';
+        //     return (cell.value || []).map(m => this.cms.getObjectText(m)).join(', ');
+        // },
         filter: 'agTextColumnFilter',
+        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+        filterParams: {
+          filterOptions: ['contains'],
+          textMatcher: ({ value, filterText }) => {
+            var literalMatch = this.cms.smartFilter(value, filterText);
+            return literalMatch;
+          },
+          // textFormatter: (r) => {
+          //   if (r == null) return null;
+          //   return (r || []).map(m => this.cms.getObjectText(m)).join(', ');
+          // },
+          trimInput: true,
+          debounceMs: 1000,
+        },
         cellRenderer: 'textRender',
         // pinned: 'right',
       },
@@ -747,11 +797,17 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   syncTaskDetails = [];
   async loadSyncTaskDetails(profile?: string) {
     if (this.activeTaskId) {
-      this.syncTaskDetails = await this.apiService.getPromise('/wordpress/sync-task-details', {
+      this.syncTaskDetails = await this.apiService.getPromise<any[]>('/wordpress/sync-task-details', {
         eq_Task: this.activeTaskId,
         sort_SyncTime: 'desc',
         limit: 'nolimit',
         includeIdText: true,
+      }).then(rs => {
+        for (const item of rs) {
+          item.IsSync = item.Status === 'READY';
+          item.RefCategoriesText = (item.RefCategories || []).map(m => this.cms.getObjectText(m)).join(', ');
+        }
+        return rs;
       });
       this.loadList();
     }
@@ -779,19 +835,41 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
 
   refreshProcessing = null;
   async sync() {
-    return this.apiService.putPromise('/wordpress/wp-sync-profiles/' + this.inputId[0], { sync: true }, [
-      { Code: this.inputId[0] },
-    ]).then(async rs => {
-      await this.loadSyncTasks(this.inputId[0]);
-      await this.loadSyncTaskDetails(this.inputId[0]);
-      setTimeout(() => {
-        this.refresh();
-        setTimeout(() => {
-          this.autoRefresh();
-        }, 300);
-      }, 500);
-      return true;
+
+    const syncList = [];
+    this.gridApi.forEachNode(async (rowNode, index) => {
+      const rowData = rowNode.data;
+      if (!rowData.IsSync) {
+        syncList.push({
+          Id: rowData.Id,
+          Status: 'SKIP',
+        });
+      }
     });
+
+    // Update IsSync state
+    this.loading = true;
+    try {
+      await this.apiService.putPromise('/wordpress/sync-task-details', {}, syncList);
+      await this.loadSyncTaskDetails();
+
+      return this.apiService.putPromise('/wordpress/wp-sync-profiles/' + this.inputId[0], { sync: true }, [
+        { Code: this.inputId[0] },
+      ]).then(async rs => {
+        await this.loadSyncTasks(this.inputId[0]);
+        await this.loadSyncTaskDetails();
+        this.loading = false;
+        setTimeout(() => {
+          this.refresh();
+          setTimeout(() => {
+            this.autoRefresh();
+          }, 300);
+        }, 500);
+        return true;
+      });
+    } catch (err) {
+      this.loading = false;
+    }
   }
 
   async changeState(task: any, state: string) {

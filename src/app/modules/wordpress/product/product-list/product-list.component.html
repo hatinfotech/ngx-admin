@@ -1,7 +1,7 @@
 <div class="dialog-wrap {{inputMode}}">
     <nb-card class="small-header smart-table">
       <nb-card-header>
-        <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('WP Product' | translate:{action: '', definition: cms.translate.instant('Common.table')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('WP Product' | translate:{action: '', definition: cms.translate.instant('Common.table')} | headtitlecase)) + ' - ' + source.count() + ' phần tử' " [controls]="actionButtonList"></ngx-card-header>
       </nb-card-header>
   
       <nb-card-body>

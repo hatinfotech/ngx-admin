@@ -145,11 +145,15 @@ export class CustomHeader implements IHeaderAngularComp {
 
     agInit(params: IHeaderParams & ICustomHeaderParams): void {
         this.params = params;
-
+        // this.params.enableMenu = true;
         params.column.addEventListener(
             'sortChanged',
             this.onSortChanged.bind(this)
         );
+        // params.column.addEventListener(
+        //     'filterChanged',
+        //     this.onFilterChanged.bind(this)
+        // );
 
         this.onSortChanged();
     }
@@ -168,6 +172,9 @@ export class CustomHeader implements IHeaderAngularComp {
             this.noSort = 'active';
         }
     }
+    // onFilterChanged() {
+    //     this.checkBoxControl.patchValue(false);
+    // }
 
     onSortRequested(order: 'asc' | 'desc' | null, event: any) {
         this.params.setSort(order, event.shiftKey);
@@ -180,7 +187,7 @@ export class CustomHeader implements IHeaderAngularComp {
     onSelectAllChange(event) {
         let checked = event.target.checked;
         console.log('Select all: ', checked);
-        this.params.api.forEachNode((node, index) => {
+        this.params.api.forEachNodeAfterFilter((node, index) => {
             node.setDataValue(this.params.column.getColId(), checked);
         });
     }

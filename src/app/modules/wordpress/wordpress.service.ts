@@ -22,14 +22,14 @@ export class WordpressService {
   ) {
 
     // Load current apge form local store
-    let currenPageCache = localStorage.getItem('wordpress_workingsite');
+    let currenPageCache = localStorage.getItem('wordpress.site');
     if (typeof currenPageCache === 'string') {
       currenPageCache = JSON.parse(currenPageCache);
     }
     this.currentSite$ = new BehaviorSubject<string>(currenPageCache);
 
     // store current page on change
-    this.currentSite$.subscribe(value => localStorage.setItem('collaborator.page', typeof value === 'undefined' ? null : JSON.stringify(value)));
+    this.currentSite$.subscribe(value => localStorage.setItem('wordpress.site', typeof value === 'undefined' ? null : JSON.stringify(value)));
 
     // wait for first authentication success
     this.authService.isAuthenticated().pipe(take(1), filter(f => !!f)).toPromise().then(() => {

@@ -1181,7 +1181,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       this.progressStatus = 'success';
       for (const newProduct of allProductList) {
         loaded++;
-        this.progress = loaded/total*100;
+        this.progress = loaded / total * 100;
         this.progressLabel = newProduct.Name + ' (' + this.progress.toFixed(2) + '%)';
         if (newProduct.IsImport) {
           // var CryptoJS = require("crypto-js");
@@ -1278,7 +1278,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       }
 
       // Update price
-        this.progressStatus = 'primary';
+      this.progressStatus = 'primary';
       if (updatePriceProductList.length > 0) {
         this.cms.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
         await this.apiService.putProgress('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
@@ -1304,21 +1304,22 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
       // Export update data
       for (const i in allProductList) {
-        this.sheet[i][this.mapping['Sku']] = allProductList[i].Sku;
-        this.sheet[i][this.mapping['Code']] = allProductList[i].Code;
+        const realIndex = parseInt(i) + 1;
+        this.sheet[realIndex][this.mapping['Sku']] = allProductList[i].Sku;
+        this.sheet[realIndex][this.mapping['Code']] = allProductList[i].Code;
 
-        this.sheet[i][this.mapping['WarehouseUnit']] = this.cms.getObjectId(allProductList[i].WarehouseUnit);
-        this.sheet[i][this.mapping['WarehouseUnitName']] = allProductList[i].WarehouseUnitName;
+        this.sheet[realIndex][this.mapping['WarehouseUnit']] = this.cms.getObjectId(allProductList[i].WarehouseUnit);
+        this.sheet[realIndex][this.mapping['WarehouseUnitName']] = allProductList[i].WarehouseUnitName;
 
         if (this.mapping['UnitConversions']) {
           for (let r = 0; r < this.mapping['UnitConversions'].length; r++) {
-            this.sheet[i][this.mapping['UnitConversions'][r]['Unit']] = this.cms.getObjectId(allProductList[i]['Unit' + (r + 1)]);
+            this.sheet[realIndex][this.mapping['UnitConversions'][r]['Unit']] = this.cms.getObjectId(allProductList[i]['Unit' + (r + 1)]);
           }
         }
         if (this.mapping['Properties']) {
           for (let r = 0; r < this.mapping['Properties'].length; r++) {
-            if (this.sheet[i][this.mapping['Properties'][r]['Property']]) this.sheet[i][this.mapping['Properties'][r]['Property']] = this.cms.getObjectId(allProductList[i]['Property' + (r + 1)]);
-            if (allProductList[i]['PropertyValues' + (r + 1)]) this.sheet[i][this.mapping['Properties'][r]['PropertyValues']] = allProductList[i]['PropertyValues' + (r + 1)].map(m => this.cms.getObjectId(m)).join(', ');
+            if (this.sheet[realIndex][this.mapping['Properties'][r]['Property']]) this.sheet[realIndex][this.mapping['Properties'][r]['Property']] = this.cms.getObjectId(allProductList[i]['Property' + (r + 1)]);
+            if (allProductList[i]['PropertyValues' + (r + 1)]) this.sheet[realIndex][this.mapping['Properties'][r]['PropertyValues']] = allProductList[i]['PropertyValues' + (r + 1)].map(m => this.cms.getObjectId(m)).join(', ');
           }
         }
       }

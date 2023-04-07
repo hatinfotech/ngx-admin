@@ -530,10 +530,11 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   /** Config for paging */
-  protected configPaging() {
+  protected configPaging(): any {
     return {
       display: true,
       perPage: 100,
+      // perPageSelect: [1,2,3]
     };
   }
 
