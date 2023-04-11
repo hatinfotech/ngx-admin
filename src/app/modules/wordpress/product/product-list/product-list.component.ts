@@ -274,6 +274,10 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                       text: 'text',
                     },
                     multiple: true,
+                    closeOnSelect: false,
+                    allowHtml: true,
+                    templateResult: (d) => { return d.html ? $(`<span>${d.html}</span>`) : d.text; },
+                    templateSelection: (d) => { return d.text; },
                   }
                 },
               ],
@@ -303,7 +307,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                         }
                         for (const cate of categories) {
                           if (!selectedItem.RefCategories.some(s => this.cms.getObjectId(s) == this.cms.getObjectId(cate))) {
-                            selectedItem.RefCategories.push(cate);
+                            selectedItem.RefCategories.push({ ...cate, text: cate.name });
                           }
                         }
                       }
@@ -502,10 +506,35 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
               if (this.cms.getObjectId(value) != 'NONE') {
                 this.loading = true;
                 const toastRef = this.cms.showToast('Đang tải danh mục wordpress ' + this.cms.getObjectText(value), 'Tải danh mục wordpress', { status: 'info', duration: 60000 });
-                this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
-                  m.text = m.name;
-                  return m;
-                })).catch(err => {
+                this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit', loadByTree: true }).then(rs => {
+
+                  function extractTreeToList(list: any[], lv?: number): any[] {
+                    let results = [];
+                    lv = lv || 0;
+                    for (const item of list) {
+                      // item.lv = lv;
+                      item.text = item.name;
+                      item.html = (new Array(lv + 1).join('&nbsp;&nbsp;')) + item.name;
+                      // item.text = item.name;
+                      results.push(item);
+                      if (item['children']) {
+                        results = [
+                          ...results,
+                          ...extractTreeToList(item['children'], lv + 1),
+                        ];
+                      }
+                      delete item['children'];
+                    }
+                    return results;
+                  }
+
+                  const results = extractTreeToList(rs);
+                  return results;
+                  // return rs.map(m => {
+                  //   m.text = m.name;
+                  //   return m;
+                  // });
+                }).catch(err => {
                   this.loading = false;
                   toastRef.close();
                   return Promise.reject(err);

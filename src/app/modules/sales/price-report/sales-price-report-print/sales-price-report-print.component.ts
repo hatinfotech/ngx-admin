@@ -13,6 +13,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { filter, take } from 'rxjs/operators';
+import * as XLSX from 'xlsx';
 
 declare var $: JQueryStatic;
 
@@ -61,6 +62,18 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         icon: 'download-outline',
         click: () => {
           this.downloadPdf(this.id);
+          return true;
+        }
+      });
+      this.actionButtonList.unshift({
+        name: 'downaloExcel',
+        label: 'Excel',
+        title: 'Download Excel',
+        status: 'primary',
+        size: 'medium',
+        icon: 'download-outline',
+        click: (event, option) => {
+          this.downloadExcel(option?.index);
           return true;
         }
       });
@@ -335,6 +348,36 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
     //   this.processMapList[i] = AppModule.processMaps.cashVoucher[item.State || ''];
     // }
     return data;
+  }
+
+  downloadExcel(index: number) {
+    // for (const index in ids) {
+    const data = this.data[index];
+    const details = [];
+    let no = 0;
+    for (const detail of data.Details) {
+      no++;
+      details.push({
+        STT: no,
+        'STT DATA': no,
+        'Sku': detail['Product']['Sku'],
+        'ProductID': this.cms.getObjectId(detail['Product']),
+        'ProductName/Tên Sản Phẩm': detail['Product']['Name'],
+        'CustomerSku/Mã SP nội bộ KH': detail['CustomerSku'],
+        'CustomerProductName/Tên SP nội bộ KH': detail['CustomerProductName'],
+        'CustomerProductTaxName/Tên SP theo thuế': detail['ProductTaxName'],
+        'CustomerTax/thuế suất %': detail['Tax'],
+        'Unit/Mã ĐVT': this.cms.getObjectId(detail['Unit']),
+        'UnitName/Tên ĐVT': this.cms.getObjectText(detail['Unit']),
+        'Price/Đơn Giá': detail['Price'],
+        'Quantity/Số lượng': detail['Quantity'],
+        'ToMoney/Thành tiền': detail['ToMoney'],
+      });
+    }
+    const sheet = XLSX.utils.json_to_sheet(details);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, 'Chi tiết đơn đặt mua hàng');
+    XLSX.writeFile(workbook, 'PBG-' + data.Code + ' - ' + data.Title + ' - KH: ' + this.cms.getObjectId(data.Object) + ' - ' + data.ObjectName + '.xlsx');
   }
 
 }

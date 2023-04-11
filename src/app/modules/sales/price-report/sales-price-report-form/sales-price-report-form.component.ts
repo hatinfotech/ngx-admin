@@ -603,18 +603,8 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [1, (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      Price: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      Quantity: [],
+      Price: [],
       Unit: ['', (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };

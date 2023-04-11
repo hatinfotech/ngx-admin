@@ -196,8 +196,8 @@
                                             </div>
 
                                             <div class="col-md-9 col-sm-9 col-is-9">
-                                                <ngx-form-group  *ngIf="detail.__type !== 'CATEGORY'" [hideLabel]="false" [formGroup]="detail" name="Image" label="Hỉnh ảnh" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
-                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: detail.__type === 'CATEGORY' && '2.5rem' || '11.5rem', padding: '0'}, thumbnailStype: {height: '5rem', width: '100%'}}"></ngx-files-input>
+                                                <ngx-form-group *ngIf="detail.__type !== 'CATEGORY'" [hideLabel]="false" [formGroup]="detail" name="Image" label="Hỉnh ảnh" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false">
+                                                    <ngx-files-input formControlName="Image" [config]="{style: {height: detail.__type === 'CATEGORY' && '2.5rem' || '11.5rem', padding: '0'}, thumbnailStype: {height: '10.8rem', width: '100%'}}"></ngx-files-input>
                                                 </ngx-form-group>
                                                 <div class="form-group" *ngIf="detail.__type === 'CATEGORY'">
                                                     <label class="label">Di chuyển</label>
@@ -227,7 +227,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-is-12">    
+                                            <div class="col-xl-8 col-lg-8 col-md-7 col-sm-12 col-is-12">
                                                 <div class="row">
                                                     <div class="col-xl-2 col-lg-2 col-md-3 col-sm-6 col-is-6" *ngIf="detail.__type === 'PRODUCT'">
                                                         <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Quantity" label="Voucher.quantity" [array]="formItem._details" [index]="ic" [allowCopy]="false" [required]="false" [align]="'right'">
@@ -300,7 +300,11 @@
                                     <button [disabled]="!formItem.get('Object')?.value?.id || processing" type="button" nbButton status="danger" hero size="medium" (click)="chooseFile.click() && false" title="{{'Common.choose' | translate | headtitlecase}}">
                                         <nb-icon pack="eva" icon="file"></nb-icon>{{formItem.get('Object')?.value?.id && 'Nhập chi tiết' || 'Chọn nhà cung cấp để nhập chi tiết'}}
                                     </button>
-                                    <input type="file" #chooseFile (change)="importDetails(formItem, $event)" style="display: none">
+                                    <input type="file" #chooseFile (change)="chooseFileAndFillDetails(formItem, $event)" style="display: none">
+                                    <button [disabled]="processing" type="button" nbButton status="danger" hero size="medium" (click)="chooseFile2.click() && false" title="{{'Common.choose' | translate | headtitlecase}}">
+                                        <nb-icon pack="eva" icon="file"></nb-icon>{{'Nhập chi tiết từ báo giá'}}
+                                    </button>
+                                    <input type="file" #chooseFile2 (change)="chooseFileAndImportDetails(formItem, $event)" style="display: none">
                                 </div>
                                 <div style="font-weight: bold; padding-right: 28px;">{{'Voucher.total' | translate | headtitlecase}}: {{formItem.get('_total').value | currency:'VND'}}</div>
                             </div>

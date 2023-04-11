@@ -354,7 +354,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     // }
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
-      accBusiness['text'] = accBusiness.Name;
+      accBusiness['text'] = `${accBusiness.Name} (${accBusiness.DebitAccount},${accBusiness.CreditAccount})`;
       return accBusiness;
     }));
     return super.init().then(async status => {
@@ -1218,6 +1218,338 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             this.cms.showToast(row['ProductName'] + ' Không có trên đơn đặt hàng', 'Sản phẩm không có trên đơn đặt hàng !', { duration: 15000, status: 'warning', duplicatesBehaviour: 'previous', limit: 1 });
           } else {
             detailForm['IsImport'] = true;
+          }
+        }
+
+        this.onProcessed();
+        this.cms.showToast('Nhập chi tiết từ thành công', 'Hệ thống đã nhập các thông tin chi tiết trên file excel vào chi tiết tương ứng trên phiếu !', { duration: 15000, status: 'success' });
+        return true;
+      } catch (err) {
+        console.error(err);
+        this.onProcessed();
+        this.cms.showToast(err, 'Có lỗi xảy ra trong quá trình nhập chi tiết!', { duration: 15000, status: 'danger', duplicatesBehaviour: 'previous', limit: 1 });
+      }
+    };
+    reader.readAsBinaryString(file);
+  }
+
+  chooseFileAndFillDetails(formItem: FormGroup, ev: any) {
+    const reader = new FileReader();
+    const file = ev.target.files[0];
+    if (!file) return;
+    this.fileName = file.name;
+    reader.onload = async (event) => {
+      try {
+        this.isProcessing = true;
+        let chooseSheet = null;
+        const data = reader.result;
+        const workBook = XLSX.read(data, { type: 'binary' });
+        let sheet = null;
+        const jsonData = workBook.SheetNames.reduce((initial, name) => {
+          sheet = workBook.Sheets[name];
+          initial[name] = XLSX.utils.sheet_to_json(sheet);
+          return initial;
+        }, {});
+        this.onProcessing();
+
+        const sheets = Object.keys(jsonData);
+        if (sheets.length > 1) {
+          sheet = await new Promise((resove, reject) => {
+            this.cms.openDialog(DialogFormComponent, {
+              context: {
+                cardStyle: { width: '500px' },
+                title: 'File excel có nhiều hơn 1 sheet, mời bạn chọn sheet cần import',
+                onInit: async (form, dialog) => {
+                  return true;
+                },
+                onClose: async (form, dialog) => {
+                  // ev.target.
+                  return true;
+                },
+                controls: [
+                  {
+                    name: 'Sheet',
+                    label: 'Sheet',
+                    placeholder: 'Chọn sheet...',
+                    type: 'select2',
+                    initValue: sheets[0],
+                    // focus: true,
+                    option: {
+                      data: sheets.map(m => ({ id: m, text: m })),
+                      placeholder: 'Chọn sheet...',
+                      allowClear: true,
+                      width: '100%',
+                      dropdownAutoWidth: true,
+                      minimumInputLength: 0,
+                      withThumbnail: false,
+                      keyMap: {
+                        id: 'id',
+                        text: 'text',
+                      },
+                    }
+                  },
+                ],
+                actions: [
+                  {
+                    label: 'Esc - Trở về',
+                    icon: 'back',
+                    status: 'basic',
+                    keyShortcut: 'Escape',
+                    action: async () => { return true; },
+                  },
+                  {
+                    label: 'Chọn',
+                    icon: 'generate',
+                    status: 'success',
+                    // keyShortcut: 'Enter',
+                    action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+                      console.log(form.value);
+                      chooseSheet = this.cms.getObjectId(form.get('Sheet').value);
+                      resove(jsonData[chooseSheet]);
+
+                      return true;
+                    },
+                  },
+                ],
+              },
+              closeOnEsc: false,
+              closeOnBackdropClick: false,
+            });
+
+          });
+        } else {
+          sheet = jsonData[sheets[0]];
+          chooseSheet = sheets[0];
+        }
+
+        // Confirm mapping
+        const tmpSheet: string[][] = XLSX.utils.sheet_to_json(workBook.Sheets[chooseSheet], { header: 1 });
+        const columnList = tmpSheet[0].map((m: string) => {
+          const id = m.split('/')[0];
+          const text = m;
+          return { id, text };
+        });
+
+        // Auto mapping
+        const details = this.getDetails(formItem);
+        if (details.controls.length != sheet.length) {
+          this.cms.showToast('Số dòng trên file excel không khớp với số dòng trên đơn đặt hàng!', 'Không khớp số dòng!', { duration: 60000, status: 'warning' });
+        }
+
+        for (const row of sheet) {
+          for (const colName in row) {
+            const logicColName = colName.split('/')[0];
+            row[logicColName] = row[colName];
+          }
+          let detailForm: FormGroup = null;
+          if (row['Sku']) {
+            detailForm = details.controls.find(f => f.get('Product')?.value?.Sku == row['Sku']) as FormGroup;
+            // if (detailForm) {
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
+          } else if (row['SupplierSku']) {
+            detailForm = details.controls.find(f => f.get('SupplierSku')?.value == row['SupplierSku']) as FormGroup;
+            // if (detailForm) {
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
+          } else if (row['SupplierProductName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('SupplierProductName')?.value == row['SupplierProductName']) as FormGroup;
+            // if (detailForm) {
+            //   if (row['ProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
+          } else if (row['SupplierProductTaxName']) {// Load product by product name map by supplier
+            detailForm = details.controls.find(f => f.get('ProductTaxName')?.value == row['SupplierProductTaxName']) as FormGroup;
+            // if (detailForm) {
+            //   if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            //   if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            //   if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            //   if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // }
+          }
+          if (detailForm) {
+            if (row['SupplierSku']) detailForm.get('SupplierSku').setValue(row['SupplierSku']);
+            if (row['SupplierProductName']) detailForm.get('SupplierProductName').setValue(row['SupplierProductName']);
+            if (row['SupplierProductTaxName']) detailForm.get('ProductTaxName').setValue(row['SupplierProductTaxName']);
+            if (row['SupplierTax']) detailForm.get('Tax').setValue(row['SupplierTax']);
+            if (row['Price']) detailForm.get('Price').setValue(row['Price']);
+            // this.toMoney(formItem, detailForm);
+          }
+
+          // let unit = null;
+          // if (row['Unit']) {
+          //   unit = this.adminProductService.unitMap$?.value[row['Unit']?.trim()];
+          // }
+          // if (!unit && product) {
+          //   unit = product.UnitConversions?.find(f => f.Name == row['UnitName']?.trim());
+          // }
+
+          if (!detailForm) {
+            this.cms.showToast(row['ProductName'] + ' Không có trên đơn đặt hàng', 'Sản phẩm không có trên đơn đặt hàng !', { duration: 15000, status: 'warning', duplicatesBehaviour: 'previous', limit: 1 });
+          } else {
+            detailForm['IsImport'] = true;
+          }
+        }
+
+        this.onProcessed();
+        this.cms.showToast('Nhập chi tiết từ thành công', 'Hệ thống đã nhập các thông tin chi tiết trên file excel vào chi tiết tương ứng trên phiếu !', { duration: 15000, status: 'success' });
+        return true;
+      } catch (err) {
+        console.error(err);
+        this.onProcessed();
+        this.cms.showToast(err, 'Có lỗi xảy ra trong quá trình nhập chi tiết!', { duration: 15000, status: 'danger', duplicatesBehaviour: 'previous', limit: 1 });
+      }
+    };
+    reader.readAsBinaryString(file);
+  }
+
+  chooseFileAndImportDetails(formItem: FormGroup, ev: any) {
+    const reader = new FileReader();
+    const file = ev.target.files[0];
+    if (!file) return;
+    this.fileName = file.name;
+    reader.onload = async (event) => {
+      try {
+        this.isProcessing = true;
+        let chooseSheet = null;
+        const data = reader.result;
+        const workBook = XLSX.read(data, { type: 'binary' });
+        let sheet = null;
+        const jsonData = workBook.SheetNames.reduce((initial, name) => {
+          sheet = workBook.Sheets[name];
+          initial[name] = XLSX.utils.sheet_to_json(sheet);
+          return initial;
+        }, {});
+        this.onProcessing();
+
+        const sheets = Object.keys(jsonData);
+        if (sheets.length > 1) {
+          sheet = await new Promise((resove, reject) => {
+            this.cms.openDialog(DialogFormComponent, {
+              context: {
+                cardStyle: { width: '500px' },
+                title: 'File excel có nhiều hơn 1 sheet, mời bạn chọn sheet cần import',
+                onInit: async (form, dialog) => {
+                  return true;
+                },
+                onClose: async (form, dialog) => {
+                  // ev.target.
+                  return true;
+                },
+                controls: [
+                  {
+                    name: 'Sheet',
+                    label: 'Sheet',
+                    placeholder: 'Chọn sheet...',
+                    type: 'select2',
+                    initValue: sheets[0],
+                    // focus: true,
+                    option: {
+                      data: sheets.map(m => ({ id: m, text: m })),
+                      placeholder: 'Chọn sheet...',
+                      allowClear: true,
+                      width: '100%',
+                      dropdownAutoWidth: true,
+                      minimumInputLength: 0,
+                      withThumbnail: false,
+                      keyMap: {
+                        id: 'id',
+                        text: 'text',
+                      },
+                    }
+                  },
+                ],
+                actions: [
+                  {
+                    label: 'Esc - Trở về',
+                    icon: 'back',
+                    status: 'basic',
+                    keyShortcut: 'Escape',
+                    action: async () => { return true; },
+                  },
+                  {
+                    label: 'Chọn',
+                    icon: 'generate',
+                    status: 'success',
+                    // keyShortcut: 'Enter',
+                    action: async (form: FormGroup, formDialogConpoent: DialogFormComponent) => {
+
+                      console.log(form.value);
+                      chooseSheet = this.cms.getObjectId(form.get('Sheet').value);
+                      resove(jsonData[chooseSheet]);
+
+                      return true;
+                    },
+                  },
+                ],
+              },
+              closeOnEsc: false,
+              closeOnBackdropClick: false,
+            });
+
+          });
+        } else {
+          sheet = jsonData[sheets[0]];
+          chooseSheet = sheets[0];
+        }
+
+        // Confirm mapping
+        const tmpSheet: string[][] = XLSX.utils.sheet_to_json(workBook.Sheets[chooseSheet], { header: 1 });
+        const columnList = tmpSheet[0].map((m: string) => {
+          const id = m.split('/')[0];
+          const text = m;
+          return { id, text };
+        });
+
+        // Auto mapping
+        const details = this.getDetails(formItem);
+        // if (details.controls.length != sheet.length) {
+        //   this.cms.showToast('Số dòng trên file excel không khớp với số dòng trên đơn đặt hàng!', 'Không khớp số dòng!', { duration: 60000, status: 'warning' });
+        // }
+
+
+        details.clear();
+        const skus = [];
+        for (const row of sheet) {
+          for (const colName in row) {
+            const logicColName = colName.split('/')[0];
+            row[logicColName] = row[colName];
+          }
+
+          if (row.CustomerSku) {
+            skus.push(row.CustomerSku);
+          }
+          if (row.Sku) {
+            skus.push(row.Sku);
+          }
+        }
+
+        // Load products info by sku
+        const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: '[' + skus.join(',') + ']', includeIdText: true, limit: 'nolimit' });
+        const productMap: { [key: string]: ProductModel } = {};
+        for (const product of products) {
+          productMap[product.Sku] = product;
+        }
+
+        for (const row of sheet) {
+          const localProduct = productMap[row.CustomerSku] || productMap[row.Sku];
+          if (localProduct) {
+            row.Product = localProduct;
+            row.Unit = { id: row.Unit, text: row.UnitName };
+            row.Description = localProduct.Name;
+            let detailForm: FormGroup = this.makeNewDetailFormGroup(formItem, row);
+            details.push(detailForm);
+            this.onAddDetailFormGroup(formItem, detailForm, details.length - 1);
           }
         }
 

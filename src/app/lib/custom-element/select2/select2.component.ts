@@ -109,25 +109,26 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   // @Input('disabled') disabled: string | string[];
   _select2Option: Select2Options;
   @Input('select2Option') set select2Option(option: Select2Options) {
-    if (!option['withThumbnail']) {
-      option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
-        if (this._select2Option.tags && object?.id === object?.text) {
-          $(container).addClass('new');
-        }
-        return object?.text;
-      };
-    } else {
-      option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
-        if (!object.id) {
-          return object.text;
-        }
-        var $state = $(
-          `<div class="item-wrap"><div class="item-thumbnail" style="background-image: url(${object['thumbnail'] || 'assets/images/no-image-available.png'})"></div><div class="item-text">${object.text}</div></div>`
-        );
-        return $state;
-      };
+    if (!option['templateResult']) {
+      if (!option['withThumbnail']) {
+        option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+          if (this._select2Option.tags && object?.id === object?.text) {
+            $(container).addClass('new');
+          }
+          return object?.text;
+        };
+      } else {
+        option['templateResult'] = (object: Select2SelectionObject, container?: JQuery) => {
+          if (!object.id) {
+            return object.text;
+          }
+          var $state = $(
+            `<div class="item-wrap"><div class="item-thumbnail" style="background-image: url(${object['thumbnail'] || 'assets/images/no-image-available.png'})"></div><div class="item-text">${object.text}</div></div>`
+          );
+          return $state;
+        };
+      }
     }
-
 
     if (option.tags === true) {
       option['insertTag'] = function (data, tag) {

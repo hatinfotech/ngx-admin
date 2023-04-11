@@ -575,8 +575,11 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         width: 52,
         valueGetter: 'node.data.No',
         cellRenderer: 'loadingCellRenderer',
-        sortable: false,
+        sortable: true,
         pinned: 'left',
+        // comparator: (num1: number, num2: number) => {
+        //   return num1 - num2;
+        // }
       },
       {
         headerName: 'Hình',
@@ -797,13 +800,22 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   syncTaskDetails = [];
   async loadSyncTaskDetails(profile?: string) {
     if (this.activeTaskId) {
-      this.syncTaskDetails = await this.apiService.getPromise<any[]>('/wordpress/sync-task-details', {
+      const task = this.syncTasks.find(f => f.Code == this.activeTaskId);
+      const params: any = {
         eq_Task: this.activeTaskId,
-        sort_SyncTime: 'desc',
+        // sort_SyncTime: 'desc',
         limit: 'nolimit',
         includeIdText: true,
-      }).then(rs => {
+      };
+      if (task.State == 'READY') {
+        params.sort_No = 'asc';
+      } else {
+        params.sort_SyncTime = 'desc';
+        params.sort_No = 'asc';
+      }
+      this.syncTaskDetails = await this.apiService.getPromise<any[]>('/wordpress/sync-task-details', params).then(rs => {
         for (const item of rs) {
+          item.No = parseInt(item.No);
           item.IsSync = item.Status === 'READY';
           item.RefCategoriesText = (item.RefCategories || []).map(m => this.cms.getObjectText(m)).join(', ');
         }
@@ -850,7 +862,17 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
     // Update IsSync state
     this.loading = true;
     try {
-      await this.apiService.putPromise('/wordpress/sync-task-details', {}, syncList);
+      let offset = 0;
+      const limit = 100;
+      while (true) {
+        const partList = syncList.slice(offset, offset + limit);
+        if (partList.length > 0) {
+          await this.apiService.deletePromise('/wordpress/sync-task-details', partList.map(m => m.Id));
+          offset += limit;
+        } else {
+          break;
+        }
+      }
       await this.loadSyncTaskDetails();
 
       return this.apiService.putPromise('/wordpress/wp-sync-profiles/' + this.inputId[0], { sync: true }, [

@@ -17,6 +17,8 @@ import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterCompon
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { AppModule } from '../../../../app.module';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ngx-commerce-pos-order-list',
@@ -119,6 +121,72 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
               }
             },
           ]);
+        }
+      });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'writetobook',
+        status: 'danger',
+        label: 'Ghi sổ lại',
+        title: 'Ghi sổ lại',
+        size: 'medium',
+        icon: 'npm-outline',
+        disabled: () => false,
+        click: () => {
+          this.cms.openDialog(DialogFormComponent, {
+            context: {
+              title: 'ID phiếu cần ghi sổ lại',
+              width: '600px',
+              onInit: async (form, dialog) => {
+
+                return true;
+              },
+              controls: [
+                {
+                  name: 'Ids',
+                  label: 'Link hình',
+                  placeholder: 'Mỗi ID trên 1 dòng',
+                  type: 'textarea',
+                  // initValue: 0,
+                },
+              ],
+              actions: [
+                {
+                  label: 'Trở về',
+                  icon: 'back',
+                  status: 'basic',
+                  action: async () => { return true; },
+                },
+                {
+                  label: 'Ghi sổ lại',
+                  icon: 'npm-outline',
+                  status: 'danger',
+                  action: async (form: FormGroup) => {
+
+                    let ids: string[] = form.get('Ids').value.trim()?.split('\n');
+
+                    if (ids && ids.length > 0) {
+                      const toastRef = this.cms.showToast('Các đơn hàng đang được ghi sổ lại', 'Đang ghi sổ lại', { status: 'info', duration: 60000 });
+                      try {
+                        ids = [...new Set(ids)];
+                        this.loading = true;
+                        await this.apiService.putPromise(this.apiPath, { reChangeState: 'UNRECORDED,APPROVED' }, ids.map(id => ({ Code: id.trim() })));
+                        toastRef.close();
+                        this.loading = false;
+                      } catch (err) {
+                        console.error(err);
+                        this.loading = false;
+                        toastRef.close();
+                      }
+                    }
+
+
+                    return true;
+                  },
+                },
+              ],
+            },
+          });
         }
       });
       return state;
