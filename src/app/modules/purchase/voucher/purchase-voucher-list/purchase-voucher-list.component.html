@@ -1,7 +1,7 @@
 <div class="dialog-wrap {{inputMode}}">
   <nb-card class="small-header smart-table">
     <nb-card-header>
-      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Purchase.Voucher.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('Purchase.Voucher.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)) + ' ('+(source.count() | number:'1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
     </nb-card-header>
 
     <nb-card-body>

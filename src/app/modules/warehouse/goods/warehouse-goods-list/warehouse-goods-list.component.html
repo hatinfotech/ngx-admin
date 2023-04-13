@@ -1,6 +1,6 @@
 <nb-card class="small-header smart-table dialog-list">
   <nb-card-header>
-    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.Goods.title' | translate:{definition: this.cms.translateText('Common.list'), action: ''} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('Warehouse.Goods.title' | translate:{definition: this.cms.translateText('Common.list'), action: ''} | headtitlecase)) + ' ('+(source.count() | number:'1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
   </nb-card-header>
 
   <nb-card-body>

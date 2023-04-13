@@ -1,6 +1,6 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
-    <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Thông tin sản phẩm theo đối tượng' | translate:{definition: cms.translate.instant('Common.list'), action: ''} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('Thông tin sản phẩm theo đối tượng' | translate:{definition: cms.translate.instant('Common.list'), action: ''} | headtitlecase)) + ' ('+(source.count() | number:'1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
     <!-- <nav>
       <nb-icon pack="eva" icon="list-outline"></nb-icon> Danh sách danh mục sản phẩm
       <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
