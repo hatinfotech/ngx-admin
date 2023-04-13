@@ -417,43 +417,43 @@ export class ProductListComponent extends ServerDataManagerListComponent<Product
             // component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
             // });
-            component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
-              if (!tag.Container) {
-                this.cms.openDialog(AssignContainerFormComponent, {
-                  context: {
-                    inputMode: 'dialog',
-                    inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
-                    onDialogSave: async (newData: ProductModel[]) => {
-                      // this.refresh();
-                      // this.updateGridItems(editedItems, newData);
-                      const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
-                      this.source.isLocalUpdate = true;
-                      try {
-                        const newContainer = newData[0].Containers[0];
-                        this.source.update(udpateItem, {
-                          UnitConversions: [
-                            ...udpateItem.UnitConversions.map(m => ({
-                              type: m.type,
-                              id: m.id,
-                              text: m.text + ' (' + m.ConversionRatio + ')',
-                              Container: m.id == tag.id ? newContainer : m.Container,
-                            })),
-                            { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
-                        }).then(() => {
-                          this.source.isLocalUpdate = false;
-                        });
-                      } catch (err) {
-                        this.source.isLocalUpdate = false;
-                      }
-                    },
-                    onDialogClose: () => {
-                    },
-                  },
-                  closeOnEsc: false,
-                  closeOnBackdropClick: false,
-                });
-              }
-            });
+            // component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+            //   if (!tag.Container) {
+            //     this.cms.openDialog(AssignContainerFormComponent, {
+            //       context: {
+            //         inputMode: 'dialog',
+            //         inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+            //         onDialogSave: async (newData: ProductModel[]) => {
+            //           // this.refresh();
+            //           // this.updateGridItems(editedItems, newData);
+            //           const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+            //           this.source.isLocalUpdate = true;
+            //           try {
+            //             const newContainer = newData[0].Containers[0];
+            //             this.source.update(udpateItem, {
+            //               UnitConversions: [
+            //                 ...udpateItem.UnitConversions.map(m => ({
+            //                   type: m.type,
+            //                   id: m.id,
+            //                   text: m.text + ' (' + m.ConversionRatio + ')',
+            //                   Container: m.id == tag.id ? newContainer : m.Container,
+            //                 })),
+            //                 { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+            //             }).then(() => {
+            //               this.source.isLocalUpdate = false;
+            //             });
+            //           } catch (err) {
+            //             this.source.isLocalUpdate = false;
+            //           }
+            //         },
+            //         onDialogClose: () => {
+            //         },
+            //       },
+            //       closeOnEsc: false,
+            //       closeOnBackdropClick: false,
+            //     });
+            //   }
+            // });
           },
           filter: {
             type: 'custom',

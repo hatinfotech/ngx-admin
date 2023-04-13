@@ -111,7 +111,7 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
           type: 'string',
           width: '20%',
           valuePrepareFunction: (cell, row: PurchaseProductModel) => {
-            return `${row.Product}/${row.OriginSku} - ${row.OriginalName}`;
+            return `${row.Product}/${row.OriginalSku} - ${row.OriginalName}`;
           },
           filter: {
             type: 'custom',

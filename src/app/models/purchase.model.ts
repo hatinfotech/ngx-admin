@@ -168,7 +168,7 @@ export interface PurchaseProductModel {
   Id?: string;
   Product?: string;
   OriginalName?: string;
-  OriginSku?: string;
+  OriginalSku?: string;
   Supplier?: string;
   SupplierName?: string;
   Name?: string;

@@ -19,7 +19,7 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="unitControlIcons" [touchedValidate]="false">
+                <ngx-form-group [formGroup]="formItem" name="WarehouseUnit" label="Đơn vị tính cơ bản" [array]="array" [index]="i" [allowCopy]="true" [required]="true" [customIcons]="formItem.__unitControlIcons" [touchedValidate]="false">
                   <ngx-select2 formControlName="WarehouseUnit" [select2Option]="select2OptionForUnit" [data]="unitList" (selectChange)="onWarehouseChange(formItem, $event, i)"></ngx-select2>
                 </ngx-form-group>
               </div>
@@ -39,18 +39,18 @@
                 </ngx-form-group>
               </div>
               <div class="col-sm-4">
-                <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                <ngx-form-group [formGroup]="formItem" name="Groups" label="Nhóm" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false" [customIcons]="formItem.__groupsControlIcons">
                   <ngx-select2 formControlName="Groups" [select2Option]="select2OptionForGroups" [data]="groupList">
                   </ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-6">
-                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false">
+                <ngx-form-group [formGroup]="formItem" name="Categories" label="Danh mục" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [touchedValidate]="false" [customIcons]="formItem.__categoriesControlIcons">
                   <ngx-select2 formControlName="Categories" [select2Option]="select2OptionForCategories" [data]="categoryList"></ngx-select2>
                 </ngx-form-group>
               </div>
               <div class="col-sm-2">
-                <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
+                <ngx-form-group [formGroup]="formItem" name="Brand" label="Thương hiệu" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [customIcons]="formItem.__brandControlIcons">
                   <ngx-select2 formControlName="Brand" [select2Option]="select2OptionForBrand" [data]="brandList"></ngx-select2>
                 </ngx-form-group>
               </div>
@@ -106,7 +106,7 @@
                             <div class="col-lg-4">
                               <div class="row">
                                 <div class="col-sm-6">
-                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="Unit" label="AdminProduct.unit" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="unitConversion" name="Unit" label="AdminProduct.unit" [array]="getUnitConversions(formItem)" [index]="ic" [allowCopy]="false" [required]="true" [customIcons]="unitConversion.__unitControlIcons">
                                     <ngx-select2 formControlName="Unit" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
                                   </ngx-form-group>
                                 </div>

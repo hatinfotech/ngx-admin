@@ -827,7 +827,13 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   }
   syncTasks = [];
   async loadSyncTasks(profile: string) {
-    this.syncTasks = await this.apiService.getPromise('/wordpress/sync-tasks', { eq_Profile: profile, sort_Id: 'asc', limit: 'nolimit', includeIdText: true });
+    this.syncTasks = await this.apiService.getPromise<any[]>('/wordpress/sync-tasks', { eq_Profile: profile, sort_Id: 'asc', limit: 'nolimit', includeIdText: true }).then(rs => rs.map(m => {
+      if (m.StartTime && m.EndTime) {
+        m.Duration = (new Date(m.EndTime).getTime() - new Date(m.StartTime).getTime()) / 1000;
+        m.Duration = this.cms.toTimeString(m.Duration);
+      }
+      return m;
+    }));
     if (this.syncTasks && this.syncTasks.length > 0 && !this.activeTaskId) {
       this.activeTask(this.cms.getObjectId(this.syncTasks[this.syncTasks.length - 1]));
     }
@@ -914,18 +920,20 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   ngOnDestroy(): void {
     if (this.refreshProcessing) {
       clearInterval(this.refreshProcessing);
+      this.refreshProcessing = null;
     }
   }
 
   autoRefresh() {
-    if (!this.refreshProcessing && this.syncTasks.find(f => f.State === 'PROCESSING')) {
+    if (!this.refreshProcessing && this.syncTasks.find(f => (f.State === 'PROCESSING' || f.State === 'REQUESTSTOP'))) {
       this.refreshProcessing = setInterval(() => {
-        if (this.syncTasks.find(f => f.State === 'PROCESSING')) {
+        if (this.syncTasks.find(f => (f.State === 'PROCESSING' || f.State === 'REQUESTSTOP'))) {
           console.log('Auto refresh');
           this.loadSyncTasks(this.inputId[0]);
           this.loadSyncTaskDetails(this.inputId[0]);
         } else {
           clearInterval(this.refreshProcessing);
+          this.refreshProcessing = null;
         }
       }, 10000);
     }

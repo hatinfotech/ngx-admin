@@ -3,7 +3,7 @@ import { UnitModel } from './../../../../models/unit.model';
 import { ProductUnitFormComponent } from './../../unit/product-unit-form/product-unit-form.component';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductBrandModel, ProductGroupModel, ProductInPropertyModel, ProductPropertyModel, ProductPropertyValueModel, ProductKeywordModel } from './../../../../models/product.model';
-import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, EventEmitter, Input } from '@angular/core';
 import { DataManagerFormComponent, MyUploadAdapter } from '../../../../lib/data-manager/data-manager-form.component';
 import { ProductModel, ProductUnitModel, ProductPictureModel, ProductUnitConversoinModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +18,9 @@ import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-cu
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { AdminProductService } from '../../admin-product.service';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { ProductGroupFormComponent } from '../../product-group/product-group-form/product-group-form.component';
+import { ProductBrandFormComponent } from '../../brand/product-brand-form/product-brand-form.component';
+import { ProductCategoryFormComponent } from '../../category/product-category-form/product-category-form.component';
 
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -42,6 +45,8 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   unitList: ProductUnitModel[] = [];
   propertyList: ProductPropertyModel[] = [];
   propertyValueList: ProductPropertyValueModel[] = [];
+
+  @Input() onDialogError: (component: ProductFormComponent, error: any) => Promise<any>;
 
   towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
     digitsOptional: false,
@@ -108,26 +113,6 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       callback(this.inputId);
     }
   }
-
-  unitControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-      this.cms.openDialog(ProductUnitFormComponent, {
-        context: {
-          inputMode: 'dialog',
-          onDialogSave: (newData: UnitModel[]) => {
-            console.log(newData);
-            const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
-            formGroup.get('WarehouseUnit').patchValue(newUnit);
-          },
-          onDialogClose: () => {
-
-          },
-        },
-        closeOnEsc: false,
-        closeOnBackdropClick: false,
-      });
-    }
-  }];
 
   select2OptionForCategories: Select2Option = {
     placeholder: 'Chọn danh mục...',
@@ -410,6 +395,96 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         featurePictureFormControl.setValue(value[0]);
       }
     });
+
+    newForm['__groupsControlIcons'] = [{
+      icon: 'plus-square-outline', title: this.cms.translateText('Thêm nhóm sản phẩm'), status: 'success', action: (formGroupComponet: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        this.cms.openDialog(ProductGroupFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            // inputId: ids,
+            // data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
+            onDialogSave: (newData: ProductGroupModel[]) => {
+              console.log(newData);
+              const groupsContrrol = formGroup.get('Groups');
+              const newGroup: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+              groupsContrrol.patchValue([...(groupsContrrol.value || []), newGroup]);
+            },
+            onDialogClose: () => {
+  
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    } as CustomIcon];
+  
+    newForm['__categoriesControlIcons'] = [{
+      icon: 'plus-square-outline', title: this.cms.translateText('Thêm danh mục sản phẩm'), status: 'success', action: (formGroupComponet: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        this.cms.openDialog(ProductCategoryFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            // inputId: ids,
+            // data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
+            onDialogSave: (newData: ProductCategoryModel[]) => {
+              console.log(newData);
+              const categoriesContrrol = formGroup.get('Categories');
+              const newGroup: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+              categoriesContrrol.patchValue([...(categoriesContrrol.value || []), newGroup]);
+            },
+            onDialogClose: () => {
+  
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    } as CustomIcon];
+
+    newForm['__unitControlIcons'] = [{
+      icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        this.cms.openDialog(ProductUnitFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            onDialogSave: (newData: UnitModel[]) => {
+              console.log(newData);
+              const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+              formGroup.get('WarehouseUnit').patchValue(newUnit);
+            },
+            onDialogClose: () => {
+  
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    } as CustomIcon];
+
+    newForm['__brandControlIcons'] = [{
+      icon: 'plus-square-outline', title: this.cms.translateText('Thêm thương hiệu'), status: 'success', action: (formGroupComponet: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        this.cms.openDialog(ProductBrandFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            // inputId: ids,
+            // data: [{ Groups: [{ id: 'CONTACT', text: this.cms.translateText('Common.contact') }] }],
+            onDialogSave: (newData: ProductBrandModel[]) => {
+              console.log(newData);
+              const brandContrrol = formGroup.get('Brand');
+              const newGroup: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+              brandContrrol.patchValue(newGroup);
+            },
+            onDialogClose: () => {
+  
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    } as CustomIcon];
+
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductModel): void {
@@ -502,6 +577,27 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     if (data) {
       newForm.patchValue(data);
     }
+
+    newForm['__unitControlIcons'] = [{
+      icon: 'plus-square-outline', title: this.cms.translateText('Thêm ĐVT mới'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+        this.cms.openDialog(ProductUnitFormComponent, {
+          context: {
+            inputMode: 'dialog',
+            onDialogSave: (newData: UnitModel[]) => {
+              console.log(newData);
+              const newUnit: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name };
+              formGroup.get('Unit').patchValue(newUnit);
+            },
+            onDialogClose: () => {
+
+            },
+          },
+          closeOnEsc: false,
+          closeOnBackdropClick: false,
+        });
+      }
+    }];
+
     return newForm;
   }
   getUnitConversions(formItem: FormGroup) {
@@ -674,8 +770,23 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       this.adminProductService.updateGroupList();
       this.adminProductService.updateCategoryList();
       return rs;
-    });
+    })
+    // .catch(err => {
+    //   if (this.onDialogError) {
+    //     // this.close();
+    //     return this.onDialogError(this, err);
+    //   }
+    //   return Promise.reject(err);
+    // });
   };
+
+  onError(e: HttpErrorResponse) {
+    if (this.onDialogClose) {
+      this.onDialogError(this, e);
+    } else {
+      super.onError(e);
+    }
+  }
 
   onIsDefaultSalesChange(parentFormItem: FormGroup, formItem: FormGroup, event: any, index: number) {
     console.log(event);
@@ -745,7 +856,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       this.onDialogSave(newFormData);
     }
   }
-  
+
 
   /** Affter main form update event: Override to disable formLoad and execute patch value to formItem */
   onAfterUpdateSubmit(newFormData: ProductModel[]) {

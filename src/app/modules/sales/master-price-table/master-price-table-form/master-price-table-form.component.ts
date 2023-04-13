@@ -55,6 +55,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+  numOfProducts = 0;
 
   select2ContactOption = {
     placeholder: 'Chọn liên hệ...',
@@ -799,7 +800,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
             delay: 0,
             condition: 'eq',
             select2Option: {
-              placeholder: 'Chọn nhóm...',
+              placeholder: 'Chọn...',
               allowClear: true,
               width: '100%',
               dropdownAutoWidth: true,
@@ -1076,6 +1077,8 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         }
         return product;
       });
+
+      // this.numOfProducts = +this.source.lastResponseHeader.get('x-extend-1');
       return data;
     };
 
@@ -1089,6 +1092,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
       params['sort_Id'] = 'desc';
       params['group_Unit'] = true;
       params['includeContainers'] = true;
+      params['includeNumberOfProducts'] = true;
       return params;
     };
 

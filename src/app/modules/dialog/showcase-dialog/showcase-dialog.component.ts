@@ -1,5 +1,5 @@
 import { CommonService } from './../../../services/common.service';
-import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnInit, HostListener } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, ElementRef, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { MytableContent } from '../../../lib/custom-element/my-components/my-table/my-table.component';
 
@@ -19,7 +19,7 @@ export interface DialogActionButton {
   templateUrl: 'showcase-dialog.component.html',
   styleUrls: ['showcase-dialog.component.scss'],
 })
-export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
+export class ShowcaseDialogComponent implements AfterViewInit, OnInit, OnDestroy {
 
   @Input() title: string;
   @Input() content: string;
@@ -28,9 +28,10 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
   @Input() onAfterInit: () => void;
   @Input() actions: DialogActionButton[];
   @ViewChild('dialogWrap', { static: true }) dialogWrap: ElementRef;
-  @Input() onClose?: () => void;
+  @Input() onClose?: (asCase?: string) => void;
   @Input() onKeyboardEvent?: (event: KeyboardEvent, component: ShowcaseDialogComponent) => void;
   loading = false;
+  closeCase?: string = 'default';
 
   constructor(public ref: NbDialogRef<ShowcaseDialogComponent>, public cms?: CommonService) {
 
@@ -65,7 +66,7 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
         const superAction = element.action;
         element.action = async (item?: DialogActionButton, dialog?: ShowcaseDialogComponent) => {
           superAction && (await superAction(item, dialog));
-          this.dismiss();
+          this.dismiss('action');
         };
         if (!element.status) {
           element.status = 'info';
@@ -96,8 +97,13 @@ export class ShowcaseDialogComponent implements AfterViewInit, OnInit {
     this.onAfterInit && this.onAfterInit();
   }
 
-  dismiss() {
-    this.onClose && this.onClose();
+  ngOnDestroy(): void {
+    this.onClose && this.onClose(this.closeCase);
+  }
+
+  dismiss(asCase?: string) {
+    this.closeCase = asCase;
+    // this.onClose && this.onClose(asCase);
     this.ref.close();
   }
 }

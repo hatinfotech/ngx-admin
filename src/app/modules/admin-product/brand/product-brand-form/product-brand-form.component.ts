@@ -7,14 +7,14 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminProductService } from '../../admin-product.service';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { ProductBrandModel, ProductCategoryModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'ngx-product-brand-form',
   templateUrl: './product-brand-form.component.html',
   styleUrls: ['./product-brand-form.component.scss'],
 })
-export class ProductBrandFormComponent extends DataManagerFormComponent<ProductCategoryModel> implements OnInit {
+export class ProductBrandFormComponent extends DataManagerFormComponent<ProductBrandModel> implements OnInit {
 
   componentName: string = 'ProductBrandFormComponent';
   idKey = 'Code';
@@ -98,12 +98,12 @@ export class ProductBrandFormComponent extends DataManagerFormComponent<ProductC
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: ProductCategoryModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: ProductBrandModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeParent'] = true;
     super.executeGet(params, success, error);
   }
 
-  makeNewFormGroup(data?: ProductCategoryModel): FormGroup {
+  makeNewFormGroup(data?: ProductBrandModel): FormGroup {
     const newForm = this.formBuilder.group({
       Code: [''],
       Parent: [''],
@@ -116,7 +116,7 @@ export class ProductBrandFormComponent extends DataManagerFormComponent<ProductC
     }
     return newForm;
   }
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductCategoryModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: ProductBrandModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -137,7 +137,7 @@ export class ProductBrandFormComponent extends DataManagerFormComponent<ProductC
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
-  async save(): Promise<ProductCategoryModel[]> {
+  async save(): Promise<ProductBrandModel[]> {
     return super.save().then(rs => {
       this.adminProductService.updateBrandList();
       return rs;

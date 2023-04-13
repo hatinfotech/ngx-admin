@@ -559,14 +559,14 @@ export class CommonService {
   }
 
   /** Dialog */
-  showDialog(title: string, content: string, buttons: DialogActionButton[], onClose?: () => void) {
+  showDialog(title: string, content: string, buttons: DialogActionButton[], onClose?: (asCase?: string) => void) {
     const dialogRef = this.dialogService.open(ShowcaseDialogComponent, {
       context: {
         title: title,
         content: content,
         actions: buttons,
-        onClose: () => {
-          onClose && onClose();
+        onClose: (asCase) => {
+          onClose && onClose(asCase);
         },
       },
     });
@@ -657,7 +657,7 @@ export class CommonService {
   /** End dialog */
 
   convertUnicodeToNormal(text: string) {
-    return text.replace(/[^\u0000-\u007E]/g, (a) => {
+    return (text || '').replace(/[^\u0000-\u007E]/g, (a) => {
       return diacritic[a] || a;
     }).replace(/[^a-z0-9 ]+/ig, '');
   }
@@ -1520,6 +1520,13 @@ export class CommonService {
   // toastContainer = null;
   showToast(message: any, title?: any, userConfig?: Partial<NbToastrConfig>): NbToastRef {
     return this.toastService.show(message, title, userConfig);
+  }
+
+  toTimeString(totalSeconds: number) {
+    const totalMs = totalSeconds * 1000;
+    const result = new Date(totalMs).toISOString().slice(11, 19);
+  
+    return result;
   }
 
 }

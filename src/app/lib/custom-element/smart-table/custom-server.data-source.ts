@@ -4,11 +4,13 @@ import { map } from 'rxjs/operators';
 import { ApiService } from '../../../services/api.service';
 import { LocalDataSource } from 'ng2-smart-table';
 import { BehaviorSubject } from 'rxjs';
+import { HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class CustomServerDataSource<M> extends LocalDataSource {
 
   lastRequestCount: number = 0;
+  lastResponseHeader: HttpHeaders = null;
   prepareData: (data: M[] | any) => any[] = (data) => data;
   prepareParams: (params: any, filter?: any, sort?: any, paging?: any) => any;
 
@@ -113,6 +115,7 @@ export class CustomServerDataSource<M> extends LocalDataSource {
 
     return this.apiService.getObservable<M[]>(this.url, params).pipe(
       map((res) => {
+        this.lastResponseHeader = res.headers;
         this.lastRequestCount = +res.headers.get('x-total-count');
         let data = res.body;
         // Auto add no

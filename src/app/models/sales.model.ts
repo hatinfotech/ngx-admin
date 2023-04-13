@@ -255,7 +255,8 @@ export class SalesMasterPriceTableDetailModel extends Model  {
   Unit?: String | UnitModel;
   Description?: string;
   Tax?: String | TaxModel;
-  Price?: string | number;
+  Price?: number;
+  ConversionRatio?: number;
   Currency?: string;
   Discount?: string | number;
 }

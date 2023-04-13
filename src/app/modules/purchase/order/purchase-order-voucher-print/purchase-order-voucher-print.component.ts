@@ -1,7 +1,7 @@
 import { SalesMasterPriceTableDetailModel } from './../../../../models/sales.model';
 import { ProductUnitConversoinModel, ProductModel } from './../../../../models/product.model';
 import { PurchaseOrderVoucherFormComponent } from './../purchase-order-voucher-form/purchase-order-voucher-form.component';
-import { DatePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef } from '@nebular/theme';
@@ -17,11 +17,13 @@ import { FormGroup } from '@angular/forms';
 import { base64 } from '@firebase/util';
 import * as XLSX from 'xlsx';
 import { runInThisContext } from 'vm';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
   templateUrl: './purchase-order-voucher-print.component.html',
-  styleUrls: ['./purchase-order-voucher-print.component.scss']
+  styleUrls: ['./purchase-order-voucher-print.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponent<PurchaseOrderVoucherModel> implements OnInit {
 
@@ -41,6 +43,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     public apiService: ApiService,
     public ref: NbDialogRef<PurchaseOrderVoucherPrintComponent>,
     public datePipe: DatePipe,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(cms, router, apiService, ref);
   }
@@ -267,23 +270,42 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   }
 
   async updateSalePrice(detail: PurchaseOrderVoucherDetailModel) {
-    const unitPriceControls = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
+    const unitPriceControls: { name: string, label: string, placeholder: string, type: string, initValue: number, focus?: boolean, masterPriceTable?: string, [key: string]: any }[] = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
       masterPriceTable: 'default',
       eq_Code: this.cms.getObjectId(detail?.Product),
       // eq_Unit: this.cms.getObjectId(detail?.Unit) 
       group_Unit: true,
     }).then(rs => {
+      // const baseUnit = rs.find(f => f.BaseUnit);
+      const detailUnitPrice = rs.find(f => this.cms.getObjectId(f.Unit) == this.cms.getObjectId(detail.Unit));
+      const baseCost = detail.Price / detailUnitPrice.ConversionRatio;
       return rs.map(unitPrice => {
+        const cost = baseCost * unitPrice.ConversionRatio;
+        const sugguestPrice = cost + cost * 0.3;
         return {
           name: this.cms.getObjectId(unitPrice.Unit),
-          label: 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPrice.Unit),
+          label: 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPrice.Unit) + '............(GV: ' + this.currencyPipe.transform(cost, 'VND') + ' + 30% = ' + this.currencyPipe.transform(sugguestPrice, 'VND') + ')',
           placeholder: 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPrice.Unit),
           type: 'currency',
           initValue: unitPrice.Price,
           focus: this.cms.getObjectId(detail.Unit) == this.cms.getObjectId(unitPrice.Unit),
-          masterPriceTable: unitPrice.MasterPriceTable || 'default',
+          masterPriceTable: (unitPrice.MasterPriceTable || 'default') as string,
+          // cost: cost
+          unitPrice,
+          cost,
         };
       });
+    });
+
+    unitPriceControls.unshift({
+      name: 'RegularPriceRatio',
+      label: 'Tính giá bán theo % giá vốn',
+      placeholder: 'Giá bán = Giá vốn + x%',
+      type: 'number',
+      initValue: 30,
+      focus: false,
+      // masterPriceTable: 'default',
+      // cost: 0
     });
 
     this.cms.openDialog(DialogFormComponent, {
@@ -291,7 +313,24 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
         width: '500px',
         title: 'Cập nhật giá bán',
         onInit: async (form, dialog) => {
-          // const price = form.get('Price');
+          const regularPriceRatio = form.get('RegularPriceRatio');
+          const priceControlMap = {};
+
+          for (const unitPriceControl of unitPriceControls) {
+            if (unitPriceControl.name != 'RegularPriceRatio') {
+              priceControlMap[unitPriceControl.name] = form.get(unitPriceControl.name);
+            }
+          }
+
+          regularPriceRatio.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(ratio => {
+            for (const unitPriceControl of unitPriceControls) {
+              if (unitPriceControl.name != 'RegularPriceRatio') {
+                const sugguestPrice = unitPriceControl.cost + unitPriceControl.cost * ratio / 100;
+                unitPriceControl.label = 'Giá thay đổi cho ĐVT: ' + this.cms.getObjectText(unitPriceControl.unitPrice.Unit) + '............(GV: ' + this.currencyPipe.transform(unitPriceControl.cost, 'VND') + ' + ' + ratio + '% = ' + this.currencyPipe.transform(sugguestPrice, 'VND') + ')';
+              }
+            }
+          });
+
           // await this.apiService.getPromise('/sales/master-price-table-details', {
           //   masterPriceTable: 'default',
           //   eq_Code: this.cms.getObjectId(detail?.Product),
@@ -339,14 +378,16 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
             action: async (form, dialog) => {
               const updatePrice = [];
               for (const unitPriceControl of unitPriceControls) {
-                const newPrice = form.get(unitPriceControl.name).value;
-                if (unitPriceControl.initValue != newPrice) {
-                  updatePrice.push({
-                    MasterPriceTable: unitPriceControl.masterPriceTable,
-                    Product: this.cms.getObjectId(detail.Product),
-                    Unit: unitPriceControl.name,
-                    Price: newPrice
-                  });
+                if (unitPriceControl.name != 'RegularPriceRatio') {
+                  const newPrice = form.get(unitPriceControl.name).value;
+                  if (unitPriceControl.initValue != newPrice) {
+                    updatePrice.push({
+                      MasterPriceTable: unitPriceControl.masterPriceTable,
+                      Product: this.cms.getObjectId(detail.Product),
+                      Unit: unitPriceControl.name,
+                      Price: newPrice
+                    });
+                  }
                 }
               }
               if (updatePrice.length > 0) {

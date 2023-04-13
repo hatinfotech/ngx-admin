@@ -980,12 +980,12 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   if (mappedRow['Categories']) {
                     mappedRow['Categories'] = new String(mappedRow['Categories'] || '').split(',').map(m => {
                       return this.adminProductService.categoryList$.value.find(f => this.cms.getObjectId(f) == m.trim());
-                    });
+                    }).filter(f => !!f);
                   }
                   if (mappedRow['Groups']) {
                     mappedRow['Groups'] = new String(mappedRow['Groups'] || '').split(',').map(m => {
                       return this.adminProductService.groupList$.value.find(f => this.cms.getObjectId(f) == m.trim());
-                    });
+                    }).filter(f => !!f);
                   }
                   if (mappedRow['Keywords']) {
                     mappedRow['Keywords'] = new String(mappedRow['Keywords'] || '').split(',').map(m => m.trim());
@@ -1018,68 +1018,72 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   mappedRow.IsImport = true;
                   mappedRow.Pictures = new String(mappedRow.Pictures || '').replace('\r\n', '\n').split('\n').filter(f => !!f);
                   mappedRow.SameProducts = []
-                  for (const oldProduct of currentProductList) {
-                    // if (mappedRow.Sku) {
-                    // if (mappedRow.Sku && (oldProduct.Sku?.toLowerCase() == mappedRow.Sku?.toLowerCase()) || (oldProduct.Name && mappedRow.Name && this.cms.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.cms.convertUnicodeToNormal(mappedRow.Name).toLowerCase())) {
-                    if (this.compareProduct(oldProduct, mappedRow)) {
-                      mappedRow.Code = oldProduct.Code;
-                      mappedRow.Sku = oldProduct.Sku;
-                      mappedRow.duplicate = true;
-                      mappedRow.OldName = ((oldProduct.OldName && (oldProduct.OldName + '\n') || '') + oldProduct.Name);
-                      if (oldProduct.FeaturePicture) {
-                        if (!mappedRow.FeaturePicture) {
-                          mappedRow.FeaturePicture = oldProduct.FeaturePicture;
-                        } else {
-                          const tag = CryptoJS.MD5(mappedRow.FeaturePicture as any).toString();
-                          if (oldProduct.FeaturePicture.Tag == tag) {
+                  if ((mappedRow.Name || '').trim().length == 0 || !mappedRow.WarehouseUnit) {
+                    mappedRow.IsImport = false;
+                  } else {
+                    for (const oldProduct of currentProductList) {
+                      // if (mappedRow.Sku) {
+                      // if (mappedRow.Sku && (oldProduct.Sku?.toLowerCase() == mappedRow.Sku?.toLowerCase()) || (oldProduct.Name && mappedRow.Name && this.cms.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.cms.convertUnicodeToNormal(mappedRow.Name).toLowerCase())) {
+                      if (this.compareProduct(oldProduct, mappedRow)) {
+                        mappedRow.Code = oldProduct.Code;
+                        mappedRow.Sku = oldProduct.Sku;
+                        mappedRow.duplicate = true;
+                        mappedRow.OldName = ((oldProduct.OldName && (oldProduct.OldName + '\n') || '') + oldProduct.Name);
+                        if (oldProduct.FeaturePicture) {
+                          if (!mappedRow.FeaturePicture) {
                             mappedRow.FeaturePicture = oldProduct.FeaturePicture;
-                          }
-                        }
-                      }
-
-                      if (oldProduct.Pictures) {
-                        if ((!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
-                          mappedRow.Pictures = oldProduct.Pictures;
-                        } else {
-                          for (const p in mappedRow.Pictures) {
-                            const tag = CryptoJS.MD5(mappedRow.Pictures[p] as any).toString();
-                            const samePicture = (Array.isArray(oldProduct.Pictures) && oldProduct.Pictures || []).find(f => f.Tag == tag);
-                            if (samePicture) {
-                              mappedRow.Pictures[p] = samePicture;
+                          } else {
+                            const tag = CryptoJS.MD5(mappedRow.FeaturePicture as any).toString();
+                            if (oldProduct.FeaturePicture.Tag == tag) {
+                              mappedRow.FeaturePicture = oldProduct.FeaturePicture;
                             }
                           }
                         }
-                      }
-                      duplicate = true
-                      mappedRow.IsImport = false;
-                      mappedRow.SameProducts.push(oldProduct);
 
-                      // newProduct.IsImport = true;
-                      // newProduct.IsUpdate = true;
-                      // newProduct.IsNew = false;
-                      // break;
+                        if (oldProduct.Pictures) {
+                          if ((!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
+                            mappedRow.Pictures = oldProduct.Pictures;
+                          } else {
+                            for (const p in mappedRow.Pictures) {
+                              const tag = CryptoJS.MD5(mappedRow.Pictures[p] as any).toString();
+                              const samePicture = (Array.isArray(oldProduct.Pictures) && oldProduct.Pictures || []).find(f => f.Tag == tag);
+                              if (samePicture) {
+                                mappedRow.Pictures[p] = samePicture;
+                              }
+                            }
+                          }
+                        }
+                        duplicate = true
+                        mappedRow.IsImport = false;
+                        mappedRow.SameProducts.push(oldProduct);
+
+                        // newProduct.IsImport = true;
+                        // newProduct.IsUpdate = true;
+                        // newProduct.IsNew = false;
+                        // break;
+                      }
+                      // }
+                      // else {
+                      //   // if (oldProduct.Name && newProduct.Name && (this.cms.smartFilter(oldProduct.Name, newProduct.Name) || this.cms.smartFilter(newProduct.Name, oldProduct.Name))) {
+                      //   if (oldProduct.Name && mappedRow.Name && this.cms.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.cms.convertUnicodeToNormal(mappedRow.Name).toLowerCase()) {
+                      //     mappedRow.duplicate = true;
+                      //     mappedRow.IsNew = false;
+                      //     mappedRow.OldName = oldProduct.Name;
+                      //     mappedRow.Sku = oldProduct.Sku;
+                      //     mappedRow.Code = oldProduct.Code;
+                      //     mappedRow.OldSku = oldProduct.Sku;
+                      //     mappedRow.OldCode = oldProduct.Code;
+                      //     if (oldProduct.FeaturePicture && !mappedRow.FeaturePicture) {
+                      //       mappedRow.FeaturePicture = oldProduct.FeaturePicture;
+                      //     }
+                      //     if (oldProduct.Pictures && (!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
+                      //       mappedRow.Pictures = oldProduct.Pictures;
+                      //     }
+                      //     duplicate = true;
+                      //     break;
+                      //   }
+                      // }
                     }
-                    // }
-                    // else {
-                    //   // if (oldProduct.Name && newProduct.Name && (this.cms.smartFilter(oldProduct.Name, newProduct.Name) || this.cms.smartFilter(newProduct.Name, oldProduct.Name))) {
-                    //   if (oldProduct.Name && mappedRow.Name && this.cms.convertUnicodeToNormal(oldProduct.Name).toLowerCase() == this.cms.convertUnicodeToNormal(mappedRow.Name).toLowerCase()) {
-                    //     mappedRow.duplicate = true;
-                    //     mappedRow.IsNew = false;
-                    //     mappedRow.OldName = oldProduct.Name;
-                    //     mappedRow.Sku = oldProduct.Sku;
-                    //     mappedRow.Code = oldProduct.Code;
-                    //     mappedRow.OldSku = oldProduct.Sku;
-                    //     mappedRow.OldCode = oldProduct.Code;
-                    //     if (oldProduct.FeaturePicture && !mappedRow.FeaturePicture) {
-                    //       mappedRow.FeaturePicture = oldProduct.FeaturePicture;
-                    //     }
-                    //     if (oldProduct.Pictures && (!mappedRow.Pictures || mappedRow.Pictures.length == 0)) {
-                    //       mappedRow.Pictures = oldProduct.Pictures;
-                    //     }
-                    //     duplicate = true;
-                    //     break;
-                    //   }
-                    // }
                   }
                   if (!duplicate) {
                     mappedRow.duplicate = false;

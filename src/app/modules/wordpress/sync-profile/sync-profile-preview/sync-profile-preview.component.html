@@ -48,22 +48,28 @@
                     <th>STT</th>
                     <th>Task</th>
                     <th>Site</th>
-                    <th>Progress</th>
-                    <th>Start Time</th>
-                    <th>End Time</th>
-                    <th>Executor</th>
-                    <th>State</th>
-                    <th>Status</th>
-                    <th>Message</th>
-                    <th style="text-align: right;">Action</th>
+                    <th>Số sản phẩm</th>
+                    <th>Số biến thể</th>
+                    <th>Tiến trình</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Tổng thời gian</th>
+                    <th>Người thực thi</th>
+                    <th>Trạng thái</th>
+                    <th>Trạng thái lệnh</th>
+                    <th>Thông báo</th>
+                    <th style="text-align: right;">Hành động</th>
                   </thead>
                   <tr class="task" *ngFor="let task of syncTasks; let i=index" (click)="activeTask(task.id)" [ngClass]="{'active': task.id == activeTaskId}">
                     <td>{{i+1}}</td>
                     <td>{{task.Code}}</td>
                     <td>{{task.SiteName}}</td>
+                    <td>{{task.NumOfProducts | number:'1.0-0'}}</td>
+                    <td>{{task.Total | number:'1.0-0'}}</td>
                     <td>{{task.Loaded/task.Total*100 | number:'1.0-0'}}%</td>
                     <td>{{task.StartTime | date:'short'}}</td>
                     <td>{{task.EndTime | date:'short'}}</td>
+                    <td>{{task.Duration}}</td>
                     <td>{{task.ExecutorName}}</td>
                     <td>{{task.State}}</td>
                     <td>{{task.Status}}</td>
@@ -84,9 +90,9 @@
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <button nbButton status="primary" [disabled]="!form.valid || loading" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
-            <button nbButton status="success" [disabled]="!form.valid || loading" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
-            <button nbButton status="danger" [disabled]="!form.valid || loading" style="float: left;" hero (click)="sync() && false">
+            <!-- <button nbButton status="primary" [disabled]="!form.valid || loading" style="float: right;" hero (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button> -->
+            <!-- <button nbButton status="success" [disabled]="!form.valid || loading" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button> -->
+            <button nbButton status="danger" [disabled]="!form.valid || loading" style="float: right;" hero (click)="sync() && false">
               <nb-icon pack="eva" icon="cloud-upload-outline"></nb-icon>{{'Common.sync' | translate | headtitlecase}}
             </button>
           </div>

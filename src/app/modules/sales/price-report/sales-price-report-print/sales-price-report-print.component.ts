@@ -372,6 +372,7 @@ export class SalesPriceReportPrintComponent extends DataManagerPrintComponent<Sa
         'Price/Đơn Giá': detail['Price'],
         'Quantity/Số lượng': detail['Quantity'],
         'ToMoney/Thành tiền': detail['ToMoney'],
+        'Image/Hình': (detail['Image'] || [] as any).map(m => m.OriginImage).join('\n'),
       });
     }
     const sheet = XLSX.utils.json_to_sheet(details);

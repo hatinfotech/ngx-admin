@@ -301,8 +301,8 @@
                                         <nb-icon pack="eva" icon="file"></nb-icon>{{formItem.get('Object')?.value?.id && 'Nhập chi tiết' || 'Chọn nhà cung cấp để nhập chi tiết'}}
                                     </button>
                                     <input type="file" #chooseFile (change)="chooseFileAndFillDetails(formItem, $event)" style="display: none">
-                                    <button [disabled]="processing" type="button" nbButton status="danger" hero size="medium" (click)="chooseFile2.click() && false" title="{{'Common.choose' | translate | headtitlecase}}">
-                                        <nb-icon pack="eva" icon="file"></nb-icon>{{'Nhập chi tiết từ báo giá'}}
+                                    <button [disabled]="!formItem.get('Object')?.value?.id || processing" type="button" nbButton status="danger" hero size="medium" (click)="chooseFile2.click() && false" title="{{'Common.choose' | translate | headtitlecase}}">
+                                        <nb-icon pack="eva" icon="file"></nb-icon>{{formItem.get('Object')?.value?.id && 'Nhập chi tiết từ báo giá' || 'Chọn nhà cung cấp để nhập chi tiết từ báo giá'}}
                                     </button>
                                     <input type="file" #chooseFile2 (change)="chooseFileAndImportDetails(formItem, $event)" style="display: none">
                                 </div>

@@ -861,7 +861,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
                   Name: product.Name,
                   Note: product.Description,
                   Unit: {id: unitConversion.Unit, text: unitConversion.Name},
-                  Price: priceSet ? parseFloat(priceSet.Price as string) : null,
+                  Price: priceSet ? parseFloat(priceSet.Price as any) : null,
                 });
               }
             }

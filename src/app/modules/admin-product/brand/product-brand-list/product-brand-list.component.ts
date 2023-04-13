@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { ProductBrandModel, ProductCategoryModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -13,7 +13,7 @@ import { ProductBrandFormComponent } from '../product-brand-form/product-brand-f
   templateUrl: './product-brand-list.component.html',
   styleUrls: ['./product-brand-list.component.scss'],
 })
-export class ProductBrandListComponent extends DataManagerListComponent<ProductCategoryModel> implements OnInit {
+export class ProductBrandListComponent extends DataManagerListComponent<ProductBrandModel> implements OnInit {
 
   componentName: string = 'ProductBrandListComponent';
   formPath = '/admin-product/brand/form';
@@ -114,12 +114,12 @@ export class ProductBrandListComponent extends DataManagerListComponent<ProductC
   }
 
   /** Api get funciton */
-  executeGet(params: any, success: (resources: ProductCategoryModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductCategoryModel[] | HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: ProductBrandModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductBrandModel[] | HttpErrorResponse) => void) {
     params['includeParent'] = true;
     super.executeGet(params, success, error, complete);
   }
 
-  getList(callback: (list: ProductCategoryModel[]) => void) {
+  getList(callback: (list: ProductBrandModel[]) => void) {
     super.getList((rs) => {
       // rs.forEach(item => {
       //   item.Content = item.Content.substring(0, 256) + '...';

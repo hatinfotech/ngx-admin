@@ -29,6 +29,7 @@ import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { _ } from 'ag-grid-community';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { FileModel } from '../../../../models/file.model';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -1420,7 +1421,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     this.fileName = file.name;
     reader.onload = async (event) => {
       try {
-        this.isProcessing = true;
+        // this.isProcessing = true;
         let chooseSheet = null;
         const data = reader.result;
         const workBook = XLSX.read(data, { type: 'binary' });
@@ -1526,6 +1527,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             row[logicColName] = row[colName];
           }
 
+          row.SupplierSku = row.Sku;
+          row.SupplierProductName = row.ProductName;
+
           if (row.CustomerSku) {
             skus.push(row.CustomerSku);
           }
@@ -1542,11 +1546,107 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         }
 
         for (const row of sheet) {
-          const localProduct = productMap[row.CustomerSku] || productMap[row.Sku];
+          if (!row.ProductID) {
+            continue;
+          }
+          let localProduct = row.CustomerSku && productMap[row.CustomerSku] || null;
+          if (!localProduct) {
+            const purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products', { eq_Sku: row.Sku, eq_Supplier: this.cms.getObjectId(formItem.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+            if (purchaseProduct) {
+              localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products/' + purchaseProduct.Product, { includeIdText: true }).then(rs => rs[0]);
+            }
+          }
+          if (!localProduct) {
+            // Confirm create new product
+            try {
+              localProduct = await new Promise((resolve, reject) => {
+                this.cms.showDialog('Chưa có thông tin sản phẩm', `Bạn có muốn tạo mới sản phẩm ${row.ProductName}, sản phẩm mới sau khi tạo sẽ tự động thêm vào chi tiết phiếu đặt mua hàng.`, [
+                  {
+                    label: 'Không',
+                    status: 'basic',
+                    action: () => {
+                      resolve(null);
+                    },
+                  },
+                  {
+                    label: 'Tạo mới',
+                    status: 'primary',
+                    action: async () => {
+                      // create images
+                      const imageResources: FileModel[] = [];
+                      if (row.Image) {
+                        const imageLinks = row.Image.split('\n');
+                        for (const imageLink of imageLinks) {
+                          const image = await this.apiService.uploadFileByLink(imageLink);
+                          if (image) {
+                            imageResources.push(image);
+                          }
+                        }
+                      }
+                      this.cms.openDialog(ProductFormComponent, {
+                        context: {
+                          data: [
+                            {
+                              Name: row.ProductName,
+                              Sku: row.CustomerSku || row.Sku,
+                              WarehouseUnit: { id: row.Unit, text: row.UnitName } as any,
+                              UnitConversions: [
+                                {
+                                  Unit: { id: row.Unit, text: row.UnitName } as any,
+                                  ConversionRatio: 1,
+                                  IsDefaultSales: true,
+                                  IsDefaultPurchase: true,
+                                  Name: row.UnitName
+                                }
+                              ],
+                              FeaturePicture: imageResources[0] || null,
+                              Pictures: imageResources,
+                            }
+                          ],
+                          onDialogSave(newData) {
+                            this.cms.showToast('Đã tạo sản phẩm mới và thêm vào chi tiết đơn đặt mua hàng', 'Đã tạo sản phẩm mới', {status: 'info'});
+                            resolve({ id: newData[0].Code, text: newData[0].Name, ...newData[0] });
+                          },
+                          onDialogClose: () => {
+                            resolve(null);
+                          },
+                          onDialogError: async (component, err) => {
+                            console.log(err);
+                            if (err.error?.errorCode == 1062) {
+                              const sku = component.getRawFormData().array[0].Sku;
+                              if (sku) {
+                                component.close();
+                                this.cms.showToast('Sku đã tồn tại, tự động lấy thông tin sản phẩm theo Sku', 'Sku đã tồn tại', {status: 'info'});
+                                localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: sku, includeIdText: true }).then(rs => rs[0]);
+                                resolve(localProduct);
+                                // return Promise.resolve(null);
+                              }
+                            }
+                          }
+                        }
+                      });
+                    },
+                  }
+                ],
+                  (asCase) => {
+                    // Close by ESC
+                    if (asCase == 'default') {
+                      resolve(null);
+                    }
+                    if (asCase == 'close') {
+                      resolve(null);
+                    }
+                  });
+              });
+            } catch (err) {
+              console.error(err);
+            }
+          }
           if (localProduct) {
             row.Product = localProduct;
             row.Unit = { id: row.Unit, text: row.UnitName };
             row.Description = localProduct.Name;
+            row.Image = localProduct.Pictures;
             let detailForm: FormGroup = this.makeNewDetailFormGroup(formItem, row);
             details.push(detailForm);
             this.onAddDetailFormGroup(formItem, detailForm, details.length - 1);

@@ -759,4 +759,21 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     return source;
   }
 
+  numOfProducts: number = 0;
+  loadList(callback?: (list: any[]) => void) {
+    super.loadList(callback);
+    this.apiService.getPromise<any>(this.apiPath, { getNumOfProducts: true, eq_Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value) }).then(rs => {
+      this.numOfProducts = rs.data;
+    });
+  }
+
+  async refresh() {
+
+    this.apiService.getPromise<any>(this.apiPath, { getNumOfProducts: true, eq_Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value) }).then(rs => {
+      this.numOfProducts = rs.data;
+    });
+
+    return super.refresh();
+  }
+
 }
