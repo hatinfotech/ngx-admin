@@ -7,11 +7,12 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+// import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FileModel } from '../../../../models/file.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-sms-phone-number-form',
@@ -108,7 +109,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';

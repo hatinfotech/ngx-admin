@@ -1,18 +1,24 @@
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AgGridAngular } from '@ag-grid-community/angular';
-import { GridApi, ColumnApi, Module, AllCommunityModules,
-  IGetRowsParams, IDatasource } from '@ag-grid-community/all-modules';
+// import {
+//   GridApi, ColumnApi, Module, AllCommunityModules,
+//   IGetRowsParams, IDatasource
+// } from '@ag-grid-community/all-modules';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
+import { map, takeUntil } from 'rxjs/operators';
+import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
+import { IGetRowsParams, ModuleRegistry } from '@ag-grid-community/core';
+import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 
-@Component({template: ''})
+@Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent implements OnInit, ReuseComponent {
 
   editing = {};
@@ -34,6 +40,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   abstract idKey: string;
 
   public refreshPendding = false;
+  lastRequestCount: number = 0;
+  lastResponseHeader: HttpHeaders = null;
 
   actionButtonList: ActionControl[] = [
     {
@@ -42,7 +50,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Xoá',
       icon: 'trash-2',
       title: 'Xoá',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return !this.hadRowsSelected;
       },
@@ -57,7 +65,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Chỉnh',
       icon: 'edit-2',
       title: 'Chỉnh sửa',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return !this.hadRowsSelected;
       },
@@ -72,7 +80,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Xem',
       icon: 'external-link',
       title: 'Xem trước',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return !this.hadRowsSelected;
       },
@@ -87,7 +95,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Tạo',
       icon: 'file-add',
       title: 'Tạo mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -102,7 +110,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Reset',
       icon: 'refresh',
       title: 'Đặt lại từ đầu',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -117,7 +125,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       label: 'Refresh',
       icon: 'sync',
       title: 'Làm mới',
-      size: 'tiny',
+      size: 'medium',
       disabled: () => {
         return false;
       },
@@ -132,7 +140,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+    // ModuleRegistry,
+    InfiniteRowModelModule,
+  ];
 
   public gridParams;
   public columnDefs;
@@ -146,10 +158,10 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public pagination = false;
   public paginationPageSize = 40;
   public cacheBlockSize = this.paginationPageSize;
-  public cacheOverflowSize = 2;
+  public cacheOverflowSize = 10;
   public maxConcurrentDatasourceRequests = 2;
-  public infiniteInitialRowCount = 1;
-  public maxBlocksInCache = 1;
+  public infiniteInitialRowCount = null;
+  public maxBlocksInCache = 100;
   public getRowNodeId = (item: { id: string }) => {
     return item.id;
   }
@@ -168,6 +180,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public getRowHeight;
   public hadRowsSelected = false;
   public rowData: M[];
+  themeName = '';
 
   constructor(
     public apiService: ApiService,
@@ -175,9 +188,14 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
+    public themeService: NbThemeService,
     public ref?: NbDialogRef<AgGridDataManagerListComponent<M, F>>,
   ) {
     super(cms, router, apiService, ref);
+    this.themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
+    this.themeService.onThemeChange().pipe(takeUntil(this.destroy$)).subscribe(theme => {
+      this.themeName = theme.name == 'default' ? '' : theme.name;
+    });
   }
 
   /** List init event */
@@ -189,10 +207,26 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
       }
     }));
     // this.loadList();
-
+    this.apiService.getObservable<M[]>(this.apiPath, { limit: 1 }).pipe(
+      map((res) => {
+        this.lastResponseHeader = res.headers;
+        this.infiniteInitialRowCount = +res.headers.get('x-total-count');
+        let data = res.body;
+        return data;
+      }),
+    ).toPromise().then(rs => {
+      // success(rs);
+      return rs;
+    });
     this.initDataSource();
   }
-
+  filterTypeMap = {
+    equals: 'eq',
+    notEqual: 'ne',
+    startsWith: 'right',
+    endsWith: 'left',
+    contains: 'filter',
+  };
   initDataSource() {
     this.dataSource = {
       rowCount: null,
@@ -205,20 +239,22 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
         });
         Object.keys(getRowParams.filterModel).forEach(key => {
           const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
-          query['filter_' + key] = condition.filter;
+          if(this.filterTypeMap[condition.type]){
+            query[this.filterTypeMap[condition.type] + '_' + key] = condition.filter;
+          }
         });
 
-        this.executeGet(query, contactList => {
-          contactList.forEach((item, index) => {
+        this.executeGet(query, list => {
+          list.forEach((item, index) => {
             item['No'] = (getRowParams.startRow + index + 1);
             item['id'] = item[this.idKey];
           });
 
           let lastRow = -1;
-          if (contactList.length < this.paginationPageSize) {
-            lastRow = getRowParams.startRow + contactList.length;
+          if (list.length < this.paginationPageSize) {
+            lastRow = getRowParams.startRow + list.length;
           }
-          getRowParams.successCallback(contactList, lastRow);
+          getRowParams.successCallback(list, lastRow);
           this.gridApi.resetRowHeights();
         });
         // this.getList(contactList => {
@@ -250,7 +286,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     // if (!this.dataSource) {
 
     // }
+
     this.gridApi.setDatasource(this.dataSource);
+    // this.gridApi.setFilterModel({});
 
     // this.selectedIds = [];
     // this.hasSelect = 'none';
@@ -432,7 +470,19 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   /** Api get funciton */
   executeGet(params: any, success: (resources: M[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: M[] | HttpErrorResponse) => void) {
-    this.apiService.get<M[]>(this.apiPath, params, success, error, complete);
+    // this.apiService.get<M[]>(this.apiPath, params, success, error, complete);
+    this.apiService.getObservable<M[]>(this.apiPath, params).pipe(
+      map((res) => {
+        this.lastResponseHeader = res.headers;
+        this.infiniteInitialRowCount = +res.headers.get('x-total-count');
+        let data = res.body;
+        return data;
+      }),
+    ).toPromise().then(rs => {
+      success(rs);
+      return rs;
+    });
+
   }
 
   /** Api delete funciton */
@@ -454,7 +504,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   async refresh() {
     // this.loadList();
     // this.gridApi.refreshInfiniteCache();
-    this.gridApi.refreshInfinitePageCache();
+    // this.gridApi.refreshInfinitePageCache();
+    this.gridApi.refreshInfiniteCache();
     this.updateActionState();
     return false;
   }

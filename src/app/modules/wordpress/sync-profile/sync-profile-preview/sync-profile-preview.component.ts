@@ -1,5 +1,5 @@
 import { SmartTableDateTimeRangeFilterComponent } from './../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
+// import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -14,6 +14,8 @@ import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+// import { GridApi } from 'ag-grid-community';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-sync-profile-preview',
@@ -301,7 +303,9 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+    
+  ];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public rowSelection = 'single';
@@ -338,9 +342,9 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {

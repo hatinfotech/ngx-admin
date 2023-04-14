@@ -12,7 +12,8 @@ import { WpSyncSocketManager } from '../wp-sync-socket/wp-sync-socket.manager';
 import { User } from '../../../lib/nam-socket/model/user';
 import { ISocketNamespaceContext } from '../../../lib/nam-socket/socket.namspace';
 import { WpSyncMessage } from '../wp-sync-socket/wp-sync-socket.namespace';
-import { IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+import { IDatasource, IGetRowsParams } from '@ag-grid-community/core';
+// import { IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-sync-form',

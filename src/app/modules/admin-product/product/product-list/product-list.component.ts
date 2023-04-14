@@ -20,7 +20,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
-import { _ } from '@ag-grid-community/all-modules';
+// import { _ } from '@ag-grid-community/all-modules';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
 import { defaultMaxListeners } from 'stream';

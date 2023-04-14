@@ -32,8 +32,11 @@
     "postinstall": "ngcc --properties es2015 es5 browser module main --first-only --create-ivy-entry-points --tsconfig \"./src/tsconfig.app.json\""
   },
   "dependencies": {
-    "@ag-grid-community/all-modules": "^27.3.0",
-    "@ag-grid-community/angular": "^27.3.0",
+    "@ag-grid-community/angular": "~29.2.0",
+    "@ag-grid-community/client-side-row-model": "~29.2.0",
+    "@ag-grid-community/core": "~29.2.0",
+    "@ag-grid-community/infinite-row-model": "^29.2.0",
+    "@ag-grid-community/styles": "^29.2.0",
     "@akveo/ng2-completer": "^9.0.1",
     "@angular/animations": "^12.1.0",
     "@angular/cdk": "12.1.0",
@@ -63,7 +66,7 @@
     "@swimlane/ngx-charts": "^14.0.0",
     "@techiediaries/ngx-qrcode": "^9.1.0",
     "@types/jquery": "^3.5.6",
-    "ag-grid-community": "^26.1.0",
+    "ag-grid-community": "^29.2.0",
     "angular-tree-component": "^8.5.6",
     "angular2-chartjs": "0.4.1",
     "angular2-toaster": "^11.0.1",

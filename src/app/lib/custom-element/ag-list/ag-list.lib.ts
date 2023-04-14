@@ -1,9 +1,10 @@
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
-import { Column, GridApi, ICellRendererParams, IHeaderParams } from "@ag-grid-community/all-modules";
+import { Column, GridApi, IHeaderParams } from "@ag-grid-community/core";
 import { ICellRendererAngularComp, IHeaderAngularComp } from "@ag-grid-community/angular";
 import { Component, ElementRef, Input, OnDestroy, ViewChild } from "@angular/core";
 import { Subject } from 'rxjs';
+import { ICellRendererParams } from '@ag-grid-community/core';
 
 @Component({
     selector: 'btn-cell-renderer',

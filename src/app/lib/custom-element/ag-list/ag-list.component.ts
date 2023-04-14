@@ -3,10 +3,11 @@ import { BehaviorSubject } from 'rxjs';
 import { CommonService } from './../../../services/common.service';
 import { Component, forwardRef, Input, EventEmitter, Output, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, ColDef } from '@ag-grid-community/all-modules';
+// import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, ColDef } from '@ag-grid-community/all-modules';
 import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { NbThemeService } from '@nebular/theme';
 import { BtnCellRenderer } from './ag-list.lib';
+import { ColDef, ColumnApi, GridApi, IDatasource, Module } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-ag-list',
@@ -63,7 +64,7 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
 
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
 
   public rowSelection = 'multiple';
   @Input() rowModelType: 'clientSide' | 'infinite' | 'viewport' | 'serverSide' | undefined = 'infinite';

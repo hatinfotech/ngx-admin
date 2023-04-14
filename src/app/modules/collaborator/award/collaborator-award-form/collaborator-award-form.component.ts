@@ -15,7 +15,8 @@ import { CommonService } from '../../../../services/common.service';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorAwardDetailComponent } from './collaboartor-award-detail/collaboartor-award-detail.component';
-import { IGetRowsParams } from '@ag-grid-community/all-modules';
+import { IGetRowsParams } from '@ag-grid-community/core';
+// import { IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-collaborator-award-form',

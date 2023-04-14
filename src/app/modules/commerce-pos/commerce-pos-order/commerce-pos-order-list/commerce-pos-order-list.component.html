@@ -1,15 +1,20 @@
-<div class="dialog-wrap {{inputMode}}">
-  <nb-card class="small-header smart-table">
-    <nb-card-header>
-      <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('POS Đơn hàng' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)) + ' ('+(source.count() | number:'1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
-    </nb-card-header>
-  
-    <nb-card-body>
-      <div class="ng2-smart-table-wrap">
-        <ng2-smart-table #smartTable *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)"
-          (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
-        </ng2-smart-table>
-      </div>
-    </nb-card-body>
-  </nb-card>
-</div>
+<nb-card class="small-header ag-grid-card" style="height: 100%;">
+  <nb-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('POS Đơn hàng' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
+  </nb-card-header>
+
+  <nb-card-body>
+    <div class="ag-grid-wrap">
+      <ag-grid-angular *ngIf="infiniteInitialRowCount !== null" #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-alpine{{themeName ? ('-'+themeName) : ''}}"
+        [modules]="modules" [columnDefs]="columnDefs" [debug]="true"
+        [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+        [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
+        [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+        [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
+        [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
+        [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
+        [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
+      </ag-grid-angular>
+    </div>
+  </nb-card-body>
+</nb-card>

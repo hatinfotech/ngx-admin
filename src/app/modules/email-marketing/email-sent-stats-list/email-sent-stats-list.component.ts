@@ -7,10 +7,11 @@ import { ApiService } from '../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../services/common.service';
 import { EmailAddressFormComponent } from '../address/email-address-form/email-address-form.component';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+// import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { SmsReceipientModel } from '../../../models/sms.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-email-sent-stats-list',
@@ -108,7 +109,7 @@ export class EmailSentStatsListComponent extends DataManagerFormComponent<EmailA
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';

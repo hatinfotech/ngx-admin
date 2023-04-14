@@ -8,7 +8,8 @@ import { SmsPhoneNumberFormComponent } from '../phone-number/sms-phone-number-fo
 import { SmsPhoneNumberListModel, SmsReceipientModel, SmsPhoneNumberListDetailModel, SmsSentStateModel } from '../../../models/sms.model';
 import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+// import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
   selector: 'ngx-sms-sent-stats-list',
@@ -99,7 +100,10 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+    
+  ];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';

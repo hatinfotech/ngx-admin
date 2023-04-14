@@ -1,5 +1,5 @@
 import { CollaboratorAddonStrategyProductModel, CollaboratorAddonStrategyModel } from './../../../../models/collaborator.model';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
+// import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -20,6 +20,7 @@ import { CollaboratorProductListComponent } from '../../product/collaborator-pro
 import { ChangeDetectorRef } from '@angular/core';
 import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CollaboratorBasicStrategyProductFormComponent } from '../product-form/collaborator-basic-strategy-product-form.component';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',
@@ -139,7 +140,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
           icon: 'settings-2-outline',
           status: 'primary',
           label: 'Cài đặt',
-          clicked: (params: { node: RowNode, data: CollaboratorAddonStrategyProductModel, api: GridApi } & { [key: string]: any }) => {
+          clicked: (params: { node: IRowNode, data: CollaboratorAddonStrategyProductModel, api: GridApi } & { [key: string]: any }) => {
             // alert(`${field} was clicked`);
             console.log(params);
 
@@ -151,7 +152,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
                 ],
                 onDialogSave(newData) {
                   console.log(newData);
-                  let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
                   currentNode.setData(newData[0]);
                 },
               }
@@ -211,7 +212,10 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+
+  ];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public rowSelection = 'multiple';
@@ -248,9 +252,9 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {
@@ -912,7 +916,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   editSelectedProducts(formItem: FormGroup) {
     const $this = this;
-    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+    const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
 
     // Setting for product
     this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
@@ -921,7 +925,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         onDialogSave(newData) {
           console.log(newData);
           for (const itemData of newData) {
-            let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
+            let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
             currentNode.setData(itemData);
           }
         },
@@ -933,7 +937,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
 
   removeSelectedProducts(formItem: FormGroup) {
 
-    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+    const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
     this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
 
     return false;

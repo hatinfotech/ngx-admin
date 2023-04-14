@@ -1,4 +1,4 @@
-import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/all-modules';
+// import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
@@ -12,6 +12,7 @@ import { ContactDetailModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-product-form',
@@ -245,7 +246,8 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public rowSelection = 'single';
@@ -282,9 +284,9 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {
@@ -331,7 +333,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
   public getRowNodeId = (item: ProductModel) => {
     return item.Code;
   }
-  public getRowStyle = (params: { node: RowNode }) => {
+  public getRowStyle = (params: { node: IRowNode }) => {
     // if (params.node.rowIndex == this.activeDetailIndex) {
     //   return { background: '#ffc107' };
     // }

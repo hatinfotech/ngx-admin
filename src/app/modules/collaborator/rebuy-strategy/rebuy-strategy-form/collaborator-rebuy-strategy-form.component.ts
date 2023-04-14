@@ -1,5 +1,5 @@
 import { CollaboratorRebuyStrategyPublisherModel, CollaboratorRebuyStrategyModel, CollaboratorRebuyStrategyProductModel } from '../../../../models/collaborator.model'
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
+// import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { CurrencyPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -22,6 +22,7 @@ import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.
 import { CollaboratorRebuyStrategyPublisherFormComponent } from '../publisher-form/collaborator-rebuy-strategy-publisher-form.component';
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorRebuyStrategyProductFormComponent } from '../product-form/collaborator-rebuy-strategy-product-form.component';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
@@ -130,7 +131,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
           icon: 'settings-2-outline',
           status: 'primary',
           label: 'Cài đặt',
-          clicked: (params: { node: RowNode, data: CollaboratorRebuyStrategyPublisherModel, api: GridApi } & { [key: string]: any }) => {
+          clicked: (params: { node: IRowNode, data: CollaboratorRebuyStrategyPublisherModel, api: GridApi } & { [key: string]: any }) => {
             // alert(`${field} was clicked`);
             console.log(params);
 
@@ -142,7 +143,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
                 ],
                 onDialogSave(newData) {
                   console.log(newData);
-                  let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Publisher));
+                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Publisher));
                   currentNode.setData(newData[0]);
                 },
               }
@@ -285,7 +286,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
                 ],
                 onDialogSave(newData) {
                   console.log(newData);
-                  let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
                   currentNode.setData(newData[0]);
                 },
               }
@@ -342,7 +343,10 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
   public gridApiOfProducts: GridApi;
   public gridColumnApi: ColumnApi;
   public gridColumnApiOfProducts: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+
+  ];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public columnDefsOfProduct: ColDef[];
@@ -381,9 +385,9 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {
@@ -1100,7 +1104,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
 
   editSelectedPublishers(formItem: FormGroup) {
     const $this = this;
-    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+    const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
 
     // Setting for product
     this.cms.openDialog(CollaboratorRebuyStrategyPublisherFormComponent, {
@@ -1109,7 +1113,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         onDialogSave(newData) {
           console.log(newData);
           for (const itemData of newData) {
-            let currentNode: RowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Publisher));
+            let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Publisher));
             currentNode.setData(itemData);
           }
         },
@@ -1121,7 +1125,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
 
   removeSelectedPublishers(formItem: FormGroup) {
 
-    const selectedNodes: RowNode[] = this.gridApi.getSelectedNodes();
+    const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
     this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
 
     return false;

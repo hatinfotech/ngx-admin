@@ -18,13 +18,14 @@ import { PriceTablePrintComponent } from '../price-table-print/price-table-print
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
 import { BehaviorSubject } from 'rxjs';
-import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
+// import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
 import { takeUntil, first } from 'rxjs/operators';
 import { PriceTablePrintAsListComponent } from '../price-table-print-as-list/price-table-print-as-list.component';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { DecimalPipe } from '@angular/common';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
 
 
 @Component({
@@ -271,7 +272,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';
@@ -582,7 +583,10 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         this.gridReady$.pipe(takeUntil(this.destroy$)).subscribe(ready => {
           if (ready) {
             this.gridApi.setRowData([]);
-            this.gridApi.updateRowData({
+            // this.gridApi.updateRowData({
+            //   add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
+            // });
+            this.gridApi.applyTransaction({
               add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
             });
           }
@@ -865,7 +869,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
                 });
               }
             }
-            this.gridApi.updateRowData({
+            this.gridApi.applyTransaction({
               add: prepareData,
             });
           }
@@ -891,7 +895,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   }
 
   removeDetails(formItem: FormGroup) {
-    this.gridApi.updateRowData({
+    this.gridApi.applyTransaction({
       remove: this.getSelectedRows(),
     });
   }

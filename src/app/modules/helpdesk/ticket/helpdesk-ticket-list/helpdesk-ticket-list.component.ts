@@ -4,7 +4,7 @@ import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { HelpdeskTicketFormComponent } from '../helpdesk-ticket-form/helpdesk-ticket-form.component';
 
@@ -26,8 +26,10 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
+    public themeService: NbThemeService,
+    public ref: NbDialogRef<HelpdeskTicketListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.columnDefs = this.configSetting([
       {

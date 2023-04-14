@@ -11,7 +11,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PurchasePriceTablePrintComponent } from '../purchase-price-table-print/purchase-price-table-print.component';
 import * as XLSX from 'xlsx';
-import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+// import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { SmsReceipientModel } from '../../../../models/sms.model';
 import { EmailAddressListDetailModel } from '../../../../models/email.model';
 import { CurrencyPipe } from '@angular/common';
@@ -23,6 +23,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-purchase-price-table-import',
@@ -225,7 +226,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';
@@ -534,7 +535,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         this.gridReady$.subscribe(ready => {
           if (ready) {
             this.gridApi.setRowData([]);
-            this.gridApi.updateRowData({
+            this.gridApi.applyTransaction({
               add: itemFormData.Details.map((item: any, index2: number) => ({ ...item, id: item['Sku'], No: index2 + 1, Product: item['Product'] && item['Product']['id'] ? item['Product']['id'] : item['Product'] })),
             });
           }
@@ -773,9 +774,9 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
 
       }
       if (priceTableSheet[0] && priceTableSheet[0]['Description'] && priceTableSheet[0]['Sku'] && typeof priceTableSheet[0]['Price'] !== 'undefined') {
-        this.gridApi.updateRowData({
-          add: priceTableSheet,
-        });
+        // this.gridApi.updateRowData({
+        //   add: priceTableSheet,
+        // });
       } else {
         this.toastrService.show('Bảng giá phải chứa các cột: Sku, Description và Price', 'Định dạng bảng giá không khớp', {
           status: 'warning',

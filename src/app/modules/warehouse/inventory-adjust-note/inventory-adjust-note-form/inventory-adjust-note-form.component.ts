@@ -27,12 +27,13 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { SystemConfigModel } from '../../../../models/model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
+// import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 // @Component({
 //   selector: 'btn-cell-renderer',
 //   template: `
@@ -367,7 +368,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         pinned: 'right',
         cellRenderer: 'btnCellRenderer',
         cellRendererParams: {
-          clicked: (params: { node: RowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
+          clicked: (params: { node: IRowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
             // alert(`${field} was clicked`);
             console.log(params);
 
@@ -463,7 +464,10 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+
+  ];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public rowSelection = 'single';
@@ -500,9 +504,9 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {
@@ -2138,7 +2142,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // productId = '118' + coreId + productId;
     }
 
-    let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+    let existsGoods: IRowNode = this.gridApi.getRowNode(productId + '-' + unitId);
     if (!existsGoods) {
 
       this.apiService.getPromise<any[]>('/warehouse/goods', {
@@ -2363,7 +2367,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
                     // let existGoodsIndex = details.controls.findIndex(f => this.cms.getObjectId(f.get('Product').value) == this.cms.getObjectId(goods) && this.cms.getObjectId(f.get('Unit').value) == goods.Unit);
                     // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
-                    let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+                    let existsGoods: IRowNode = this.gridApi.getRowNode(productId + '-' + unitId);
                     if (!existsGoods) {
                       // existsGoods = this.makeNewDetailFormGroup(this.array.controls[0] as FormGroup, {
                       //   Product: { Code: this.cms.getObjectId(goods), id: this.cms.getObjectId(goods), text: this.cms.getObjectText(goods) },
@@ -2605,7 +2609,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
                         // let existGoodsIndex = details.controls.findIndex(f => this.cms.getObjectId(f.get('Product').value) == this.cms.getObjectId(detail.Product) && this.cms.getObjectId(f.get('Unit').value) == this.cms.getObjectId(detail.Unit));
                         // let existsGoods = details.controls[existGoodsIndex] as FormGroup;
                         const productId = this.cms.getObjectId(detail.Product), unitId = this.cms.getObjectId(detail.Unit);
-                        let existsGoods: RowNode = this.gridApi.getRowNode(productId + '-' + unitId);
+                        let existsGoods: IRowNode = this.gridApi.getRowNode(productId + '-' + unitId);
 
 
                         if (!existsGoods) {

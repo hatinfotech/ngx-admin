@@ -1,4 +1,6 @@
-import { ColumnApi, Column, RowNode, GridApi, ICellEditorParams, ColDef, ICellEditorComp, IAfterGuiAttachedParams } from '@ag-grid-community/all-modules';
+// import { ColumnApi, Column, RowNode, GridApi, ICellEditorParams, ColDef, ICellEditorComp, IAfterGuiAttachedParams } from '@ag-grid-community/all-modules';
+
+import { ColDef, Column, ColumnApi, GridApi, IAfterGuiAttachedParams, ICellEditorComp, ICellEditorParams, RowNode } from "@ag-grid-community/core";
 
 export class AgSelectEditorComponent implements ICellEditorComp {
 

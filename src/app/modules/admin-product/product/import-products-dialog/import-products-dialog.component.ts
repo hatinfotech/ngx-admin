@@ -8,14 +8,15 @@ import { NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
+// import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
 import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ImportProductMapFormComponent } from '../import-product-map-form/import-product-map-form.component';
-import { AgGridColumn } from '@ag-grid-community/angular';
+import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/core';
+// import { AgGridColumn } from '@ag-grid-community/angular';
 var CryptoJS = require("crypto-js");
 
 @Component({
@@ -98,7 +99,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
   public rowSelection = 'single';
@@ -135,9 +136,9 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         // Delete selected rows with back space
         if (isDeleteKey) {
           // const selectedRows: RowNode[] = params.api.getSelectedRows();
-          const selectedNodes: RowNode[] = params.api.getSelectedNodes();
+          const selectedNodes: IRowNode[] = params.api.getSelectedNodes();
           const currentIndex = selectedNodes[0].rowIndex;
-          let prevNode: RowNode, prevIndex: number, nextNode: RowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
+          let prevNode: IRowNode, prevIndex: number, nextNode: IRowNode, nextIndex: number, wasFoundCurrnet = false, wasFoundPrevNode = false;
 
           // Find Next and Prev Node
           params.api.forEachNode((node, index) => {
@@ -628,7 +629,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             cellRenderer: 'textRender',
           },
         ],
-      ];
+      ] as any[];
     }
   }
 

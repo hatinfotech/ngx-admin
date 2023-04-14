@@ -7,12 +7,13 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
+// import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 import { SmsReceipientModel } from '../../../../models/sms.model';
 import { FileModel } from '../../../../models/file.model';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
+import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-email-address-form',
@@ -107,7 +108,10 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
   /** AG-Grid */
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
-  public modules: Module[] = AllCommunityModules;
+  // public modules: Module[] = AllCommunityModules;
+  public modules: Module[] = [
+    
+  ];
   public dataSource: IDatasource;
   public columnDefs: any;
   public rowSelection = 'multiple';
