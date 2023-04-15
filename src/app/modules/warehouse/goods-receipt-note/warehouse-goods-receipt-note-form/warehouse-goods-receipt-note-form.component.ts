@@ -1,7 +1,7 @@
 import { PromotionModel } from './../../../../models/promotion.model';
 import { AccAccountFormComponent } from './../../../accounting/acc-account/acc-account-form/acc-account-form.component';
 import { ProductUnitConversoinModel, ProductUnitModel } from './../../../../models/product.model';
-import { WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteModel } from './../../../../models/warehouse.model';
+import { GoodsModel, WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
@@ -419,12 +419,46 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     }, error);
   }
 
+  goodsMap: { [key: string]: GoodsModel } = {};
+  async bulkLoadGoodsInfo(goodsIds: string[]) {
+    // Bulk load containers
+    const goodsList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+      select: 'Code',
+      includeUnit: true,
+      includeContainers: true,
+      eq_Code: '[' + goodsIds.join(',') + ']',
+      limit: 'nolimit'
+    });
+    for (const goods of goodsList) {
+      if (goods.Containers) {
+        goods.Containers = goods.Containers.map(m => ({
+          id: m.Container,
+          text: `[${m.ContainerFindOrder}] ${m.ContainerPath}: ${m.ContainerDescription}`,
+          Unit: m.Unit
+        }))
+      }
+      if (!this.goodsMap[goods.Code]) {
+        this.goodsMap[goods.Code] = goods;
+      } else {
+        this.goodsMap[goods.Code].Containers = [
+          ...this.goodsMap[goods.Code].Containers,
+          ...goods.Containers,
+        ];
+      }
+    }
+  }
+
   async formLoad(formData: WarehouseGoodsReceiptNoteModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: WarehouseGoodsReceiptNoteModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
+
+        // Bulk load containers
+        const goodsIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+        await this.bulkLoadGoodsInfo(goodsIds);
+
         itemFormData.Details.forEach(detail => {
           detail.AccessNumbers = (Array.isArray(detail.AccessNumbers) && detail.AccessNumbers.length > 0 ? (detail.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n')) : '') as any;
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detail);
@@ -433,8 +467,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
           if (detail.Product) {
             this.onSelectProduct(newDetailFormGroup, detail.Product, true);
-            const seelctedUnit = detail.Product.Units.find(f => f.id == detail.Unit.id);
-            this.onSelectUnit(newDetailFormGroup, null, seelctedUnit);
+            const seelctedUnit = detail.Product.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(detail.Unit));
+            if (seelctedUnit) {
+              this.onSelectUnit(newDetailFormGroup, null, seelctedUnit);
+            }
           }
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
@@ -681,22 +717,29 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       }
     }
     if (unitId && productId) {
-      const containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
-        select: 'Code',
-        includeUnit: true,
-        includeContainers: true,
-        eq_Code: productId,
-        eq_ConversionUnit: unitId
-      }).then(goodsList => {
-        // const results = [];
-        if (goodsList && goodsList.length > 0) {
-          return goodsList[0].Containers.map(m => ({
-            id: m.Container,
-            text: `[${m.ContainerFindOrder}] ${m.ContainerPath}: ${m.ContainerDescription}`
-          }));
-        }
-        return [];
-      });
+
+      let containerList = [];
+
+      if (this.goodsMap[productId]) {
+        containerList = (this.goodsMap[productId].Containers || []).filter(f => this.cms.getObjectId(f.Unit) == unitId);
+      } else {
+        containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+          select: 'Code',
+          includeUnit: true,
+          includeContainers: true,
+          eq_Code: productId,
+          eq_ConversionUnit: unitId
+        }).then(goodsList => {
+          // const results = [];
+          if (goodsList && goodsList.length > 0) {
+            return goodsList[0].Containers.map(m => ({
+              id: m.Container,
+              text: `[${m.ContainerFindOrder}] ${m.ContainerPath}: ${m.ContainerDescription}`
+            }));
+          }
+          return [];
+        });
+      }
       detail['ContainerList'] = containerList;
       if (containerList && containerList.length == 1) {
         detail.get('Container').setValue(containerList[0]);
@@ -796,6 +839,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 }
                 insertList.push(chooseItems[i]);
 
+                // Bulk load goods info
+                const goodsIds = (voucher.Details || []).filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+                await this.bulkLoadGoodsInfo(goodsIds);
+
                 // Insert order details into voucher details
                 if (voucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
@@ -852,6 +899,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                 }
                 insertList.push(chooseItems[i]);
 
+                // Bulk load goods info
+                const goodsIds = (voucher.Details || []).filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+                await this.bulkLoadGoodsInfo(goodsIds);
+
                 // Insert order details into voucher details
                 if (voucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + voucher.Code + ' - ' + voucher.Title }));
@@ -903,6 +954,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                   formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
                   details.clear();
                 }
+
+                // Bulk load goods info
+                const goodsIds = (voucher.Details || []).filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+                await this.bulkLoadGoodsInfo(goodsIds);
+
                 insertList.push(chooseItems[i]);
                 if (voucher.RelativeVouchers) {
                   for (const relativeVoucher of voucher.RelativeVouchers) {
@@ -971,6 +1027,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
                   details.clear();
                 }
                 insertList.push(chooseItems[i]);
+
+                // Bulk load goods info
+                const goodsIds = (voucher.Details || []).filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+                await this.bulkLoadGoodsInfo(goodsIds);
 
                 // Insert order details into voucher details
                 if (voucher?.Details) {

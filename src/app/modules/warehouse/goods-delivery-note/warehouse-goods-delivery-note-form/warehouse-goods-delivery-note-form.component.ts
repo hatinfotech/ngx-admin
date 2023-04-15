@@ -3,7 +3,7 @@ import { SystemConfigModel } from './../../../../models/model';
 import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
@@ -498,12 +498,18 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: WarehouseGoodsDeliveryNoteDetailModel): FormGroup {
-    const newForm = this.formBuilder.group({
+    let newForm = null;
+    newForm = this.formBuilder.group({
       // Id: [''],
       No: [''],
       SystemUuid: [''],
       Type: ['PRODUCT', Validators.required],
-      Product: [''],
+      Product: ['', (control: FormControl) => {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       Description: ['', Validators.required],
       Quantity: [1],
       // Price: [0],
@@ -511,7 +517,12 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
       // Tax: ['VAT10'],
       // ToMoney: [0],
       Image: [[]],
-      Container: [''],
+      Container: ['', (control: FormControl) => {
+        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
+          return { invalidName: true, required: true, text: 'trường bắt buộc' };
+        }
+        return null;
+      }],
       // Business: { value: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), disabled: true },
       // Business: [this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY')],
       Business: [this.accountingBusinessList.filter(f => f.id === 'WAREHOUSETEMPORARYEXPORT')],
@@ -591,19 +602,38 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     }
   }
 
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel) {
+  // onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
+
+  //   console.log(selectedData);
+  //   const productId = this.cms.getObjectId(selectedData);
+  //   if (productId) {
+  //     const descriptionControl = detail.get('Description');
+  //     descriptionControl.setValue(selectedData['OriginName']);
+  //     if (selectedData.Units && selectedData?.Units.length > 0) {
+  //       const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
+  //       detail['unitList'] = selectedData.Units;
+  //       detail.get('Unit').setValue(defaultUnit);
+  //     }
+  //     detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
+  //   }
+  //   return false;
+  // }
+
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
 
     console.log(selectedData);
     const productId = this.cms.getObjectId(selectedData);
     if (productId) {
-      const descriptionControl = detail.get('Description');
-      descriptionControl.setValue(selectedData['OriginName']);
-      if (selectedData.Units && selectedData?.Units.length > 0) {
+      if (!doNotAutoFill) {
+        const descriptionControl = detail.get('Description');
+        descriptionControl.setValue(selectedData['OriginName'] || selectedData['Name']);
+      }
+      detail['unitList'] = selectedData.Units;
+      if (!doNotAutoFill && selectedData.Units && selectedData?.Units.length > 0) {
         const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
-        detail['unitList'] = selectedData.Units;
         detail.get('Unit').setValue(defaultUnit);
       }
-      detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
+      // detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
     }
     return false;
   }
@@ -876,7 +906,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
                   this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
@@ -905,7 +935,12 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                       // delete voucherDetail.No;
                       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
                       details.push(newDtailFormGroup);
-                      this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
+                      this.onSelectProduct(newDtailFormGroup, voucherDetail.Product, true);
+                      // this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
+                      const selectedUnit = voucherDetail.Product.Units.find(f => f.id == this.cms.getObjectId(voucherDetail.Unit));
+                      if (selectedUnit) {
+                        this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
+                      }
                     }
                   }
                 }
