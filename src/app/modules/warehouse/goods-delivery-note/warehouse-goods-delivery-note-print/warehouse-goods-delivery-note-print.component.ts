@@ -120,7 +120,15 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true }).then(rs => {
+    return this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>(this.apiPath, { 
+      id: ids, includeContact: true, 
+      includeDetails: true, 
+      includeRelativeVouchers: true, 
+      includeAccessNumbers: true,
+      detailIncludeContainer: true,
+      detailIncludeShelf: true,
+      detailRenderFindOrderLabel: true,
+     }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsDeliveryNoteDetailModel) => detail.Type === 'PRODUCT');
       }
