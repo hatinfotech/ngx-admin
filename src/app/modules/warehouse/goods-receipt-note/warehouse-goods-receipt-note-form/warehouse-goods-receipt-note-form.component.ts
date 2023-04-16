@@ -134,7 +134,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
         context: {
           inputMode: 'dialog',
           inputGoodsList: [{ Code: currentProduct, WarehouseUnit: currentUnit }],
-          onDialogSave: (newData: ProductModel[]) => {
+          onDialogSave: async (newData: ProductModel[]) => {
+            await this.bulkLoadGoodsInfo([currentProduct]);
             this.onSelectUnit(formGroup, null, formGroup.get('Unit').value, true).then(rs => {
               formGroup.get('Container').patchValue({
                 id: newData[0].Code, text: newData[0].Path + newData[0].Name,
@@ -440,10 +441,18 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       if (!this.goodsMap[goods.Code]) {
         this.goodsMap[goods.Code] = goods;
       } else {
-        this.goodsMap[goods.Code].Containers = [
-          ...this.goodsMap[goods.Code].Containers,
-          ...goods.Containers,
-        ];
+        if (!this.goodsMap[goods.Code].Containers) {
+          this.goodsMap[goods.Code].Containers = [];
+        }
+        for (const container of goods.Containers) {
+          if (!this.goodsMap[goods.Code].Containers.some(f => this.cms.getObjectId(f) == this.cms.getObjectId(container))) {
+            this.goodsMap[goods.Code].Containers.push(container);
+          }
+        }
+        // this.goodsMap[goods.Code].Containers = [
+        //   ...this.goodsMap[goods.Code].Containers,
+        //   ...goods.Containers,
+        // ];
       }
     }
   }
@@ -722,7 +731,8 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
       if (this.goodsMap[productId]) {
         containerList = (this.goodsMap[productId].Containers || []).filter(f => this.cms.getObjectId(f.Unit) == unitId);
-      } else {
+      }
+      if (containerList.length == 0) {
         containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
           select: 'Code',
           includeUnit: true,
