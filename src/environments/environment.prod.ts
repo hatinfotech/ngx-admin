@@ -6,7 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.10.4',
+  version: '6.5.10.6',
   // 6.5.10:   update warehosue export for distribution case
   // 6.5.9.5:   update sale price form
   // 6.5.9.2:   import purchase detail from supplier price quotation v2: Using purchase product map for detect product

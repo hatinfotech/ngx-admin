@@ -30,6 +30,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { _ } from 'ag-grid-community';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { FileModel } from '../../../../models/file.model';
+var CryptoJS = require("crypto-js");
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -1541,12 +1542,13 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         // Load products info by sku
         const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: '[' + skus.join(',') + ']', includeIdText: true, limit: 'nolimit' });
         const productMap: { [key: string]: ProductModel } = {};
+        const productPictureMap: { [key: string]: FileModel } = {};
         for (const product of products) {
           productMap[product.Sku] = product;
         }
 
         for (const row of sheet) {
-          if (!row.ProductID) {
+          if (!row.ProductName) {
             continue;
           }
           let localProduct = row.CustomerSku && productMap[row.CustomerSku] || null;
@@ -1571,22 +1573,54 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                   {
                     label: 'Tạo mới',
                     status: 'primary',
-                    action: async () => {
+                    action: async (button, dialog) => {
+                      dialog.loading = true;
+                      // load exists product
+                      const requestSku = row.CustomerSku || row.Sku;
+                      let existsProduct: ProductModel = null;
+                      // let existsPicturesMap: { [key: string]: FileModel } = {};
+                      // let newPictures: FileModel[] = [];
+                      if (requestSku) {
+                        existsProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: requestSku, includeIdText: true, includePictures: true, includeCategories: true, includeGroups: true, includeUnitConversions: true, includeProperties: true, includeWarehouseUnit: true }).then(rs => rs[0]);
+                        // existsPictures = existsProduct.Pictures || [];
+                        // for(const existsPicture of existsPictures) {
+                        //   if(imageResources)
+                        // }
+                        if (existsProduct?.Pictures) {
+                          for (const existsPicture of existsProduct.Pictures) {
+                            if (existsPicture.Tag) {
+                              // existsPicturesMap[existsPicture.Tag] = existsPicture;
+                              productPictureMap[existsPicture.Tag] = existsPicture;
+                            }
+                          }
+                        }
+                      }
+
                       // create images
                       const imageResources: FileModel[] = [];
                       if (row.Image) {
                         const imageLinks = row.Image.split('\n');
                         for (const imageLink of imageLinks) {
-                          const image = await this.apiService.uploadFileByLink(imageLink);
-                          if (image) {
-                            imageResources.push(image);
+                          const tag = CryptoJS.MD5(imageLink).toString();
+                          if (productPictureMap[tag]) {
+                            imageResources.push(productPictureMap[tag]);
+                          } else {
+                            const image = await this.apiService.uploadFileByLink(imageLink);
+                            if (image) {
+                              image.Tag = tag;
+                              imageResources.push(image);
+                              productPictureMap[tag] = image;
+                            }
                           }
                         }
                       }
+
                       this.cms.openDialog(ProductFormComponent, {
                         context: {
+                          inputId: existsProduct?.Code ? [existsProduct?.Code] : null,
                           data: [
                             {
+                              Code: existsProduct?.Code || null,
                               Name: row.ProductName,
                               Sku: row.CustomerSku || row.Sku,
                               WarehouseUnit: { id: row.Unit, text: row.UnitName } as any,
@@ -1604,7 +1638,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                             }
                           ],
                           onDialogSave(newData) {
-                            this.cms.showToast('Đã tạo sản phẩm mới và thêm vào chi tiết đơn đặt mua hàng', 'Đã tạo sản phẩm mới', {status: 'info'});
+                            this.cms.showToast('Đã tạo sản phẩm mới và thêm vào chi tiết đơn đặt mua hàng', 'Đã tạo sản phẩm mới', { status: 'info' });
                             resolve({ id: newData[0].Code, text: newData[0].Name, ...newData[0] });
                           },
                           onDialogClose: () => {
@@ -1616,8 +1650,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                               const sku = component.getRawFormData().array[0].Sku;
                               if (sku) {
                                 component.close();
-                                this.cms.showToast('Sku đã tồn tại, tự động lấy thông tin sản phẩm theo Sku', 'Sku đã tồn tại', {status: 'info'});
-                                localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: sku, includeIdText: true }).then(rs => rs[0]);
+                                this.cms.showToast('Sku đã tồn tại, tự động lấy thông tin sản phẩm theo Sku', 'Sku đã tồn tại', { status: 'info' });
+                                localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: sku, includeIdText: true, includePictures: true, includeCategories: true, includeGroups: true, includeUnitConversions: true, includeProperties: true, includeWarehouseUnit: true }).then(rs => rs[0]);
                                 resolve(localProduct);
                                 // return Promise.resolve(null);
                               }
@@ -1625,8 +1659,17 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                           }
                         }
                       });
+
+                      dialog.loading = false;
                     },
-                  }
+                  },
+                  {
+                    label: 'Dừng',
+                    status: 'danger',
+                    action: () => {
+                      reject('STOP')
+                    },
+                  },
                 ],
                   (asCase) => {
                     // Close by ESC
@@ -1640,6 +1683,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
               });
             } catch (err) {
               console.error(err);
+              if (err == 'STOP') {
+                break;
+              }
             }
           }
           if (localProduct) {
@@ -1650,6 +1696,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             let detailForm: FormGroup = this.makeNewDetailFormGroup(formItem, row);
             details.push(detailForm);
             this.onAddDetailFormGroup(formItem, detailForm, details.length - 1);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
         }
 
