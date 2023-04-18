@@ -22,6 +22,7 @@ import { Title } from '@angular/platform-browser';
       <router-outlet></router-outlet>
   </ngx-one-column-layout>
   `,
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   menu: NbMenuItem[] = [

@@ -1,20 +1,18 @@
-<nb-card class="small-header ag-grid-card" style="height: 100%;">
+<nb-card class="small-header ag-grid-card" style="height: 100%;" [nbSpinner]="loading">
   <nb-card-header>
     <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : ('POS Đơn hàng' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase))" [controls]="actionButtonList"></ngx-card-header>
   </nb-card-header>
 
   <nb-card-body>
-    <div class="ag-grid-wrap">
       <ag-grid-angular *ngIf="infiniteInitialRowCount !== null" #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-alpine{{themeName ? ('-'+themeName) : ''}}"
         [modules]="modules" [columnDefs]="columnDefs" [debug]="true"
         [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
         [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
         [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
         [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
-        [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)"
+        [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged($event)"
         [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight"
         [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
       </ag-grid-angular>
-    </div>
   </nb-card-body>
 </nb-card>

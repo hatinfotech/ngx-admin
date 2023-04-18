@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule, CurrencyPipe, DecimalPipe } from '@angular/common';
 import { Select2Component } from './select2/select2.component';
 import { SmartTableCheckboxComponent, SmartTableButtonComponent, SmartTableIconComponent, SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableCurrencyEditableComponent, IconViewComponent, SmartTableNumberEditableComponent, SmartTableTextEditableComponent, SmartTableCurrencyComponent, SmartTableBaseComponent, SmartTableTagsComponent, SmartTableAccCurrencyComponent, SmartTableSelect2EditableComponent, SmartTableTagComponent, SmartTableRelativeVouchersComponent } from './smart-table/smart-table.component';
-import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule, NbButtonGroupModule } from '@nebular/theme';
+import { NbCheckboxModule, NbIconModule, NbButtonModule, NbInputModule, NbSelectModule, NbTooltipModule, NbProgressBarModule, NbCardModule, NbSpinnerModule, NbPopoverModule, NbButtonGroupModule, NbTagModule } from '@nebular/theme';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActionControlListComponent } from './action-control-list/action-control-list.component';
 import { AgListComponent } from './ag-list/ag-list.component';
@@ -28,8 +28,9 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
 import { ImagesViewerComponent } from './my-components/images-viewer/images-viewer.component';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { InputMaskModule } from '@ngneat/input-mask';
-import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from './ag-list/ag-list.lib';
+import { AgButtonCellRenderer, AgTextCellRenderer, AgCheckboxCellRenderer, CustomHeader, AgDateCellRenderer, AgButtonsCellRenderer, AgCurrencyCellRenderer, AgIdCellRenderer, AgTagsCellRenderer } from './ag-list/ag-list.lib';
 import { PaginationControlComponent } from './my-components/pagination-control/pagination-control.component';
+import { AgSelect2Filter } from './ag-list/ag-list-lib/select2.component.filter';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -68,11 +69,22 @@ import { PaginationControlComponent } from './my-components/pagination-control/p
     SmartTableTagComponent,
     SmartTableAccCurrencyComponent,
     ImagesViewerComponent,
-    BtnCellRenderer,
-    CkbCellRenderer,
+    AgCheckboxCellRenderer,
     CustomHeader,
     PaginationControlComponent,
     SmartTableRelativeVouchersComponent,
+    
+    // AG-Grid custoemr component
+    // - Cell
+    AgTextCellRenderer,
+    AgIdCellRenderer,
+    AgButtonCellRenderer,
+    AgButtonsCellRenderer,
+    AgTagsCellRenderer,
+    AgDateCellRenderer,
+    AgCurrencyCellRenderer,
+    // - Filter
+    AgSelect2Filter,
   ],
   imports: [
     CommonModule,
@@ -98,6 +110,7 @@ import { PaginationControlComponent } from './my-components/pagination-control/p
     NbSpinnerModule,
     NbPopoverModule,
     InputMaskModule,
+    NbTagModule,
     ImageViewerModule.forRoot({
       btnClass: 'default', // The CSS class(es) that will apply to the buttons
       zoomFactor: 0.1, // The amount that the scale will be increased by

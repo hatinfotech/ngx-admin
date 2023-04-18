@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from '@nebular/theme';
-import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { AgButtonCellRenderer, AgCheckboxCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { AccBankModel } from '../../../../models/accounting.model';
@@ -406,8 +406,8 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
       return image && image?.Thumbnail ? ('<img style="height: 45px" src="' + image?.Thumbnail + '">') : '';
     },
 
-    btnCellRenderer: BtnCellRenderer,
-    ckbCellRenderer: CkbCellRenderer,
+    btnCellRenderer: AgButtonCellRenderer,
+    ckbCellRenderer: AgCheckboxCellRenderer,
     agColumnHeader: CustomHeader,
   };
   onGridReady(params) {

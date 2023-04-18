@@ -46,7 +46,7 @@
               "src/app/@theme/styles/styles.scss",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/ng-pick-datetime/assets/style/picker.min.css",
-              "src/app/app.component.scss"
+              "src/assets/style/global.scss"
             ],
             "scripts": [
               "node_modules/pace-js/pace.min.js",

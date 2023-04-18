@@ -10,7 +10,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 // import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
-import { BtnCellRenderer, CkbCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { AgButtonCellRenderer, AgCheckboxCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -256,8 +256,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       return image && image?.Thumbnail ? ('<img style="height: 45px" src="' + image?.Thumbnail + '">') : '';
     },
 
-    btnCellRenderer: BtnCellRenderer,
-    ckbCellRenderer: CkbCellRenderer,
+    btnCellRenderer: AgButtonCellRenderer,
+    ckbCellRenderer: AgCheckboxCellRenderer,
     agColumnHeader: CustomHeader,
   };
   onGridReady(params) {

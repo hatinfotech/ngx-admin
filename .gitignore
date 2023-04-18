@@ -47,3 +47,4 @@ src/vendor/ng2select2
 src/vendor/select2
 #src/vendor/ckeditor/ckeditor5-custom-build/node_modules
 src/vendor/ckeditor/ckeditor5-custom-build/node_modules/*
+src/vendor/ag-grid

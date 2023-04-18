@@ -6,7 +6,7 @@ import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VAL
 // import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, ColDef } from '@ag-grid-community/all-modules';
 import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { NbThemeService } from '@nebular/theme';
-import { BtnCellRenderer } from './ag-list.lib';
+import { AgButtonCellRenderer } from './ag-list.lib';
 import { ColDef, ColumnApi, GridApi, IDatasource, Module } from '@ag-grid-community/core';
 
 @Component({
@@ -111,7 +111,7 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
       }
       return image?.Thumbnail ? '<img style="height: 45px" src="' + image?.Thumbnail + '">' : '';
     },
-    btnCellRenderer: BtnCellRenderer,
+    btnCellRenderer: AgButtonCellRenderer,
   };
 
   onReady$ = new BehaviorSubject<boolean>(false);

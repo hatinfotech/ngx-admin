@@ -172,20 +172,21 @@ export class CommonService {
     },
   };
 
-  voucherTypeMap: { [key: string]: { prefix: string, id: string, text: string, symbol: string } } = {
-    PAYMENT: { prefix: '101', id: 'PAYMENT', text: 'Phiếu chi', symbol: 'PC' },
-    RECEIPT: { prefix: '100', id: 'RECEIPT', text: 'Phiếu thu', symbol: 'PT' },
-    OTHERBUSINESSVOUCHER: { prefix: '103', id: 'OTHERBUSINESSVOUCHER', text: 'Chứng từ nghiệp vụ khác', symbol: 'NVK' },
-    SALES: { prefix: '104', id: 'SALES', text: 'Phiếu bán hàng', symbol: 'PBH' },
-    SALESRETURNS: { prefix: '126', id: 'SALESRETURNS', text: 'Phiếu trả hàng bán', symbol: 'PTHB' },
-    PURCHASE: { prefix: '107', id: 'PURCHASE', text: 'Phiếu mua hàng', symbol: 'PMH' },
-    PURCHASEORDER: { prefix: '107', id: 'PURCHASEORDER', text: 'Đơn đặt mua hàng', symbol: 'DDMH' },
-    GOODSRECEIPT: { prefix: '110', id: 'GOODSRECEIPT', text: 'Phiếu nhập kho', symbol: 'PNK' },
-    GOODSDELIVERY: { prefix: '111', id: 'GOODSDELIVERY', text: 'Phiếu xuất kho', symbol: 'PXK' },
-    INVENTORYADJUST: { prefix: '124', id: 'INVENTORYADJUST', text: 'Phiếu kiểm kho', symbol: 'PKK' },
-    COMMERCEPOSORDER: { prefix: '128', id: 'COMMERCEPOSORDER', text: 'Đơn hàng POS', symbol: 'DHPOS' },
-    COMMERCEPOSRETURN: { prefix: '129', id: 'COMMERCEPOSRETURN', text: 'Phiếu trả hàng POS', symbol: 'PTHPOS' },
-    CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK' },
+  voucherTypeMap: { [key: string]: { prefix: string, id: string, text: string, symbol: string, status?: string } } = {
+    PAYMENT: { prefix: '101', id: 'PAYMENT', text: 'Phiếu chi', symbol: 'PC', status: 'primary' },
+    RECEIPT: { prefix: '100', id: 'RECEIPT', text: 'Phiếu thu', symbol: 'PT', status: 'primary' },
+    OTHERBUSINESSVOUCHER: { prefix: '103', id: 'OTHERBUSINESSVOUCHER', text: 'Chứng từ nghiệp vụ khác', symbol: 'NVK', status: 'warning' },
+    SALES: { prefix: '104', id: 'SALES', text: 'Phiếu bán hàng', symbol: 'PBH', status: 'success' },
+    SALESRETURNS: { prefix: '126', id: 'SALESRETURNS', text: 'Phiếu trả hàng bán', symbol: 'PTHB', status: 'warning' },
+    PURCHASE: { prefix: '107', id: 'PURCHASE', text: 'Phiếu mua hàng', symbol: 'PMH', status: 'primary' },
+    PURCHASEORDER: { prefix: '107', id: 'PURCHASEORDER', text: 'Đơn đặt mua hàng', symbol: 'DDMH', status: 'primary' },
+    GOODSRECEIPT: { prefix: '110', id: 'GOODSRECEIPT', text: 'Phiếu nhập kho', symbol: 'PNK', status: 'warning' },
+    GOODSDELIVERY: { prefix: '111', id: 'GOODSDELIVERY', text: 'Phiếu xuất kho', symbol: 'PXK', status: 'warning' },
+    INVENTORYADJUST: { prefix: '124', id: 'INVENTORYADJUST', text: 'Phiếu kiểm kho', symbol: 'PKK', status: 'warning' },
+    COMMERCEPOSORDER: { prefix: '128', id: 'COMMERCEPOSORDER', text: 'Đơn hàng POS', symbol: 'DHPOS', status: 'success' },
+    COMMERCEPOSRETURN: { prefix: '129', id: 'COMMERCEPOSRETURN', text: 'Phiếu trả hàng POS', symbol: 'PTHPOS', status: 'warning' },
+    CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK', status: 'info' },
+    DEPLOYMENT: { prefix: '113', id: 'DEPLOYMENT', text: 'Phiếu triển khai', symbol: 'PTK', status: 'danger' },
   };
 
   constructor(
@@ -1525,8 +1526,15 @@ export class CommonService {
   toTimeString(totalSeconds: number) {
     const totalMs = totalSeconds * 1000;
     const result = new Date(totalMs).toISOString().slice(11, 19);
-  
+
     return result;
+  }
+
+  makeBeginOfDay(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+  }
+  makeEndOfDay(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
   }
 
 }

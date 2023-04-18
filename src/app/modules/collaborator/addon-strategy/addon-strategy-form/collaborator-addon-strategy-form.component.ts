@@ -18,7 +18,7 @@ import { AssignNewContainerFormComponent } from '../../../warehouse/goods/assign
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { BtnCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CollaboratorAddonStrategyPublisherFormComponent } from '../publisher-form/collaborator-addon-strategy-publisher-form.component';
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
@@ -408,7 +408,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
       // }
       return image?.Thumbnail ? '<div style="width: 50px; height: 50px; background-image: url(' + image?.Thumbnail + '); border-radius: 5px; background-repeat: no-repeat; background-size: cover; margin: 5px;"></div>' : '';
     },
-    btnCellRenderer: BtnCellRenderer
+    btnCellRenderer: AgButtonCellRenderer
   };
   onGridReady(params) {
     this.gridParams = params;

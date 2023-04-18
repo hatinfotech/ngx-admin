@@ -25,6 +25,9 @@ export class ObjectsIdPipe implements PipeTransform {
 
   }
   transform(value: any[]): string {
+    if (value && !Array.isArray(value)) {
+      value = [value];
+    }
     return value ? value.map(val => this.cms.getObjectId(val)).join(', ') : '';
   }
 }

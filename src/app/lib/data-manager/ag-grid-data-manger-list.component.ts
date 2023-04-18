@@ -15,11 +15,12 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { IGetRowsParams, ModuleRegistry } from '@ag-grid-community/core';
+import { CheckboxSelectionCallbackParams, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
+import { DataManagerListComponent } from './data-manger-list.component';
 
 @Component({ template: '' })
-export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent implements OnInit, ReuseComponent {
+export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   editing = {};
   rows = [];
@@ -42,6 +43,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public refreshPendding = false;
   lastRequestCount: number = 0;
   lastResponseHeader: HttpHeaders = null;
+  prepareApiParams(params: any, getRowParams: IGetRowsParams): any { };
 
   actionButtonList: ActionControl[] = [
     {
@@ -149,9 +151,15 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public gridParams;
   public columnDefs;
   public defaultColDef = {
-    sortable: true,
+    // flex: 1, 
     resizable: true,
-    // suppressSizeToFit: true,
+    sortable: true,
+    filter: true,
+    floatingFilter: true,
+    // headerComponent: 'sortableHeaderComponent',
+    headerComponentParams: {
+      menuIcon: 'fa-bars'
+    },
   };
   public rowSelection = 'multiple';
   public rowModelType = 'infinite';
@@ -168,7 +176,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   public components = {
     loadingCellRenderer: (params) => {
       if (params.value) {
-        return params.value;
+        // return params.value;
+        return params.rowIndex + 1;
       } else {
         return '<img src="assets/images/loading.gif">';
       }
@@ -191,11 +200,76 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     public themeService: NbThemeService,
     public ref?: NbDialogRef<AgGridDataManagerListComponent<M, F>>,
   ) {
-    super(cms, router, apiService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
     this.themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
     this.themeService.onThemeChange().pipe(takeUntil(this.destroy$)).subscribe(theme => {
       this.themeName = theme.name == 'default' ? '' : theme.name;
     });
+  }
+
+  filterTypeMap = {
+    equals: 'eq',
+    notEqual: 'ne',
+    startsWith: 'right',
+    endsWith: 'left',
+    contains: 'filter',
+    lessThan: 'lt',
+    greaterThan: 'gt',
+  };
+  parseFilterItemToApiParams(filterItem: any, key: string) {
+    const query = {};
+    switch (filterItem.filterType) {
+      case 'date':
+        if (filterItem.type == 'inRange') {
+          query['ge_' + key] = this.cms.makeBeginOfDay(new Date(filterItem.dateFrom)).toISOString();
+          query['le_' + key] = this.cms.makeEndOfDay(new Date(filterItem.dateTo)).toISOString();
+        } else if (filterItem.type == 'equals') {
+          query['ge_' + key] = this.cms.makeBeginOfDay(new Date(filterItem.dateFrom)).toISOString();
+          query['le_' + key] = this.cms.makeEndOfDay(new Date(filterItem.dateFrom)).toISOString();
+        } else {
+          if (filterItem.dateFrom) {
+            query[this.filterTypeMap[filterItem.type] + '_' + key] = new Date(filterItem.dateFrom).toISOString();
+          }
+          if (filterItem.dateTo) {
+            query[this.filterTypeMap[filterItem.type] + '_' + key] = new Date(filterItem.dateTo).toISOString();
+          }
+        }
+        break;
+      default:
+        query[this.filterTypeMap[filterItem.type] + '_' + key] = Array.isArray(filterItem.filter) ? ('[' + filterItem.filter.join(',') + ']') : filterItem.filter;
+        break;
+    }
+    return query;
+  }
+
+  parseFilterToApiParams(filter: any) {
+    let query: any = {};
+    for (const key in filter) {
+      const condition = filter[key];
+
+      if (condition.type == 'inRange') {
+
+      }
+
+      if (condition.operator && condition.conditions) {
+        for (const cond of condition.conditions) {
+          const itemQuery = this.parseFilterItemToApiParams(cond, key);
+          query = {
+            ...query,
+            ...itemQuery,
+          };
+        }
+      } else {
+        // if (this.filterTypeMap[condition.type]) {
+        const itemQuery = this.parseFilterItemToApiParams(condition, key);
+        query = {
+          ...query,
+          ...itemQuery,
+        };
+        // }
+      }
+    }
+    return query;
   }
 
   /** List init event */
@@ -220,29 +294,60 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     });
     this.initDataSource();
   }
-  filterTypeMap = {
-    equals: 'eq',
-    notEqual: 'ne',
-    startsWith: 'right',
-    endsWith: 'left',
-    contains: 'filter',
-  };
+
   initDataSource() {
     this.dataSource = {
       rowCount: null,
       getRows: (getRowParams: IGetRowsParams) => {
         console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
 
-        const query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
+        let query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
         getRowParams.sortModel.forEach(sortItem => {
           query['sort_' + sortItem['colId']] = sortItem['sort'];
         });
-        Object.keys(getRowParams.filterModel).forEach(key => {
-          const condition: { filter: string, filterType: string, type: string } = getRowParams.filterModel[key];
-          if(this.filterTypeMap[condition.type]){
-            query[this.filterTypeMap[condition.type] + '_' + key] = condition.filter;
-          }
-        });
+        const filterQuery = this.parseFilterToApiParams(getRowParams.filterModel);
+        query = {
+          ...query,
+          ...filterQuery
+        };
+        // Object.keys(getRowParams.filterModel).forEach(key => {
+        //   const condition: { operator?: string, conditions?: any[], filter: string, filterType: string, type: string, dateFrom?: string, dateTo?: string } = getRowParams.filterModel[key];
+        //   if (condition.operator) {
+        //     for (const cond of condition.conditions) {
+        //       if (this.filterTypeMap[cond.type]) {
+        //         // let condVal = cond.filter;
+        //         if (cond.filterType == 'date') {
+        //           if (cond.dateFrom) {
+        //             query[this.filterTypeMap[cond.type] + '_' + key] = new Date(cond.dateFrom).toISOString();
+        //           }
+        //           if (cond.dateTo) {
+        //             query[this.filterTypeMap[cond.type] + '_' + key] = new Date(cond.dateTo).toISOString();
+        //           }
+        //         } else {
+        //           query[this.filterTypeMap[cond.type] + '_' + key] = cond.filter;
+        //         }
+        //       }
+        //     }
+        //   } else {
+        //     if (this.filterTypeMap[condition.type]) {
+        //       // let condVal = cond.filter;
+        //       if (condition.filterType == 'date') {
+        //         if (condition.dateFrom) {
+        //           query[this.filterTypeMap[condition.type] + '_' + key] = new Date(condition.dateFrom).toISOString();
+        //         }
+        //         if (condition.dateTo) {
+        //           query[this.filterTypeMap[condition.type] + '_' + key] = new Date(condition.dateTo).toISOString();
+        //         }
+        //       } else {
+        //         query[this.filterTypeMap[condition.type] + '_' + key] = condition.filter;
+        //       }
+        //     }
+        //   }
+        // });
+
+        if (this.prepareApiParams) {
+          query = this.prepareApiParams(query, getRowParams);
+        }
 
         this.executeGet(query, list => {
           list.forEach((item, index) => {
@@ -274,6 +379,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
   }
 
+  onSelectionChanged(event: SelectionChangedEvent<M>) {
+    console.log(event);
+    this.selectedIds = this.gridApi.getSelectedRows().map(m => m[this.idKey]);
+  }
+
   getList(callback: (list: M[]) => void) {
     this.cms.takeUntil(this.componentName, 300, () => {
       this.executeGet({ limit: 999999999, offset: 0 }, results => callback(results));
@@ -287,7 +397,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
 
     // }
 
-    this.gridApi.setDatasource(this.dataSource);
+    if (this.gridApi) {
+      this.gridApi.setDatasource(this.dataSource);
+    }
     // this.gridApi.setFilterModel({});
 
     // this.selectedIds = [];
@@ -460,7 +572,17 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
               // this.apiService.delete(this.apiPath, ids, result => {
               //   if (callback) callback();
               // });
-              this.executeDelete(ids, callback);
+              this.loading = true;
+              let toastRef = this.cms.showToast('Đang xóa các dùng được chọn...', 'Đang xóa dữ liệu', { status: 'warning', duration: 99999 });
+              this.executeDelete(ids, callback).then(statu => {
+                this.loading = false;
+                toastRef.close();
+                this.cms.showToast('Đã xóa các dòng được chọn', 'Hoàn tất xóa dữ liệu', { status: 'success', duration: 10000 });
+              }).catch(err => {
+                this.loading = false;
+                toastRef.close();
+                return Promise.reject(err);
+              });
             },
           },
         ],
@@ -486,9 +608,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   }
 
   /** Api delete funciton */
-  executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    this.apiService.delete(this.apiPath, id, success, error, complete);
-  }
+  // executeDelete(id: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+  //   this.apiService.delete(this.apiPath, id, success, error, complete);
+  // }
 
   // executeDelete(ids: string[], callback: (result: any) => void) {
   //   this.apiService.delete(this.apiPath, ids, result => {
@@ -497,9 +619,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
   // }
 
   /** Delete action */
-  delete(event: any): void {
-    this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
-  }
+  // delete(event: any): void {
+  //   this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
+  // }
 
   async refresh() {
     // this.loadList();
@@ -507,7 +629,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     // this.gridApi.refreshInfinitePageCache();
     this.gridApi.refreshInfiniteCache();
     this.updateActionState();
-    return false;
+    // return false;
   }
 
   reset() {
@@ -546,11 +668,15 @@ export abstract class AgGridDataManagerListComponent<M, F> extends BaseComponent
     this.gridColumnApi.autoSizeColumns(allColumnIds, skipHeader);
   }
 
-  public configSetting(settings: any[]) {
+  protected configSetting(settings: any) {
     return settings;
   }
 
   onColumnResized() {
     this.gridApi.resetRowHeights();
+  }
+
+  loadListSetting() {
+    return null;
   }
 }

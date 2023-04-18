@@ -5,19 +5,132 @@ import { ICellRendererAngularComp, IHeaderAngularComp } from "@ag-grid-community
 import { Component, ElementRef, Input, OnDestroy, ViewChild } from "@angular/core";
 import { Subject } from 'rxjs';
 import { ICellRendererParams } from '@ag-grid-community/core';
+import { CommonService } from '../../../services/common.service';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
-    selector: 'btn-cell-renderer',
+    selector: 'ag-text-cell-renderer',
     template: `
-      <button nbButton [outline]="true" [status]="params.status || 'basic'" (click)="btnClickedHandler($event)" [size]="params.size || 'small'" hero fullWidth>
-          <nb-icon *ngIf="params.icon" pack="eva" [icon]="params.icon"></nb-icon>{{params.label || 'BTN' | translate | headtitlecase}}
+      <span>{{params.value | objectstext}}</span>
+    `,
+})
+export class AgTextCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    constructor(
+        public cms: CommonService,
+    ) {
+
+    }
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+
+    // btnClickedHandler(event) {
+    //     return this.params.clicked(this.params);
+    // }
+
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+@Component({
+    selector: 'ag-id-cell-renderer',
+    template: `
+      <span>{{params.value | objectsid}}</span>
+    `,
+})
+export class AgIdCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    constructor(
+        public cms: CommonService,
+    ) {
+
+    }
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+
+    // btnClickedHandler(event) {
+    //     return this.params.clicked(this.params);
+    // }
+
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+@Component({
+    selector: 'ag-currency-cell-renderer',
+    template: `
+      <span>{{params.value | currency:'VND'}}</span>
+    `,
+    providers: [CurrencyPipe]
+})
+export class AgCurrencyCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    constructor(
+        public cms: CommonService,
+    ) {
+
+    }
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+
+@Component({
+    selector: 'ag-button-cell-renderer',
+    template: `
+      <button nbButton [outline]="params.outline === false && false || true" [status]="params.status || 'basic'" (click)="btnClickedHandler($event)" [size]="params.size || 'small'" hero fullWidth>
+          <nb-icon pack="eva" [icon]="params.icon || 'external-link-outline'"></nb-icon>{{params.label || '' | translate | headtitlecase}}
       </button>
     `,
 })
-export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
+export class AgButtonCellRenderer implements ICellRendererAngularComp, OnDestroy {
     status = 'basic';
     refresh(params: ICellRendererParams): boolean {
         // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
         return true;
     }
     public params: any;
@@ -26,6 +139,9 @@ export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
         this.params = params;
         if (this.params?.status) {
             this.status = this.params?.status;
+        }
+        if (params.onInit) {
+            params.onInit(params, this);
         }
     }
 
@@ -40,15 +156,132 @@ export class BtnCellRenderer implements ICellRendererAngularComp, OnDestroy {
 }
 
 @Component({
-    selector: 'checkbox-cell-renderer',
+    selector: 'ag-buttons-cell-renderer',
+    template: `
+    <nb-button-group ghost>
+        <button *ngFor="let item of params.buttons" nbButton [outline]="item.outline === false && false || true" [status]="item.status || 'basic'" (click)="item.action(params, item)" [size]="item.size || 'small'" hero>
+            <nb-icon *ngIf="item.icon" pack="eva" [icon]="item.icon"></nb-icon>{{item.label || '' | translate | headtitlecase}}
+        </button>
+    </nb-button-group>
+    `,
+})
+export class AgButtonsCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    // status = 'basic';
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        // if (this.params?.status) {
+        //     this.status = this.params?.status;
+        // }
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+
+    btnClickedHandler(button: any) {
+        return this.params.clicked(button);
+    }
+
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+
+@Component({
+    selector: 'ag-tags-cell-renderer',
+    template: `
+    <nb-tag-list>
+        <nb-tag *ngFor="let tag of params.tags" [text]="tag.label" (click)="tag.action(params, tag)" appearance="outline" [status]="tag.status || 'basic'" [size]="tag.size || 'small'" style="cursor: pointer"></nb-tag>
+    </nb-tag-list>
+    `,
+})
+export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    // status = 'basic';
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        // if (this.params?.status) {
+        //     this.status = this.params?.status;
+        // }
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+
+    btnClickedHandler(button: any) {
+        return this.params.clicked(button);
+    }
+
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+
+@Component({
+    selector: 'ag-date-cell-renderer',
+    template: `
+      <span>{{params.value | date: 'short'}}</span>
+    `,
+})
+export class AgDateCellRenderer implements ICellRendererAngularComp, OnDestroy {
+    // status = 'basic';
+    refresh(params: ICellRendererParams): boolean {
+        // throw new Error('Method not implemented.');
+        if (this.params.onRefresh) {
+            this.params.onRefresh(params, this);
+        }
+        return true;
+    }
+    public params: any;
+
+    agInit(params: any): void {
+        this.params = params;
+        // if (this.params?.status) {
+        //     this.status = this.params?.status;
+        // }
+        if (params.onInit) {
+            params.onInit(params, this);
+        }
+    }
+
+    // btnClickedHandler(event) {
+    //     return this.params.clicked(this.params);
+    // }
+
+    ngOnDestroy() {
+        // no need to remove the button click handler 
+        // https://stackoverflow.com/questions/49083993/does-angular-automatically-remove-template-event-listeners
+    }
+}
+
+@Component({
+    selector: 'ag-checkbox-cell-renderer',
     template: `
       <nb-checkbox [formControl]="checkBoxControl" (change)="onChangeHandler($event)"></nb-checkbox>
     `,
 })
-export class CkbCellRenderer implements ICellRendererAngularComp, OnDestroy {
+export class AgCheckboxCellRenderer implements ICellRendererAngularComp, OnDestroy {
     status = 'basic';
     refresh(params: ICellRendererParams): boolean {
-        this.checkBoxControl.setValue(params.value, {emitEvent: false});
+        this.checkBoxControl.setValue(params.value, { emitEvent: false });
         return true;
     }
     public params: { api: GridApi, [key: string]: any };
@@ -192,5 +425,9 @@ export class CustomHeader implements IHeaderAngularComp {
             node.setDataValue(this.params.column.getColId(), checked);
         });
     }
+
+
+    // New commonents
+
 
 }
