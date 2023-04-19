@@ -21,6 +21,10 @@ import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/
 import { AgTagsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/tags.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { ColDef } from 'ag-grid-community';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 
 @Component({
   selector: 'ngx-commerce-pos-order-list',
@@ -203,17 +207,11 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
       await this.cms.waitForLanguageLoaded();
       this.columnDefs = this.configSetting([
         {
+          ...agMakeSelectionColDef(this.cms),
           headerName: '#',
           field: 'Id',
           width: 80,
           valueGetter: 'node.data.Id',
-          cellRenderer: 'loadingCellRenderer',
-          sortable: false,
-          filter: false,
-          pinned: 'left',
-          headerCheckboxSelection: true,
-          checkboxSelection: true,
-          showDisabledCheckboxes: true,
         },
         {
           headerName: 'Mã',
@@ -300,102 +298,26 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           autoHeight: true,
         },
         {
+          ...agMakeCurrencyColDef(this.cms),
           headerName: 'Số tiền',
           field: 'Amount',
           width: 150,
-          cellRenderer: AgCurrencyCellRenderer,
-          filter: 'agNumberColumnFilter',
-          pinned: 'right',
-          type: 'rightAligned',
-          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
         },
         {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            this.preview([data]);
+          }),
           headerName: 'Trạng thái',
           field: 'State',
           width: 155,
-          pinned: 'right',
-          type: 'rightAligned',
-          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
-          cellRenderer: AgButtonCellRenderer,
-          cellStyle: { 'text-overflow': 'initial' },
-          cellRendererParams: {
-            label: '...',
-            onInit: (params: any, component: AgButtonCellRenderer) => {
-              // console.log(component);
-              const value = this.cms.getObjectId(params.value);
-              if (value && processingMap[value]) {
-                params.label = processingMap[value].label;
-                params.status = processingMap[value].status;
-                params.outline = processingMap[value].outline;
-              }
-            },
-            onRefresh: (params: any, component: AgButtonCellRenderer) => {
-              // console.log(params);
-              params.label = params.value;
-            },
-            clicked: (params: any) => {
-              this.preview([params.node.data]);
-            }
-          },
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              placeholder: 'Chọn...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              withThumbnail: false,
-              multiple: true,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-              data: Object.keys(processingMap).map(m => ({
-                id: m,
-                text: this.cms.translateText(processingMap[m].label),
-              })),
-            }
-          },
         },
         {
+          ...agMakeCommandColDef(this.cms, (data) => {
+            this.openForm([data.Code]);
+          }, (data) => {
+            this.deleteConfirm([data.Code]);
+          }),
           headerName: 'Sử/Xóa',
-          field: 'State',
-          width: 110,
-          filter: false,
-          pinned: 'right',
-          type: 'rightAligned',
-          cellClass: ['ag-cell-items-center', 'ag-cell-justify-center', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],
-          cellRenderer: AgButtonsCellRenderer,
-          resizable: false,
-          cellStyle: { 'text-overflow': 'initial' },
-          cellRendererParams: {
-            buttons: [
-              {
-                name: 'edit',
-                status: 'warning',
-                icon: 'edit-2-outline',
-                outline: false,
-                action: (params: any, button: any) => {
-                  this.openForm([params.node.data.Code]);
-                }
-              },
-              {
-                name: 'delete',
-                status: 'danger',
-                icon: 'trash-2-outline',
-                outline: false,
-                action: (params: any, button: any) => {
-                  this.deleteConfirm([params.node.data.Code]);
-                }
-              },
-            ],
-            onInit: (params: any, component: AgButtonsCellRenderer) => {
-            },
-            onRefresh: (params: any, component: AgButtonsCellRenderer) => {
-              // console.log(params);
-            },
-          }
         },
       ] as ColDef[]);
 
