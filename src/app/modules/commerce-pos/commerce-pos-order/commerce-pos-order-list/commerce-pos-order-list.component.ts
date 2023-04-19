@@ -32,6 +32,9 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   formDialog = CommercePosOrderFormComponent;
   printDialog = CommercePosOrderPrintComponent;
 
+  // AG-Grid config
+  public rowHeight: number = 50;
+
   constructor(
     public apiService: ApiService,
     public router: Router,
@@ -245,16 +248,14 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
         {
           headerName: 'Chứng từ liên quan',
           field: 'RelativeVouchers',
-          width: 1024,
+          width: 350,
           filter: 'agTextColumnFilter',
           cellRenderer: AgTagsCellRenderer,
           cellRendererParams: {
             onInit: (params: any, component: AgTagsCellRenderer) => {
               params.tags = (params?.node?.data?.RelativeVouchers || []).map(m => ({
                 name: 'edit',
-                label: (this.cms.voucherTypeMap[m.type]?.symbol || m.type) + ':' + m.id,
-                status: this.cms.voucherTypeMap[m.type]?.status || 'primary',
-                icon: 'edit-2-outline',
+                ...m,
                 action: (params: any, button: any) => {
                   this.cms.previewVoucher(m.type, m.id);
                 }
