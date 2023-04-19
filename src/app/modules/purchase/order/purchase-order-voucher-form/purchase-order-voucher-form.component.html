@@ -172,9 +172,9 @@
                         <!-- Detail form -->
                         <label class="label">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div formArrayName="Details" class="form-details" [sortablejs]="formItem._details" [sortablejsOptions]="{ handle: '.sorting-handle' }">
-                            <cdk-virtual-scroll-viewport #detailsViewport [itemSize]="240" style="height: 80vh;" class="scrollable-container">
+                            <!-- <cdk-virtual-scroll-viewport #detailsViewport [itemSize]="240" style="height: 80vh;" class="scrollable-container"> -->
 
-                                <div class="form-detail-item" *cdkVirtualFor="let detail of formItem._details.controls; let ic=index" [formGroup]="detail" style="height: 240px;">
+                                <div class="form-detail-item" *ngFor="let detail of formItem._details.controls; let ic=index" [formGroup]="detail" style="height: 240px;">
                                     <hr>
                                     <div class="row">
                                         <div class="col-xl-2 col-lg-2 col-md-4 col-sm-12 col-is-12">
@@ -290,7 +290,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </cdk-virtual-scroll-viewport>
+                            <!-- </cdk-virtual-scroll-viewport> -->
                             <hr>
                             <div class="row" style="display: flex; align-items: center">
                                 <div class="buttons-row" style="flex: 1">

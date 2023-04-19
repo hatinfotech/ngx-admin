@@ -458,6 +458,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       this.addDetailFormGroup(newForm);
     }
     newForm['_details'] = this.getDetails(newForm);
+    newForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      console.log('Form value change: ', value);
+    });
     return newForm;
   }
   onAddFormGroup(index: number, newForm: FormGroup, formData?: PurchaseOrderVoucherModel): void {
@@ -890,9 +893,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
     this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
       if (source === 'ToMoney') {
-        detail.get('Price').setValue(this.calculatToMoney(detail, source));
+        detail.get('Price').setValue(this.calculatToMoney(detail, source), { emitEvent: false });
       } else {
-        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail), { emitEvent: false });
       }
       // Call culate total
       const details = this.getDetails(formItem);
