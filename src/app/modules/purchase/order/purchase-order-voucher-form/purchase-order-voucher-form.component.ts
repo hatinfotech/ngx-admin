@@ -1,7 +1,7 @@
 import { AdminProductService } from './../../../admin-product/admin-product.service';
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -22,7 +22,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
@@ -30,6 +30,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { _ } from 'ag-grid-community';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { FileModel } from '../../../../models/file.model';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 var CryptoJS = require("crypto-js");
 
 @Component({
@@ -68,6 +69,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+  @ViewChild('detailsViewport', { static: false }) detailsViewport: CdkVirtualScrollViewport;
 
   // select2ContactOption = {
   //   placeholder: 'Chọn liên hệ...',
@@ -402,6 +404,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
+      // setTimeout(() => {
+      //   this.detailsViewport.checkViewportSize();
+      // }, 1500);
+      this.cms.waitFor(150, 20, async () => !!this.detailsViewport).then(() => this.detailsViewport.checkViewportSize());
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -569,14 +575,19 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     if (!noFormControl.value) {
       noFormControl.setValue(detailsFormArray.length);
     }
+    detailsFormArray.controls = [...detailsFormArray.controls];
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
-    this.getDetails(parentFormGroup).removeAt(index);
+    const details = this.getDetails(parentFormGroup);
+    details.removeAt(index);
+    details.controls = [...details.controls];
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
+
+  purchaseProductMap: { [key: string]: PurchaseProductModel } = {};
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     newChildFormGroup.get('Quantity').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Quantity', index));
     newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Price', index));
@@ -584,32 +595,29 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     newChildFormGroup.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Type', index));
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
-      const purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: this.cms.getObjectId(value), eq_Supplier: this.cms.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+
+      const productId = this.cms.getObjectId(value);
+      const supplierId = this.cms.getObjectId(parentFormGroup.get('Object').value);
+      let purchaseProduct = this.purchaseProductMap[productId + '-' + supplierId];
+      if (typeof purchaseProduct == 'undefined') {
+        purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: productId, eq_Supplier: supplierId, sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+        this.purchaseProductMap[productId + '-' + supplierId] = purchaseProduct || null;
+      }
 
       if (purchaseProduct) {
-        // for (const productObjectReference of purchaseProduct) {
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierProductName').value) {
           newChildFormGroup.get('SupplierProductName').setValue(purchaseProduct.Name);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
           newChildFormGroup.get('ProductTaxName').setValue(purchaseProduct.TaxName);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
           newChildFormGroup.get('SupplierSku').setValue(purchaseProduct.Sku);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
           newChildFormGroup.get('Tax').setValue(purchaseProduct.TaxValue);
         }
-        // }
       }
-      // }
     });
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
