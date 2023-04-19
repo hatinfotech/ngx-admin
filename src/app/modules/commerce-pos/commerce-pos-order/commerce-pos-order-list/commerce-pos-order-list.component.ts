@@ -25,6 +25,7 @@ import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 
 @Component({
   selector: 'ngx-commerce-pos-order-list',
@@ -253,22 +254,12 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           cellRenderer: AgDateCellRenderer,
         },
         {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
           headerName: 'Chứng từ liên quan',
           field: 'RelativeVouchers',
           width: 350,
-          filter: 'agTextColumnFilter',
-          cellRenderer: AgTagsCellRenderer,
-          cellRendererParams: {
-            onInit: (params: any, component: AgTagsCellRenderer) => {
-              params.tags = (params?.node?.data?.RelativeVouchers || []).map(m => ({
-                name: 'edit',
-                ...m,
-                action: (params: any, button: any) => {
-                  this.cms.previewVoucher(m.type, m.id);
-                }
-              }));
-            }
-          }
         },
         {
           headerName: 'Người tạo',
