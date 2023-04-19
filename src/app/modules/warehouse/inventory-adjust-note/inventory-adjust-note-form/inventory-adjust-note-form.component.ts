@@ -32,8 +32,8 @@ import { AssignNewContainerFormComponent } from '../../goods/assign-new-containe
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 // @Component({
 //   selector: 'btn-cell-renderer',
 //   template: `

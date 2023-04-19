@@ -15,7 +15,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { CheckboxSelectionCallbackParams, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
+import { CheckboxSelectionCallbackParams, ColDef, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 
@@ -149,17 +149,25 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   ];
 
   public gridParams;
-  public columnDefs;
-  public defaultColDef = {
+  public columnDefs: ColDef[];
+  public defaultColDef: ColDef = {
     // flex: 1, 
     resizable: true,
     sortable: true,
     filter: true,
     floatingFilter: true,
+    // suppressMenu: strue,
+    floatingFilterComponentParams: { suppressFilterButton: true },
     // headerComponent: 'sortableHeaderComponent',
-    headerComponentParams: {
-      menuIcon: 'fa-bars'
-    },
+    // headerComponentParams: {
+    //   menuIcon: 'fa-filter'
+    // },
+    // cellStyle: {
+    //   // 'height': '100%',
+    //   'display': 'flex',
+    //   // 'justify-content': 'center',
+    //   'align-items': 'center',
+    // },
   };
   public rowSelection = 'multiple';
   public rowModelType = 'infinite';

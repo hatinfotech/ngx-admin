@@ -18,9 +18,9 @@ import { AssignNewContainerFormComponent } from '../../../warehouse/goods/assign
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CollaboratorBasicStrategyProductFormComponent } from '../product-form/collaborator-basic-strategy-product-form.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',

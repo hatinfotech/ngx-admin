@@ -1,4 +1,3 @@
-import { AgButtonsCellRenderer, AgCurrencyCellRenderer, AgIdCellRenderer, AgTagsCellRenderer, AgTextCellRenderer } from './../../../../lib/custom-element/ag-list/ag-list.lib';
 import { Component, OnInit } from '@angular/core';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import { ApiService } from '../../../../services/api.service';
@@ -8,14 +7,20 @@ import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@
 import { CommercePosOrderFormComponent } from '../commerce-pos-order-form/commerce-pos-order-form.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
-import { AgButtonCellRenderer, AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { AppModule } from '../../../../app.module';
 import { IGetRowsParams } from '@ag-grid-community/core';
-import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/ag-list-lib/select2.component.filter';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { CommercePosOrderPrintComponent } from '../commerce-pos-order-print/commerce-pos-order-print.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';
+import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTagsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/tags.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { ColDef } from 'ag-grid-community';
 
 @Component({
   selector: 'ngx-commerce-pos-order-list',
@@ -33,7 +38,8 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   printDialog = CommercePosOrderPrintComponent;
 
   // AG-Grid config
-  public rowHeight: number = 50;
+  public rowHeight: number = 75;
+
 
   constructor(
     public apiService: ApiService,
@@ -47,7 +53,10 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   ) {
     super(apiService, router, cms, dialogService, toastService, themeService, ref);
 
-
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
 
     this.pagination = false;
     this.maxBlocksInCache = 5;
@@ -298,12 +307,15 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           filter: 'agNumberColumnFilter',
           pinned: 'right',
           type: 'rightAligned',
+          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
         },
         {
           headerName: 'Trạng thái',
           field: 'State',
-          width: 180,
+          width: 155,
           pinned: 'right',
+          type: 'rightAligned',
+          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
           cellRenderer: AgButtonCellRenderer,
           cellStyle: { 'text-overflow': 'initial' },
           cellRendererParams: {
@@ -349,10 +361,11 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
         {
           headerName: 'Sử/Xóa',
           field: 'State',
-          width: 130,
+          width: 110,
           filter: false,
           pinned: 'right',
-          headerClass: 'ag-right-aligned-header',
+          type: 'rightAligned',
+          cellClass: ['ag-cell-items-center', 'ag-cell-justify-center', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],
           cellRenderer: AgButtonsCellRenderer,
           resizable: false,
           cellStyle: { 'text-overflow': 'initial' },
@@ -362,6 +375,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
                 name: 'edit',
                 status: 'warning',
                 icon: 'edit-2-outline',
+                outline: false,
                 action: (params: any, button: any) => {
                   this.openForm([params.node.data.Code]);
                 }
@@ -370,6 +384,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
                 name: 'delete',
                 status: 'danger',
                 icon: 'trash-2-outline',
+                outline: false,
                 action: (params: any, button: any) => {
                   this.deleteConfirm([params.node.data.Code]);
                 }
@@ -382,7 +397,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
             },
           }
         },
-      ]);
+      ] as ColDef[]);
 
       return state;
     });

@@ -2197,3 +2197,28 @@ ngx-barcode svg {
   width: 9mm;
   height: 9mm;
 }
+
+/*AG-Grid style*/
+.ag-cell-items-center {
+  display: flex;
+  align-items: center;
+}
+.ag-cell-justify-start {
+  display: flex;
+  justify-content: start;
+}
+.ag-cell-justify-center {
+  display: flex;
+  justify-content: center;
+}
+.ag-cell-justify-end {
+  display: flex;
+  justify-content: end;
+}
+.ag-cell-no-padding-left {
+  padding-left: 0;
+}
+.ag-cell-no-padding-right {
+  padding-right: 0;
+}
+/*End AG-Grid style*/

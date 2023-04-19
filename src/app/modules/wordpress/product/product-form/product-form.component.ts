@@ -4,7 +4,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from '@nebular/theme';
-import { AgButtonCellRenderer, AgCheckboxCellRenderer, CustomHeader } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { AccBankModel } from '../../../../models/accounting.model';
@@ -13,6 +12,9 @@ import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
+import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
 
 @Component({
   selector: 'ngx-product-form',

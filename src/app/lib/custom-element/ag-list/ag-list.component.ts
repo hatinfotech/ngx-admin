@@ -6,8 +6,8 @@ import { ControlValueAccessor, Validator, FormControl, NG_VALUE_ACCESSOR, NG_VAL
 // import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, ColDef } from '@ag-grid-community/all-modules';
 import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { NbThemeService } from '@nebular/theme';
-import { AgButtonCellRenderer } from './ag-list.lib';
 import { ColDef, ColumnApi, GridApi, IDatasource, Module } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from './cell/button.component';
 
 @Component({
   selector: 'ngx-ag-list',

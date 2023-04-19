@@ -28,9 +28,17 @@ import { Select2Module } from '../../../vendor/ng2select2/lib/ng2-select2';
 import { ImagesViewerComponent } from './my-components/images-viewer/images-viewer.component';
 import { ImageViewerModule } from 'ngx-image-viewer';
 import { InputMaskModule } from '@ngneat/input-mask';
-import { AgButtonCellRenderer, AgTextCellRenderer, AgCheckboxCellRenderer, CustomHeader, AgDateCellRenderer, AgButtonsCellRenderer, AgCurrencyCellRenderer, AgIdCellRenderer, AgTagsCellRenderer } from './ag-list/ag-list.lib';
 import { PaginationControlComponent } from './my-components/pagination-control/pagination-control.component';
-import { AgSelect2Filter } from './ag-list/ag-list-lib/select2.component.filter';
+import { AgSelect2Filter } from './ag-list/filter/select2.component.filter';
+import { AgCheckboxCellRenderer } from './ag-list/cell/checkbox.component';
+import { CustomHeader } from './ag-list/header/custom.component';
+import { AgButtonCellRenderer } from './ag-list/cell/button.component';
+import { AgButtonsCellRenderer } from './ag-list/cell/buttons.component';
+import { AgCurrencyCellRenderer } from './ag-list/cell/currency.component';
+import { AgDateCellRenderer } from './ag-list/cell/date.component';
+import { AgIdCellRenderer } from './ag-list/cell/id.component';
+import { AgTagsCellRenderer } from './ag-list/cell/tags.component';
+import { AgTextCellRenderer } from './ag-list/cell/text.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({

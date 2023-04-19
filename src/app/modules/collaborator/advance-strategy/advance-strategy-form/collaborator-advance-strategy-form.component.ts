@@ -18,10 +18,10 @@ import { AssignNewContainerFormComponent } from '../../../warehouse/goods/assign
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CollaboratorAdvanceStrategyPublisherFormComponent } from '../publisher-form/collaborator-advance-strategy-publisher-form.component';
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 @Component({
   selector: 'ngx-collaborator-advance-strategy-form',
   templateUrl: './collaborator-advance-strategy-form.component.html',

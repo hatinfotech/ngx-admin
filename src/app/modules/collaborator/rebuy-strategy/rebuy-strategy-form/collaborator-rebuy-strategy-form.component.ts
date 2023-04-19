@@ -18,11 +18,11 @@ import { AssignNewContainerFormComponent } from '../../../warehouse/goods/assign
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { ChangeDetectorRef } from '@angular/core';
-import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/ag-list.lib';
 import { CollaboratorRebuyStrategyPublisherFormComponent } from '../publisher-form/collaborator-rebuy-strategy-publisher-form.component';
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorRebuyStrategyProductFormComponent } from '../product-form/collaborator-rebuy-strategy-product-form.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
+import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
