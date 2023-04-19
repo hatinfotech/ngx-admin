@@ -1,7 +1,7 @@
 import { AdminProductService } from './../../../admin-product/admin-product.service';
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
@@ -22,7 +22,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
@@ -30,6 +30,8 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 // import { _ } from 'ag-grid-community';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { FileModel } from '../../../../models/file.model';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+var CryptoJS = require("crypto-js");
 
 @Component({
   selector: 'ngx-purchase-order-voucher-form',
@@ -67,6 +69,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   /** Unit list */
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: (UnitModel & { id?: string, text?: string })[];
+  @ViewChild('detailsViewport', { static: false }) detailsViewport: CdkVirtualScrollViewport;
 
   // select2ContactOption = {
   //   placeholder: 'Chọn liên hệ...',
@@ -401,6 +404,10 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         });
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
+      // setTimeout(() => {
+      //   this.detailsViewport.checkViewportSize();
+      // }, 1500);
+      this.cms.waitFor(150, 20, async () => !!this.detailsViewport).then(() => this.detailsViewport.checkViewportSize());
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -568,14 +575,19 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     if (!noFormControl.value) {
       noFormControl.setValue(detailsFormArray.length);
     }
+    detailsFormArray.controls = [...detailsFormArray.controls];
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
-    this.getDetails(parentFormGroup).removeAt(index);
+    const details = this.getDetails(parentFormGroup);
+    details.removeAt(index);
+    details.controls = [...details.controls];
     this.onRemoveDetailFormGroup(parentFormGroup, detail);
     return false;
   }
+
+  purchaseProductMap: { [key: string]: PurchaseProductModel } = {};
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     newChildFormGroup.get('Quantity').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Quantity', index));
     newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Price', index));
@@ -583,32 +595,29 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     newChildFormGroup.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Type', index));
     // Load product name    
     newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
-      const purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: this.cms.getObjectId(value), eq_Supplier: this.cms.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+
+      const productId = this.cms.getObjectId(value);
+      const supplierId = this.cms.getObjectId(parentFormGroup.get('Object').value);
+      let purchaseProduct = this.purchaseProductMap[productId + '-' + supplierId];
+      if (typeof purchaseProduct == 'undefined') {
+        purchaseProduct = await this.apiService.getPromise<PurchaseProductModel[]>('/purchase/products/', { eq_Product: productId, eq_Supplier: supplierId, sort_LastUpdate: 'desc' }).then(rs => rs[0]);
+        this.purchaseProductMap[productId + '-' + supplierId] = purchaseProduct || null;
+      }
 
       if (purchaseProduct) {
-        // for (const productObjectReference of purchaseProduct) {
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierProductName').value) {
           newChildFormGroup.get('SupplierProductName').setValue(purchaseProduct.Name);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
           newChildFormGroup.get('ProductTaxName').setValue(purchaseProduct.TaxName);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('SupplierSku').value) {
           newChildFormGroup.get('SupplierSku').setValue(purchaseProduct.Sku);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
           newChildFormGroup.get('Tax').setValue(purchaseProduct.TaxValue);
         }
-        // }
       }
-      // }
     });
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
@@ -1541,12 +1550,13 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         // Load products info by sku
         const products = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: '[' + skus.join(',') + ']', includeIdText: true, limit: 'nolimit' });
         const productMap: { [key: string]: ProductModel } = {};
+        const productPictureMap: { [key: string]: FileModel } = {};
         for (const product of products) {
           productMap[product.Sku] = product;
         }
 
         for (const row of sheet) {
-          if (!row.ProductID) {
+          if (!row.ProductName) {
             continue;
           }
           let localProduct = row.CustomerSku && productMap[row.CustomerSku] || null;
@@ -1571,22 +1581,54 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                   {
                     label: 'Tạo mới',
                     status: 'primary',
-                    action: async () => {
+                    action: async (button, dialog) => {
+                      dialog.loading = true;
+                      // load exists product
+                      const requestSku = row.CustomerSku || row.Sku;
+                      let existsProduct: ProductModel = null;
+                      // let existsPicturesMap: { [key: string]: FileModel } = {};
+                      // let newPictures: FileModel[] = [];
+                      if (requestSku) {
+                        existsProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: requestSku, includeIdText: true, includePictures: true, includeCategories: true, includeGroups: true, includeUnitConversions: true, includeProperties: true, includeWarehouseUnit: true }).then(rs => rs[0]);
+                        // existsPictures = existsProduct.Pictures || [];
+                        // for(const existsPicture of existsPictures) {
+                        //   if(imageResources)
+                        // }
+                        if (existsProduct?.Pictures) {
+                          for (const existsPicture of existsProduct.Pictures) {
+                            if (existsPicture.Tag) {
+                              // existsPicturesMap[existsPicture.Tag] = existsPicture;
+                              productPictureMap[existsPicture.Tag] = existsPicture;
+                            }
+                          }
+                        }
+                      }
+
                       // create images
                       const imageResources: FileModel[] = [];
                       if (row.Image) {
                         const imageLinks = row.Image.split('\n');
                         for (const imageLink of imageLinks) {
-                          const image = await this.apiService.uploadFileByLink(imageLink);
-                          if (image) {
-                            imageResources.push(image);
+                          const tag = CryptoJS.MD5(imageLink).toString();
+                          if (productPictureMap[tag]) {
+                            imageResources.push(productPictureMap[tag]);
+                          } else {
+                            const image = await this.apiService.uploadFileByLink(imageLink);
+                            if (image) {
+                              image.Tag = tag;
+                              imageResources.push(image);
+                              productPictureMap[tag] = image;
+                            }
                           }
                         }
                       }
+
                       this.cms.openDialog(ProductFormComponent, {
                         context: {
+                          inputId: existsProduct?.Code ? [existsProduct?.Code] : null,
                           data: [
                             {
+                              Code: existsProduct?.Code || null,
                               Name: row.ProductName,
                               Sku: row.CustomerSku || row.Sku,
                               WarehouseUnit: { id: row.Unit, text: row.UnitName } as any,
@@ -1604,7 +1646,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                             }
                           ],
                           onDialogSave(newData) {
-                            this.cms.showToast('Đã tạo sản phẩm mới và thêm vào chi tiết đơn đặt mua hàng', 'Đã tạo sản phẩm mới', {status: 'info'});
+                            this.cms.showToast('Đã tạo sản phẩm mới và thêm vào chi tiết đơn đặt mua hàng', 'Đã tạo sản phẩm mới', { status: 'info' });
                             resolve({ id: newData[0].Code, text: newData[0].Name, ...newData[0] });
                           },
                           onDialogClose: () => {
@@ -1616,8 +1658,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                               const sku = component.getRawFormData().array[0].Sku;
                               if (sku) {
                                 component.close();
-                                this.cms.showToast('Sku đã tồn tại, tự động lấy thông tin sản phẩm theo Sku', 'Sku đã tồn tại', {status: 'info'});
-                                localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: sku, includeIdText: true }).then(rs => rs[0]);
+                                this.cms.showToast('Sku đã tồn tại, tự động lấy thông tin sản phẩm theo Sku', 'Sku đã tồn tại', { status: 'info' });
+                                localProduct = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { eq_Sku: sku, includeIdText: true, includePictures: true, includeCategories: true, includeGroups: true, includeUnitConversions: true, includeProperties: true, includeWarehouseUnit: true }).then(rs => rs[0]);
                                 resolve(localProduct);
                                 // return Promise.resolve(null);
                               }
@@ -1625,8 +1667,17 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
                           }
                         }
                       });
+
+                      dialog.loading = false;
                     },
-                  }
+                  },
+                  {
+                    label: 'Dừng',
+                    status: 'danger',
+                    action: () => {
+                      reject('STOP')
+                    },
+                  },
                 ],
                   (asCase) => {
                     // Close by ESC
@@ -1640,6 +1691,9 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
               });
             } catch (err) {
               console.error(err);
+              if (err == 'STOP') {
+                break;
+              }
             }
           }
           if (localProduct) {
@@ -1650,6 +1704,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
             let detailForm: FormGroup = this.makeNewDetailFormGroup(formItem, row);
             details.push(detailForm);
             this.onAddDetailFormGroup(formItem, detailForm, details.length - 1);
+            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
         }
 

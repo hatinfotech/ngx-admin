@@ -169,7 +169,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       this.getRequestId(id => {
         if (id && id.length > 0) {
           this.id = id;
-          this.formLoad().then(async () => {
+          this.formLoad(this.data).then(async () => {
             // wait for dom loaded
             while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
             resolve(true);
@@ -236,7 +236,31 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return new Promise<boolean>(resovle => {
       ((callback: (data: M[]) => Promise<void>) => {
         if (formData) {
-          callback(formData);
+
+          // Load for ids and data
+          if (this.inputId) {
+            this.getRequestId(id => {
+              if (id && id.length > 0) {
+                this.getFormData((data: M[]) => {
+
+                  // Merge data
+                  for(const i in data) {
+                    data[i] = {
+                      ...data[i],
+                      ...formData[i],
+                    };
+                  }
+
+                  callback(data);
+                })
+              } else {
+                callback([null]);
+              }
+              resovle(true);
+            });
+          } else {
+            callback(formData);
+          }
         } else {
           this.getRequestId(id => {
             if (id && id.length > 0) {
@@ -796,6 +820,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }),
     // minimumInputLength: 1,
   };
+
+  removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
+    const relationVoucher = formGroup.get('RelativeVouchers');
+    relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
+    return false;
+  }
 
 }
 

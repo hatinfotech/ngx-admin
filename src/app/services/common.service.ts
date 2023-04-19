@@ -403,6 +403,28 @@ export class CommonService {
     });
   }
 
+  async waitFor(sleep: number, maxTry: number, check: () => Promise<boolean>) {
+    return new Promise<void>((resovle, reject) => {
+      let counter = 0;
+      (async function loop() {
+        console.log('wait for check...');
+        if (++counter > maxTry) {
+          reject('Timeout');
+          return;
+        }
+
+        if (await check()) {
+          resovle();
+        } else {
+          setTimeout(() => {
+            loop();
+          }, sleep);
+        }
+
+      })();
+    });
+  }
+
   async getMainSocket(): Promise<MySocket> {
     if (this.mainSocket) {
       return this.mainSocket;
