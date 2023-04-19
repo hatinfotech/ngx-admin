@@ -198,6 +198,12 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   public hadRowsSelected = false;
   public rowData: M[];
   themeName = '';
+  themeMap = {
+    default: 'ag-theme-alpine',
+    corporate: 'ag-theme-alpine',
+    dark: 'ag-theme-alpine-dark',
+    cosmic: 'ag-theme-alpine-dark ag-theme-alpine-cosmic',
+  };
 
   constructor(
     public apiService: ApiService,
@@ -209,9 +215,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     public ref?: NbDialogRef<AgGridDataManagerListComponent<M, F>>,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
-    this.themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
+    this.themeName = this.themeMap[this.themeService.currentTheme];
     this.themeService.onThemeChange().pipe(takeUntil(this.destroy$)).subscribe(theme => {
-      this.themeName = theme.name == 'default' ? '' : theme.name;
+      this.themeName = this.themeMap[theme.name];
     });
   }
 
