@@ -934,6 +934,9 @@ export class CommonService {
   getObjectText(obj: any, textName?: string) {
     return obj && Object.keys(obj).indexOf(textName || 'id') > -1 ? obj[textName || 'text'] : obj;
   }
+  getObjectsText(objs: any, textName?: string) {
+    return (objs || []).map(m => this.getObjectText(m)).join(', ');
+  }
 
   currencyTransform(value: any, currencyCode?: string, display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean, digitsInfo?: string, locale?: string): string | null {
     return this.currencyPipe.transform(value, currencyCode, display, digitsInfo, locale);

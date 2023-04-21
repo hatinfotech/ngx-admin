@@ -1,6 +1,7 @@
-import { Component, OnInit, Input, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { NbDialogRef } from '@nebular/theme';
 import { MytableContent } from '../my-table/my-table.component';
+import { CommonService } from '../../../../services/common.service';
 
 export interface DialogActionButton {
   label: string;
@@ -84,7 +85,10 @@ export class ImagesViewerComponent implements AfterViewInit, OnInit {
     }
   };
 
-  constructor(public ref: NbDialogRef<ImagesViewerComponent>) {
+  constructor(
+    public cms: CommonService,
+    public ref: NbDialogRef<ImagesViewerComponent>
+  ) {
 
   }
 
@@ -134,5 +138,20 @@ export class ImagesViewerComponent implements AfterViewInit, OnInit {
   dismiss() {
     this.onClose && this.onClose();
     this.ref.close();
+  }
+
+  @HostListener('document:keyup', ['$event'])
+  handleKeyupEvent(event: KeyboardEvent) {
+    if (this.ref instanceof NbDialogRef) {
+      if (this.cms.dialogStack[this.cms.dialogStack.length - 1] === this.ref) {
+        if (event.key == 'Escape' && this.ref['originalCloseOnEsc'] === true) {
+          this.ref.close();
+        }
+        // return this.onKeyupEvent(event);
+      }
+    } else {
+      // return this.onKeyupEvent(event);
+    }
+    return true;
   }
 }

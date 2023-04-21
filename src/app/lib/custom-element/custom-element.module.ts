@@ -39,6 +39,7 @@ import { AgDateCellRenderer } from './ag-list/cell/date.component';
 import { AgIdCellRenderer } from './ag-list/cell/id.component';
 import { AgTagsCellRenderer } from './ag-list/cell/tags.component';
 import { AgTextCellRenderer } from './ag-list/cell/text.component';
+import { AgImageCellRenderer } from './ag-list/cell/image.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -91,6 +92,7 @@ import { AgTextCellRenderer } from './ag-list/cell/text.component';
     AgTagsCellRenderer,
     AgDateCellRenderer,
     AgCurrencyCellRenderer,
+    AgImageCellRenderer,
     // - Filter
     AgSelect2Filter,
   ],

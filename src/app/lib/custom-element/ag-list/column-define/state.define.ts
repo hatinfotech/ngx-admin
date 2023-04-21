@@ -33,7 +33,7 @@ export const agMakeStateColDef = (
         // console.log(params);
         params.label = params.value;
       },
-      clicked: (params: any) => {
+      click: (params: any) => {
         click(params.node.data);
       }
     },

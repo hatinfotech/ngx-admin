@@ -313,6 +313,7 @@ import { WordpressOrderFormComponent } from './modules/wordpress/order/order-for
 import { WordpressOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
 import { SaleProductFormComponent } from './modules/sales/sales-product/sales-product-form/sales-product-form.component';
 import { SaleProductListComponent } from './modules/sales/sales-product/sales-product-list/sales-product-list.component';
+import { AgDynamicListComponent } from './modules/general/ag-dymanic-list/ag-dymanic-list.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -629,6 +630,9 @@ export class DynamicLocaleId extends String {
     WordpressOrderListComponent,
     WordpressOrderFormComponent,
     WordpressOrderPrintComponent,
+
+    // General components
+    AgDynamicListComponent,
   ],
   imports: [
     BrowserModule,

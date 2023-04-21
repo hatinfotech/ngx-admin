@@ -5,7 +5,7 @@ import { Component, OnDestroy } from "@angular/core";
 @Component({
     selector: 'ag-buttons-cell-renderer',
     template: `
-        <button *ngFor="let item of params.buttons" nbButton ghost [outline]="item.outline === false ? false : true" [status]="item.status || 'basic'" (click)="item.action(params, item)" [size]="item.size || 'small'">
+        <button *ngFor="let item of params.buttons" nbButton ghost [outline]="item.outline === false ? false : true" [status]="item.status || 'basic'" (click)="item.action(params, item) && false" [size]="item.size || 'small'">
             <nb-icon *ngIf="item.icon" pack="eva" [icon]="item.icon"></nb-icon>{{item.label || '' | translate | headtitlecase}}
         </button>
     `,

@@ -1,7 +1,7 @@
 import { SmartTableDateTimeRangeFilterComponent } from './../../../../lib/custom-element/smart-table/smart-table.filter.component';
 // import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from '@nebular/theme';
@@ -18,6 +18,21 @@ import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRo
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { AgImageCellRenderer } from '../../../../lib/custom-element/ag-list/cell/image.component';
+import { FileModel } from '../../../../models/file.model';
+import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';
 
 @Component({
   selector: 'ngx-sync-profile-preview',
@@ -32,6 +47,8 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   baseFormUrl = '';
   apiPath = '/wordpress/wp-sync-profiles';
 
+  @ViewChild('agSyncTaskDetailList') agSyncTaskDetailList: AgDynamicListComponent<any>;
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -44,6 +61,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
     public themeService: NbThemeService,
     public currencyPipe: CurrencyPipe,
     public datePipe: DatePipe,
+    public prds: AdminProductService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -141,8 +159,9 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         size: 'medium',
         disabled: () => false,
         hidden: () => false,
-        click: () => {
-
+        click: (event, option) => {
+          const formGroup = option.form;
+          const sites = formGroup.get('Sites').value;
           this.cms.showDialog('Tao task đồng bộ cho tất cả site', 'Bạn có muốn tạo task đồng bộ cho tất cả các site trong profile này ?', [
             {
               label: 'Trở về',
@@ -152,8 +171,230 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
               }
             },
             {
-              label: 'Tạo',
+              label: 'Chọn sản phẩm',
               status: 'primary',
+              action: () => {
+                this.cms.openDialog(AgDynamicListComponent, {
+                  context: {
+                    title: 'Chọn sản phẩm cần đồng bộ',
+                    width: '90%',
+                    height: '95vh',
+                    apiPath: '/wordpress/products',
+                    idKey: 'Id',
+                    rowMultiSelectWithClick: true,
+                    prepareApiParams: (params, getRowParams) => {
+                      // const sites = formGroup.get('Sites').value;
+                      params['eq_Site'] = this.cms.getObjectId(sites[0]);
+                      return params;
+                    },
+                    onDialogChoose: (chooseItems) => {
+                      console.log(chooseItems);
+                      if (chooseItems && chooseItems.length > 0) {
+                        this.loading = true;
+                        this.apiService.putPromise<any[]>('/wordpress/wp-sync-profiles/' + this.inputId[0], { prepare: true }, [
+                          {
+                            Code: this.inputId[0],
+                            ForSite: this.cms.getObjectId(sites[0]),
+                            ForWpProducts: chooseItems.map(m => m.Id),
+                          }
+                        ]).then(rs => {
+                          this.refresh().then(rs => {
+                            setTimeout(() => {
+                              this.activeTask(this.cms.getObjectId(this.syncTasks[this.syncTasks.length - 1]));
+                              this.loading = false;
+                            }, 500);
+                          });
+                        }).catch(err => {
+                          console.log(err);
+                          this.loading = false;
+                        });
+                      }
+
+                    },
+                    columnDefs: [
+                      {
+                        ...agMakeSelectionColDef(this.cms),
+                        headerName: 'STT',
+                        // width: 52,
+                        field: 'Id',
+                        valueGetter: 'node.data.Id',
+                        // cellRenderer: 'loadingCellRenderer',
+                        // sortable: true,
+                        // pinned: 'left',
+                      },
+                      {
+                        ...agMakeImageColDef(this.cms),
+                        headerName: 'Hình',
+                        field: 'FeaturePicture',
+                        width: 100,
+                      },
+                      {
+                        headerName: 'ID',
+                        field: 'Product',
+                        width: 100,
+                        filter: 'agTextColumnFilter',
+                        cellRenderer: 'textRender',
+                        pinned: 'left',
+                        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                        filterParams: {
+                          filterOptions: ['contains'],
+                          textMatcher: ({ value, filterText }) => {
+                            var literalMatch = this.cms.smartFilter(value, filterText);
+                            return literalMatch;
+                          },
+                          trimInput: true,
+                          debounceMs: 1000,
+                        },
+                      },
+                      {
+                        headerName: 'Sku',
+                        field: 'Sku',
+                        width: 80,
+                        filter: 'agTextColumnFilter',
+                        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                        filterParams: {
+                          filterOptions: ['contains'],
+                          textMatcher: ({ value, filterText }) => {
+                            var literalMatch = this.cms.smartFilter(value, filterText);
+                            return literalMatch;
+                          },
+                          trimInput: true,
+                          debounceMs: 1000,
+                        },
+                        cellRenderer: 'textRender',
+                        pinned: 'left',
+                      },
+                      {
+                        headerName: 'Tên sản phẩm',
+                        field: 'Name',
+                        width: 400,
+                        filter: 'agTextColumnFilter',
+                        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                        filterParams: {
+                          filterOptions: ['contains'],
+                          textMatcher: ({ value, filterText }) => {
+                            var literalMatch = this.cms.smartFilter(value, filterText);
+                            return literalMatch;
+                          },
+                          trimInput: true,
+                          debounceMs: 1000,
+                        }
+                      },
+                      {
+                        headerName: 'ĐVT',
+                        field: 'Unit',
+                        width: 150,
+                        // cellRenderer: AgTextCellRenderer,
+                        valueFormatter: (params) => {
+                          return params.data?.UnitName;
+                        },
+                        filter: AgSelect2Filter,
+                        filterParams: {
+                          select2Option: {
+                            placeholder: 'Chọn...',
+                            allowClear: true,
+                            width: '100%',
+                            dropdownAutoWidth: true,
+                            minimumInputLength: 0,
+                            withThumbnail: false,
+                            keyMap: {
+                              id: 'id',
+                              text: 'text',
+                            },
+                            data: this.prds.unitList$.value,
+                            multiple: true,
+                            logic: 'OR',
+                          }
+                        },
+                      },
+                      {
+                        headerName: 'Danh mục',
+                        field: 'Categories',
+                        width: 200,
+                        // cellRenderer: AgTextCellRenderer,
+                        valueFormatter: (params) => {
+                          return this.cms.getObjectsText(params.value);
+                        },
+                        filter: AgSelect2Filter,
+                        filterParams: {
+                          select2Option: {
+                            placeholder: 'Chọn...',
+                            allowClear: true,
+                            width: '100%',
+                            dropdownAutoWidth: true,
+                            minimumInputLength: 0,
+                            withThumbnail: false,
+                            keyMap: {
+                              id: 'id',
+                              text: 'text',
+                            },
+                            data: this.prds.categoryList$.value,
+                            multiple: true,
+                            logic: 'OR',
+                          }
+                        },
+                      },
+                      {
+                        headerName: 'Danh mục WP',
+                        field: 'RefCategoriesText',
+                        width: 300,
+                        filter: 'agTextColumnFilter',
+                        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                        filterParams: {
+                          filterOptions: ['contains'],
+                          textMatcher: ({ value, filterText }) => {
+                            var literalMatch = this.cms.smartFilter(value, filterText);
+                            return literalMatch;
+                          },
+                          trimInput: true,
+                          debounceMs: 1000,
+                        },
+                        valueFormatter: (params) => {
+                          return this.cms.getObjectsText(params.value);
+                        },
+                      },
+                      {
+                        headerName: 'Đồng bộ lần cuối',
+                        field: 'LastSync',
+                        width: 180,
+                        filter: 'agDateColumnFilter',
+                        filterParams: {
+                          inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+                        },
+                        cellRenderer: AgDateCellRenderer,
+                      },
+                      {
+                        headerName: 'Site',
+                        field: 'SiteName',
+                        width: 100,
+                        filter: 'agTextColumnFilter',
+                        cellRenderer: 'textRender',
+                      },
+                      {
+                        ...agMakeCurrencyColDef(this.cms),
+                        headerName: 'Giá niêm yết',
+                        field: 'Price',
+                        pinned: 'right',
+                        width: 150,
+                      },
+                      {
+                        ...agMakeCurrencyColDef(this.cms),
+                        headerName: 'Giá bán',
+                        field: 'SalePrice',
+                        pinned: 'right',
+                        width: 150,
+                      },
+                    ],
+                    onInit: (component) => {
+
+                    }
+                  }
+                })
+              }
+            },
+            {
+              label: 'Tạo cho tất sản phẩm',
+              status: 'success',
               action: () => {
                 this.loading = true;
                 this.apiService.putPromise<any[]>('/wordpress/wp-sync-profiles/' + this.inputId[0], { prepare: true }, [
@@ -198,7 +439,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         formItemLoadCallback(index, newForm, itemFormData);
       }
       await this.loadSyncTasks(newForm.value?.Code);
-      await this.loadSyncTaskDetails(newForm.value?.Code);
+      // await this.loadSyncTaskDetails(newForm.value?.Code);
       this.autoRefresh();
     });
 
@@ -301,12 +542,33 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   }
   /** End Details Form */
 
+  /** Ag dynamic list */
+  syncTaskDetailsApiPath = '/wordpress/sync-task-details';
+  // syncTaskDetailsApiPath = '/commerce-pos/orders';
+  prepareSyncTaskDetailsParams = (params: any, getRowParams: IGetRowsParams) => {
+    if (this.activeTaskId) {
+      const task = this.syncTasks.find(f => f.Code == this.activeTaskId);
+      params['eq_Task'] = this.activeTaskId;
+      params['includeIdText'] = true;
+      // if (task.State == 'READY') {
+      //   params['sort_No'] = 'asc';
+      // } else {
+      //   params['sort_SyncTime'] = 'desc';
+      //   params['sort_No'] = 'asc';
+      // }
+    } else {
+      params['eq_Id'] = '-1';
+    }
+    return params;
+  };
+  /** End Ag dynamic list */
 
   /** AG-Grid */
+
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
   public modules: Module[] = [
-    
+
   ];
   public dataSource: IDatasource;
   public columnDefs: ColDef[];
@@ -492,12 +754,12 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   }
 
   autoSizeAll(skipHeader: boolean) {
-    const allColumnIds: string[] = [];
-    this.gridColumnApi.getAllColumns()!.forEach((column) => {
-      allColumnIds.push(column.getId());
-    });
+    // const allColumnIds: string[] = [];
+    // this.gridColumnApi.getAllColumns()!.forEach((column) => {
+    //   allColumnIds.push(column.getId());
+    // });
 
-    this.gridColumnApi!.autoSizeColumns(allColumnIds, skipHeader);
+    // this.gridColumnApi!.autoSizeColumns(allColumnIds, skipHeader);
   }
 
   loadList(callback?: (list: ProductModel[]) => void) {
@@ -577,24 +839,24 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   updateGridColumn() {
     this.columnDefs = [
       {
-        headerName: '#',
-        width: 52,
+        ...agMakeSelectionColDef(this.cms),
+        headerName: 'STT',
+        field: 'No',
         valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: true,
-        pinned: 'left',
-        // comparator: (num1: number, num2: number) => {
-        //   return num1 - num2;
-        // }
+        cellRenderer: (params) => {
+          if (params.value) {
+            // return params.value;
+            return params.value;
+          } else {
+            return '<img src="assets/images/loading.gif">';
+          }
+        }
       },
       {
+        ...agMakeImageColDef(this.cms),
         headerName: 'Hình',
         field: 'FeaturePicture',
         width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
       },
       {
         headerName: 'Sync',
@@ -615,14 +877,6 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         },
         headerComponentParams: { enabledCheckbox: true }
       },
-      // {
-      //   headerName: 'Nghi vấn trùng',
-      //   field: 'Status',
-      //   width: 110,
-      //   filter: 'agTextColumnFilter',
-      //   pinned: 'left',
-      //   cellRenderer: 'textRender',
-      // },
       {
         headerName: 'ID',
         field: 'Product',
@@ -674,31 +928,19 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
           trimInput: true,
           debounceMs: 1000,
         }
-        // pinned: 'left',
       },
-      // {
-      //   headerName: 'Tên cũ',
-      //   field: 'OldName',
-      //   width: 400,
-      //   filter: 'agTextColumnFilter',
-      //   // pinned: 'left',
-      // },
       {
         headerName: 'ĐVT',
         field: 'UnitName',
         width: 150,
         filter: 'agTextColumnFilter',
         cellRenderer: 'textRender',
-        // pinned: 'right',
       },
       {
         headerName: 'Giá niêm yết',
         field: 'Price',
         width: 110,
-        // cellStyle: { justifyContent: 'flex-end' },
         filter: 'agTextColumnFilter',
-        // cellRenderer: 'textRender',
-        // pinned: 'right',
         valueFormatter: (cell: ValueFormatterParams) => {
           return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
         }
@@ -707,10 +949,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         headerName: 'Giá sale',
         field: 'SalePrice',
         width: 110,
-        // cellStyle: { justifyContent: 'flex-end' },
         filter: 'agTextColumnFilter',
-        // cellRenderer: 'textRender',
-        // pinned: 'right',
         valueFormatter: (cell: ValueFormatterParams) => {
           return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
         }
@@ -719,10 +958,6 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         headerName: 'Danh mục WP',
         field: 'RefCategoriesText',
         width: 150,
-        // valueFormatter: (cell: ValueFormatterParams) => {
-        //   if (cell.value == null) return '';
-        //     return (cell.value || []).map(m => this.cms.getObjectText(m)).join(', ');
-        // },
         filter: 'agTextColumnFilter',
         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
         filterParams: {
@@ -731,55 +966,24 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
             var literalMatch = this.cms.smartFilter(value, filterText);
             return literalMatch;
           },
-          // textFormatter: (r) => {
-          //   if (r == null) return null;
-          //   return (r || []).map(m => this.cms.getObjectText(m)).join(', ');
-          // },
           trimInput: true,
           debounceMs: 1000,
         },
         cellRenderer: 'textRender',
-        // pinned: 'right',
       },
-      // {
-      //   headerName: 'ĐVT cơ bản',
-      //   field: 'WarehouseUnit',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: 'textRender',
-      //   // pinned: 'right',
-      // },
-      // {
-      //   headerName: 'Danh mục',
-      //   field: 'Categories',
-      //   width: 200,
-      //   filter: 'agTextColumnFilter',
-      //   // pinned: 'right',
-      //   cellRenderer: 'textRender',
-      // },
-      // {
-      //   headerName: 'Nhóm',
-      //   field: 'Groups',
-      //   width: 200,
-      //   filter: 'agTextColumnFilter',
-      //   // pinned: 'right',
-      //   cellRenderer: 'textRender',
-      // },
       {
         headerName: 'Site',
         field: 'SiteName',
         width: 100,
         filter: 'agTextColumnFilter',
-        // pinned: 'right',
         cellRenderer: 'textRender',
       },
       {
         headerName: 'SyncTime',
         field: 'SyncTime',
-        width: 100,
+        width: 180,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        // cellRenderer: 'textRender',
         valueFormatter: (cell: ValueFormatterParams) => {
           return cell && cell.value && this.datePipe.transform(cell.value, 'short') || cell?.value;
         }
@@ -787,7 +991,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       {
         headerName: 'Status',
         field: 'Status',
-        width: 100,
+        width: 150,
         filter: 'agTextColumnFilter',
         pinned: 'right',
         cellRenderer: 'textRender',
@@ -795,10 +999,36 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       {
         headerName: 'Message',
         field: 'Message',
-        width: 500,
+        width: 300,
         filter: 'agTextColumnFilter',
         pinned: 'right',
         cellRenderer: 'textRender',
+      },
+      {
+        headerName: 'Gở',
+        field: 'Command',
+        width: 65,
+        filter: false,
+        pinned: 'right',
+        type: 'rightAligned',
+        cellClass: ['ag-cell-items-center', 'ag-cell-justify-center', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],
+        cellRenderer: AgButtonsCellRenderer,
+        resizable: false,
+        cellStyle: { 'text-overflow': 'initial' },
+        cellRendererParams: {
+          buttons: [
+            {
+              name: 'delete',
+              status: 'danger',
+              icon: 'trash-2-outline',
+              outline: false,
+              action: (params: any, button: any) => {
+                this.agSyncTaskDetailList.deleteConfirm([params.node.data.Id]);
+                return false;
+              }
+            },
+          ],
+        }
       },
     ];
   }
@@ -806,28 +1036,53 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   syncTaskDetails = [];
   async loadSyncTaskDetails(profile?: string) {
     if (this.activeTaskId) {
+      await this.cms.waitFor(500, 20, async () => !!this.agSyncTaskDetailList);
+      this.agSyncTaskDetailList.refresh();
+      this.agSyncTaskDetailList.title = `Danh sách biến thể`;
       const task = this.syncTasks.find(f => f.Code == this.activeTaskId);
-      const params: any = {
-        eq_Task: this.activeTaskId,
-        // sort_SyncTime: 'desc',
-        limit: 'nolimit',
-        includeIdText: true,
-      };
+      const columnsState = this.agSyncTaskDetailList.gridColumnApi.getColumnState();
       if (task.State == 'READY') {
-        params.sort_No = 'asc';
-      } else {
-        params.sort_SyncTime = 'desc';
-        params.sort_No = 'asc';
-      }
-      this.syncTaskDetails = await this.apiService.getPromise<any[]>('/wordpress/sync-task-details', params).then(rs => {
-        for (const item of rs) {
-          item.No = parseInt(item.No);
-          item.IsSync = item.Status === 'READY';
-          item.RefCategoriesText = (item.RefCategories || []).map(m => this.cms.getObjectText(m)).join(', ');
+        const defaultFilter = columnsState.find(f => f.colId === 'No');
+        if (defaultFilter) {
+          defaultFilter.sort = 'asc';
         }
-        return rs;
-      });
-      this.loadList();
+        this.agSyncTaskDetailList.gridColumnApi.applyColumnState({
+          state: columnsState,
+          applyOrder: true,
+        });
+      } else {
+        const defaultFilter = columnsState.find(f => f.colId === 'SyncTime');
+        if (defaultFilter) {
+          defaultFilter.sort = 'desc';
+        }
+        this.agSyncTaskDetailList.gridColumnApi.applyColumnState({
+          state: columnsState,
+          applyOrder: true,
+        });
+      }
+
+      // const task = this.syncTasks.find(f => f.Code == this.activeTaskId);
+      // const params: any = {
+      //   eq_Task: this.activeTaskId,
+      //   // sort_SyncTime: 'desc',
+      //   limit: 'nolimit',
+      //   includeIdText: true,
+      // };
+      // if (task.State == 'READY') {
+      //   params.sort_No = 'asc';
+      // } else {
+      //   params.sort_SyncTime = 'desc';
+      //   params.sort_No = 'asc';
+      // }
+      // // this.syncTaskDetails = await this.apiService.getPromise<any[]>('/wordpress/sync-task-details', params).then(rs => {
+      // //   for (const item of rs) {
+      // //     item.No = parseInt(item.No);
+      // //     item.IsSync = item.Status === 'READY';
+      // //     item.RefCategoriesText = (item.RefCategories || []).map(m => this.cms.getObjectText(m)).join(', ');
+      // //   }
+      // //   return rs;
+      // // });
+      // this.loadList();
     }
     return true;
   }
@@ -860,32 +1115,32 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   refreshProcessing = null;
   async sync() {
 
-    const syncList = [];
-    this.gridApi.forEachNode(async (rowNode, index) => {
-      const rowData = rowNode.data;
-      if (!rowData.IsSync) {
-        syncList.push({
-          Id: rowData.Id,
-          Status: 'SKIP',
-        });
-      }
-    });
+    // const syncList = [];
+    // this.gridApi.forEachNode(async (rowNode, index) => {
+    //   const rowData = rowNode.data;
+    //   if (!rowData.IsSync) {
+    //     syncList.push({
+    //       Id: rowData.Id,
+    //       Status: 'SKIP',
+    //     });
+    //   }
+    // });
 
     // Update IsSync state
     this.loading = true;
     try {
-      let offset = 0;
-      const limit = 100;
-      while (true) {
-        const partList = syncList.slice(offset, offset + limit);
-        if (partList.length > 0) {
-          await this.apiService.deletePromise('/wordpress/sync-task-details', partList.map(m => m.Id));
-          offset += limit;
-        } else {
-          break;
-        }
-      }
-      await this.loadSyncTaskDetails();
+      // let offset = 0;
+      // const limit = 100;
+      // while (true) {
+      //   const partList = syncList.slice(offset, offset + limit);
+      //   if (partList.length > 0) {
+      //     await this.apiService.deletePromise('/wordpress/sync-task-details', partList.map(m => m.Id));
+      //     offset += limit;
+      //   } else {
+      //     break;
+      //   }
+      // }
+      // await this.loadSyncTaskDetails();
 
       return this.apiService.putPromise('/wordpress/wp-sync-profiles/' + this.inputId[0], { sync: true }, [
         { Code: this.inputId[0] },
@@ -944,4 +1199,6 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       }, 10000);
     }
   }
+
+
 }

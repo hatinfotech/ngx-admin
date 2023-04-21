@@ -5,8 +5,8 @@ import { Component, OnDestroy } from "@angular/core";
 @Component({
     selector: 'ag-button-cell-renderer',
     template: `
-      <button nbButton [outline]="params.outline === false && false || true" [status]="params.status || 'basic'" (click)="btnClickedHandler($event)" [size]="params.size || 'small'" hero fullWidth>
-          <nb-icon pack="eva" [icon]="params.icon || 'external-link-outline'"></nb-icon>{{params.label || '' | translate | headtitlecase}}
+      <button nbButton [outline]="params.outline === false && false || true" [status]="params.status || 'basic'" (click)="params?.click(params) && false" [size]="params.size || 'small'" hero fullWidth>
+          <nb-icon pack="eva" [icon]="params.icon || 'external-link-outline'"></nb-icon><span *ngIf="params.label">{{params.label | translate | headtitlecase}}</span>
       </button>
     `,
 })

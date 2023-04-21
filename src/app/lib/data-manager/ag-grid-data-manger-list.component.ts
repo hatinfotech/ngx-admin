@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -32,20 +32,20 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   /** Local dat source */
   dataSource: IDatasource;
 
-  abstract formPath: string;
+  @Input() formPath: string;
 
   /** Restful api path */
-  abstract apiPath: string;
+  @Input() apiPath: string;
 
   /** Resource id key */
-  abstract idKey: string;
+  @Input() idKey: string;
 
   public refreshPendding = false;
   lastRequestCount: number = 0;
   lastResponseHeader: HttpHeaders = null;
-  prepareApiParams(params: any, getRowParams: IGetRowsParams): any { };
+  @Input() prepareApiParams(params: any, getRowParams: IGetRowsParams): any { };
 
-  actionButtonList: ActionControl[] = [
+  @Input() actionButtonList: ActionControl[] = [
     {
       name: 'delete',
       status: 'danger',
@@ -149,8 +149,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   ];
 
   public gridParams;
-  public columnDefs: ColDef[];
-  public defaultColDef: ColDef = {
+  @Input() columnDefs: ColDef[];
+  @Input() defaultColDef: ColDef = {
     // flex: 1, 
     resizable: true,
     sortable: true,
@@ -169,16 +169,17 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     //   'align-items': 'center',
     // },
   };
-  public rowSelection = 'multiple';
-  public rowModelType = 'infinite';
-  public pagination = false;
-  public paginationPageSize = 40;
-  public cacheBlockSize = this.paginationPageSize;
-  public cacheOverflowSize = 10;
-  public maxConcurrentDatasourceRequests = 2;
-  public infiniteInitialRowCount = null;
-  public maxBlocksInCache = 100;
-  public getRowNodeId = (item: { id: string }) => {
+  @Input() rowSelection = 'multiple';
+  @Input() rowMultiSelectWithClick = false;
+  @Input() rowModelType = 'infinite';
+  @Input() pagination = false;
+  @Input() paginationPageSize = 40;
+  @Input() cacheBlockSize = this.paginationPageSize;
+  @Input() cacheOverflowSize = 10;
+  @Input() maxConcurrentDatasourceRequests = 2;
+  @Input() infiniteInitialRowCount = null;
+  @Input() maxBlocksInCache = 100;
+  @Input() getRowNodeId = (item: { id: string }) => {
     return item.id;
   }
   public components = {
@@ -191,12 +192,12 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       }
     },
   };
-  public multiSortKey = 'ctrl';
-  public rowDragManaged = false;
-  public rowHeight: number;
-  public getRowHeight;
-  public hadRowsSelected = false;
-  public rowData: M[];
+  @Input()  multiSortKey = 'ctrl';
+  @Input()  rowDragManaged = false;
+  @Input()  rowHeight: number;
+  @Input()  getRowHeight;
+  @Input()  hadRowsSelected = false;
+  @Input()  rowData: M[];
   themeName = '';
   themeMap = {
     default: 'ag-theme-alpine',
@@ -365,7 +366,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
 
         this.executeGet(query, list => {
           list.forEach((item, index) => {
-            item['No'] = (getRowParams.startRow + index + 1);
+            // item['No'] = (getRowParams.startRow + index + 1);
             item['id'] = item[this.idKey];
           });
 
@@ -395,7 +396,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
 
   onSelectionChanged(event: SelectionChangedEvent<M>) {
     console.log(event);
-    this.selectedIds = this.gridApi.getSelectedRows().map(m => m[this.idKey]);
+    this.selectedItems = this.gridApi.getSelectedRows();
+    this.selectedIds = this.selectedItems.map(m => m[this.idKey]);
   }
 
   getList(callback: (list: M[]) => void) {
@@ -467,7 +469,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   getSelectedRows() {
-    return this.gridApi.getSelectedRows();
+    return this.gridApi && this.gridApi.getSelectedRows() || [];
   }
 
   editSelectedItem(): false {

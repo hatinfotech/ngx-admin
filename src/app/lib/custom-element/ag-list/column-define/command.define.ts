@@ -1,4 +1,4 @@
-import { ColDef } from "ag-grid-community";
+import { ColDef } from "@ag-grid-community/core";
 import { CommonService } from "../../../../services/common.service";
 import { AgButtonsCellRenderer } from "../cell/buttons.component";
 

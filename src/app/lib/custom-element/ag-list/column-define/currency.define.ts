@@ -1,4 +1,4 @@
-import { ColDef } from "ag-grid-community";
+import { ColDef } from "@ag-grid-community/core";
 import { CommonService } from "../../../../services/common.service";
 import { AgCurrencyCellRenderer } from "../cell/currency.component";
 
@@ -9,7 +9,7 @@ export const agMakeCurrencyColDef = (
     width: 150,
     cellRenderer: AgCurrencyCellRenderer,
     filter: 'agNumberColumnFilter',
-    pinned: 'right',
+    // pinned: 'right',
     type: 'rightAligned',
     cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
   }

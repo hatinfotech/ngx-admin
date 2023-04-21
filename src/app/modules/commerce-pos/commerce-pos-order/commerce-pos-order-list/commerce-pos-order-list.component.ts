@@ -8,19 +8,14 @@ import { CommercePosOrderFormComponent } from '../commerce-pos-order-form/commer
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { AppModule } from '../../../../app.module';
-import { IGetRowsParams } from '@ag-grid-community/core';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { CommercePosOrderPrintComponent } from '../commerce-pos-order-print/commerce-pos-order-print.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
-import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';
-import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
-import { AgTagsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/tags.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
-import { ColDef } from 'ag-grid-community';
 import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
@@ -227,7 +222,6 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
-          // suppressMenu: true,
           filter: AgSelect2Filter,
           filterParams: {
             select2Option: {
@@ -272,9 +266,6 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           headerName: 'Ngày tạo',
           field: 'Created',
           width: 180,
-          // valueFormatter: (node) => {
-          //   return node.value ? this.datePipe.transform(node.value, 'short') : '';
-          // },
           filter: 'agDateColumnFilter',
           filterParams: {
             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
@@ -292,6 +283,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           ...agMakeCurrencyColDef(this.cms),
           headerName: 'Số tiền',
           field: 'Amount',
+          pinned: 'right',
           width: 150,
         },
         {
