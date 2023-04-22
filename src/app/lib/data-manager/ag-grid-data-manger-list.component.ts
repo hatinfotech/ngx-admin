@@ -188,7 +188,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         // return params.value;
         return params.rowIndex + 1;
       } else {
-        return '<img src="assets/images/loading.gif">';
+        return '<span class="ag-loading"></span>';
       }
     },
   };

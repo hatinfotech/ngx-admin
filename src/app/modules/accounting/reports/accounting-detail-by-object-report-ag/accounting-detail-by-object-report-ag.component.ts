@@ -142,7 +142,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           width: 120,
           // valueGetter: 'node.data.Id',
           valueGetter: (params) => {
-            return params.data?.Voucher + '-' + params.data?.WriteNo;
+            return params.data?.Voucher && (params.data?.Voucher + '-' + params.data?.WriteNo) || null;
           }
         },
         {
