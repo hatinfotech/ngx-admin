@@ -38,7 +38,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() apiPath: string;
 
   /** Resource id key */
-  @Input() idKey: string;
+  @Input() idKey: any;
 
   public refreshPendding = false;
   lastRequestCount: number = 0;
@@ -192,12 +192,12 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       }
     },
   };
-  @Input()  multiSortKey = 'ctrl';
-  @Input()  rowDragManaged = false;
-  @Input()  rowHeight: number;
-  @Input()  getRowHeight;
-  @Input()  hadRowsSelected = false;
-  @Input()  rowData: M[];
+  @Input() multiSortKey = 'ctrl';
+  @Input() rowDragManaged = false;
+  @Input() rowHeight: number;
+  @Input() getRowHeight;
+  @Input() hadRowsSelected = false;
+  @Input() rowData: M[];
   themeName = '';
   themeMap = {
     default: 'ag-theme-alpine',
@@ -296,17 +296,18 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       }
     }));
     // this.loadList();
-    this.apiService.getObservable<M[]>(this.apiPath, { limit: 1 }).pipe(
-      map((res) => {
-        this.lastResponseHeader = res.headers;
-        this.infiniteInitialRowCount = +res.headers.get('x-total-count');
-        let data = res.body;
-        return data;
-      }),
-    ).toPromise().then(rs => {
-      // success(rs);
-      return rs;
-    });
+    // this.apiService.getObservable<M[]>(this.apiPath, this.prepareApiParams({ limit: 1 }, null)).pipe(
+    //   map((res) => {
+    //     this.lastResponseHeader = res.headers;
+    //     this.infiniteInitialRowCount = +res.headers.get('x-total-count');
+    //     console.log('set this.infiniteInitialRowCount: ' + this.infiniteInitialRowCount);
+    //     let data = res.body;
+    //     return data;
+    //   }),
+    // ).toPromise().then(rs => {
+    //   // success(rs);
+    //   return rs;
+    // });
     this.initDataSource();
   }
 
@@ -325,41 +326,6 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
           ...query,
           ...filterQuery
         };
-        // Object.keys(getRowParams.filterModel).forEach(key => {
-        //   const condition: { operator?: string, conditions?: any[], filter: string, filterType: string, type: string, dateFrom?: string, dateTo?: string } = getRowParams.filterModel[key];
-        //   if (condition.operator) {
-        //     for (const cond of condition.conditions) {
-        //       if (this.filterTypeMap[cond.type]) {
-        //         // let condVal = cond.filter;
-        //         if (cond.filterType == 'date') {
-        //           if (cond.dateFrom) {
-        //             query[this.filterTypeMap[cond.type] + '_' + key] = new Date(cond.dateFrom).toISOString();
-        //           }
-        //           if (cond.dateTo) {
-        //             query[this.filterTypeMap[cond.type] + '_' + key] = new Date(cond.dateTo).toISOString();
-        //           }
-        //         } else {
-        //           query[this.filterTypeMap[cond.type] + '_' + key] = cond.filter;
-        //         }
-        //       }
-        //     }
-        //   } else {
-        //     if (this.filterTypeMap[condition.type]) {
-        //       // let condVal = cond.filter;
-        //       if (condition.filterType == 'date') {
-        //         if (condition.dateFrom) {
-        //           query[this.filterTypeMap[condition.type] + '_' + key] = new Date(condition.dateFrom).toISOString();
-        //         }
-        //         if (condition.dateTo) {
-        //           query[this.filterTypeMap[condition.type] + '_' + key] = new Date(condition.dateTo).toISOString();
-        //         }
-        //       } else {
-        //         query[this.filterTypeMap[condition.type] + '_' + key] = condition.filter;
-        //       }
-        //     }
-        //   }
-        // });
-
         if (this.prepareApiParams) {
           query = this.prepareApiParams(query, getRowParams);
         }
@@ -367,7 +333,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         this.executeGet(query, list => {
           list.forEach((item, index) => {
             // item['No'] = (getRowParams.startRow + index + 1);
-            item['id'] = item[this.idKey];
+            item['id'] = this.makeId(item);
           });
 
           let lastRow = -1;
@@ -377,9 +343,6 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
           getRowParams.successCallback(list, lastRow);
           this.gridApi.resetRowHeights();
         });
-        // this.getList(contactList => {
-
-        // });
 
       },
     };
@@ -397,7 +360,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   onSelectionChanged(event: SelectionChangedEvent<M>) {
     console.log(event);
     this.selectedItems = this.gridApi.getSelectedRows();
-    this.selectedIds = this.selectedItems.map(m => m[this.idKey]);
+    this.selectedIds = this.selectedItems.map(m => this.makeId(m));
   }
 
   getList(callback: (list: M[]) => void) {
@@ -486,7 +449,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   /** User select event */
   onUserRowSelect(event: any) {
     this.selectedIds = event.selected.map((item: M) => {
-      return item[this.idKey];
+      return this.makeId(item);
     });
     // console.info(event);
     if (this.selectedIds.length > 0) {
@@ -504,7 +467,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   /** Edit event */
   onEditAction(event: { data: M }) {
     // this.router.navigate(['modules/manager/form', event.data[this.idKey]]);
-    this.gotoForm(event.data[this.idKey]);
+    this.gotoForm(this.makeId(event.data));
   }
 
   /** Create and multi edit/delete action */
@@ -613,6 +576,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       map((res) => {
         this.lastResponseHeader = res.headers;
         this.infiniteInitialRowCount = +res.headers.get('x-total-count');
+        this.gridApi.setRowCount(this.infiniteInitialRowCount);
+        console.log('set this.infiniteInitialRowCount: ' + this.infiniteInitialRowCount);
         let data = res.body;
         return data;
       }),

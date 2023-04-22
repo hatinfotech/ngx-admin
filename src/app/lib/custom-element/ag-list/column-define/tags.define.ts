@@ -15,13 +15,13 @@ export const agMakeTagsColDef = (
     cellRenderer: AgTagsCellRenderer,
     cellRendererParams: {
       onInit: (params: any, component: AgTagsCellRenderer) => {
-        params.tags = (params?.node?.data?.RelativeVouchers || []).map(m => ({
+        params.tags = (params?.value || []).map(m => ({
           name: 'edit',
           ...m,
-          action: (params: any, button: any) => {
-            click(m);
-          }
         }));
+      },
+      onClick:(tag: any) => {
+        click && click(tag);
       }
     }
   };

@@ -1050,8 +1050,9 @@ export class CommonService {
     '106': SalesPriceReportPrintComponent,
     '113': DeploymentVoucherPrintComponent,
     '103': AccountingOtherBusinessVoucherPrintComponent,
-    'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
     '114': CollaboratorOrderPrintComponent,
+    '128': CommercePosOrderPrintComponent,
+    'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
     'CLBRTCOMMISSION': CollaboratorCommissionPrintComponent,
     'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,
     'COLLABORATORORDER': CollaboratorOrderPrintComponent,
@@ -1068,6 +1069,9 @@ export class CommonService {
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
+    if (!type) {
+      type = relativeVocher.substring(0, 3);
+    }
     if (this.voucherPrintConponentTypeIndex[type]) {
       this.openDialog(this.voucherPrintConponentTypeIndex[type], {
         context: {

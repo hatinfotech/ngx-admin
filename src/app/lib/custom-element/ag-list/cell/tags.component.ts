@@ -20,7 +20,7 @@ export interface AgComponetTagModel {
         <nb-tag *ngFor="let tag of params.tags" [text]="tag.label" (click)="tag.action(params, tag)" appearance="outline" size="tiny" [status]="tag.status || 'basic'" [size]="tag.size || 'small'" style="cursor: pointer"></nb-tag>
     </nb-tag-list> -->
     <div>
-        <a  (click)="tag.action(params, tag)" *ngFor="let tag of params.tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{renderToolTip(tag)}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{labelAsText(tag) || tag.id}}</a>
+        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a>
     </div>
     `,
     styles: [
@@ -35,6 +35,7 @@ export interface AgComponetTagModel {
 export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
 
     public params: any;
+    public tags = [];
     constructor(
         public cms: CommonService,
     ) {
@@ -44,16 +45,61 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
         // throw new Error('Method not implemented.');
         if (this.params.onRefresh) {
             this.params.onRefresh(params, this);
+            this.preapraeTags(params?.value);
         }
         return true;
     }
 
     labelAsText(tag: AgComponetTagModel) {
-        return (this.cms.voucherTypeMap[tag.type]?.symbol || tag.type) + ':' + tag.id;
+        let voucherType = this.cms.voucherTypeMap[tag.type];
+        let type = '';
+        if (!voucherType) {
+            const prefix = tag.id?.substring(0, 3);
+            const matched = Object.keys(this.cms.voucherTypeMap).find(f => this.cms.voucherTypeMap[f].prefix == prefix);
+            if (matched) {
+                voucherType = this.cms.voucherTypeMap[matched];
+            }
+        }
+        type = `${voucherType?.symbol || tag.type || ''}`;
+        return (type ? `${type}:` : '') + tag.id;
     };
 
     renderToolTip(tag: AgComponetTagModel) {
-        return (tag.type ? `${this.cms.voucherTypeMap[tag.type]?.text || tag.type}: ` : '') + tag.text;
+        let voucherType = this.cms.voucherTypeMap[tag.type];
+        let type = '';
+        if (!voucherType) {
+            const prefix = tag.id?.substring(0, 3);
+            const matched = Object.keys(this.cms.voucherTypeMap).find(f => this.cms.voucherTypeMap[f].prefix == prefix);
+            if (matched) {
+                voucherType = this.cms.voucherTypeMap[matched];
+            }
+        }
+        type = `${voucherType?.text || tag.type || ''}`;
+        return (type ? `[${type}]: ` : '') + tag.text;
+    }
+
+    preapraeTags(tags: any[]) {
+        const renderTags = [];
+        if (Array.isArray(tags)) {
+            for (const inputTag of tags) {
+                let tag = null;
+                if (typeof inputTag == 'string') {
+                    tag = {
+                        id: inputTag,
+                        text: inputTag,
+                        type: '',
+                    };
+                } else {
+                    tag = {
+                        ...inputTag,
+                        toolTip: this.renderToolTip(inputTag),
+                        label: this.labelAsText(inputTag),
+                    };
+                }
+                renderTags.push(tag);
+            }
+        }
+        this.tags = renderTags;
     }
 
     agInit(params: any): void {
@@ -62,12 +108,13 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
         //     this.status = this.params?.status;
         // }
         if (params.onInit) {
+            this.preapraeTags(params?.value);
             params.onInit(params, this);
         }
     }
 
-    btnClickedHandler(button: any) {
-        return this.params.clicked(button);
+    tagClickedHandler(tag: any) {
+        return this.params.onClick && this.params.onClick(tag);
     }
 
     ngOnDestroy() {
