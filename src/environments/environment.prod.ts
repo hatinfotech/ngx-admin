@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.13.1',
+  version: '6.5.14.1',
+  // 6.5.14:   apply ag-grid for accounting report detail by object
   // 6.5.13:   updat goods receipt note print
   // 6.5.12:   dev new list use ag-grid library
   // 6.5.10:   update warehosue export for distribution case

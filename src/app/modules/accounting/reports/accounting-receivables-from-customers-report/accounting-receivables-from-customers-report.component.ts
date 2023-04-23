@@ -16,6 +16,7 @@ import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by
 import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingReceivablesFromCustomersReportPrintComponent } from '../print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-receivables-from-customers-report',
@@ -337,7 +338,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

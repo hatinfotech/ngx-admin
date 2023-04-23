@@ -15,7 +15,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { CheckboxSelectionCallbackParams, ColDef, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
+import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 
@@ -169,7 +169,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     //   'align-items': 'center',
     // },
   };
-  @Input() rowSelection = 'multiple';
+  @Input() rowSelection: 'single' | 'multiple' = 'multiple';
   @Input() rowMultiSelectWithClick = false;
   @Input() rowModelType = 'infinite';
   @Input() pagination = false;
@@ -179,6 +179,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() maxConcurrentDatasourceRequests = 2;
   @Input() infiniteInitialRowCount = null;
   @Input() maxBlocksInCache = 100;
+  @Input() suppressRowClickSelection = true;
   @Input() getRowNodeId = (item: { id: string }) => {
     return item.id;
   }
@@ -205,6 +206,10 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     dark: 'ag-theme-alpine-dark',
     cosmic: 'ag-theme-alpine-dark ag-theme-alpine-cosmic',
   };
+
+  // gridOptions: GridOptions = {
+  //   suppressRowClickSelection: true,
+  // };
 
   constructor(
     public apiService: ApiService,

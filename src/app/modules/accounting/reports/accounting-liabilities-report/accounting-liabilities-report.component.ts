@@ -18,6 +18,7 @@ import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by
 import { AccountingReportComponent } from '../accounting-report.component';
 import { AccountingLiabilitiesDetailsReportPrintComponent } from '../print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from '../print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-liabilities-report',
@@ -312,7 +313,7 @@ export class AccountingLiabilitiesReportComponent extends ServerDataManagerListC
   // }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

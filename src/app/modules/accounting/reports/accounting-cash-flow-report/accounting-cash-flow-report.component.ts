@@ -17,6 +17,7 @@ import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from 
 import { AccountingObjectCashFlowReportPrintComponent } from '../print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-cash-flow-report',
@@ -337,7 +338,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

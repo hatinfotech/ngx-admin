@@ -16,6 +16,7 @@ import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { Subject, BehaviorSubject } from 'rxjs';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-contra-account-report',
@@ -466,7 +467,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

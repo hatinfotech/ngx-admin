@@ -16,6 +16,7 @@ import { CurrencyPipe } from '@angular/common';
 import { Icon } from '../../../../lib/custom-element/card-header/card-header.component';
 import { ActionControl, ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { AccountingService } from '../../accounting.service';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-profit-report',
@@ -290,7 +291,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

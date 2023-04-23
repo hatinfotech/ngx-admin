@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit, TemplateRef, Type } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
@@ -18,6 +18,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
+import { AdminProductService } from '../../../admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report-ag',
@@ -54,6 +55,8 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
   @Input() includeIncrementAmount?: boolean;
   @Input() balance?: 'debt' | 'credit' | 'both';
   @Input() reportComponent: Type<any> | TemplateRef<any>;
+  @Input() rowMultiSelectWithClick: boolean;
+  // @Input() suppressRowClickSelection = true;
 
   constructor(
     public apiService: ApiService,
@@ -65,8 +68,16 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingDetailByObjectReportAgComponent>,
     public accountingService: AccountingService,
+    public prds: AdminProductService,
   ) {
     super(apiService, router, cms, dialogService, toastService, themeService, ref);
+  }
+
+  onGridReady(params: any): void {
+      super.onGridReady(params);
+      // setTimeout(() => {
+      //   this.gridApi.ensureIndexVisible(this.infiniteInitialRowCount, 'bottom');
+      // }, 5000);
   }
 
   async init() {
@@ -134,6 +145,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
       // });
 
       await this.cms.waitForLanguageLoaded();
+      await this.prds.unitList$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise();
       let columnDefs = [
         {
           ...agMakeSelectionColDef(this.cms),
@@ -186,7 +198,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           }),
           headerName: 'Chứng từ',
           field: 'Voucher',
-          width: 140,
+          width: 180,
           // pinned: 'right',
           cellClass: ['ag-cell-items-center'],
           valueGetter: (params) => {
@@ -227,14 +239,14 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           },
         },
         {
-          headerName: 'Tài khoản',
+          headerName: 'TK',
           field: 'Account',
           width: 100,
           filter: 'agTextColumnFilter',
           pinned: 'right',
         },
         {
-          headerName: 'Đối ứng',
+          headerName: 'ĐU',
           field: 'ContraAccount',
           width: 100,
           filter: 'agTextColumnFilter',
@@ -249,10 +261,30 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         },
         {
           headerName: 'ĐVT',
-          field: 'Unit',
+          field: 'ProductUnit',
           width: 100,
-          filter: 'agTextColumnFilter',
+          // filter: 'agTextColumnFilter',
+          valueFormatter: (params) => {
+            return params.data?.ProductUnitLabel;
+          },
           pinned: 'right',
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              placeholder: 'Chọn...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              withThumbnail: false,
+              multiple: true,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              data: this.prds.unitList$.value,
+            }
+          },
         },
         {
           ...agMakeCurrencyColDef(this.cms),
@@ -263,21 +295,21 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         },
         {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Đầu kỳ',
+          headerName: 'Đ.Kỳ',
           field: 'HeadAmount',
           pinned: 'right',
           width: 100,
         },
         {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Phát sinh nợ',
+          headerName: 'PS.Nợ',
           field: 'GenerateDebit',
           pinned: 'right',
           width: 100,
         },
         {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Phát sinh có',
+          headerName: 'PS.Có',
           field: 'GenerateCredit',
           pinned: 'right',
           width: 100,

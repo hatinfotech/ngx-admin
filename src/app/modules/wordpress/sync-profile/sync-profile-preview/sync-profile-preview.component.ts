@@ -182,6 +182,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                     apiPath: '/wordpress/products',
                     idKey: 'Id',
                     rowMultiSelectWithClick: true,
+                    suppressRowClickSelection: false,
                     prepareApiParams: (params, getRowParams) => {
                       // const sites = formGroup.get('Sites').value;
                       params['eq_Site'] = this.cms.getObjectId(sites[0]);

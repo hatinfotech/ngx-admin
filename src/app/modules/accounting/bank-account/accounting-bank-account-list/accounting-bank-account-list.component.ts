@@ -13,6 +13,7 @@ import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/a
 import { AccountingBankAccountFormComponent } from '../accounting-bank-account-form/accounting-bank-account-form.component';
 import { AccountingDetailByObjectReportComponent } from '../../reports/accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingAccountDetailsReportPrintComponent } from '../../reports/print/accounting-account-details-report-print/accounting-account-details-report-print.component';
+import { AccountingDetailByObjectReportAgComponent } from '../../reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-bank-account-list',
@@ -174,7 +175,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
   }
 
   openInstantDetailReport(rowData: AccBankAccountModel) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,

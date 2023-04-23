@@ -1,20 +1,19 @@
-import { AccountingAccountDetailsReportPrintComponent } from './../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
-import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
-import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { AccountingAccountDetailsReportPrintComponent } from './../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 
 @Component({
   selector: 'ngx-summary-report',

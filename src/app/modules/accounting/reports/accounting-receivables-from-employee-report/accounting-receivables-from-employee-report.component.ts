@@ -15,6 +15,7 @@ import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingObjectCashFlowReportPrintComponent } from '../print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-receivables-from-employee-report',
@@ -298,7 +299,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
   // }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,

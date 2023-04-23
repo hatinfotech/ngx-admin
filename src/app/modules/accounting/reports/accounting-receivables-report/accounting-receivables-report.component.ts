@@ -13,6 +13,7 @@ import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingReportComponent } from '../accounting-report.component';
+import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-accounting-receivables-report',
@@ -213,7 +214,7 @@ export class AccountingReceivablesReportComponent extends DataManagerListCompone
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         object: rowData.Object,
