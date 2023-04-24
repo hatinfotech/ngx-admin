@@ -148,10 +148,11 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
   select2OptionForProduct = {
     ...this.cms.makeSelect2AjaxOption('/admin-product/products', {
-      select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
+      select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures,Groups,Type",
       includeSearchResultLabel: true,
       includeUnits: true,
       sort_SearchRank: 'desc',
+      // includeGroups: true,
     }, {
       limit: 10,
       placeholder: 'Chọn hàng hóa/dịch vụ...',
@@ -499,18 +500,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [1, (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
-      Price: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      Quantity: [1],
+      Price: [],
       Unit: ['', (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -597,7 +588,8 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     newChildFormGroup.get('ToMoney').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'ToMoney', index));
     newChildFormGroup.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Type', index));
     // Load product name    
-    newChildFormGroup.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
+    const productControl = newChildFormGroup.get('Product');
+    productControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async value => {
 
       const productId = this.cms.getObjectId(value);
       const supplierId = this.cms.getObjectId(parentFormGroup.get('Object').value);
@@ -620,6 +612,26 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
           newChildFormGroup.get('Tax').setValue(purchaseProduct.TaxValue);
         }
+      }
+    });
+
+    const businessControl = newChildFormGroup.get('Business');
+    newChildFormGroup.get('Unit').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(async untiConversion => {
+
+      if (productControl.value?.Type == 'PRODUCT') {
+        if (untiConversion?.IsAutoAdjustInventory === false) {
+          // if(!businessControl.value || businessControl.value.length == 0){
+          businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASESKIPWAREHOUSE'));
+          // }
+        }
+        if (untiConversion?.IsAutoAdjustInventory === true) {
+          // if(!businessControl.value || businessControl.value.length == 0){
+          businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASEWAREHOUSE'));
+          // }
+        }
+      }
+      if (productControl.value?.Type == 'SERVICE') {
+        businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASECOST'));
       }
     });
   }
@@ -863,18 +875,18 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
         if (selectedData.Units) {
           const unitControl = detail.get('Unit');
           detail['UnitList'] = selectedData.Units;
-          unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true));
+          unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true), { emitEvent: false });
         }
         if (selectedData.Pictures && selectedData.Pictures.length > 0) {
-          detail.get('Image').setValue(selectedData.Pictures);
+          detail.get('Image').setValue(selectedData.Pictures, { emitEvent: false });
         } else {
-          detail.get('Image').setValue([]);
+          detail.get('Image').setValue([], { emitEvent: false });
         }
       } else {
         // if (!detail['IsImport'] || !detail.get('Description').value) {
-        detail.get('Description').setValue('');
+        detail.get('Description').setValue('', { emitEvent: false });
         // }
-        detail.get('Unit').setValue('');
+        detail.get('Unit').setValue('', { emitEvent: false });
       }
     }
     return false;

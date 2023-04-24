@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { CommercePosOrderFormComponent } from '../commerce-pos-order-form/commer
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { AppModule } from '../../../../app.module';
-import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { ColDef, IGetRowsParams, RowHeightParams } from '@ag-grid-community/core';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { CommercePosOrderPrintComponent } from '../commerce-pos-order-print/commerce-pos-order-print.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -38,7 +38,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   printDialog = CommercePosOrderPrintComponent;
 
   // AG-Grid config
-  public rowHeight: number = 75;
+  public rowHeight: number = 50;
 
 
   constructor(
@@ -255,7 +255,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           }),
           headerName: 'Chứng từ liên quan',
           field: 'RelativeVouchers',
-          width: 350,
+          width: 300,
         },
         {
           headerName: 'Người tạo',
@@ -302,7 +302,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           }, (data) => {
             this.deleteConfirm([data.Code]);
           }),
-          headerName: 'Sử/Xóa',
+          headerName: 'Sửa/Xóa',
         },
       ] as ColDef[]);
 
@@ -313,6 +313,10 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   ngOnInit() {
     super.ngOnInit();
   }
+
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
+  // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
     params['includeCreator'] = true;

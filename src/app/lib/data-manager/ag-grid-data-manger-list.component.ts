@@ -15,7 +15,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, SelectionChangedEvent } from '@ag-grid-community/core';
+import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 
@@ -181,6 +181,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() maxBlocksInCache = 3;
   @Input() suppressRowClickSelection = true;
   @Input() enableCellTextSelection = true;
+  @Input() ensureDomOrder = true;
   @Input() getRowNodeId = (item: { id: string }) => {
     return item.id;
   }
@@ -197,7 +198,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() multiSortKey = 'ctrl';
   @Input() rowDragManaged = false;
   @Input() rowHeight: number;
-  @Input() getRowHeight;
+  @Input() getRowHeight: (params: RowHeightParams<M>) => number;
   @Input() hadRowsSelected = false;
   @Input() rowData: M[];
   themeName = '';
