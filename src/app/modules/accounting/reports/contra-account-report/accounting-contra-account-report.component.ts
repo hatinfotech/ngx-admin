@@ -476,6 +476,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
         toDate: null,
+        includeRowHeader: false,
         reportComponent: AccountingAccountDetailsReportPrintComponent,
       },
       closeOnEsc: false,

@@ -5,13 +5,14 @@ import { CurrencyPipe } from "@angular/common";
 import { ICellRendererParams } from "@ag-grid-community/core";
 
 @Component({
-    selector: 'agz-currency-cell-renderer',
+    selector: 'ag-acc-currency-cell-renderer',
     template: `
-      <span>{{params.value | currency:'VND'}}</span>
+      <span *ngIf="params.value < 0; else elseContent">({{-params.value | currency:'VND'}})</span>
+      <ng-template #elseContent><span>{{params.value | currency:'VND'}}</span></ng-template>
     `,
     providers: [CurrencyPipe]
 })
-export class AgCurrencyCellRenderer implements ICellRendererAngularComp, OnDestroy {
+export class AgAccCurrencyCellRenderer implements ICellRendererAngularComp, OnDestroy {
     constructor(
         public cms: CommonService,
     ) {

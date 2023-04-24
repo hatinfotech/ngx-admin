@@ -204,10 +204,12 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
-          headerName: '#',
+          headerName: 'ID',
           field: 'Id',
           width: 80,
           valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
         },
         {
           headerName: 'Mã',
@@ -339,14 +341,16 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
 
   onGridReady(params) {
     super.onGridReady(params);
-    const columnsState = this.gridColumnApi.getColumnState();
-    const defaultFilter = columnsState.find(f => f.colId === 'Id');
-    if (defaultFilter) {
-      defaultFilter.sort = 'desc';
-    }
-    this.gridColumnApi.applyColumnState({
-      state: columnsState,
-      applyOrder: true,
-    });
+    // let columnsState = [];
+    // this.cms.waitFor(300, 100, async () => (columnsState = this.gridColumnApi.getColumnState()).length > 0).then(() => {
+    //   const defaultFilter = columnsState.find(f => f.colId === 'Id');
+    //   if (defaultFilter) {
+    //     defaultFilter.sort = 'desc';
+    //   }
+    //   this.gridColumnApi.applyColumnState({
+    //     state: columnsState,
+    //     applyOrder: true,
+    //   });
+    // });
   }
 }

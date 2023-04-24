@@ -19,6 +19,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { agMakeAccCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/acc-currency.define';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report-ag',
@@ -287,28 +288,28 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           },
         },
         {
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: 'Giá',
           field: 'Price',
           pinned: 'right',
           width: 100,
         },
         {
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: 'Đ.Kỳ',
           field: 'HeadAmount',
           pinned: 'right',
           width: 100,
         },
         {
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: 'PS.Nợ',
           field: 'GenerateDebit',
           pinned: 'right',
           width: 100,
         },
         {
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: 'PS.Có',
           field: 'GenerateCredit',
           pinned: 'right',
@@ -318,7 +319,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
 
       if (this.balance == 'debt') {
         columnDefs.push({
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: this.cms.translateText('Accounting.increment'),
           field: 'IncrementAmount',
           pinned: 'right',
@@ -326,7 +327,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         });
       } else if (this.balance == 'credit') {
         columnDefs.push({
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: this.cms.translateText('Accounting.increment'),
           field: 'IncrementAmount',
           pinned: 'right',
@@ -334,7 +335,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         });
       } else if (this.balance == 'both') {
         columnDefs.push({
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: this.cms.translateText('Accounting.tailDebit'),
           field: 'DebitIncrementAmount',
           pinned: 'right',
@@ -347,7 +348,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           }
         });
         columnDefs.push({
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: this.cms.translateText('Accounting.tailDebit'),
           field: 'DebitIncrementAmount',
           pinned: 'right',
@@ -361,7 +362,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         });
       } else {
         columnDefs.push({
-          ...agMakeCurrencyColDef(this.cms),
+          ...agMakeAccCurrencyColDef(this.cms),
           headerName: this.cms.translateText('Accounting.increment'),
           field: 'IncrementAmount',
           pinned: 'right',

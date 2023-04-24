@@ -299,6 +299,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
         toDate: null,
+        includeRowHeader: false,
       },
       closeOnEsc: false,
     })

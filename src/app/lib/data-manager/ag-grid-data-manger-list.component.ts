@@ -176,10 +176,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() paginationPageSize = 40;
   @Input() cacheBlockSize = this.paginationPageSize;
   @Input() cacheOverflowSize = 10;
-  @Input() maxConcurrentDatasourceRequests = 2;
+  @Input() maxConcurrentDatasourceRequests = 1;
   @Input() infiniteInitialRowCount = null;
-  @Input() maxBlocksInCache = 100;
+  @Input() maxBlocksInCache = 3;
   @Input() suppressRowClickSelection = true;
+  @Input() enableCellTextSelection = true;
   @Input() getRowNodeId = (item: { id: string }) => {
     return item.id;
   }

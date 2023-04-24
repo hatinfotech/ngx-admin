@@ -1,5 +1,5 @@
 <ag-grid-angular #agGrid style="width: 100%; height: 300px" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules"
-  [columnDefs]="columnDefs" [debug]="false" [defaultColDef]="defaultColDef"
+  [columnDefs]="columnDefs" [debug]="false" [defaultColDef]="defaultColDef" [enableCellTextSelection]="enableCellTextSelection"
   [rowData]="rowData" [immutableData]="immutableData"
   [rowSelection]="rowSelection" [rowModelType]="rowModelType"
   [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"

@@ -82,6 +82,7 @@ export class AgListComponent implements ControlValueAccessor, Validator, OnChang
   public rowData: any[];
   public gridParams;
   public cacheOverflowSize = 2;
+  public enableCellTextSelection = true;
   updateMode = 'live';
   public components = {
     loadingCellRenderer: (params) => {

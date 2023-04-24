@@ -10,7 +10,7 @@ export const agMakeSelectionColDef = (
     width: 80,
     valueGetter: 'node.data.Id',
     cellRenderer: 'loadingCellRenderer',
-    sortable: false,
+    sortable: true,
     filter: false,
     pinned: 'left',
     headerCheckboxSelection: true,

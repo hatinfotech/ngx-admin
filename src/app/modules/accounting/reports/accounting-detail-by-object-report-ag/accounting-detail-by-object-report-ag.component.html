@@ -6,8 +6,8 @@
 
         <nb-card-body style="height: 100%">
             <ag-grid-angular #agGrid style="display: block; height: 100%" id="myGrid" class="{{themeName}}"
-                [modules]="modules" [columnDefs]="columnDefs" [debug]="true" 
-                [rowMultiSelectWithClick]="rowMultiSelectWithClick" [suppressRowClickSelection]="suppressRowClickSelection"
+                [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [enableCellTextSelection]="enableCellTextSelection"
+                [rowMultiSelectWithClick]="rowMultiSelectWithClick" [suppressRowClickSelection]="suppressRowClickSelection" [enableCellTextSelection]="enableCellTextSelection"
                 [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
                 [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
                 [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
