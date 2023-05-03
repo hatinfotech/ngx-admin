@@ -778,6 +778,8 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
       Gateway: string,
     } = this.form.value['array'][0];
 
+    console.log('formData', formData);
+
     const hosting: WhHostingModel = this.hostingList.filter(w => w.Code === this.cms.getObjectId(formData.Hosting))[0];
     const pbx = this.pbxList.filter(p => p.Code === this.cms.getObjectId(formData.Pbx))[0];
     // const domainParse = formData.DomainName.split('.');
@@ -808,7 +810,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
         maxTry: 3,
         delayTry: 15000,
         execute: async () => {
-          newWesite = await this.deployMiniErpWebiste(hosting.Code, newPbxDomain.DomainName);
+          newWesite = await this.deployMiniErpWebiste(hosting.Code, formData.DomainName);
           return true;
         },
       },
@@ -857,7 +859,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           return true;
         },
       },
-      // Deply PBX
+      // Deploy PBX
       {
         message: 'Khởi tạo tổng đài',
         maxTry: 3,
@@ -1045,6 +1047,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
           }
           break;
         } catch (e) {
+          console.error(e);
           if (tryCount >= execute.maxTry) {
             error(e);
             this.onProcessed();
