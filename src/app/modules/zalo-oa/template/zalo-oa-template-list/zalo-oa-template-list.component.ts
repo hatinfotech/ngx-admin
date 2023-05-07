@@ -11,7 +11,7 @@ import { ZaloOaTemplateModel } from '../../../../models/zalo-oa.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ZaloOaTemplateFormComponent } from '../zalo-oa-template-form/zalo-oa-template-form.component';
 
 @Component({

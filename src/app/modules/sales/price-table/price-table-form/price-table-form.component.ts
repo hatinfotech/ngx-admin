@@ -15,7 +15,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PriceTablePrintComponent } from '../price-table-print/price-table-print.component';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
 import { BehaviorSubject } from 'rxjs';
 // import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
@@ -790,7 +790,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     return false;
   }
 
-  static productListDialog: NbDialogRef<ProductListComponent>;
+  static productListDialog: NbDialogRef<ProductListV1Component>;
 
   /** Implement required */
   openProductListDialog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
@@ -808,13 +808,13 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     };
 
     try {
-      if (ProductListComponent._dialog.componentRef.location.nativeElement) {
-        this.cms.resumeDialog(ProductListComponent._dialog, { events: events });
+      if (ProductListV1Component._dialog.componentRef.location.nativeElement) {
+        this.cms.resumeDialog(ProductListV1Component._dialog, { events: events });
       } else {
         throw Error;
       }
     } catch (error) {
-      ProductListComponent._dialog = this.cms.openDialog(ProductListComponent, {
+      ProductListV1Component._dialog = this.cms.openDialog(ProductListV1Component, {
         context: events as any,
         closeOnEsc: false,
         closeOnBackdropClick: false,

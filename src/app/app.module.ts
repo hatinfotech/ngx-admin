@@ -315,6 +315,7 @@ import { SaleProductFormComponent } from './modules/sales/sales-product/sales-pr
 import { SaleProductListComponent } from './modules/sales/sales-product/sales-product-list/sales-product-list.component';
 import { AgDynamicListComponent } from './modules/general/ag-dymanic-list/ag-dymanic-list.component';
 import { AccountingDetailByObjectReportAgComponent } from './modules/accounting/reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -478,6 +479,7 @@ export class DynamicLocaleId extends String {
 
     // Admin product components
     ProductListComponent,
+    ProductListV1Component,
     ProductFormComponent,
     ProductCategoryListComponent,
     ProductCategoryFormComponent,

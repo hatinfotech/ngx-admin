@@ -6,7 +6,7 @@ import { ProductModel, ProductCategoryModel, ProductUnitConversoinModel, Product
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -23,26 +23,16 @@ import { ImagesViewerComponent } from '../../../../lib/custom-element/my-compone
 // import { _ } from '@ag-grid-community/all-modules';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-containers-form/assign-containers-form.component';
+import { defaultMaxListeners } from 'stream';
 import { ImportProductDialogComponent } from '../import-products-dialog/import-products-dialog.component';
-import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
-import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
-import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
-import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
-import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
-import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
-import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
-import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
-import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
-import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
-import { AppModule } from '../../../../app.module';
-import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { Ng2SmartTableComponent } from 'ng2-smart-table';
 
 @Component({
-  selector: 'ngx-product-list',
+  selector: 'ngx-product-list-v1',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss'],
 })
-export class ProductListComponent extends AgGridDataManagerListComponent<ProductModel, ProductFormComponent> implements OnInit {
+export class ProductListV1Component extends ServerDataManagerListComponent<ProductModel> implements OnInit, AfterViewInit, OnDestroy {
 
   componentName: string = 'ProductListComponent';
   formPath = '/admin-product/product/form';
@@ -51,7 +41,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   formDialog = ProductFormComponent;
 
   @Input() reuseDialog = true;
-  static _dialog: NbDialogRef<ProductListComponent>;
+  static _dialog: NbDialogRef<ProductListV1Component>;
 
   // Smart table
   static filterConfig: any;
@@ -63,11 +53,6 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   groupList: ProductGroupModel[] = [];
   unitList: ProductUnitModel[] = [];
   containerList: WarehouseGoodsContainerModel[] = [];
-  // @Input() rowMultiSelectWithClick = true;
-  @Input() suppressRowClickSelection = false;
-
-  @Input() width = '100%';
-  @Input() height = '100%';
 
   shelfList: IdTextModel[];
   // @ViewChild('smartTable', { static: false }) smartTable: Ng2SmartTableComponent;
@@ -83,15 +68,14 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<ProductListComponent>,
+    public ref: NbDialogRef<ProductListV1Component>,
     public adminProductService: AdminProductService,
-    public themeService: NbThemeService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(apiService, router, cms, dialogService, toastService, ref);
   }
 
   ngOnDestroy(): void {
-    super.ngOnDestroy();
+      super.ngOnDestroy();
   }
 
   /** Config for paging */
@@ -122,7 +106,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   async init() {
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     await this.loadCache();
-    return super.init().then(async rs => {
+    return super.init().then(rs => {
 
       // Load unit list
       this.adminProductService.unitList$.pipe(takeUntil(this.destroy$)).subscribe(unitList => {
@@ -256,236 +240,6 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
       //     return false;
       //   },
       // });
-
-
-
-      const processingMap = AppModule.processMaps['commercePos'];
-      await this.cms.waitForLanguageLoaded();
-      this.columnDefs = this.configSetting([
-        {
-          ...agMakeSelectionColDef(this.cms),
-          headerName: 'ID',
-          field: 'Id',
-          width: 100,
-          valueGetter: 'node.data.Id',
-          // sortingOrder: ['desc', 'asc'],
-          initialSort: 'desc',
-          headerCheckboxSelection: true,
-        },
-        {
-          ...agMakeImageColDef(this.cms),
-          headerName: 'Hình',
-          pinned: 'left',
-          field: 'FeaturePicture',
-          width: 100,
-        },
-        {
-          headerName: 'Mã',
-          field: 'Code',
-          width: 140,
-          filter: 'agTextColumnFilter',
-          pinned: 'left',
-        },
-        {
-          headerName: 'Sku',
-          field: 'Sku',
-          pinned: 'left',
-          width: 120,
-          filter: 'agTextColumnFilter',
-        },
-        {
-          headerName: 'Tên',
-          field: 'Name',
-          pinned: 'left',
-          width: 400,
-          filter: 'agTextColumnFilter',
-          cellRenderer: AgTextCellRenderer,
-        },
-        {
-          headerName: 'ĐVT',
-          field: 'Units',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/admin-product/units', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
-                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Danh mục',
-          field: 'Categories',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/admin-product/categories', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
-                placeholder: 'Chọn danh mục...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Nhóm',
-          field: 'Groups',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/admin-product/groups', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
-                placeholder: 'Chọn nhóm...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Người tạo',
-          field: 'Creator',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Ngày tạo',
-          field: 'Created',
-          width: 180,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-        },
-        {
-          headerName: 'Người cập nhật',
-          field: 'LastUpdateBy',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn người cập nhật...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Ngày cập nhật',
-          field: 'LastUpdate',
-          width: 180,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-        },
-        // {
-        //   headerName: 'Ngày bán hàng',
-        //   field: 'DateOfSale',
-        //   width: 180,
-        //   filter: 'agDateColumnFilter',
-        //   filterParams: {
-        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-        //   },
-        //   cellRenderer: AgDateCellRenderer,
-        // },
-        // {
-        //   ...agMakeTagsColDef(this.cms, (tag) => {
-        //     this.cms.previewVoucher(tag.type, tag.id);
-        //   }),
-        //   headerName: 'Chứng từ liên quan',
-        //   field: 'RelativeVouchers',
-        //   width: 300,
-        // },
-        // {
-        //   headerName: 'Ngày tạo',
-        //   field: 'Created',
-        //   width: 180,
-        //   filter: 'agDateColumnFilter',
-        //   filterParams: {
-        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-        //   },
-        //   cellRenderer: AgDateCellRenderer,
-        // },
-        // {
-        //   headerName: 'Tiêu đề',
-        //   field: 'Title',
-        //   width: 300,
-        //   filter: 'agTextColumnFilter',
-        //   autoHeight: true,
-        // },
-        // {
-        //   ...agMakeCurrencyColDef(this.cms),
-        //   headerName: 'Số tiền',
-        //   field: 'Amount',
-        //   pinned: 'right',
-        //   width: 150,
-        // },
-        // {
-        //   ...agMakeStateColDef(this.cms, processingMap, (data) => {
-        //     this.preview([data]);
-        //   }),
-        //   headerName: 'Trạng thái',
-        //   field: 'State',
-        //   width: 155,
-        // },
-        {
-          ...agMakeCommandColDef(this.cms, (data) => {
-            this.openForm([data.Code]);
-          }, (data) => {
-            this.deleteConfirm([data.Code]);
-          }),
-          headerName: 'Sửa/Xóa',
-        },
-      ] as ColDef[]);
-
       return rs;
     });
   }
@@ -967,63 +721,52 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     super.ngOnInit();
   }
 
-  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
-    params['includeCategories'] = true;
-    params['includeGroups'] = true;
-    params['includeWarehouseUnit'] = true;
-    params['includeUnits'] = true;
-    params['includeCreator'] = true;
-    params['includeLastUpdateBy'] = true;
-    // params['sort_Id'] = 'desc';
-    return params;
+  initDataSource() {
+    const source = super.initDataSource();
+
+    // Set DataSource: prepareData
+    source.prepareData = (data: ProductModel[]) => {
+      data.map((product: ProductModel) => {
+        if (product.WarehouseUnit && product.WarehouseUnit.Name) {
+          product.WarehouseUnit.text = product.WarehouseUnit.Name;
+        }
+
+        if (product.Units && product.Units.length > 0) {
+          product.Containers = product.Units.filter(f => !!f['Container']).map(m => m['Container']);
+          for (const unitConversion of product.Units) {
+            if (unitConversion.IsManageByAccessNumber) {
+              unitConversion['status'] = 'danger';
+              unitConversion['tip'] = unitConversion['text'] + ' (QL theo số truy xuất)';
+            }
+          }
+        }
+
+        // if (product.Container || product.Container.length > 0) {
+        //   // product.Container = [product.Container];
+        // } else {
+        //   product.Container = { type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' };
+        // }
+
+        return product;
+      });
+      return data;
+    };
+
+    // Set DataSource: prepareParams
+    source.prepareParams = (params: any) => {
+      params['includeCategories'] = true;
+      params['includeGroups'] = true;
+      params['includeWarehouseUnit'] = true;
+      params['includeUnits'] = true;
+      params['includeCreator'] = true;
+      params['includeLastUpdateBy'] = true;
+
+      params['sort_Id'] = 'desc';
+      return params;
+    };
+
+    return source;
   }
-
-  // initDataSource() {
-  //   const source = super.initDataSource();
-
-  //   // Set DataSource: prepareData
-  //   source.prepareData = (data: ProductModel[]) => {
-  //     data.map((product: ProductModel) => {
-  //       if (product.WarehouseUnit && product.WarehouseUnit.Name) {
-  //         product.WarehouseUnit.text = product.WarehouseUnit.Name;
-  //       }
-
-  //       if (product.Units && product.Units.length > 0) {
-  //         product.Containers = product.Units.filter(f => !!f['Container']).map(m => m['Container']);
-  //         for (const unitConversion of product.Units) {
-  //           if (unitConversion.IsManageByAccessNumber) {
-  //             unitConversion['status'] = 'danger';
-  //             unitConversion['tip'] = unitConversion['text'] + ' (QL theo số truy xuất)';
-  //           }
-  //         }
-  //       }
-
-  //       // if (product.Container || product.Container.length > 0) {
-  //       //   // product.Container = [product.Container];
-  //       // } else {
-  //       //   product.Container = { type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' };
-  //       // }
-
-  //       return product;
-  //     });
-  //     return data;
-  //   };
-
-  //   // Set DataSource: prepareParams
-  //   source.prepareParams = (params: any) => {
-  //     params['includeCategories'] = true;
-  //     params['includeGroups'] = true;
-  //     params['includeWarehouseUnit'] = true;
-  //     params['includeUnits'] = true;
-  //     params['includeCreator'] = true;
-  //     params['includeLastUpdateBy'] = true;
-
-  //     params['sort_Id'] = 'desc';
-  //     return params;
-  //   };
-
-  //   return source;
-  // }
 
   /** Api get funciton */
   executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: ProductModel[] | HttpErrorResponse) => void) {
@@ -1191,7 +934,4 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   }
   /** End ngx-uploader */
 
-  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void): void {
-    throw new Error('Method not implemented.');
-  }
 }

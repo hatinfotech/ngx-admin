@@ -1,6 +1,6 @@
 import { MasterPriceTablePrintComponent } from './../../master-price-table/master-price-table-print/master-price-table-print.component';
 import { Component, OnInit } from '@angular/core';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -27,7 +27,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
   templateUrl: './sales-product-list.component.html',
   styleUrls: ['./sales-product-list.component.scss'],
 })
-export class SalesProductListComponent extends ProductListComponent implements OnInit {
+export class SalesProductListComponent extends ProductListV1Component implements OnInit {
 
   componentName: string = 'SalesProductListComponent';
   // formPath = '/warehouse/goods/form';

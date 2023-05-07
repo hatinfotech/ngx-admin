@@ -3,7 +3,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { UserGroupFormComponent } from '../user-group-form/user-group-form.component';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -24,7 +24,7 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
   formDialog = UserGroupFormComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<ProductListComponent>;
+  static _dialog: NbDialogRef<ProductListV1Component>;
 
   // Smart table
   static filterConfig: any;

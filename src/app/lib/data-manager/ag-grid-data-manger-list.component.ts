@@ -175,6 +175,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() pagination = false;
   @Input() paginationPageSize = 40;
   @Input() cacheBlockSize = this.paginationPageSize;
+  @Input() paginationAutoPageSize = false;
   @Input() cacheOverflowSize = 10;
   @Input() maxConcurrentDatasourceRequests = 1;
   @Input() infiniteInitialRowCount = null;
@@ -584,6 +585,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         this.lastResponseHeader = res.headers;
         this.infiniteInitialRowCount = +res.headers.get('x-total-count');
         this.gridApi.setRowCount(this.infiniteInitialRowCount);
+        // this.gridApi.setpage
         console.log('set this.infiniteInitialRowCount: ' + this.infiniteInitialRowCount);
         let data = res.body;
         return data;

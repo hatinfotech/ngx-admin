@@ -18,7 +18,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
 import { CollaboratorProductFormComponent } from '../collaborator-product-form/collaborator-product-form.component';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe } from '@angular/common';
 
@@ -103,7 +103,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         size: 'medium',
         title: this.cms.translateText('Common.subscribe'),
         click: () => {
-          this.cms.openDialog(ProductListComponent, {
+          this.cms.openDialog(ProductListV1Component, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: async (chooseItems: ProductModel[]) => {

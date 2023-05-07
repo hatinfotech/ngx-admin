@@ -16,7 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -521,7 +521,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.cms.openDialog(ProductListComponent, {
+    this.cms.openDialog(ProductListV1Component, {
       context: {
         inputMode: 'dialog',
         // inputId: ids,

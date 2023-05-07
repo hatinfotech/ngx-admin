@@ -232,6 +232,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                       {
                         headerName: 'ID',
                         field: 'Product',
+                        initialSort: 'desc',
                         width: 100,
                         filter: 'agTextColumnFilter',
                         cellRenderer: 'textRender',

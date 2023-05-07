@@ -12,6 +12,7 @@ export const agMakeCommandColDef = (
         field: 'Command',
         width: 110,
         filter: false,
+        sortable: false,
         pinned: 'right',
         type: 'rightAligned',
         cellClass: ['ag-cell-items-center', 'ag-cell-justify-center', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],

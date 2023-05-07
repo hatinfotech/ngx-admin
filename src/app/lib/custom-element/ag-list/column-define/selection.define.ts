@@ -7,7 +7,7 @@ export const agMakeSelectionColDef = (
   return {
     headerName: '#',
     field: 'Id',
-    width: 80,
+    width: 100,
     valueGetter: 'node.data.Id',
     cellRenderer: 'loadingCellRenderer',
     sortable: true,

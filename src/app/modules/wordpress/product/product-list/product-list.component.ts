@@ -1,5 +1,5 @@
 import { WpSiteModel } from './../../../../models/wordpress.model';
-import { ProductListComponent } from './../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -17,6 +17,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { WordpressService } from '../../wordpress.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 
 @Component({
   selector: 'ngx-product-list',
@@ -100,7 +101,14 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
             context: {
               // showLoadinng: true,
               inputMode: 'dialog',
-              pagingConfig: { display: true, perPage: 100 },
+              width: '90%',
+              height: '95vh',
+              maxBlocksInCache: 100,
+              // paginationAutoPageSize: true,
+              pagination: true,
+              // pagingConfig: { display: true, perPage: 100 },
+              paginationPageSize: 300,
+              cacheBlockSize: 300,
               reuseDialog: true,
               onDialogClose: () => {
                 // if (onDialogClose) onDialogClose();
@@ -752,7 +760,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
       if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'ALL' && this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'NONE') {
         params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
       }
-      params['sort_Id'] = 'desc';
+      params['sort_Product'] = 'desc';
       return params;
     };
 

@@ -3,7 +3,7 @@ import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialo
 import { SmartTableTagComponent } from './../../../../lib/custom-element/smart-table/smart-table.component';
 import { WarehouseGoodsFindOrderTempPrintComponent } from './../warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 import { Component, OnInit } from '@angular/core';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -34,7 +34,7 @@ import { DecimalPipe } from '@angular/common';
   styleUrls: ['./warehouse-goods-list.component.scss'],
   providers: [DecimalPipe]
 })
-export class WarehouseGoodsListComponent extends ProductListComponent implements OnInit {
+export class WarehouseGoodsListComponent extends ProductListV1Component implements OnInit {
 
   componentName: string = 'WarehouseGoodsListComponent';
   formPath = '/warehouse/goods/form';

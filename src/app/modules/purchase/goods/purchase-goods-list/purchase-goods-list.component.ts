@@ -1,7 +1,7 @@
 import { DynamicListDialogComponent } from './../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
-import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
@@ -24,7 +24,7 @@ import { CurrencyPipe } from '@angular/common';
   styleUrls: ['./purchase-goods-list.component.scss'],
   providers: [CurrencyPipe]
 })
-export class PurchaseGoodsListComponent extends ProductListComponent implements OnInit {
+export class PurchaseGoodsListComponent extends ProductListV1Component implements OnInit {
 
   componentName: string = 'PurchaseGoodsListComponent';
   formPath = '/purchase/goods/form';
