@@ -201,7 +201,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                         ]).then(rs => {
                           this.refresh().then(rs => {
                             setTimeout(() => {
-                              this.activeTask(this.cms.getObjectId(this.syncTasks[this.syncTasks.length - 1]));
+                              this.activeTask(this.cms.getObjectId(this.syncTasks[0]));
                               this.loading = false;
                             }, 500);
                           });
@@ -406,7 +406,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                 ]).then(rs => {
                   this.refresh().then(rs => {
                     setTimeout(() => {
-                      this.activeTask(this.cms.getObjectId(this.syncTasks[this.syncTasks.length - 1]));
+                      this.activeTask(this.cms.getObjectId(this.syncTasks[0]));
                       this.loading = false;
                     }, 500);
                   });
@@ -1090,7 +1090,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   }
   syncTasks = [];
   async loadSyncTasks(profile: string) {
-    this.syncTasks = await this.apiService.getPromise<any[]>('/wordpress/sync-tasks', { eq_Profile: profile, sort_Id: 'asc', limit: 'nolimit', includeIdText: true }).then(rs => rs.map(m => {
+    this.syncTasks = await this.apiService.getPromise<any[]>('/wordpress/sync-tasks', { eq_Profile: profile, sort_Id: 'desc', limit: 'nolimit', includeIdText: true }).then(rs => rs.map(m => {
       if (m.StartTime && m.EndTime) {
         m.Duration = (new Date(m.EndTime).getTime() - new Date(m.StartTime).getTime()) / 1000;
         m.Duration = this.cms.toTimeString(m.Duration);
@@ -1098,7 +1098,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       return m;
     }));
     if (this.syncTasks && this.syncTasks.length > 0 && !this.activeTaskId) {
-      this.activeTask(this.cms.getObjectId(this.syncTasks[this.syncTasks.length - 1]));
+      this.activeTask(this.cms.getObjectId(this.syncTasks[0]));
     }
     // this.loadList();
   }
@@ -1166,6 +1166,15 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   async changeState(task: any, state: string) {
     return this.apiService.putPromise('/wordpress/sync-tasks/' + this.cms.getObjectId(task), { changeState: 'REQUESTSTOP' }, [
       { Code: this.cms.getObjectId(task) },
+    ]).then(rs => {
+      this.loadSyncTasks(this.inputId[0]);
+      return true;
+    });
+  }
+
+  async changeIsOverwritePictures(task: any, state: boolean) {
+    return this.apiService.putPromise('/wordpress/sync-tasks/' + this.cms.getObjectId(task), {}, [
+      { Code: this.cms.getObjectId(task), IsOverwritePictures: state},
     ]).then(rs => {
       this.loadSyncTasks(this.inputId[0]);
       return true;
