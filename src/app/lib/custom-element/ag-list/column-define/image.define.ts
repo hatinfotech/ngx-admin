@@ -7,7 +7,8 @@ import { ImagesViewerComponent } from "../../my-components/images-viewer/images-
 
 export const agMakeImageColDef = (
   cms: CommonService,
-  click?: (iamge: any, rowData: any) => void,
+  click?: (image: any, rowData: any) => void,
+  getImageList?: (rowData: any) => string[]
 ): ColDef => {
 
   return {
@@ -24,7 +25,8 @@ export const agMakeImageColDef = (
         click && click(image, data);
         cms.openDialog(ImagesViewerComponent, {
           context: {
-            images: (data.Pictures || []).map(m => m['LargeImage']),
+            // images: (data.Pictures || []).map(m => m['LargeImage']),
+            images: getImageList && getImageList(data) || [image.LargeImage || image],
             imageIndex: 0,
           },
           closeOnEsc: true,

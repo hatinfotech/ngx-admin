@@ -41,7 +41,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   favicon: Icon = { pack: 'eva', name: 'browser', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  actionButtonList: ActionControl[];
+  actionButtonList: ActionControl[] = [];
   printDialog: Type<DataManagerPrintComponent<M>>;
 
   /** Form unique id = current time as milisecond */
@@ -114,97 +114,100 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** Form init */
   async init(): Promise<boolean> {
-    await this.cms.waitForReady();
-    this.actionButtonList = [
-      {
-        name: 'reload',
-        status: 'success',
-        label: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
-        icon: 'refresh',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.isProcessing,
-        hidden: () => false,
-        click: () => {
-          this.onFormReload();
+    return super.init().then(async state => {
+      // await this.cms.waitForReady();
+      this.actionButtonList = [
+        {
+          name: 'reload',
+          status: 'success',
+          label: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
+          icon: 'refresh',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.reload'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.isProcessing,
+          hidden: () => false,
+          click: () => {
+            this.onFormReload();
+          },
         },
-      },
-      {
-        name: 'remove',
-        status: 'warning',
-        label: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
-        icon: 'minus-circle',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
-        size: 'medium',
-        hidden: () => this.array.controls.length < 2,
-        disabled: () => this.isProcessing,
-        click: (event, option: ActionControlListOption) => {
-          this.removeFormGroup(option.formIndex);
-          return false;
+        {
+          name: 'remove',
+          status: 'warning',
+          label: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
+          icon: 'minus-circle',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.remove'), 'head-title'),
+          size: 'medium',
+          hidden: () => this.array.controls.length < 2,
+          disabled: () => this.isProcessing,
+          click: (event, option: ActionControlListOption) => {
+            this.removeFormGroup(option.formIndex);
+            return false;
+          },
         },
-      },
-      {
-        name: 'close',
-        status: 'danger',
-        label: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
-        icon: 'close',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.isProcessing,
-        click: () => {
-          this.goback();
+        {
+          name: 'close',
+          status: 'danger',
+          label: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
+          icon: 'close',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.isProcessing,
+          click: () => {
+            this.goback();
+          },
         },
-      },
-    ];
+      ];
 
 
-    await this.loadCache();
-    if (this.inputMode) {
-      this.mode = this.inputMode;
-    }
-    this.activeRoute.queryParams.subscribe(queryParams => {
-      this.queryParam = queryParams;
-    });
-    await new Promise<boolean>(resolve => {
-      this.getRequestId(id => {
-        if (id && id.length > 0) {
-          this.id = id;
-          this.formLoad(this.data).then(async () => {
-            // wait for dom loaded
-            while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
-            resolve(true);
-          });
-        } else if (this.data) {
-          this.formLoad(this.data).then(async () => {
-            // wait for dom loaded
-            while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
-            resolve(true);
-          });
-        } else {
-          this.array.clear();
-          this.addFormGroup();
-          this.onProcessed();
-          resolve(true);
-        }
-      });
-    });
-    this.onAfterInit && this.onAfterInit(this);
-    if (this.isDuplicate) {
-      // Clear id
-      this.id = [];
-
-      const keyList = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
-      for (const formItem of this.array.controls) {
-        for (const key of keyList) {
-          formItem.get(key).setValue('');
-
-        }
-        // Clear relative vouchers
-        const relativeVouchersFormControl = formItem.get('RelativeVouchers');
-        relativeVouchersFormControl && relativeVouchersFormControl.setValue([]);
+      await this.loadCache();
+      if (this.inputMode) {
+        this.mode = this.inputMode;
       }
-    }
-    return true;
+      this.activeRoute.queryParams.subscribe(queryParams => {
+        this.queryParam = queryParams;
+      });
+      await new Promise<boolean>(resolve => {
+        this.getRequestId(id => {
+          if (id && id.length > 0) {
+            this.id = id;
+            this.formLoad(this.data).then(async () => {
+              // wait for dom loaded
+              while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
+              resolve(true);
+            });
+          } else if (this.data) {
+            this.formLoad(this.data).then(async () => {
+              // wait for dom loaded
+              while (this.array.controls.length === 0) await new Promise(resolve => setTimeout(() => resolve(null), 100));
+              resolve(true);
+            });
+          } else {
+            this.array.clear();
+            this.addFormGroup();
+            this.onProcessed();
+            resolve(true);
+          }
+        });
+      });
+      this.onAfterInit && this.onAfterInit(this);
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+
+        const keyList = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
+        for (const formItem of this.array.controls) {
+          for (const key of keyList) {
+            formItem.get(key).setValue('');
+
+          }
+          // Clear relative vouchers
+          const relativeVouchersFormControl = formItem.get('RelativeVouchers');
+          relativeVouchersFormControl && relativeVouchersFormControl.setValue([]);
+        }
+      }
+
+      return state;
+    });
   }
 
   patchFormGroupValue: (newForm: FormGroup, data: M) => boolean;
@@ -244,7 +247,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
                 this.getFormData((data: M[]) => {
 
                   // Merge data
-                  for(const i in data) {
+                  for (const i in data) {
                     data[i] = {
                       ...data[i],
                       ...formData[i],

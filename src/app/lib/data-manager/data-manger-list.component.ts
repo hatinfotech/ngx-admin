@@ -94,7 +94,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  @Input() actionButtonList?: ActionControl[];
+  @Input() actionButtonList?: ActionControl[] = [];
 
   smartTable: Ng2SmartTableComponent;
   @ViewChild('smartTable') set content(content: Ng2SmartTableComponent) {
@@ -133,127 +133,129 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   // }
 
   async init(): Promise<boolean> {
+    return super.init().then(async state => {
 
-    // Wait for langluage service loaded
-    await this.cms.waitForReady();
-    this.actionButtonList = [
-      {
-        name: 'choose',
-        status: 'success',
-        label: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
-        icon: 'checkmark-square',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
-        click: () => {
-          this.choose();
-          return false;
+      // Wait for langluage service loaded
+      this.actionButtonList = [
+        {
+          name: 'choose',
+          status: 'success',
+          label: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
+          icon: 'checkmark-square',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.selectedIds.length === 0,
+          hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+          click: () => {
+            this.choose();
+            return false;
+          },
         },
-      },
-      {
-        name: 'add',
-        status: 'success',
-        label: 'Tạo',
-        icon: 'plus',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
-        size: 'medium',
-        disabled: () => {
-          return false;
+        {
+          name: 'add',
+          status: 'success',
+          label: 'Tạo',
+          icon: 'plus',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.createNew'), 'head-title'),
+          size: 'medium',
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            this.openForm();
+            return false;
+          },
         },
-        click: () => {
-          this.openForm();
-          return false;
+        {
+          name: 'delete',
+          status: 'danger',
+          label: 'Xoá',
+          icon: 'trash-2',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.delete'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.selectedIds.length === 0,
+          click: () => {
+            this.deleteConfirm(this.selectedIds.map(item => this.makeId(item)), () => this.loadList());
+          },
         },
-      },
-      {
-        name: 'delete',
-        status: 'danger',
-        label: 'Xoá',
-        icon: 'trash-2',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.delete'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        click: () => {
-          this.deleteConfirm(this.selectedIds.map(item => this.makeId(item)), () => this.loadList());
+        {
+          name: 'edit',
+          status: 'warning',
+          label: 'Chỉnh',
+          icon: 'edit-2',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.selectedIds.length === 0,
+          click: () => {
+            this.openForm(this.selectedIds);
+          },
         },
-      },
-      {
-        name: 'edit',
-        status: 'warning',
-        label: 'Chỉnh',
-        icon: 'edit-2',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        click: () => {
-          this.openForm(this.selectedIds);
+        {
+          name: 'preview',
+          status: 'primary',
+          label: 'Xem',
+          icon: 'external-link',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.preview'), 'head-title'),
+          size: 'medium',
+          disabled: () => this.selectedIds.length === 0,
+          click: () => {
+            this.getFormData(this.selectedIds).then(data => {
+              this.preview(data);
+            });
+            return false;
+          },
         },
-      },
-      {
-        name: 'preview',
-        status: 'primary',
-        label: 'Xem',
-        icon: 'external-link',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.preview'), 'head-title'),
-        size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
-        click: () => {
-          this.getFormData(this.selectedIds).then(data => {
-            this.preview(data);
-          });
-          return false;
-        },
-      },
-      // {
-      //   name: 'reset',
-      //   status: 'info',
-      //   // label: 'Reset',
-      //   icon: 'refresh',
-      //   title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
-      //   size: 'small',
-      //   disabled: () => {
-      //     return false;
-      //   },
-      //   click: () => {
-      //     this.reset();
-      //     return false;
-      //   },
-      // },
-      {
-        name: 'refresh',
-        status: 'success',
-        // label: 'Refresh',
-        icon: 'sync',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
-        size: 'medium',
-        disabled: () => {
-          return false;
-        },
-        click: () => {
-          this.refresh();
-          return false;
-        },
-      },
-      {
-        name: 'close',
-        status: 'danger',
-        // label: 'Refresh',
-        icon: 'close',
-        title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
-        size: 'medium',
-        disabled: () => false,
-        hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
-        click: () => {
-          this.close();
-          return false;
-        },
-      },
-    ];
-    await this.loadCache();
-    this.onAfterInit && this.onAfterInit(this);
-    this.settings = this.loadListSetting();
-    return true;
+        // {
+        //   name: 'reset',
+        //   status: 'info',
+        //   // label: 'Reset',
+        //   icon: 'refresh',
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
+        //   size: 'small',
+        //   disabled: () => {
+        //     return false;
+        //   },
+        //   click: () => {
+        //     this.reset();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   name: 'refresh',
+        //   status: 'success',
+        //   // label: 'Refresh',
+        //   icon: 'sync',
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
+        //   size: 'medium',
+        //   disabled: () => {
+        //     return false;
+        //   },
+        //   click: () => {
+        //     this.refresh();
+        //     return false;
+        //   },
+        // },
+        // {
+        //   name: 'close',
+        //   status: 'danger',
+        //   // label: 'Refresh',
+        //   icon: 'close',
+        //   title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
+        //   size: 'medium',
+        //   disabled: () => false,
+        //   hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+        //   click: () => {
+        //     this.close();
+        //     return false;
+        //   },
+        // },
+        ...this.actionButtonList,
+      ];
+      await this.loadCache();
+      this.onAfterInit && this.onAfterInit(this);
+      this.settings = this.loadListSetting();
+      return state;
+    });
   }
 
   /** List init event */

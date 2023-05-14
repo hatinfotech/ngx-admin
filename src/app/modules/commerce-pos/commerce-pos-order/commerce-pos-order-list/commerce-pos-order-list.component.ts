@@ -39,6 +39,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
 
   // AG-Grid config
   public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
 
 
   constructor(

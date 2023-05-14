@@ -1,4 +1,4 @@
-<nb-card class="small-header ag-grid-card" style="height: 100%;" [nbSpinner]="loading" [ngStyle]="{width: width, height: height}">
+<nb-card class="small-header ag-grid-card" style="height: 100%; margin: 0 !important;" [nbSpinner]="loading" [ngStyle]="{width: width, height: height}">
   <nb-card-header>
     <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : 'Danh sách') + ' - ' + (selectedIds.length ?  ('Đã chọn '+selectedIds.length + '/') : '') + infiniteInitialRowCount" [controls]="actionButtonList"></ngx-card-header>
   </nb-card-header>
@@ -11,6 +11,7 @@
     class="{{themeName}}" 
     [modules]="modules" 
     [columnDefs]="columnDefs" 
+    [gridOptions]="gridOptions"
     [debug]="true" [enableCellTextSelection]="enableCellTextSelection"
     [defaultColDef]="defaultColDef" 
     [rowSelection]="rowSelection" 

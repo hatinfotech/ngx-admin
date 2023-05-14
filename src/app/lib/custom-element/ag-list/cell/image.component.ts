@@ -6,7 +6,7 @@ import { ICellRendererParams } from "@ag-grid-community/core";
 @Component({
     selector: 'ag-image-cell-renderer',
     template: `
-      <div *ngIf="params.value?.Thumbnail" class="thumbnail" [ngStyle]="{backgroundImage: 'url('+params.value?.Thumbnail+')'}" (click)="params?.click(params.value, params.node.data)"></div>
+      <div *ngIf="params.value" class="thumbnail" [ngStyle]="{backgroundImage: 'url('+(params.value?.Thumbnail || params.value)+')'}" (click)="params?.click(params.value, params.node.data)"></div>
     `,
     styles: [
         `

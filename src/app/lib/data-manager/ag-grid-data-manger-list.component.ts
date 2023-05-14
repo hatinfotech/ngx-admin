@@ -15,9 +15,11 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, ModuleRegistry, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
+import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, IRowNode, ModuleRegistry, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
+import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
+import { CustomHeader } from '../custom-element/ag-list/header/custom.component';
 
 @Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -45,98 +47,98 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   lastResponseHeader: HttpHeaders = null;
   @Input() prepareApiParams(params: any, getRowParams: IGetRowsParams): any { };
 
-  @Input() actionButtonList: ActionControl[] = [
-    {
-      name: 'delete',
-      status: 'danger',
-      label: 'Xoá',
-      icon: 'trash-2',
-      title: 'Xoá',
-      size: 'medium',
-      disabled: () => {
-        return !this.hadRowsSelected;
-      },
-      click: () => {
-        this.deleteSelected();
-        return false;
-      },
-    },
-    {
-      name: 'edit',
-      status: 'warning',
-      label: 'Chỉnh',
-      icon: 'edit-2',
-      title: 'Chỉnh sửa',
-      size: 'medium',
-      disabled: () => {
-        return !this.hadRowsSelected;
-      },
-      click: () => {
-        this.editSelectedItem();
-        return false;
-      },
-    },
-    {
-      name: 'preview',
-      status: 'primary',
-      label: 'Xem',
-      icon: 'external-link',
-      title: 'Xem trước',
-      size: 'medium',
-      disabled: () => {
-        return !this.hadRowsSelected;
-      },
-      click: () => {
+  // @Input() actionButtonList: ActionControl[] = [
+  //   {
+  //     name: 'delete',
+  //     status: 'danger',
+  //     label: 'Xoá',
+  //     icon: 'trash-2',
+  //     title: 'Xoá',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return !this.hadRowsSelected;
+  //     },
+  //     click: () => {
+  //       this.deleteSelected();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'edit',
+  //     status: 'warning',
+  //     label: 'Chỉnh',
+  //     icon: 'edit-2',
+  //     title: 'Chỉnh sửa',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return !this.hadRowsSelected;
+  //     },
+  //     click: () => {
+  //       this.editSelectedItem();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'preview',
+  //     status: 'primary',
+  //     label: 'Xem',
+  //     icon: 'external-link',
+  //     title: 'Xem trước',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return !this.hadRowsSelected;
+  //     },
+  //     click: () => {
 
-        return false;
-      },
-    },
-    {
-      name: 'add',
-      status: 'success',
-      label: 'Tạo',
-      icon: 'file-add',
-      title: 'Tạo mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.createNewItem();
-        return false;
-      },
-    },
-    {
-      name: 'reset',
-      status: 'info',
-      label: 'Reset',
-      icon: 'refresh',
-      title: 'Đặt lại từ đầu',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.reset();
-        return false;
-      },
-    },
-    {
-      name: 'refresh',
-      status: 'success',
-      label: 'Refresh',
-      icon: 'sync',
-      title: 'Làm mới',
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-  ];
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'add',
+  //     status: 'success',
+  //     label: 'Tạo',
+  //     icon: 'file-add',
+  //     title: 'Tạo mới',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return false;
+  //     },
+  //     click: () => {
+  //       this.createNewItem();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'reset',
+  //     status: 'info',
+  //     label: 'Reset',
+  //     icon: 'refresh',
+  //     title: 'Đặt lại từ đầu',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return false;
+  //     },
+  //     click: () => {
+  //       this.reset();
+  //       return false;
+  //     },
+  //   },
+  //   {
+  //     name: 'refresh',
+  //     status: 'success',
+  //     label: 'Refresh',
+  //     icon: 'sync',
+  //     title: 'Làm mới',
+  //     size: 'medium',
+  //     disabled: () => {
+  //       return false;
+  //     },
+  //     click: () => {
+  //       this.refresh();
+  //       return false;
+  //     },
+  //   },
+  // ];
 
   @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
 
@@ -146,6 +148,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   public modules: Module[] = [
     // ModuleRegistry,
     InfiniteRowModelModule,
+    ClientSideRowModelModule,
   ];
 
   public gridParams;
@@ -169,8 +172,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     //   'align-items': 'center',
     // },
   };
+
+  @Input() gridOptions: GridOptions = {
+    // angularCompileHeaders: true,
+  };
   @Input() rowSelection: 'single' | 'multiple' = 'multiple';
-  @Input() rowMultiSelectWithClick = false;
   @Input() rowModelType = 'infinite';
   @Input() pagination = false;
   @Input() paginationPageSize = 40;
@@ -180,22 +186,25 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() maxConcurrentDatasourceRequests = 1;
   @Input() infiniteInitialRowCount = null;
   @Input() maxBlocksInCache = 3;
-  @Input() suppressRowClickSelection = true;
+  @Input() rowMultiSelectWithClick = false;
+  @Input() suppressRowClickSelection = false;
   @Input() enableCellTextSelection = true;
   @Input() ensureDomOrder = true;
   @Input() getRowNodeId = (item: { id: string }) => {
     return item.id;
   }
-  public components = {
-    loadingCellRenderer: (params) => {
-      if (params.value) {
-        // return params.value;
-        return params.rowIndex + 1;
-      } else {
-        return '<span class="ag-loading"></span>';
-      }
-    },
-  };
+  @Input() components;
+  //  = {
+  //   loadingCellRenderer: (params) => {
+  //     if (params.value) {
+  //       // return params.value;
+  //       return params.rowIndex + 1;
+  //     } else {
+  //       return '<span class="ag-loading"></span>';
+  //     }
+  //   },
+  //   agColumnHeader: CustomHeader,
+  // };
   @Input() multiSortKey = 'ctrl';
   @Input() rowDragManaged = false;
   @Input() rowHeight: number;
@@ -228,6 +237,18 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     this.themeService.onThemeChange().pipe(takeUntil(this.destroy$)).subscribe(theme => {
       this.themeName = this.themeMap[theme.name];
     });
+
+    this.components = {
+      loadingCellRenderer: (params) => {
+        if (params.value) {
+          // return params.value;
+          return params.rowIndex + 1;
+        } else {
+          return '<span class="ag-loading"></span>';
+        }
+      },
+      ...this.components,
+    }
   }
 
   filterTypeMap = {
@@ -295,6 +316,10 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     return query;
   }
 
+  async init(): Promise<boolean> {
+    return super.init();
+  }
+
   /** List init event */
   ngOnInit() {
     super.ngOnInit();
@@ -320,40 +345,42 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   initDataSource() {
-    this.dataSource = {
-      rowCount: null,
-      getRows: (getRowParams: IGetRowsParams) => {
-        console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
+    if (this.rowModelType === 'infinite') {
+      this.dataSource = {
+        rowCount: null,
+        getRows: (getRowParams: IGetRowsParams) => {
+          console.info('asking for ' + getRowParams.startRow + ' to ' + getRowParams.endRow);
 
-        let query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
-        getRowParams.sortModel.forEach(sortItem => {
-          query['sort_' + sortItem['colId']] = sortItem['sort'];
-        });
-        const filterQuery = this.parseFilterToApiParams(getRowParams.filterModel);
-        query = {
-          ...query,
-          ...filterQuery
-        };
-        if (this.prepareApiParams) {
-          query = this.prepareApiParams(query, getRowParams);
-        }
+          let query = { limit: this.cacheBlockSize, offset: getRowParams.startRow };
+          getRowParams.sortModel.forEach(sortItem => {
+            query['sort_' + sortItem['colId']] = sortItem['sort'];
+          });
+          const filterQuery = this.parseFilterToApiParams(getRowParams.filterModel);
+          query = {
+            ...query,
+            ...filterQuery
+          };
+          if (this.prepareApiParams) {
+            query = this.prepareApiParams(query, getRowParams);
+          }
 
-        this.executeGet(query, list => {
-          list.forEach((item, index) => {
-            // item['No'] = (getRowParams.startRow + index + 1);
-            item['id'] = this.makeId(item);
+          this.executeGet(query, list => {
+            list.forEach((item, index) => {
+              // item['No'] = (getRowParams.startRow + index + 1);
+              item['id'] = this.makeId(item);
+            });
+
+            let lastRow = -1;
+            if (list.length < this.paginationPageSize) {
+              lastRow = getRowParams.startRow + list.length;
+            }
+            getRowParams.successCallback(list, lastRow);
+            this.gridApi.resetRowHeights();
           });
 
-          let lastRow = -1;
-          if (list.length < this.paginationPageSize) {
-            lastRow = getRowParams.startRow + list.length;
-          }
-          getRowParams.successCallback(list, lastRow);
-          this.gridApi.resetRowHeights();
-        });
-
-      },
-    };
+        },
+      };
+    }
   }
 
   onGridReady(params) {
@@ -385,7 +412,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     // }
 
     if (this.gridApi) {
-      this.gridApi.setDatasource(this.dataSource);
+      if (this.rowModelType === 'infinite') {
+        this.gridApi.setDatasource(this.dataSource);
+      }
     }
     // this.gridApi.setFilterModel({});
 
@@ -560,7 +589,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
               //   if (callback) callback();
               // });
               this.loading = true;
-              let toastRef = this.cms.showToast('Đang xóa các dùng được chọn...', 'Đang xóa dữ liệu', { status: 'warning', duration: 99999 });
+              let toastRef = this.cms.showToast('Đang xóa các dòng được chọn...', 'Đang xóa dữ liệu', { status: 'warning', duration: 99999 });
               this.executeDelete(ids, callback).then(statu => {
                 this.loading = false;
                 toastRef.close();
@@ -575,6 +604,17 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         ],
       },
     });
+  }
+
+
+  /** Api delete funciton */
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    if (this.rowModelType === 'infinite') {
+      await super.executeDelete(ids, success, error, complete);
+    } else if (this.rowModelType === 'clientSide') {
+      const selectedNodes = this.gridApi.getSelectedNodes();
+      this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
+    }
   }
 
   /** Api get funciton */

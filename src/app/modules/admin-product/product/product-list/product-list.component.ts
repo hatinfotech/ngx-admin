@@ -64,7 +64,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   unitList: ProductUnitModel[] = [];
   containerList: WarehouseGoodsContainerModel[] = [];
   // @Input() rowMultiSelectWithClick = true;
-  @Input() suppressRowClickSelection = false;
+  // @Input() suppressRowClickSelection = false;
 
   @Input() width = '100%';
   @Input() height = '100%';
@@ -273,7 +273,9 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
           headerCheckboxSelection: true,
         },
         {
-          ...agMakeImageColDef(this.cms),
+          ...agMakeImageColDef(this.cms, null, (rowData) => {
+            return rowData.Pictures?.map(m => m['LargeImage']);
+          }),
           headerName: 'Hình',
           pinned: 'left',
           field: 'FeaturePicture',

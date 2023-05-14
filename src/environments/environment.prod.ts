@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.17.1',
+  version: '6.5.18.4',
+  // 6.5.18:   fix import product using new ag-grid
   // 6.5.17.1:   Upgrade product list using ag-grid 
   // 6.5.16:   hotfix: ProBox One auto deploy feature
   // 6.5.15:   purchase order: auto choose business

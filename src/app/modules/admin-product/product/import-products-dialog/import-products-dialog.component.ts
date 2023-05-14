@@ -9,7 +9,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 // import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellDoubleClickedEvent, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
-import { AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { BaseComponent } from '../../../../lib/base-component';
 import * as XLSX from 'xlsx';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -18,6 +18,11 @@ import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRo
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
+import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 // import { AgGridColumn } from '@ag-grid-community/angular';
 var CryptoJS = require("crypto-js");
 
@@ -34,6 +39,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   @Input() inputProducts: ProductModel[];
   @Input() onDialogSave: (newData: ProductModel[]) => void;
   @Input() onDialogClose: () => void;
+
+  @ViewChild('agProductList') agProductList: AgDynamicListComponent<any>;
 
   constructor(
     public cms: CommonService,
@@ -99,6 +106,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   }
 
   /** AG-Grid */
+  productActionButtonList: ActionControl[] = [];
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
   public modules: Module[] = [];
@@ -185,7 +193,8 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
   };
   public getRowNodeId = (item: ProductModel) => {
-    return this.cms.getObjectId(item.Code) + '-' + this.cms.getObjectId(item.Unit);
+    // return this.cms.getObjectId(item.Sku) + '-' + this.cms.getObjectId(item.WarehouseUnit);
+    return item.No;
   }
   public getRowStyle = (params: { node: RowNode }) => {
     // if (params.node.rowIndex == this.activeDetailIndex) {
@@ -219,54 +228,55 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
 
 
   public components = {
-    loadingCellRenderer: (params) => {
-      if (params.value) {
-        return params.value;
-      } else {
-        return '<img src="assets/images/loading.gif">';
-      }
-    },
-    textRender: (params) => {
+    // loadingCellRenderer: (params) => {
+    //   if (params.value) {
+    //     return params.value;
+    //   } else {
+    //     return '<img src="assets/images/loading.gif">';
+    //   }
+    // },
+    // textRender: (params) => {
 
-      if (params.colDef.field == 'duplicate') {
-        return params.value && 'Trùng ?' || '';
-      }
-      if (Array.isArray(params.value)) {
-        return params.value.map(m => this.cms.getObjectText(m)).join(', ');
-      }
-      return this.cms.getObjectText(params.value);
-      // }
-    },
-    idRender: (params) => {
-      if (Array.isArray(params.value)) {
-        return params.value.map(m => this.cms.getObjectId(m)).join(', ');
-      } else {
-        return this.cms.getObjectId(params.value);
-      }
-    },
-    numberRender: (params) => {
-      return params.value;
-    },
-    imageRender: (params) => {
-      let image = params.value;
-      if (Array.isArray(params.value)) {
-        image = params.value[0];
-      }
-      if (typeof image == 'string') {
-        return '<img style="height: 45px" src="' + image + '">';
-      }
-      return image && image?.Thumbnail ? ('<img style="height: 45px" src="' + image?.Thumbnail + '">') : '';
-    },
+    //   if (params.colDef.field == 'duplicate') {
+    //     return params.value && 'Trùng ?' || '';
+    //   }
+    //   if (Array.isArray(params.value)) {
+    //     return params.value.map(m => this.cms.getObjectText(m)).join(', ');
+    //   }
+    //   return this.cms.getObjectText(params.value);
+    //   // }
+    // },
+    // idRender: (params) => {
+    //   if (Array.isArray(params.value)) {
+    //     return params.value.map(m => this.cms.getObjectId(m)).join(', ');
+    //   } else {
+    //     return this.cms.getObjectId(params.value);
+    //   }
+    // },
+    // numberRender: (params) => {
+    //   return params.value;
+    // },
+    // imageRender: (params) => {
+    //   let image = params.value;
+    //   if (Array.isArray(params.value)) {
+    //     image = params.value[0];
+    //   }
+    //   if (typeof image == 'string') {
+    //     return '<img style="height: 45px" src="' + image + '">';
+    //   }
+    //   return image && image?.Thumbnail ? ('<img style="height: 45px" src="' + image?.Thumbnail + '">') : '';
+    // },
 
-    btnCellRenderer: AgButtonCellRenderer,
-    ckbCellRenderer: AgCheckboxCellRenderer,
+    // btnCellRenderer: AgButtonCellRenderer,
+    // ckbCellRenderer: AgCheckboxCellRenderer,
     agColumnHeader: CustomHeader,
   };
   onGridReady(params) {
     this.gridParams = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-
+    // this.updateGridColumn();
+    this.productActionButtonList = [];
     this.loadList();
 
   }
@@ -332,38 +342,41 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   updateGridColumn() {
     this.columnDefs = [
       {
+        ...agMakeSelectionColDef(this.cms),
         headerName: '#',
-        width: 52,
+        field: 'No',
+        width: 100,
         valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: false,
-        pinned: 'left',
+        headerCheckboxSelection: true,
       },
       {
+        ...agMakeImageColDef(this.cms, null, (rowData) => {
+          return rowData.Pictures?.map(m => m['LargeImage']);
+        }),
         headerName: 'Hình',
+        // pinned: 'left',
         field: 'FeaturePicture',
+        // valueGetter: 'node.data.FeaturePicture.Thumbnail',
         width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
       },
-      {
-        headerName: 'DS Hình',
-        field: 'Pictures',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
-      },
+      // {
+      //   headerName: 'DS Hình',
+      //   field: 'Pictures',
+      //   width: 100,
+      //   filter: 'agTextColumnFilter',
+      //   // pinned: 'left',
+      //   autoHeight: true,
+      //   cellRenderer: 'imageRender',
+      // },
       {
         headerName: 'Import',
         field: 'IsImport',
         width: 90,
         filter: 'agTextColumnFilter',
         pinned: 'left',
-        cellRenderer: 'ckbCellRenderer',
+        // headerCheckboxSelection: true,
+        // agColumnHeader: CustomHeader,
+        cellRenderer: AgCheckboxCellRenderer,
         cellRendererParams: {
           changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
             // alert(`${field} was clicked`);
@@ -575,7 +588,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             width: 80,
             filter: 'agTextColumnFilter',
             pinned: 'right',
-            cellRenderer: 'ckbCellRenderer',
+            cellRenderer: AgCheckboxCellRenderer,
             cellRendererParams: {
               // changed: (checked: boolean, params: { node: RowNode, data: ProductModel, api: GridApi } & { [key: string]: any }) => {
               //   // alert(`${field} was clicked`);
@@ -631,6 +644,12 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             cellRenderer: 'textRender',
           },
         ],
+        {
+          ...agMakeCommandColDef(this.cms, null, (data) => {
+            // this.deleteConfirm([data.Code]);
+          }),
+          headerName: 'Xóa',
+        },
       ] as any[];
     }
   }
@@ -977,6 +996,9 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                     // }
                   }
                   mappedRow['Type'] = mappedRow['Type'] || 'PRODUCT';
+                  if (mappedRow['SalesPrice']) {
+                    mappedRow['SalesPrice'] = isNaN(mappedRow['SalesPrice']) ? null : mappedRow['SalesPrice'];
+                  }
                   if (mappedRow['Brand']) {
                     mappedRow['Brand'] = this.adminProductService.brandList$.value.find(f => this.cms.getObjectId(f) == mappedRow['Brand']);
                   }
@@ -1023,6 +1045,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   mappedRow.SameProducts = []
                   if ((mappedRow.Name || '').trim().length == 0 || !mappedRow.WarehouseUnit) {
                     mappedRow.IsImport = false;
+                    mappedRow.Status = 'Rỗng';
                   } else {
                     for (const oldProduct of currentProductList) {
                       // if (mappedRow.Sku) {
@@ -1348,5 +1371,14 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   close() {
     this.ref.close();
   }
+
+  /** Ag dynamic list */
+  syncTaskDetailsApiPath = '/wordpress/sync-task-details';
+  // syncTaskDetailsApiPath = '/commerce-pos/orders';
+  prepareSyncTaskDetailsParams = (params: any, getRowParams: IGetRowsParams) => {
+    params['includeIdText'] = true;
+    return params;
+  };
+  /** End Ag dynamic list */
 
 }

@@ -41,37 +41,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   @Input() title?: string;
   @Input() size?: string = 'medium';
-  @Input() actionButtonList?: ActionControl[] = [
-    {
-      name: 'refresh',
-      status: 'success',
-      // label: 'Refresh',
-      icon: 'sync',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
-      size: 'medium',
-      disabled: () => {
-        return false;
-      },
-      click: () => {
-        this.refresh();
-        return false;
-      },
-    },
-    {
-      name: 'close',
-      status: 'danger',
-      label: 'esc',
-      icon: 'close',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
-      size: 'medium',
-      disabled: () => false,
-      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
-      click: () => {
-        this.close();
-        return false;
-      },
-    },
-  ];
+  @Input() actionButtonList?: ActionControl[] = [];
 
   constructor(
     public cms: CommonService,
@@ -159,6 +129,38 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   async init(): Promise<boolean> {
+    await this.cms.waitForReady();
+    this.actionButtonList = [
+      {
+        name: 'refresh',
+        status: 'success',
+        // label: 'Refresh',
+        icon: 'sync',
+        title: this.cms.textTransform(this.cms.translate.instant('Common.refresh'), 'head-title'),
+        size: 'medium',
+        disabled: () => {
+          return false;
+        },
+        click: () => {
+          this.refresh();
+          return false;
+        },
+      },
+      {
+        name: 'close',
+        status: 'danger',
+        // label: 'Refresh',
+        icon: 'close',
+        title: this.cms.textTransform(this.cms.translate.instant('Common.close'), 'head-title'),
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+        click: () => {
+          this.close();
+          return false;
+        },
+      }
+    ];
     return true;
   }
 

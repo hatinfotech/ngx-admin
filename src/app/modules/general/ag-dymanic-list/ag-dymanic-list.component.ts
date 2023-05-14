@@ -1,5 +1,5 @@
 import { DatePipe } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
 import { TranslatePipe } from "@ngx-translate/core";
 import { AgGridDataManagerListComponent } from "../../../lib/data-manager/ag-grid-data-manger-list.component";
 import { Model } from "../../../models/model";
@@ -33,6 +33,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
   @Input() width = '100%';
   @Input() height = '500px';
   @Input() onInit: (component: AgDynamicListComponent<M>) => void;
+  @Output() onReady = new EventEmitter<any>();;
 
 
   constructor(
@@ -56,6 +57,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
     this.maxBlocksInCache = 5;
     this.paginationPageSize = 100;
     this.cacheBlockSize = 100;
+    this.rowData;
   }
 
   async init() {
@@ -128,6 +130,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
 
   onGridReady(params) {
     super.onGridReady(params);
+    this.onReady && this.onReady.next(params);
     // const columnsState = this.gridColumnApi.getColumnState();
     // const defaultFilter = columnsState.find(f => f.colId === 'Id');
     // if (defaultFilter) {

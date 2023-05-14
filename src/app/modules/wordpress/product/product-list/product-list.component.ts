@@ -110,6 +110,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
               paginationPageSize: 300,
               cacheBlockSize: 300,
               reuseDialog: true,
+              rowMultiSelectWithClick: true,
               onDialogClose: () => {
                 // if (onDialogClose) onDialogClose();
                 // this.refresh();
