@@ -4,8 +4,9 @@ import { AgTagsCellRenderer } from "../cell/tags.component";
 import { AgImageCellRenderer } from "../cell/image.component";
 import { FileModel } from "../../../../models/file.model";
 import { ImagesViewerComponent } from "../../my-components/images-viewer/images-viewer.component";
+import { AgImagesCellRenderer } from "../cell/images.component";
 
-export const agMakeImageColDef = (
+export const agMakeImagesColDef = (
   cms: CommonService,
   click?: (image: any, rowData: any) => void,
   getImageList?: (rowData: any) => string[]
@@ -18,7 +19,7 @@ export const agMakeImageColDef = (
     filter: 'agTextColumnFilter',
     autoHeight: true,
     cellClass: ['ag-cell-image'],
-    cellRenderer: AgImageCellRenderer,
+    cellRenderer: AgImagesCellRenderer,
     cellRendererParams: {
       click: (image: FileModel, data) => {
         // console.log(image, data);

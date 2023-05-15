@@ -31,9 +31,15 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ICellRendererAngularComp } from '@ag-grid-community/angular';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeImagesColDef } from '../../../../lib/custom-element/ag-list/column-define/images.define';
+import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';
+import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
 // @Component({
 //   selector: 'btn-cell-renderer',
 //   template: `
@@ -99,6 +105,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     digitsOptional: false,
     digits: 2
   });
+
+  @ViewChild('agDetails') agDetails: AgDynamicListComponent<any>;
 
   // @ViewChild('newDetailPipSound', { static: true }) newDetailPipSound: ElementRef;
   // @ViewChild('increaseDetailPipSound', { static: true }) increaseDetailPipSound: ElementRef;
@@ -271,29 +279,53 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
     /** AG-Grid */
     this.columnDefs = [
+      // {
+      //   headerName: '#',
+      //   width: 52,
+      //   valueGetter: 'node.data.No',
+      //   cellRenderer: 'loadingCellRenderer',
+      //   sortable: false,
+      //   pinned: 'left',
+      // },
       {
-        headerName: '#',
-        width: 52,
+        ...agMakeSelectionColDef(this.cms),
+        headerName: 'STT',
+        field: 'No',
         valueGetter: 'node.data.No',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: false,
-        pinned: 'left',
+        cellRenderer: (params) => {
+          if (params.value) {
+            // return params.value;
+            return params.value;
+          } else {
+            return '<img src="assets/images/loading.gif">';
+          }
+        }
       },
+      // {
+      //   headerName: 'Hình',
+      //   field: 'Image',
+      //   width: 100,
+      //   filter: 'agTextColumnFilter',
+      //   // pinned: 'left',
+      //   autoHeight: true,
+      //   cellRenderer: 'imageRender',
+      // },
       {
+        ...agMakeImagesColDef(this.cms, null, (rowData) => {
+          return rowData.Pictures?.map(m => m['LargeImage']);
+        }),
         headerName: 'Hình',
+        pinned: 'left',
         field: 'Image',
+        // valueGetter: 'node.data.FeaturePicture.Thumbnail',
         width: 100,
-        filter: 'agTextColumnFilter',
-        // pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
       },
       {
         headerName: 'Mô tả',
         field: 'Description',
         width: 400,
         filter: 'agTextColumnFilter',
-        // pinned: 'left',
+        pinned: 'left',
       },
       {
         headerName: 'Đơn vị tính',
@@ -349,8 +381,8 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         width: 110,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        cellRenderer: 'numberRender',
-        editable: true
+        cellRenderer: AgNumberCellInput,
+        // editable: true
       },
       {
         headerName: 'Số truy xuất',
@@ -361,22 +393,30 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         cellRenderer: 'idRender',
       },
       {
-        headerName: 'Action',
-        field: 'id',
-        width: 110,
-        filter: 'agTextColumnFilter',
+        headerName: 'Gở',
+        field: 'Command',
+        width: 65,
+        filter: false,
         pinned: 'right',
-        cellRenderer: 'btnCellRenderer',
+        type: 'rightAligned',
+        cellClass: ['ag-cell-items-center', 'ag-cell-justify-center', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],
+        cellRenderer: AgButtonsCellRenderer,
+        resizable: false,
+        cellStyle: { 'text-overflow': 'initial' },
         cellRendererParams: {
-          clicked: (params: { node: IRowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
-
-            // Remove row
-            params.api.applyTransaction({ remove: [params.node.data] });
-
-          },
-        },
+          buttons: [
+            {
+              name: 'delete',
+              status: 'danger',
+              icon: 'trash-2-outline',
+              outline: false,
+              action: (params: any, button: any) => {
+                this.agDetails.deleteConfirm([this.getRowNodeId(params.node.data)]);
+                return false;
+              }
+            },
+          ],
+        }
       },
     ];
 
@@ -462,6 +502,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
 
   /** AG-Grid */
+  // public productActionButtonList = [];
   public gridApi: GridApi;
   public gridColumnApi: ColumnApi;
   // public modules: Module[] = AllCommunityModules;
@@ -709,7 +750,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     this.gridParams = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-
+    this.agDetails.actionButtonList = this.agDetails.actionButtonList.filter(f => ['edit', 'choose', 'add', 'preview', 'close'].indexOf(f.name) < 0);
     this.loadList();
 
   }
@@ -1887,19 +1928,28 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
       // }
 
       // Get details data from ag-grid
-      item.Details = [];
-      this.gridApi.forEachNode((rowNode, index) => {
-        console.log(rowNode, index);
-        const rawDetail = {};
-        for (const prop in rowNode.data) {
+      item.Details = this.agDetails.getData();
+      for (const detail of item.Details) {
+        for (const prop in detail) {
           if (prop == 'AccessNumbers') {
-            rawDetail[prop] = Array.isArray(rowNode.data[prop]) ? rowNode.data[prop].map(m => this.cms.getObjectId(m)) : [];
+            detail[prop] = Array.isArray(detail[prop]) ? detail[prop].map(m => this.cms.getObjectId(m)) : [];
           } else {
-            rawDetail[prop] = this.cms.getObjectId(rowNode.data[prop]);
+            detail[prop] = this.cms.getObjectId(detail[prop]);
           }
         }
-        item.Details.push(rawDetail);
-      });
+      }
+      // this.gridApi.forEachNode((rowNode, index) => {
+      //   console.log(rowNode, index);
+      //   const rawDetail = {};
+      //   for (const prop in rowNode.data) {
+      //     if (prop == 'AccessNumbers') {
+      //       rawDetail[prop] = Array.isArray(rowNode.data[prop]) ? rowNode.data[prop].map(m => this.cms.getObjectId(m)) : [];
+      //     } else {
+      //       rawDetail[prop] = this.cms.getObjectId(rowNode.data[prop]);
+      //     }
+      //   }
+      //   item.Details.push(rawDetail);
+      // });
     }
     return data;
   }
@@ -2063,27 +2113,18 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   // }
 
   onKeyboardEvent(event: KeyboardEvent) {
-    // if (this.ref && document.activeElement.tagName == 'BODY') {
-    //   this.barcode += event.key;
-    //   this.cms.takeUntil('warehouse-receipt-note-barcode-scan', 100, () => {
-    //     this.barcode = '';
-    //   });
-    //   console.log(this.barcode);
-    //   if (this.barcode && /Enter$/.test(this.barcode)) {
-    //     try {
-    //       if (this.barcode.length > 5) {
-    //         this.barcodeProcess(this.barcode.replace(/Enter.*$/, ''));
-    //       }
-    //     } catch (err) {
-    //       this.cms.toastService.show(err, 'Cảnh báo', { status: 'warning', duration: 10000 });
-    //     }
-    //     this.barcode = '';
-    //   }
-    this.cms.barcodeScanDetective(event.key, barcode => {
-      this.barcodeProcess(barcode);
-    });
-    // }
+    // this.cms.barcodeScanDetective(event.key, barcode => {
+    //   this.barcodeProcess(barcode);
+    // });
     return true;
+  }
+
+  onBarcodeInput(event) {
+    if (event.code == 'Enter') {
+      let barcode = event.target.value?.trim() || '';
+      event.target.value = '';
+      this.barcodeProcess(barcode);
+    }
   }
 
   public activeDetailIndex = 0;

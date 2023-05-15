@@ -241,7 +241,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (formData) {
 
           // Load for ids and data
-          if (this.inputId) {
+          if (this.inputId && this.inputId.length > 0) {
             this.getRequestId(id => {
               if (id && id.length > 0) {
                 this.getFormData((data: M[]) => {
@@ -280,7 +280,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         if (!this.patchFormGroupValue) {
 
           for (const item of data) {
-            if (Array.isArray(item['RelativeVouchers'])) {
+            if (item && Array.isArray(item['RelativeVouchers'])) {
               for (const relativeVoucher of item['RelativeVouchers']) {
                 relativeVoucher.typeMap = this.cms.voucherTypeMap[relativeVoucher.type];
               }

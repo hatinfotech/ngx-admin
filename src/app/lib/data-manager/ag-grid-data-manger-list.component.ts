@@ -709,4 +709,15 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   loadListSetting() {
     return null;
   }
+
+  /**
+   * Get grid data
+   */
+  getData(): M[] {
+    const data: M[] = [];
+    this.gridApi.forEachNode((rowNode, index) => {
+      data.push(rowNode.data);
+    });
+    return data;
+  }
 }

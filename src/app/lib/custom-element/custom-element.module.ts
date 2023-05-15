@@ -41,6 +41,8 @@ import { AgTagsCellRenderer } from './ag-list/cell/tags.component';
 import { AgTextCellRenderer } from './ag-list/cell/text.component';
 import { AgImageCellRenderer } from './ag-list/cell/image.component';
 import { AgAccCurrencyCellRenderer } from './ag-list/cell/acc-currency.component';
+import { AgImagesCellRenderer } from './ag-list/cell/images.component';
+import { AgNumberCellInput } from './ag-list/cell/input/number.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -95,6 +97,8 @@ import { AgAccCurrencyCellRenderer } from './ag-list/cell/acc-currency.component
     AgCurrencyCellRenderer,
     AgAccCurrencyCellRenderer,
     AgImageCellRenderer,
+    AgImagesCellRenderer,
+    AgNumberCellInput,
     // - Filter
     AgSelect2Filter,
   ],
