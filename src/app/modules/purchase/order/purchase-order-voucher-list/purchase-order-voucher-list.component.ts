@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { AppModule } from '../../../../app.module';
@@ -40,6 +40,8 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
   // AG-Grid config
   public rowHeight: number = 50;
   // @Input() suppressRowClickSelection = false;
+
+  @Input() gridHeight = '100%';
 
 
   constructor(

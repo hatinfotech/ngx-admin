@@ -4,7 +4,7 @@
   </nb-card-header>
 
   <nb-card-body>
-      <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="{{themeName}}"
+      <ag-grid-angular #agGrid style="width: 100%;" [ngStyle]="{'height': gridHeight}" id="myGrid" class="{{themeName}}"
         [modules]="modules" 
         [columnDefs]="columnDefs" 
         [debug]="true" 

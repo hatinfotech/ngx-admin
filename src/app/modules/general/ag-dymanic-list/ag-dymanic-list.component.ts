@@ -32,8 +32,9 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
 
   @Input() width = '100%';
   @Input() height = '500px';
+  @Input() isEmbed = false;
   @Input() onInit: (component: AgDynamicListComponent<M>) => void;
-  @Output() onReady = new EventEmitter<any>();;
+  @Output() onReady = new EventEmitter<any>();
 
 
   constructor(

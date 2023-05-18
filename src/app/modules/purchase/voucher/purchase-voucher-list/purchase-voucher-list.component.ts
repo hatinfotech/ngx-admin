@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
@@ -49,6 +49,7 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
   public rowHeight: number = 50;
   // @Input() suppressRowClickSelection = false;
 
+  @Input() gridHeight = '100%';
 
   constructor(
     public apiService: ApiService,

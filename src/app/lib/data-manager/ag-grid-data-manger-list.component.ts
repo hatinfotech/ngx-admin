@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -20,6 +20,7 @@ import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { CustomHeader } from '../custom-element/ag-list/header/custom.component';
+import { StatusPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
 
 @Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -41,6 +42,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
 
   /** Resource id key */
   @Input() idKey: any;
+  @Input() onDialogChoose?: (chooseItems: M[]) => void;
+  @Output() onItemsChoosed = new EventEmitter<M[]>();
 
   public refreshPendding = false;
   lastRequestCount: number = 0;
@@ -251,6 +254,14 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     }
   }
 
+  choose() {
+    if (this.onDialogChoose) {
+      this.onDialogChoose(this.selectedItems);
+      this.onChoose(this.selectedItems);
+      // this.close();
+    }
+  }
+
   filterTypeMap = {
     equals: 'eq',
     notEqual: 'ne',
@@ -317,7 +328,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   async init(): Promise<boolean> {
-    return super.init();
+    return super.init().then(status => {
+      return status;
+    });
   }
 
   /** List init event */
@@ -699,6 +712,30 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   protected configSetting(settings: any) {
+    if (this.isChoosedMode) {
+
+      if (settings) {
+        const commandColumn: ColDef = settings.find(f => f.field == 'Command');
+        if (commandColumn) {
+          commandColumn.width = 170;
+          if (commandColumn.cellRendererParams['buttons']) {
+            commandColumn.cellRendererParams['buttons'].push({
+              name: 'choose',
+              status: 'success',
+              icon: 'checkmark-square',
+              outline: false,
+              action: (params: any, button: any) => {
+                if (this.onDialogChoose) {
+                  this.onDialogChoose([params.data]);
+                }
+                this.onItemsChoosed.emit([params.data]);
+                this.close();
+              }
+            });
+          }
+        }
+      }
+    }
     return settings;
   }
 

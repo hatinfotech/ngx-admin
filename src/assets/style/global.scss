@@ -1466,7 +1466,7 @@ body .form-group[state="warning"] textarea:focus {
 
 .dialog-wrap.dialog,
 .dialog-wrap.popup {
-  padding-bottom: 2rem;
+  // padding-bottom: 2rem;
 
   max-width: 97vw;
   .smart-table {
@@ -1572,7 +1572,7 @@ nb-card-footer [nbButton]:first-child {
 
 .dialog-wrap.dialog,
 .dialog-wrap.popup {
-  padding-bottom: 2rem;
+  // padding-bottom: 2rem;
   max-width: 90vw;
   .smart-table {
     min-height: 90vh;
@@ -1596,7 +1596,7 @@ form.dialog-wrap.popup {
   div.dialog-wrap.popup {
     max-width: 95vw;
     .smart-table {
-      min-height: 95vh;
+      height: 95vh;
     }
   }
 }

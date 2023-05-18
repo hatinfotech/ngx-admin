@@ -21,10 +21,10 @@
                     <ngx-sales-returns-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALESRETURNS')"></ngx-sales-returns-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['PURCHASEORDER']" tabTitle="{{components['PURCHASEORDER'].title}}">
-                    <ngx-purchase-order-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASEORDER')"></ngx-purchase-order-voucher-list>
+                    <ngx-purchase-order-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PURCHASEORDER')"></ngx-purchase-order-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['PURCHASE']" tabTitle="{{components['PURCHASE'].title}}">
-                    <ngx-purchase-voucher-list (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
+                    <ngx-purchase-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['CLBRTCOMMISSION']" tabTitle="{{components['CLBRTCOMMISSION'].title}}">
                     <ngx-collaborator-commission-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTCOMMISSION')"></ngx-collaborator-commission-list>

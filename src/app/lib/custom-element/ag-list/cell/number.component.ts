@@ -1,17 +1,17 @@
 import { ICellRendererAngularComp } from "@ag-grid-community/angular";
 import { Component, OnDestroy } from "@angular/core";
 import { CommonService } from "../../../../services/common.service";
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, DecimalPipe } from "@angular/common";
 import { ICellRendererParams } from "@ag-grid-community/core";
 
 @Component({
-    selector: 'ag-currency-cell-renderer',
+    selector: 'ag-number-cell-renderer',
     template: `
-      <span>{{params.value | currency:'VND'}}</span>
+      <span>{{params.value | number:'1.0-0'}}</span>
     `,
-    providers: [CurrencyPipe]
+    providers: [DecimalPipe]
 })
-export class AgCurrencyCellRenderer implements ICellRendererAngularComp, OnDestroy {
+export class AgNumberCellRenderer implements ICellRendererAngularComp, OnDestroy {
     constructor(
         public cms: CommonService,
     ) {

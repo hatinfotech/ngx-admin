@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.20.1',
+  version: '6.5.21.3',
+  // 6.5.21:   upgrade warehouse goods list using new ag-grid
   // 6.5.20:   hostfix: Data Form Manager not set data for first create => Code null on next save
   // 6.5.19:   Fix inventory adjust form new using ag-grid
   // 6.5.18:   fix import product using new ag-grid

@@ -75,10 +75,10 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
   }
 
   onGridReady(params: any): void {
-      super.onGridReady(params);
-      // setTimeout(() => {
-      //   this.gridApi.ensureIndexVisible(this.infiniteInitialRowCount, 'bottom');
-      // }, 5000);
+    super.onGridReady(params);
+    // setTimeout(() => {
+    //   this.gridApi.ensureIndexVisible(this.infiniteInitialRowCount, 'bottom');
+    // }, 5000);
   }
 
   async init() {
@@ -380,216 +380,217 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
   rows = [];
 
   loadListSetting(): SmartTableSetting {
-    let settings: SmartTableSetting = {
-      actions: false,
-      columns: {
-        VoucherDate: {
-          title: this.cms.translateText('Accounting.voucherDate'),
-          type: 'datetime',
-          width: '10%',
-        },
-        Object: {
-          title: this.cms.translateText('Common.contact'),
-          type: 'string',
-          width: '13%',
-          valuePrepareFunction: (cell: any, row: any) => {
-            return row.ObjectName;
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
-                  placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                    item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                    return item;
-                  }
-                }),
-                multiple: true,
-                logic: 'OR',
-                allowClear: true,
-              },
-            },
-          },
-        },
-        Product: {
-          title: this.cms.translateText('Sản phẩm'),
-          type: 'string',
-          width: '13%',
-          valuePrepareFunction: (cell: any, row: any) => {
-            return row.Description;
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                ...this.cms.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
-                  placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
-                    // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                    return item;
-                  }
-                }),
-                multiple: true,
-                logic: 'OR',
-                allowClear: true,
-              },
-            },
-          },
-        },
-        Description: {
-          title: this.cms.translateText('Common.description'),
-          type: 'string',
-          width: '12%',
-        },
-        Voucher: {
-          title: this.cms.translateText('Common.voucher'),
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          valuePrepareFunction: (cell: string, row: any) => {
-            return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
-          },
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.cms.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
-              // this.refresh();
-            }));
-          },
-          width: '10%',
-        },
-        Account: {
-          title: this.cms.translateText('Accounting.account'),
-          type: 'string',
-          width: '5%',
-        },
-        ContraAccount: {
-          title: this.cms.translateText('Đối ứng'),
-          type: 'string',
-          width: '5%',
-        },
-        Quantity: {
-          title: this.cms.translateText('Số lượng'),
-          type: 'number',
-          width: '5%',
-          valuePrepareFunction: (cell, row) => {
-            return row.ProductUnitLabel ? row.Quantity : '-';
-          },
-        },
-        Unit: {
-          title: this.cms.translateText('ĐVT'),
-          type: 'text',
-          width: '5%',
-          valuePrepareFunction: (cell, row) => {
-            return row.ProductUnitLabel ? row.ProductUnitLabel : '-';
-          },
-        },
-        Price: {
-          title: this.cms.translateText('Giá'),
-          type: 'acc-currency',
-          width: '5%',
-          valuePrepareFunction: (cell, row) => {
+    // let settings: SmartTableSetting = {
+    //   actions: false,
+    //   columns: {
+    //     VoucherDate: {
+    //       title: this.cms.translateText('Accounting.voucherDate'),
+    //       type: 'datetime',
+    //       width: '10%',
+    //     },
+    //     Object: {
+    //       title: this.cms.translateText('Common.contact'),
+    //       type: 'string',
+    //       width: '13%',
+    //       valuePrepareFunction: (cell: any, row: any) => {
+    //         return row.ObjectName;
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           condition: 'eq',
+    //           select2Option: {
+    //             ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
+    //               placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+    //                 item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+    //                 return item;
+    //               }
+    //             }),
+    //             multiple: true,
+    //             logic: 'OR',
+    //             allowClear: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //     Product: {
+    //       title: this.cms.translateText('Sản phẩm'),
+    //       type: 'string',
+    //       width: '13%',
+    //       valuePrepareFunction: (cell: any, row: any) => {
+    //         return row.Description;
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           condition: 'eq',
+    //           select2Option: {
+    //             ...this.cms.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
+    //               placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
+    //                 // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+    //                 return item;
+    //               }
+    //             }),
+    //             multiple: true,
+    //             logic: 'OR',
+    //             allowClear: true,
+    //           },
+    //         },
+    //       },
+    //     },
+    //     Description: {
+    //       title: this.cms.translateText('Common.description'),
+    //       type: 'string',
+    //       width: '12%',
+    //     },
+    //     Voucher: {
+    //       title: this.cms.translateText('Common.voucher'),
+    //       type: 'custom',
+    //       renderComponent: SmartTableTagsComponent,
+    //       valuePrepareFunction: (cell: string, row: any) => {
+    //         return [{ id: cell, text: row['Description'], type: row['VoucherType'] }] as any;
+    //       },
+    //       onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+    //         instance.click.subscribe((tag: { id: string, text: string, type: string }) => tag.type && this.cms.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
+    //           // this.refresh();
+    //         }));
+    //       },
+    //       width: '10%',
+    //     },
+    //     Account: {
+    //       title: this.cms.translateText('Accounting.account'),
+    //       type: 'string',
+    //       width: '5%',
+    //     },
+    //     ContraAccount: {
+    //       title: this.cms.translateText('Đối ứng'),
+    //       type: 'string',
+    //       width: '5%',
+    //     },
+    //     Quantity: {
+    //       title: this.cms.translateText('Số lượng'),
+    //       type: 'number',
+    //       width: '5%',
+    //       valuePrepareFunction: (cell, row) => {
+    //         return row.ProductUnitLabel ? row.Quantity : '-';
+    //       },
+    //     },
+    //     Unit: {
+    //       title: this.cms.translateText('ĐVT'),
+    //       type: 'text',
+    //       width: '5%',
+    //       valuePrepareFunction: (cell, row) => {
+    //         return row.ProductUnitLabel ? row.ProductUnitLabel : '-';
+    //       },
+    //     },
+    //     Price: {
+    //       title: this.cms.translateText('Giá'),
+    //       type: 'acc-currency',
+    //       width: '5%',
+    //       valuePrepareFunction: (cell, row) => {
 
-            return row.Quantity ? `${(row.GenerateDebit - row.GenerateCredit) / row.Quantity}` : '-';
-          },
-        },
-        HeadAmount: {
-          title: this.cms.translateText('Accounting.headAmount'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateDebit: {
-          title: this.cms.translateText('Accounting.debitGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-        GenerateCredit: {
-          title: this.cms.translateText('Accounting.creditGenerate'),
-          type: 'acc-currency',
-          width: '10%',
-        },
-      },
-    };
-    if (this.balance == 'debt') {
-      settings.columns['IncrementAmount'] = {
-        title: this.cms.translateText('Accounting.increment'),
-        type: 'acc-currency',
-        width: '10%',
-      };
-    } else if (this.balance == 'credit') {
-      settings.columns['IncrementAmount'] = {
-        title: this.cms.translateText('Accounting.increment'),
-        type: 'acc-currency',
-        width: '10%',
-      };
-    } else if (this.balance == 'both') {
-      settings.columns['DebitIncrementAmount'] = {
-        title: this.cms.translateText('Accounting.tailDebit'),
-        type: 'acc-currency',
-        width: '10%',
-        valuePrepareFunction: (cel: string, row: any) => {
-          if (row.IncrementAmount >= 0) {
-            return row.IncrementAmount;
-          }
-          return '';
-        }
-      };
-      settings.columns['CreditIncrementAmount'] = {
-        title: this.cms.translateText('Accounting.tailCredit'),
-        type: 'acc-currency',
-        width: '10%',
-        valuePrepareFunction: (cel: string, row: any) => {
-          if (row.IncrementAmount < 0) {
-            return parseFloat(-row.IncrementAmount as any).toString();
-          }
-          return '';
-        }
-      };
-    } else {
-      settings.columns['IncrementAmount'] = {
-        title: this.cms.translateText('Accounting.increment'),
-        type: 'acc-currency',
-        width: '10%',
-        // valuePrepareFunction: (cell, row) => {
-        //   return cell;
-        // }
-      };
-    }
-    settings.columns['Preview'] = {
-      title: this.cms.translateText('Common.detail'),
-      type: 'custom',
-      width: '10%',
-      class: 'align-right',
-      renderComponent: SmartTableButtonComponent,
-      onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        instance.iconPack = 'eva';
-        instance.icon = 'external-link-outline';
-        instance.display = true;
-        instance.status = 'primary';
-        instance.style = 'text-align: right';
-        instance.class = 'align-right';
-        instance.title = this.cms.translateText('Common.preview');
-        // instance.label = this.cms.translateText('Common.detail');
-        instance.valueChange.subscribe(value => {
-          // instance.icon = value ? 'unlock' : 'lock';
-          // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-          // instance.disabled = value !== 'REQUEST';
-        });
-        instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
-          // this.getFormData([rowData.Code]).then(rs => {
-          //   this.preview(rs);
-          // });
-          this.cms.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
-        });
-      },
-    }
-    settings.pager = this.pagingConf;
-    settings = this.configSetting(settings);
-    delete settings.columns['Choose'];
-    return settings;
+    //         return row.Quantity ? `${(row.GenerateDebit - row.GenerateCredit) / row.Quantity}` : '-';
+    //       },
+    //     },
+    //     HeadAmount: {
+    //       title: this.cms.translateText('Accounting.headAmount'),
+    //       type: 'acc-currency',
+    //       width: '10%',
+    //     },
+    //     GenerateDebit: {
+    //       title: this.cms.translateText('Accounting.debitGenerate'),
+    //       type: 'acc-currency',
+    //       width: '10%',
+    //     },
+    //     GenerateCredit: {
+    //       title: this.cms.translateText('Accounting.creditGenerate'),
+    //       type: 'acc-currency',
+    //       width: '10%',
+    //     },
+    //   },
+    // };
+    // if (this.balance == 'debt') {
+    //   settings.columns['IncrementAmount'] = {
+    //     title: this.cms.translateText('Accounting.increment'),
+    //     type: 'acc-currency',
+    //     width: '10%',
+    //   };
+    // } else if (this.balance == 'credit') {
+    //   settings.columns['IncrementAmount'] = {
+    //     title: this.cms.translateText('Accounting.increment'),
+    //     type: 'acc-currency',
+    //     width: '10%',
+    //   };
+    // } else if (this.balance == 'both') {
+    //   settings.columns['DebitIncrementAmount'] = {
+    //     title: this.cms.translateText('Accounting.tailDebit'),
+    //     type: 'acc-currency',
+    //     width: '10%',
+    //     valuePrepareFunction: (cel: string, row: any) => {
+    //       if (row.IncrementAmount >= 0) {
+    //         return row.IncrementAmount;
+    //       }
+    //       return '';
+    //     }
+    //   };
+    //   settings.columns['CreditIncrementAmount'] = {
+    //     title: this.cms.translateText('Accounting.tailCredit'),
+    //     type: 'acc-currency',
+    //     width: '10%',
+    //     valuePrepareFunction: (cel: string, row: any) => {
+    //       if (row.IncrementAmount < 0) {
+    //         return parseFloat(-row.IncrementAmount as any).toString();
+    //       }
+    //       return '';
+    //     }
+    //   };
+    // } else {
+    //   settings.columns['IncrementAmount'] = {
+    //     title: this.cms.translateText('Accounting.increment'),
+    //     type: 'acc-currency',
+    //     width: '10%',
+    //     // valuePrepareFunction: (cell, row) => {
+    //     //   return cell;
+    //     // }
+    //   };
+    // }
+    // settings.columns['Preview'] = {
+    //   title: this.cms.translateText('Common.detail'),
+    //   type: 'custom',
+    //   width: '10%',
+    //   class: 'align-right',
+    //   renderComponent: SmartTableButtonComponent,
+    //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+    //     instance.iconPack = 'eva';
+    //     instance.icon = 'external-link-outline';
+    //     instance.display = true;
+    //     instance.status = 'primary';
+    //     instance.style = 'text-align: right';
+    //     instance.class = 'align-right';
+    //     instance.title = this.cms.translateText('Common.preview');
+    //     // instance.label = this.cms.translateText('Common.detail');
+    //     instance.valueChange.subscribe(value => {
+    //       // instance.icon = value ? 'unlock' : 'lock';
+    //       // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+    //       // instance.disabled = value !== 'REQUEST';
+    //     });
+    //     instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+    //       // this.getFormData([rowData.Code]).then(rs => {
+    //       //   this.preview(rs);
+    //       // });
+    //       this.cms.previewVoucher(rowData['VoucherType'], rowData['Voucher']);
+    //     });
+    //   },
+    // }
+    // settings.pager = this.pagingConf;
+    // settings = this.configSetting(settings);
+    // delete settings.columns['Choose'];
+    // return settings;
+    return null;
   }
 
   ngOnInit() {
