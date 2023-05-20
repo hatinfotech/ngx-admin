@@ -363,7 +363,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
-          headerName: 'ID',
+          headerName: 'STT',
           field: 'Id',
           width: 100,
           valueGetter: 'node.data.Id',
@@ -381,7 +381,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
           width: 100,
         },
         {
-          headerName: 'Mã',
+          headerName: 'ID',
           field: 'Code',
           width: 140,
           filter: 'agTextColumnFilter',

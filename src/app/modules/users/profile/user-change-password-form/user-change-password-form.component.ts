@@ -46,13 +46,6 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
     public cms: CommonService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
-
-    /** Remove close button */
-    const closeBtn = this.actionButtonList.filter(btn => btn.name === 'close')[0];
-    closeBtn.label = cms.textTransform(cms.translate.instant('Common.goback'), 'head-title');
-    closeBtn.icon = 'arrow-back';
-    closeBtn.status = 'primary';
-
   }
 
   ngOnInit() {
@@ -65,6 +58,11 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
   async init(): Promise<boolean> {
     return super.init().then(rs => {
       this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'remove' && f.name !== 'close');
+      /** Remove close button */
+      // const closeBtn = this.actionButtonList.filter(btn => btn.name === 'close')[0];
+      // closeBtn.label = cms.textTransform(cms.translate.instant('Common.goback'), 'head-title');
+      // closeBtn.icon = 'arrow-back';
+      // closeBtn.status = 'primary';
       return rs;
     });
   }
@@ -81,7 +79,7 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
 
   /** Get form data by id from api */
   getFormData(callback: (data: UserModel[]) => void) {
-    this.apiService.get<UserModel[]>(this.apiPath, {includeGroups: true, includeUserPhoneExtensions: true },
+    this.apiService.get<UserModel[]>(this.apiPath, { includeGroups: true, includeUserPhoneExtensions: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);

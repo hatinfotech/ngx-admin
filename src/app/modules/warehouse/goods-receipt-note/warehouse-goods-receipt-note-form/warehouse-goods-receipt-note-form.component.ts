@@ -476,9 +476,11 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
           if (detail.Product) {
             this.onSelectProduct(newDetailFormGroup, detail.Product, true);
-            const seelctedUnit = detail.Product.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(detail.Unit));
-            if (seelctedUnit) {
-              this.onSelectUnit(newDetailFormGroup, null, seelctedUnit);
+            if (detail.Product.Units) {
+              const seelctedUnit = detail.Product.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(detail.Unit));
+              if (seelctedUnit) {
+                this.onSelectUnit(newDetailFormGroup, null, seelctedUnit);
+              }
             }
           }
         });
