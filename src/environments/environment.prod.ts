@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.5.23.1',
+  version: '6.5.24.3',
+  // 6.5.23:   hotupdate admin product list
   // 6.5.23:   hotfix: warehouse goods receipt note form not show all units for choosed
   // 6.5.22:   hotfix: users/profile
   // 6.5.21:   upgrade warehouse goods list using new ag-grid

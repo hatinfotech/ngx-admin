@@ -6,6 +6,7 @@ import { ICellRendererParams } from "@ag-grid-community/core";
 export interface AgComponetTagModel {
     id: string;
     text: string;
+    toolTip?: string;
     tip: string;
     type?: string;
     icon?: string;
@@ -17,7 +18,7 @@ export interface AgComponetTagModel {
     selector: 'ag-tags-cell-renderer',
     template: `
     <div>
-        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon icon="{{tag.icon || 'pricetags'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a>
+        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a>
     </div>
     `,
     styles: [
@@ -48,6 +49,7 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
     }
 
     labelAsText(tag: AgComponetTagModel) {
+        if(tag.label) return tag.label;
         let voucherType = this.cms.voucherTypeMap[tag.type];
         let type = '';
         if (!voucherType) {
@@ -62,6 +64,7 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
     };
 
     renderToolTip(tag: AgComponetTagModel) {
+        if(tag.toolTip) return tag.toolTip;
         let voucherType = this.cms.voucherTypeMap[tag.type];
         let type = '';
         if (!voucherType) {

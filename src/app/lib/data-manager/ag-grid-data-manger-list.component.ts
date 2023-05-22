@@ -1,9 +1,9 @@
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService, NbDialogConfig } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Type, ViewChild } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
@@ -21,6 +21,7 @@ import { DataManagerListComponent } from './data-manger-list.component';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { CustomHeader } from '../custom-element/ag-list/header/custom.component';
 import { StatusPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
+import { DataManagerFormComponent } from './data-manager-form.component';
 
 @Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -48,7 +49,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   public refreshPendding = false;
   lastRequestCount: number = 0;
   lastResponseHeader: HttpHeaders = null;
-  @Input() prepareApiParams(params: any, getRowParams: IGetRowsParams): any { };
+  @Input() prepareApiParams(params: any, getRowParams?: IGetRowsParams): any { };
 
   // @Input() actionButtonList: ActionControl[] = [
   //   {
@@ -182,19 +183,19 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() rowSelection: 'single' | 'multiple' = 'multiple';
   @Input() rowModelType = 'infinite';
   @Input() pagination = false;
-  @Input() paginationPageSize = 40;
+  @Input() paginationPageSize = 20;
   @Input() cacheBlockSize = this.paginationPageSize;
   @Input() paginationAutoPageSize = false;
   @Input() cacheOverflowSize = 10;
   @Input() maxConcurrentDatasourceRequests = 1;
   @Input() infiniteInitialRowCount = null;
-  @Input() maxBlocksInCache = 3;
+  @Input() maxBlocksInCache = 50;// 50x20 = 1000 items // Set 50 then refresh ag-grid make 50 request, resolution: rewrite refresh function: only reload visible item and clear cache
   @Input() rowMultiSelectWithClick = false;
   @Input() suppressRowClickSelection = false;
   @Input() enableCellTextSelection = true;
   @Input() ensureDomOrder = true;
-  @Input() getRowNodeId = (item: { id: string }) => {
-    return item.id;
+  @Input() getRowNodeId = (item: M) => {
+    return this.makeId(item);
   }
   @Input() components;
   //  = {
@@ -636,8 +637,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     this.apiService.getObservable<M[]>(this.apiPath, params).pipe(
       map((res) => {
         this.lastResponseHeader = res.headers;
-        this.infiniteInitialRowCount = +res.headers.get('x-total-count');
-        this.gridApi.setRowCount(this.infiniteInitialRowCount);
+        const infiniteInitialRowCount = +res.headers.get('x-total-count');
+        if (infiniteInitialRowCount) {
+          this.infiniteInitialRowCount = infiniteInitialRowCount;
+          this.gridApi.setRowCount(infiniteInitialRowCount);
+        }
         // this.gridApi.setpage
         console.log('set this.infiniteInitialRowCount: ' + this.infiniteInitialRowCount);
         let data = res.body;
@@ -666,11 +670,36 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   //   this.deleteConfirm([event.data[this.idKey]], () => this.loadList());
   // }
 
-  async refresh() {
+  async refresh(mode?: string) {
     // this.loadList();
     // this.gridApi.refreshInfiniteCache();
     // this.gridApi.refreshInfinitePageCache();
-    this.gridApi.refreshInfiniteCache();
+
+
+
+    // this.gridApi.refreshInfiniteCache();
+
+
+    if (mode == 'visible') {
+      const renderedNodes = this.gridApi.getRenderedNodes();
+      const renderedIds = renderedNodes.map(node => this.makeId(node.data));
+
+      console.log(renderedNodes);
+      console.log(renderedIds);
+      let query = { id: renderedIds };
+      query = this.prepareApiParams(query);
+      this.executeGet(query, list => {
+        for (const item of list) {
+          const node = this.gridApi.getRowNode(this.makeId(item));
+          if (node) {
+            node.setData(item);
+          }
+        }
+      });
+    } else {
+      this.gridApi.purgeInfiniteCache();
+    }
+
     this.updateActionState();
     // return false;
   }

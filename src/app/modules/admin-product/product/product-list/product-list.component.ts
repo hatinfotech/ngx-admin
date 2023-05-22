@@ -303,12 +303,55 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
           filter: 'agTextColumnFilter',
           cellRenderer: AgTextCellRenderer,
         },
+        // {
+        //   headerName: 'ĐVT',
+        //   field: 'Units',
+        //   // pinned: 'left',
+        //   width: 200,
+        //   cellRenderer: AgTextCellRenderer,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/admin-product/units', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+        //         placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
         {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            // this.cms.previewVoucher(tag.type, tag.id);
+          }),
           headerName: 'ĐVT',
           field: 'Units',
-          // pinned: 'left',
           width: 200,
-          cellRenderer: AgTextCellRenderer,
+          valueGetter: (params: { data: ProductModel }) => {
+            const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
+            const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
+            return params.data?.Units?.map(unit => {
+              let text = '';
+              if (baseUnitId == unit?.id) {
+                text = unit.text;
+              } else {
+                text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
+              }
+              unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
+              if (unit.IsManageByAccessNumber) {
+                unit.status = 'danger';
+              }
+              if (!unit.IsAutoAdjustInventory) {
+                unit.status = 'warning';
+              }
+              unit.label = `${unit.text} (${unit.ConversionRatio})`;
+              return unit;
+            });
+          },
           filter: AgSelect2Filter,
           filterParams: {
             select2Option: {
@@ -496,472 +539,473 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   rows = [];
 
   loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        FeaturePicture: {
-          title: 'Hình',
-          type: 'custom',
-          width: '5%',
-          // valuePrepareFunction: (value: any, product: ProductModel) => {
-          //   return value['Thumbnail'];
-          // },
-          renderComponent: SmartTableThumbnailComponent,
-          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-            instance.valueChange.subscribe(value => {
-            });
-            instance.previewAction.subscribe((row: ProductModel) => {
-              const pictureList = row?.Pictures || [];
-              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
-                pictureList.push(row.FeaturePicture);
-              }
-              if (pictureList.length > 0) {
-                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
-                if (pictureList.length > 1) {
-                  const currentItems = pictureList.splice(currentIndex, 1);
-                  pictureList.unshift(currentItems[0]);
-                }
-                this.cms.openDialog(ImagesViewerComponent, {
-                  context: {
-                    images: pictureList.map(m => m['OriginImage']),
-                    imageIndex: 0,
-                  }
-                });
-              }
-            });
-            instance.uploadAction.subscribe((row: ProductModel) => {
-              if (this.files.length === 0) {
-                this.uploadForProduct = row;
-                this.uploadBtn.nativeElement.click();
-              } else {
-                this.cms.toastService.show(
-                  this.cms.translateText('Common.uploadInProcess'),
-                  this.cms.translateText('Common.upload'),
-                  {
-                    status: 'warning',
-                  });
-                // this.cms.openDialog(ShowcaseDialogComponent, {
-                //   context: {
-                //     title: this.cms.translateText('Common.upload'),
-                //     content: this.cms.translateText('Common.uploadInProcess'),
-                //   },
-                // });
-              }
-            });
-            instance.title = this.cms.translateText('click to change main product picture');
-          },
-        },
-        Name: {
-          title: 'Tên',
-          type: 'string',
-          width: '15%',
-        },
-        Categories: {
-          title: 'Danh mục',
-          type: 'html',
-          width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                placeholder: 'Chọn danh mục...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        Groups: {
-          title: 'Nhóm',
-          type: 'html',
-          width: '10%',
-          valuePrepareFunction: (value: string, product: ProductModel) => {
-            return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              select2Option: {
-                placeholder: 'Chọn nhóm...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        Units: {
-          title: 'ĐVT',
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          width: '10%',
-          // valuePrepareFunction: (value: string, product: ProductModel) => {
-          //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.cms.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.cms.getObjectText(product['WarehouseUnit']);
-          // },
-          onComponentInitFunction: (component: SmartTableTagsComponent) => {
-            component.labelAsText = (tag) => {
-              return tag.text + ' (' + tag.ConversionRatio + ')';
-            };
-            component.renderToolTip = (tag) => {
-              return (tag.tip || tag.text) + ((tag.id != this.cms.getObjectId(component.rowData?.WarehouseUnit)) && (', tỷ lệ chuyển đổi: ' + tag.ConversionRatio + ' ' + this.cms.getObjectText(component.rowData?.WarehouseUnit)) || ' ,ĐVT Cơ bản') + (tag.IsAutoAdjustInventory && ', Trừ kho tự động' || '') + (tag.IsExpirationGoods && ', Có hạn sử dụng' || '') + (tag.IsDefaultSales && ', Mặc định mua' || '') + (tag.IsDefaultPurchase && ', Mặc định bán' || '');
-            };
-            // component.labelAsText = (tag) => {
-            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text}`;
-            // };
-            // component.renderToolTip = (tag) => {
-            //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
-            // };
-            // component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+    return null;
+    // return this.configSetting({
+    //   mode: 'external',
+    //   selectMode: 'multi',
+    //   actions: {
+    //     position: 'right',
+    //   },
+    //   add: this.configAddButton(),
+    //   edit: this.configEditButton(),
+    //   delete: this.configDeleteButton(),
+    //   pager: this.configPaging(),
+    //   columns: {
+    //     FeaturePicture: {
+    //       title: 'Hình',
+    //       type: 'custom',
+    //       width: '5%',
+    //       // valuePrepareFunction: (value: any, product: ProductModel) => {
+    //       //   return value['Thumbnail'];
+    //       // },
+    //       renderComponent: SmartTableThumbnailComponent,
+    //       onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
+    //         instance.valueChange.subscribe(value => {
+    //         });
+    //         instance.previewAction.subscribe((row: ProductModel) => {
+    //           const pictureList = row?.Pictures || [];
+    //           if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
+    //             pictureList.push(row.FeaturePicture);
+    //           }
+    //           if (pictureList.length > 0) {
+    //             const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
+    //             if (pictureList.length > 1) {
+    //               const currentItems = pictureList.splice(currentIndex, 1);
+    //               pictureList.unshift(currentItems[0]);
+    //             }
+    //             this.cms.openDialog(ImagesViewerComponent, {
+    //               context: {
+    //                 images: pictureList.map(m => m['OriginImage']),
+    //                 imageIndex: 0,
+    //               }
+    //             });
+    //           }
+    //         });
+    //         instance.uploadAction.subscribe((row: ProductModel) => {
+    //           if (this.files.length === 0) {
+    //             this.uploadForProduct = row;
+    //             this.uploadBtn.nativeElement.click();
+    //           } else {
+    //             this.cms.toastService.show(
+    //               this.cms.translateText('Common.uploadInProcess'),
+    //               this.cms.translateText('Common.upload'),
+    //               {
+    //                 status: 'warning',
+    //               });
+    //             // this.cms.openDialog(ShowcaseDialogComponent, {
+    //             //   context: {
+    //             //     title: this.cms.translateText('Common.upload'),
+    //             //     content: this.cms.translateText('Common.uploadInProcess'),
+    //             //   },
+    //             // });
+    //           }
+    //         });
+    //         instance.title = this.cms.translateText('click to change main product picture');
+    //       },
+    //     },
+    //     Name: {
+    //       title: 'Tên',
+    //       type: 'string',
+    //       width: '15%',
+    //     },
+    //     Categories: {
+    //       title: 'Danh mục',
+    //       type: 'html',
+    //       width: '10%',
+    //       valuePrepareFunction: (value: string, product: ProductModel) => {
+    //         return product['Categories'] ? ('<span class="tag">' + product['Categories'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           condition: 'eq',
+    //           select2Option: {
+    //             placeholder: 'Chọn danh mục...',
+    //             allowClear: true,
+    //             width: '100%',
+    //             dropdownAutoWidth: true,
+    //             minimumInputLength: 0,
+    //             keyMap: {
+    //               id: 'id',
+    //               text: 'text',
+    //             },
+    //             multiple: true,
+    //             ajax: {
+    //               url: (params: any) => {
+    //                 return 'data:text/plan,[]';
+    //               },
+    //               delay: 0,
+    //               processResults: (data: any, params: any) => {
+    //                 return {
+    //                   results: this.categoryList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
+    //                 };
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     Groups: {
+    //       title: 'Nhóm',
+    //       type: 'html',
+    //       width: '10%',
+    //       valuePrepareFunction: (value: string, product: ProductModel) => {
+    //         return product['Groups'] ? ('<span class="tag">' + product['Groups'].map(cate => cate && cate['text'] || '').join('</span><span class="tag">') + '</span>') : '';
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           select2Option: {
+    //             placeholder: 'Chọn nhóm...',
+    //             allowClear: true,
+    //             width: '100%',
+    //             dropdownAutoWidth: true,
+    //             minimumInputLength: 0,
+    //             keyMap: {
+    //               id: 'id',
+    //               text: 'text',
+    //             },
+    //             multiple: true,
+    //             ajax: {
+    //               url: (params: any) => {
+    //                 return 'data:text/plan,[]';
+    //               },
+    //               delay: 0,
+    //               processResults: (data: any, params: any) => {
+    //                 return {
+    //                   results: this.groupList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
+    //                 };
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     Units: {
+    //       title: 'ĐVT',
+    //       type: 'custom',
+    //       renderComponent: SmartTableTagsComponent,
+    //       width: '10%',
+    //       // valuePrepareFunction: (value: string, product: ProductModel) => {
+    //       //   return product.UnitConversions instanceof Array ? (product.UnitConversions.map((uc: UnitModel & ProductUnitConversoinModel) => (uc.Unit === this.cms.getObjectId(product['WarehouseUnit']) ? `<b>${uc.Name}</b>` : uc.Name)).join(', ')) : this.cms.getObjectText(product['WarehouseUnit']);
+    //       // },
+    //       onComponentInitFunction: (component: SmartTableTagsComponent) => {
+    //         component.labelAsText = (tag) => {
+    //           return tag.text + ' (' + tag.ConversionRatio + ')';
+    //         };
+    //         component.renderToolTip = (tag) => {
+    //           return (tag.tip || tag.text) + ((tag.id != this.cms.getObjectId(component.rowData?.WarehouseUnit)) && (', tỷ lệ chuyển đổi: ' + tag.ConversionRatio + ' ' + this.cms.getObjectText(component.rowData?.WarehouseUnit)) || ' ,ĐVT Cơ bản') + (tag.IsAutoAdjustInventory && ', Trừ kho tự động' || '') + (tag.IsExpirationGoods && ', Có hạn sử dụng' || '') + (tag.IsDefaultSales && ', Mặc định mua' || '') + (tag.IsDefaultPurchase && ', Mặc định bán' || '');
+    //         };
+    //         // component.labelAsText = (tag) => {
+    //         //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text}`;
+    //         // };
+    //         // component.renderToolTip = (tag) => {
+    //         //   return tag.Container ? `${tag.text}/${tag.Container.FindOrder} - ${this.cms.getObjectText(tag.Container)}` : `${tag.text} - (đơn vị tính chưa được set vị trí, click vào để set vị trí)`;
+    //         // };
+    //         // component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
-            // });
-            // component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
-            //   if (!tag.Container) {
-            //     this.cms.openDialog(AssignContainerFormComponent, {
-            //       context: {
-            //         inputMode: 'dialog',
-            //         inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
-            //         onDialogSave: async (newData: ProductModel[]) => {
-            //           // this.refresh();
-            //           // this.updateGridItems(editedItems, newData);
-            //           const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
-            //           this.source.isLocalUpdate = true;
-            //           try {
-            //             const newContainer = newData[0].Containers[0];
-            //             this.source.update(udpateItem, {
-            //               UnitConversions: [
-            //                 ...udpateItem.UnitConversions.map(m => ({
-            //                   type: m.type,
-            //                   id: m.id,
-            //                   text: m.text + ' (' + m.ConversionRatio + ')',
-            //                   Container: m.id == tag.id ? newContainer : m.Container,
-            //                 })),
-            //                 { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
-            //             }).then(() => {
-            //               this.source.isLocalUpdate = false;
-            //             });
-            //           } catch (err) {
-            //             this.source.isLocalUpdate = false;
-            //           }
-            //         },
-            //         onDialogClose: () => {
-            //         },
-            //       },
-            //       closeOnEsc: false,
-            //       closeOnBackdropClick: false,
-            //     });
-            //   }
-            // });
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              select2Option: {
-                placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                logic: 'OR',
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.unitList.filter(unit => !params.term || this.cms.smartFilter(unit.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        // ContainerPath: {
-        //   title: 'Vị trí hàng hóa',
-        //   type: 'custom',
-        //   renderComponent: SmartTableTagsComponent,
-        //   width: '10%',
-        //   filter: {
-        //     type: 'custom',
-        //     component: SmartTableSelect2FilterComponent,
-        //     config: {
-        //       delay: 0,
-        //       condition: 'bleft',
-        //       select2Option: {
-        //         placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
-        //         allowClear: true,
-        //         width: '100%',
-        //         dropdownAutoWidth: true,
-        //         minimumInputLength: 0,
-        //         keyMap: {
-        //           id: 'id',
-        //           text: 'text',
-        //         },
-        //         // multiple: true,
-        //         logic: 'OR',
-        //         ajax: {
-        //           url: (params: any) => {
-        //             return 'data:text/plan,[]';
-        //           },
-        //           delay: 0,
-        //           processResults: (data: any, params: any) => {
-        //             return {
-        //               results: this.shelfList.filter(shelf => !params.term || this.cms.smartFilter(shelf.text, params.term)),
-        //             };
-        //           },
-        //         },
-        //       },
-        //     },
-        //   },
-        //   valuePrepareFunction: (value: string, product: ProductModel) => {
-        //     return product.Containers as any;
-        //   },
-        //   onComponentInitFunction: (component: SmartTableTagsComponent) => {
-        //     component.labelAsText = (tag) => {
-        //       return tag.text;
-        //     };
-        //     component.renderToolTip = (tag) => {
-        //       return tag.text;
-        //     };
-        //     component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
+    //         // });
+    //         // component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+    //         //   if (!tag.Container) {
+    //         //     this.cms.openDialog(AssignContainerFormComponent, {
+    //         //       context: {
+    //         //         inputMode: 'dialog',
+    //         //         inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+    //         //         onDialogSave: async (newData: ProductModel[]) => {
+    //         //           // this.refresh();
+    //         //           // this.updateGridItems(editedItems, newData);
+    //         //           const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+    //         //           this.source.isLocalUpdate = true;
+    //         //           try {
+    //         //             const newContainer = newData[0].Containers[0];
+    //         //             this.source.update(udpateItem, {
+    //         //               UnitConversions: [
+    //         //                 ...udpateItem.UnitConversions.map(m => ({
+    //         //                   type: m.type,
+    //         //                   id: m.id,
+    //         //                   text: m.text + ' (' + m.ConversionRatio + ')',
+    //         //                   Container: m.id == tag.id ? newContainer : m.Container,
+    //         //                 })),
+    //         //                 { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+    //         //             }).then(() => {
+    //         //               this.source.isLocalUpdate = false;
+    //         //             });
+    //         //           } catch (err) {
+    //         //             this.source.isLocalUpdate = false;
+    //         //           }
+    //         //         },
+    //         //         onDialogClose: () => {
+    //         //         },
+    //         //       },
+    //         //       closeOnEsc: false,
+    //         //       closeOnBackdropClick: false,
+    //         //     });
+    //         //   }
+    //         // });
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           select2Option: {
+    //             placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
+    //             allowClear: true,
+    //             width: '100%',
+    //             dropdownAutoWidth: true,
+    //             minimumInputLength: 0,
+    //             keyMap: {
+    //               id: 'id',
+    //               text: 'text',
+    //             },
+    //             multiple: true,
+    //             logic: 'OR',
+    //             ajax: {
+    //               url: (params: any) => {
+    //                 return 'data:text/plan,[]';
+    //               },
+    //               delay: 0,
+    //               processResults: (data: any, params: any) => {
+    //                 return {
+    //                   results: this.unitList.filter(unit => !params.term || this.cms.smartFilter(unit.text, params.term)),
+    //                 };
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     // ContainerPath: {
+    //     //   title: 'Vị trí hàng hóa',
+    //     //   type: 'custom',
+    //     //   renderComponent: SmartTableTagsComponent,
+    //     //   width: '10%',
+    //     //   filter: {
+    //     //     type: 'custom',
+    //     //     component: SmartTableSelect2FilterComponent,
+    //     //     config: {
+    //     //       delay: 0,
+    //     //       condition: 'bleft',
+    //     //       select2Option: {
+    //     //         placeholder: this.cms.translateText('AdminProduct.Unit.title', { action: this.cms.translateText('Common.choose'), definition: '' }),
+    //     //         allowClear: true,
+    //     //         width: '100%',
+    //     //         dropdownAutoWidth: true,
+    //     //         minimumInputLength: 0,
+    //     //         keyMap: {
+    //     //           id: 'id',
+    //     //           text: 'text',
+    //     //         },
+    //     //         // multiple: true,
+    //     //         logic: 'OR',
+    //     //         ajax: {
+    //     //           url: (params: any) => {
+    //     //             return 'data:text/plan,[]';
+    //     //           },
+    //     //           delay: 0,
+    //     //           processResults: (data: any, params: any) => {
+    //     //             return {
+    //     //               results: this.shelfList.filter(shelf => !params.term || this.cms.smartFilter(shelf.text, params.term)),
+    //     //             };
+    //     //           },
+    //     //         },
+    //     //       },
+    //     //     },
+    //     //   },
+    //     //   valuePrepareFunction: (value: string, product: ProductModel) => {
+    //     //     return product.Containers as any;
+    //     //   },
+    //     //   onComponentInitFunction: (component: SmartTableTagsComponent) => {
+    //     //     component.labelAsText = (tag) => {
+    //     //       return tag.text;
+    //     //     };
+    //     //     component.renderToolTip = (tag) => {
+    //     //       return tag.text;
+    //     //     };
+    //     //     component.init.pipe(takeUntil(this.destroy$)).subscribe(row => {
 
-        //     });
-        //     component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
-        //       if (!tag.Container) {
-        //         this.cms.openDialog(AssignContainerFormComponent, {
-        //           context: {
-        //             inputMode: 'dialog',
-        //             inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
-        //             onDialogSave: async (newData: ProductModel[]) => {
-        //               // this.refresh();
-        //               // this.updateGridItems(editedItems, newData);
-        //               const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
-        //               this.source.isLocalUpdate = true;
-        //               try {
-        //                 const newContainer = newData[0].Containers[0];
-        //                 this.source.update(udpateItem, {
-        //                   UnitConversions: [
-        //                     ...udpateItem.UnitConversions.map(m => ({
-        //                       type: m.type,
-        //                       id: m.id,
-        //                       text: m.text,
-        //                       Container: m.id == tag.id ? newContainer : m.Container,
-        //                     })),
-        //                     { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
-        //                 }).then(() => {
-        //                   this.source.isLocalUpdate = false;
-        //                 });
-        //               } catch (err) {
-        //                 this.source.isLocalUpdate = false;
-        //               }
-        //             },
-        //             onDialogClose: () => {
-        //             },
-        //           },
-        //           closeOnEsc: false,
-        //           closeOnBackdropClick: false,
-        //         });
-        //       }
-        //     });
-        //   },
-        // },
-        Code: {
-          title: 'Code',
-          type: 'string',
-          width: '10%',
-        },
-        Sku: {
-          title: 'Sku',
-          type: 'string',
-          width: '15%',
-        },
-        Creator: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
-          type: 'string',
-          width: '5%',
-          valuePrepareFunction: (cell: string, row?: any) => {
-            return this.cms.getObjectText(cell);
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                logic: 'OR',
-                placeholder: 'Chọn người tạo...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                ajax: {
-                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-                    console.log(settings);
-                    const params = settings.data;
-                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
-                      success(rs);
-                    }).catch(err => {
-                      console.error(err);
-                      failure();
-                    });
-                  },
-                  delay: 300,
-                  processResults: (data: any, params: any) => {
-                    // console.info(data, params);
-                    return {
-                      results: data.map(item => {
-                        return item;
-                      }),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        Created: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
-          type: 'custom',
-          width: '5%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-        LastUpdateBy: {
-          title: this.cms.textTransform(this.cms.translate.instant('Người cập nhật'), 'head-title'),
-          type: 'string',
-          width: '5%',
-          valuePrepareFunction: (cell: string, row?: any) => {
-            return this.cms.getObjectText(cell);
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                logic: 'OR',
-                placeholder: 'Chọn người cập nhật...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                multiple: true,
-                ajax: {
-                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-                    console.log(settings);
-                    const params = settings.data;
-                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
-                      success(rs);
-                    }).catch(err => {
-                      console.error(err);
-                      failure();
-                    });
-                  },
-                  delay: 300,
-                  processResults: (data: any, params: any) => {
-                    // console.info(data, params);
-                    return {
-                      results: data.map(item => {
-                        return item;
-                      }),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        LastUpdate: {
-          title: this.cms.textTransform(this.cms.translate.instant('Cập nhật'), 'head-title'),
-          type: 'custom',
-          width: '5%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-      },
-    });
+    //     //     });
+    //     //     component.click.pipe(takeUntil(this.destroy$)).subscribe((tag: any) => {
+    //     //       if (!tag.Container) {
+    //     //         this.cms.openDialog(AssignContainerFormComponent, {
+    //     //           context: {
+    //     //             inputMode: 'dialog',
+    //     //             inputGoodsList: [{ Code: component.rowData.Code, WarehouseUnit: component.rowData.WarehouseUnit }],
+    //     //             onDialogSave: async (newData: ProductModel[]) => {
+    //     //               // this.refresh();
+    //     //               // this.updateGridItems(editedItems, newData);
+    //     //               const udpateItem = (await this.source.getAll()).find(f => component.rowData.Code == f.Code);
+    //     //               this.source.isLocalUpdate = true;
+    //     //               try {
+    //     //                 const newContainer = newData[0].Containers[0];
+    //     //                 this.source.update(udpateItem, {
+    //     //                   UnitConversions: [
+    //     //                     ...udpateItem.UnitConversions.map(m => ({
+    //     //                       type: m.type,
+    //     //                       id: m.id,
+    //     //                       text: m.text,
+    //     //                       Container: m.id == tag.id ? newContainer : m.Container,
+    //     //                     })),
+    //     //                     { type: 'STATUS', id: 'UPDATED', text: 'Updated' }]
+    //     //                 }).then(() => {
+    //     //                   this.source.isLocalUpdate = false;
+    //     //                 });
+    //     //               } catch (err) {
+    //     //                 this.source.isLocalUpdate = false;
+    //     //               }
+    //     //             },
+    //     //             onDialogClose: () => {
+    //     //             },
+    //     //           },
+    //     //           closeOnEsc: false,
+    //     //           closeOnBackdropClick: false,
+    //     //         });
+    //     //       }
+    //     //     });
+    //     //   },
+    //     // },
+    //     Code: {
+    //       title: 'Code',
+    //       type: 'string',
+    //       width: '10%',
+    //     },
+    //     Sku: {
+    //       title: 'Sku',
+    //       type: 'string',
+    //       width: '15%',
+    //     },
+    //     Creator: {
+    //       title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
+    //       type: 'string',
+    //       width: '5%',
+    //       valuePrepareFunction: (cell: string, row?: any) => {
+    //         return this.cms.getObjectText(cell);
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           condition: 'eq',
+    //           select2Option: {
+    //             logic: 'OR',
+    //             placeholder: 'Chọn người tạo...',
+    //             allowClear: true,
+    //             width: '100%',
+    //             dropdownAutoWidth: true,
+    //             minimumInputLength: 0,
+    //             keyMap: {
+    //               id: 'id',
+    //               text: 'text',
+    //             },
+    //             multiple: true,
+    //             ajax: {
+    //               transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //                 console.log(settings);
+    //                 const params = settings.data;
+    //                 this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+    //                   success(rs);
+    //                 }).catch(err => {
+    //                   console.error(err);
+    //                   failure();
+    //                 });
+    //               },
+    //               delay: 300,
+    //               processResults: (data: any, params: any) => {
+    //                 // console.info(data, params);
+    //                 return {
+    //                   results: data.map(item => {
+    //                     return item;
+    //                   }),
+    //                 };
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     Created: {
+    //       title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
+    //       type: 'custom',
+    //       width: '5%',
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableDateRangeFilterComponent,
+    //       },
+    //       renderComponent: SmartTableDateTimeComponent,
+    //       onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+    //         // instance.format$.next('medium');
+    //       },
+    //     },
+    //     LastUpdateBy: {
+    //       title: this.cms.textTransform(this.cms.translate.instant('Người cập nhật'), 'head-title'),
+    //       type: 'string',
+    //       width: '5%',
+    //       valuePrepareFunction: (cell: string, row?: any) => {
+    //         return this.cms.getObjectText(cell);
+    //       },
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableSelect2FilterComponent,
+    //         config: {
+    //           delay: 0,
+    //           condition: 'eq',
+    //           select2Option: {
+    //             logic: 'OR',
+    //             placeholder: 'Chọn người cập nhật...',
+    //             allowClear: true,
+    //             width: '100%',
+    //             dropdownAutoWidth: true,
+    //             minimumInputLength: 0,
+    //             keyMap: {
+    //               id: 'id',
+    //               text: 'text',
+    //             },
+    //             multiple: true,
+    //             ajax: {
+    //               transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //                 console.log(settings);
+    //                 const params = settings.data;
+    //                 this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
+    //                   success(rs);
+    //                 }).catch(err => {
+    //                   console.error(err);
+    //                   failure();
+    //                 });
+    //               },
+    //               delay: 300,
+    //               processResults: (data: any, params: any) => {
+    //                 // console.info(data, params);
+    //                 return {
+    //                   results: data.map(item => {
+    //                     return item;
+    //                   }),
+    //                 };
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //     LastUpdate: {
+    //       title: this.cms.textTransform(this.cms.translate.instant('Cập nhật'), 'head-title'),
+    //       type: 'custom',
+    //       width: '5%',
+    //       filter: {
+    //         type: 'custom',
+    //         component: SmartTableDateRangeFilterComponent,
+    //       },
+    //       renderComponent: SmartTableDateTimeComponent,
+    //       onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
+    //         // instance.format$.next('medium');
+    //       },
+    //     },
+    //   },
+    // });
   }
 
   ngOnInit() {
