@@ -237,7 +237,7 @@
                                         <div class="row">
                                             <div class="col-md-3 col-sm-4 col-is-4" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                 <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [touchedValidate]="false" [customIcons]="unitCustomIcons">
-                                                    <ngx-select2 formControlName="Unit" [data]="detail['unitList']" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Unit" [data]="detail['unitList']" [select2Option]="select2OptionForUnit"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-md-7 col-sm-4 col-is-4" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'">
