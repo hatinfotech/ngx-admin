@@ -62,7 +62,7 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
     }
 
     this.pagination = false;
-    this.maxBlocksInCache = 5;
+    // this.maxBlocksInCache = 5;
     this.paginationPageSize = 100;
     this.cacheBlockSize = 100;
   }
@@ -245,6 +245,13 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
           },
         },
         {
+          headerName: 'Tiêu đề',
+          field: 'Title',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
           headerName: 'Ngày đặt hàng',
           field: 'DateOfOrder',
           width: 180,
@@ -292,13 +299,6 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
           },
           cellRenderer: AgDateCellRenderer,
-        },
-        {
-          headerName: 'Tiêu đề',
-          field: 'Title',
-          width: 300,
-          filter: 'agTextColumnFilter',
-          autoHeight: true,
         },
         {
           ...agMakeCurrencyColDef(this.cms),

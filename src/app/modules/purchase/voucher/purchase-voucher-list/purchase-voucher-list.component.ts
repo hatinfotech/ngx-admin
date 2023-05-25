@@ -252,6 +252,13 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
           },
         },
         {
+          headerName: 'Tiêu đề',
+          field: 'Title',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
           headerName: 'Ngày đặt hàng',
           field: 'DateOfPurchase',
           width: 180,
@@ -299,13 +306,6 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
           },
           cellRenderer: AgDateCellRenderer,
-        },
-        {
-          headerName: 'Tiêu đề',
-          field: 'Title',
-          width: 300,
-          filter: 'agTextColumnFilter',
-          autoHeight: true,
         },
         {
           ...agMakeCurrencyColDef(this.cms),

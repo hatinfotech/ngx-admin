@@ -186,7 +186,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() paginationPageSize = 20;
   @Input() cacheBlockSize = this.paginationPageSize;
   @Input() paginationAutoPageSize = false;
-  @Input() cacheOverflowSize = 10;
+  @Input() cacheOverflowSize = 3;
   @Input() maxConcurrentDatasourceRequests = 1;
   @Input() infiniteInitialRowCount = null;
   @Input() maxBlocksInCache = 50;// 50x20 = 1000 items // Set 50 then refresh ag-grid make 50 request, resolution: rewrite refresh function: only reload visible item and clear cache
