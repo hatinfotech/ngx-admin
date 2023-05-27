@@ -1,45 +1,47 @@
-import { Type } from '@angular/core';
-// import { SalesModule } from './../../sales.module';
+import { Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { SalesVoucherModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { take, takeUntil, filter } from 'rxjs/operators';
-import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { UserGroupModel } from '../../../../models/user-group.model';
 import { AppModule } from '../../../../app.module';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { DatePipe } from '@angular/common';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-sales-voucher-list',
   templateUrl: './sales-voucher-list.component.html',
   styleUrls: ['./sales-voucher-list.component.scss'],
 })
-export class SalesVoucherListComponent extends ServerDataManagerListComponent<SalesVoucherModel> implements OnInit {
+export class SalesVoucherListComponent extends AgGridDataManagerListComponent<SalesVoucherModel, SalesVoucherFormComponent> implements OnInit {
 
   componentName: string = 'SalesVoucherListComponent';
   formPath = '/sales/sales-voucher/form';
   apiPath = '/sales/sales-vouchers';
-  idKey = 'Code';
+  idKey = ['Code'];
+
   formDialog = SalesVoucherFormComponent;
   printDialog = SalesVoucherPrintComponent;
 
-  reuseDialog = true;
-  static _dialog: NbDialogRef<SalesVoucherListComponent>;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
 
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-  loaded = false;
+  @Input() gridHeight = '100%';
 
   constructor(
     public apiService: ApiService,
@@ -47,14 +49,25 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<SalesVoucherListComponent>,
+    public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
   async init() {
-    return super.init().then(rs => {
+    return super.init().then(async state => {
       this.actionButtonList.unshift({
         type: 'button',
         name: 'unrecord',
@@ -67,7 +80,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.cms.showDialog('Bỏ ghi sổ', 'Bạn có chắc muốn bỏ ghi các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Phiếu mua hàng', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -80,7 +93,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.cms.toastService.show('Bỏ ghi thành công !', 'Bỏ ghi sổ', { status: 'success' });
+                  this.cms.toastService.show('Bỏ ghi thành công !', 'Phiếu mua hàng', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -100,7 +113,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.cms.showDialog('Duyệt phiếu', 'Bạn có chắc muốn duyệt các phiếu hàng đã chọn ?', [
+          this.cms.showDialog('Phiếu mua hàng', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -113,7 +126,7 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
               focus: true,
               action: () => {
                 this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-                  this.cms.toastService.show('Duyệt thành công !', 'Duyệt phiếu', { status: 'success' });
+                  this.cms.toastService.show('Duyệt thành công !', 'Phiếu mua hàng', { status: 'success' });
                   this.refresh();
                 });
               }
@@ -121,369 +134,230 @@ export class SalesVoucherListComponent extends ServerDataManagerListComponent<Sa
           ]);
         }
       });
-      return rs;
-    });
-  }
-
-  editing = {};
-  rows = [];
-
-  stateDic = {
-    APPROVE: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
-    IMPLEMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
-  };
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: this.isChoosedMode ? false : {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        No: {
-          title: 'No.',
-          type: 'string',
-          width: '1%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'writetobook',
+        status: 'danger',
+        label: 'Ghi sổ lại',
+        title: 'Ghi sổ lại',
+        size: 'medium',
+        icon: 'npm-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
         },
-        Code: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '5%',
-        },
-        Object: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
-          type: 'string',
-          width: '20%',
-          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          valuePrepareFunction: (cell: any, row: SalesVoucherModel) => {
-            return row.ObjectName;
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
-                  placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                    item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                    return item;
-                  }
-                }),
-                multiple: true,
-                logic: 'OR',
-                allowClear: true,
+        click: () => {
+          this.cms.openDialog(DialogFormComponent, {
+            context: {
+              title: 'ID phiếu cần ghi sổ lại',
+              width: '600px',
+              onInit: async (form, dialog) => {
+                return true;
               },
-            },
-          },
-        },
-        Title: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.title'), 'head-title'),
-          type: 'string',
-          width: '15%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-        },
-        Creator: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.creator'), 'head-title'),
-          type: 'string',
-          width: '10%',
-          valuePrepareFunction: (cell: string, row?: any) => {
-            return this.cms.getObjectText(cell);
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                logic: 'OR',
-                placeholder: 'Chọn người tạo...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
+              controls: [
+                {
+                  name: 'Ids',
+                  label: 'Link hình',
+                  placeholder: 'Mỗi ID trên 1 dòng',
+                  type: 'textarea',
+                  initValue: this.selectedIds.join('\n'),
                 },
-                multiple: true,
-                ajax: {
-                  transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-                    console.log(settings);
-                    const params = settings.data;
-                    this.apiService.getPromise('/user/users', { 'search': params['term'], includeIdText: true }).then(rs => {
-                      success(rs);
-                    }).catch(err => {
-                      console.error(err);
-                      failure();
-                    });
-                  },
-                  delay: 300,
-                  processResults: (data: any, params: any) => {
-                    // console.info(data, params);
-                    return {
-                      results: data.map(item => {
-                        return item;
-                      }),
-                    };
-                  },
+              ],
+              actions: [
+                {
+                  label: 'Trở về',
+                  icon: 'back',
+                  status: 'basic',
+                  action: async () => { return true; },
                 },
-              },
-            },
-          },
-        },
-        Created: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.dateOfCreated'), 'head-title'),
-          type: 'custom',
-          width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-        DateOfSale: {
-          title: this.cms.textTransform(this.cms.translate.instant('Sales.dateOfSales'), 'head-title'),
-          type: 'custom',
-          width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-        RelativeVouchers: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableRelativeVouchersComponent,
-          width: '10%',
-        },
-        Amount: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.amount'), 'head-title'),
-          type: 'currency',
-          width: '5%',
-          class: 'align-right',
-          position: 'right',
-        },
-        Copy: {
-          title: 'Copy',
-          type: 'custom',
-          width: '5%',
-          exclude: this.isChoosedMode,
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'copy';
-            instance.display = true;
-            instance.status = 'warning';
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.subscribe(async (row: SalesVoucherModel) => {
+                {
+                  label: 'Ghi sổ lại',
+                  icon: 'npm-outline',
+                  status: 'danger',
+                  action: async (form: FormGroup) => {
 
-              this.cms.openDialog(SalesVoucherFormComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [row.Code],
-                  isDuplicate: true,
-                  onDialogSave: (newData: SalesVoucherModel[]) => {
-                    // if (onDialogSave) onDialogSave(row);
-                  },
-                  onDialogClose: () => {
-                    // if (onDialogClose) onDialogClose();
-                    this.refresh();
-                  },
-                },
-              });
+                    let ids: string[] = form.get('Ids').value.trim()?.split('\n');
 
-            });
-          },
-        },
-        State: {
-          title: this.cms.translateText('Common.state'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'success';
-            instance.disabled = this.isChoosedMode;
-            // instance.style = 'text-align: right';
-            // instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.approved');
-            instance.label = this.cms.translateText('Common.approved');
-            instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.salesVoucher[value || ''];
-              instance.label = this.cms.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap?.outline;
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-              this.preview([rowData]);
-            });
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                logic: 'OR',
-                placeholder: 'Chọn trạng thái...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
+                    if (ids && ids.length > 0) {
+                      let toastRef = this.cms.showToast('Các đơn hàng đang được ghi sổ lại', 'Đang ghi sổ lại', { status: 'info', duration: 60000 });
+                      try {
+                        ids = [...new Set(ids)];
+                        this.loading = true;
+                        await this.apiService.putPromise(this.apiPath, { reChangeState: 'UNRECORDED,APPROVED' }, ids.map(id => ({ Code: id.trim() })));
+                        toastRef.close();
+                        toastRef = this.cms.showToast('Các đơn hàng đã được ghi sổ lại', 'Hoàn tất ghi sổ lại', { status: 'success', duration: 10000 });
+                        this.loading = false;
+                      } catch (err) {
+                        console.error(err);
+                        this.loading = false;
+                        toastRef.close();
+                        toastRef = this.cms.showToast('Các đơn hàng chưa đượ ghi sổ lại do có lỗi xảy ra trong quá trình thực thi', 'Lỗi ghi sổ lại', { status: 'danger', duration: 30000 });
+                      }
+                    }
+
+                    return true;
+                  },
                 },
-                multiple: true,
-                data: Object.keys(AppModule.processMaps.salesVoucher).map(stateId => ({
-                  id: stateId,
-                  text: this.cms.translateText(AppModule.processMaps.salesVoucher[stateId].label)
-                })).filter(f => f.id != '')
-              },
+              ],
             },
-          },
-        },
-        Permission: {
-          title: this.cms.translateText('Common.permission'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          exclude: this.isChoosedMode,
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'shield';
-            instance.display = true;
-            instance.status = 'danger';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-
-              this.cms.openDialog(ResourcePermissionEditComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [rowData.Code],
-                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.cms.translateText('Sales.SalesVoucher  .title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                  // resrouce: rowData,
-                  apiPath: '/sales/sales-vouchers',
-                }
-              });
-            });
-          },
-        },
-        Preview: {
-          title: this.cms.translateText('Common.show'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'external-link-outline';
-            instance.display = true;
-            instance.status = 'primary';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: SalesVoucherModel) => {
-              this.preview([rowData]);
-            });
-          },
+          });
         }
-      },
+      });
+
+      const processingMap = AppModule.processMaps['salesVoucher'];
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
+        },
+        {
+          headerName: 'Mã',
+          field: 'Code',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          pinned: 'left',
+        },
+        {
+          headerName: 'Nhà cung cấp',
+          field: 'Object',
+          pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Tiêu đề',
+          field: 'Title',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          headerName: 'Ngày bán hàng',
+          field: 'DateOfSale',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
+          headerName: 'Chứng từ liên quan',
+          field: 'RelativeVouchers',
+          width: 330,
+        },
+        {
+          headerName: 'Người tạo',
+          field: 'Creator',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Ngày tạo',
+          field: 'Created',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Số tiền',
+          field: 'Amount',
+          pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            this.preview([data]);
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          width: 155,
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
+        },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  async getFormData(ids: string[]) {
-    return this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
-  }
-
-  initDataSource() {
-    const source = super.initDataSource();
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['includeCreator'] = true;
-      params['includeContact'] = true;
-      params['includeRelativeVouchers'] = true;
-      params['sort_Id'] = 'desc';
-      // params['eq_Type'] = 'PAYMENT';
-      return params;
-    };
-
-    return source;
-  }
-
-  /** Api get funciton */
-  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
-  //   params['includeCategories'] = true;
-  //   super.executeGet(params, success, error, complete);
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
   // }
 
-  getList(callback: (list: UserGroupModel[]) => void) {
-    super.getList((rs) => {
-      // rs.map((product: any) => {
-      //   product['Unit'] = product['Unit']['Name'];
-      //   if (product['Categories']) {
-      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
-      //   }
-      //   return product;
-      // });
-      if (callback) callback(rs);
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeCreator'] = true;
+    params['includeContact'] = true;
+    params['includeRelativeVouchers'] = true;
+    // params['sort_Id'] = 'desc';
+    return params;
+  }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: SalesVoucherModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(SalesVoucherFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: SalesVoucherModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
     });
+    return false;
   }
 
-  // async preview(data: SalesVoucherModel[]) {
-  //   this.cms.openDialog(SalesVoucherPrintComponent, {
-  //     context: {
-  //       showLoadinng: true,
-  //       title: 'Xem trước',
-  //       id: data.map(m => m[this.idKey]),
-  //       mode: 'print',
-  //       idKey: ['Code'],
-  //       // approvedConfirm: true,
-  //       onClose: (data: SalesVoucherModel) => {
-  //         this.refresh();
-  //       },
-  //     },
-  //   });
-  //   return false;
-  // }
-
+  onGridReady(params) {
+    super.onGridReady(params);
+  }
 }

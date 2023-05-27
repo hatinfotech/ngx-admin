@@ -33,7 +33,7 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
   formPath = '/purchase/order-vouchers/form';
   apiPath = '/purchase/order-vouchers';
   idKey = ['Code'];
-  
+
   printDialog = PurchaseOrderVoucherPrintComponent;
   formDialog = PurchaseOrderVoucherFormComponent;
 
@@ -316,12 +316,8 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
           width: 155,
         },
         {
-          ...agMakeCommandColDef(this.cms, (data) => {
-            this.openForm([data.Code]);
-          }, (data) => {
-            this.deleteConfirm([data.Code]);
-          }),
-          headerName: 'Sửa/Xóa',
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
         },
       ] as ColDef[]);
 
@@ -338,8 +334,9 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
-    params['includeCreator'] = true;
+    params['includeContact'] = true;
     params['includeObject'] = true;
+    params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';
     return params;

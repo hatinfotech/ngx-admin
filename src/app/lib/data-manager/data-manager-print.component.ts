@@ -43,45 +43,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
     public ref?: NbDialogRef<DataManagerPrintComponent<M>>,
   ) {
     super(cms, router, apiService, ref);
-    this.actionButtonList.unshift({
-      name: 'print',
-      status: 'primary',
-      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => false,
-      hidden: () => false,
-      click: (event?: any, option?: ActionControlListOption) => {
-        if (this.data.length > 1) {
-          this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText('Print.multiPrintConfirm?'), [
-            {
-              label: this.cms.translateText('Common.close'),
-              status: 'primary',
-              action: () => {
 
-              },
-            },
-            {
-              label: this.cms.translateText('Common.all'),
-              status: 'danger',
-              action: () => {
-                this.print();
-              },
-            },
-            {
-              label: this.cms.translateText('Common.current'),
-              status: 'success',
-              action: () => {
-                this.print(option?.index);
-              },
-            },
-          ]);
-        } else {
-          this.print(option?.index);
-        }
-      },
-    });
   }
 
   ngOnInit() {
@@ -105,6 +67,50 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   async init() {
     await this.loadCache();
     return super.init().then(async rs => {
+
+      this.actionButtonList = [
+        {
+          name: 'print',
+          status: 'primary',
+          label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
+          icon: 'printer',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
+          size: 'medium',
+          disabled: () => false,
+          hidden: () => false,
+          click: (event?: any, option?: ActionControlListOption) => {
+            if (this.data.length > 1) {
+              this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText('Print.multiPrintConfirm?'), [
+                {
+                  label: this.cms.translateText('Common.close'),
+                  status: 'primary',
+                  action: () => {
+
+                  },
+                },
+                {
+                  label: this.cms.translateText('Common.all'),
+                  status: 'danger',
+                  action: () => {
+                    this.print();
+                  },
+                },
+                {
+                  label: this.cms.translateText('Common.current'),
+                  status: 'success',
+                  action: () => {
+                    this.print(option?.index);
+                  },
+                },
+              ]);
+            } else {
+              this.print(option?.index);
+            }
+          },
+        },
+        ...this.actionButtonList,
+      ];
+
       if ((!this.data || this.data.length === 0) && this.id) {
         try {
           this.data = await this.getFormData(this.id);

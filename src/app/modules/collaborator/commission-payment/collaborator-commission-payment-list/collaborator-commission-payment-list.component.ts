@@ -46,7 +46,7 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<CashPaymentVoucherListComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionPaymentListComponent>,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
   }

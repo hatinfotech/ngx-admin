@@ -33,7 +33,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   componentName: string = 'CommercePosOrderListComponent';
   formPath = '/commerce-pos/commerce-pos-order/form';
   apiPath = '/commerce-pos/orders';
-  idKey = 'Code';
+  idKey = ['Code'];
   formDialog = CommercePosOrderFormComponent;
   printDialog = CommercePosOrderPrintComponent;
 
@@ -207,7 +207,7 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           ...agMakeSelectionColDef(this.cms),
           headerName: 'ID',
           field: 'Id',
-          width: 80,
+          width: 100,
           valueGetter: 'node.data.Id',
           // sortingOrder: ['desc', 'asc'],
           initialSort: 'desc',
@@ -298,12 +298,8 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           width: 155,
         },
         {
-          ...agMakeCommandColDef(this.cms, (data) => {
-            this.openForm([data.Code]);
-          }, (data) => {
-            this.deleteConfirm([data.Code]);
-          }),
-          headerName: 'Sửa/Xóa',
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
         },
       ] as ColDef[]);
 

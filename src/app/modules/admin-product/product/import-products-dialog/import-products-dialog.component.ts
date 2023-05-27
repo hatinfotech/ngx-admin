@@ -645,7 +645,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
           },
         ],
         {
-          ...agMakeCommandColDef(this.cms, null, (data) => {
+          ...agMakeCommandColDef(null, this.cms, null, (data) => {
             // this.deleteConfirm([data.Code]);
           }),
           headerName: 'Xóa',

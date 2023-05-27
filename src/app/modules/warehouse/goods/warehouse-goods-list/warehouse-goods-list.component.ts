@@ -13,22 +13,16 @@ import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
-import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { ProductCategoryModel, ProductGroupModel, ProductModel, ProductUnitModel } from '../../../../models/product.model';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { FormGroup } from '@angular/forms';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
-import { SmartTableThumbnailComponent, SmartTableTagsComponent, SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSelect2FilterComponent, SmartTableDateRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { IdTextModel } from '../../../../models/common.model';
 import { FileModel } from '../../../../models/file.model';
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
-import { ImportProductDialogComponent } from '../../../admin-product/product/import-products-dialog/import-products-dialog.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { agMakeNumberColDef } from '../../../../lib/custom-element/ag-list/column-define/number.define';
 import { agMakeButtonsColDef } from '../../../../lib/custom-element/ag-list/column-define/buttons.define';
@@ -37,6 +31,8 @@ import { WarehouseGoodsFindOrderTempPrintComponent } from '../warehouse-goods-fi
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from '../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 
 @Component({
   selector: 'ngx-warehouse-goods-list',
@@ -435,7 +431,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
             select2Option: {
               ...this.cms.makeSelect2AjaxOption('/warehouse/goods-containers', { onlyIdText: true }, {
                 placeholder: 'Chọn vị trí...', limit: 10, prepareReaultItem: (item) => {
-                  // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  item['text'] = '[' + item['FindOrder'] + ']' + item['text'] + ' (' + item['id'] + ')';
                   return item;
                 }
               }),
@@ -529,87 +525,6 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
             }
           },
         },
-        // {
-        //   headerName: 'Người tạo',
-        //   field: 'Creator',
-        //   // pinned: 'left',
-        //   width: 200,
-        //   cellRenderer: AgTextCellRenderer,
-        //   filter: AgSelect2Filter,
-        //   filterParams: {
-        //     select2Option: {
-        //       ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-        //         placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
-        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-        //           return item;
-        //         }
-        //       }),
-        //       multiple: true,
-        //       logic: 'OR',
-        //       allowClear: true,
-        //     }
-        //   },
-        // },
-        // {
-        //   headerName: 'Ngày tạo',
-        //   field: 'Created',
-        //   width: 180,
-        //   filter: 'agDateColumnFilter',
-        //   filterParams: {
-        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-        //   },
-        //   initialSort: 'desc',
-        //   cellRenderer: AgDateCellRenderer,
-        // },
-        // {
-        //   headerName: 'Người cập nhật',
-        //   field: 'LastUpdateBy',
-        //   // pinned: 'left',
-        //   width: 200,
-        //   cellRenderer: AgTextCellRenderer,
-        //   filter: AgSelect2Filter,
-        //   filterParams: {
-        //     select2Option: {
-        //       ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-        //         placeholder: 'Chọn người cập nhật...', limit: 10, prepareReaultItem: (item) => {
-        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-        //           return item;
-        //         }
-        //       }),
-        //       multiple: true,
-        //       logic: 'OR',
-        //       allowClear: true,
-        //     }
-        //   },
-        // },
-        // {
-        //   headerName: 'Ngày cập nhật',
-        //   field: 'LastUpdate',
-        //   width: 180,
-        //   filter: 'agDateColumnFilter',
-        //   filterParams: {
-        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-        //   },
-        //   cellRenderer: AgDateCellRenderer,
-        // },
-        // {
-        //   headerName: 'Ngày bán hàng',
-        //   field: 'DateOfSale',
-        //   width: 180,
-        //   filter: 'agDateColumnFilter',
-        //   filterParams: {
-        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-        //   },
-        //   cellRenderer: AgDateCellRenderer,
-        // },
-        // {
-        //   ...agMakeTagsColDef(this.cms, (tag) => {
-        //     this.cms.previewVoucher(tag.type, tag.id);
-        //   }),
-        //   headerName: 'Chứng từ liên quan',
-        //   field: 'RelativeVouchers',
-        //   width: 300,
-        // },
         {
           headerName: 'Ngày tạo',
           field: 'Created',
@@ -620,28 +535,6 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
           },
           cellRenderer: AgDateCellRenderer,
         },
-        // {
-        //   headerName: 'Tiêu đề',
-        //   field: 'Title',
-        //   width: 300,
-        //   filter: 'agTextColumnFilter',
-        //   autoHeight: true,
-        // },
-        // {
-        //   ...agMakeCurrencyColDef(this.cms),
-        //   headerName: 'Số tiền',
-        //   field: 'Amount',
-        //   pinned: 'right',
-        //   width: 150,
-        // },
-        // {
-        //   ...agMakeStateColDef(this.cms, processingMap, (data) => {
-        //     this.preview([data]);
-        //   }),
-        //   headerName: 'Trạng thái',
-        //   field: 'State',
-        //   width: 155,
-        // },
         {
           ...agMakeNumberColDef(this.cms),
           headerName: 'Tồn kho',
@@ -674,13 +567,13 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
             }
           },
         },
-        {
-          ...agMakeNumberColDef(this.cms),
-          headerName: 'Giá trị tồn',
-          field: 'InventoryCost',
-          pinned: 'right',
-          width: 120,
-        },
+        // {
+        //   ...agMakeNumberColDef(this.cms),
+        //   headerName: 'Giá trị tồn',
+        //   field: 'InventoryCost',
+        //   pinned: 'right',
+        //   width: 120,
+        // },
         {
           ...agMakeButtonsColDef(this.cms, [
             {
@@ -689,7 +582,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
               status: 'success',
               outline: false,
               icon: 'archive-outline',
-              action: (params: any, data: ProductModel) => {
+              action: async (params: any, data: ProductModel) => {
                 let editedItem = data;
                 this.cms.openDialog(AssignNewContainerFormComponent, {
                   context: {
@@ -704,6 +597,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                   closeOnEsc: false,
                   closeOnBackdropClick: false,
                 });
+                return true;
               }
             },
             {
@@ -712,7 +606,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
               status: 'info',
               outline: false,
               icon: 'printer-outline',
-              action: (params: any, buttonConfig: ProductModel) => {
+              action: async (params: any, buttonConfig: ProductModel) => {
                 if (this.cms.getObjectId(params.data.Container)) {
                   this.cms.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
                     context: {
@@ -723,6 +617,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                 } else {
                   this.cms.toastService.show('Hàng hóa chứa được cài đặt vị trí', 'In tem nhận thức', { status: 'warning' })
                 }
+                return true
               }
             },
             {
@@ -732,46 +627,174 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
               outline: false,
               icon: 'external-link-outline',
               // disabled: (data: any) => !data.IsManageByAccessNumber,
-              action: (nodeParams: any, buttonConfig: ProductModel) => {
+              action: async (nodeParams: any, buttonConfig: ProductModel) => {
                 if (!nodeParams.data.Container) {
                   this.cms.showToast('Bạn chỉ có thể in tem nhận thức cho các hàng hóa đã cài đặt vị trí.', 'Hàng hóa chưa được cài đặt vị trí !', { status: 'warning' });
                   return;
                 }
                 if (!nodeParams.data.IsManageByAccessNumber) {
                   // this.cms.showToast('Hàng hóa này không được quản lý theo số truy xuất.', 'Hàng hóa không quản lý theo số truy xuất !', { status: 'warning' });
+                  // this.cms.openDialog(AgDynamicListComponent, {
+                  //   context: {
+                  //     title: 'Lịch sử nhập kho',
+                  //     width: '90%',
+                  //     height: '95vh',
+                  //     apiPath: '/warehouse/reports',
+                  //     idKey: 'Voucher',
+                  //     rowMultiSelectWithClick: true,
+                  //     suppressRowClickSelection: false,
+                  //     // rowModelType: 'clientSide',
+                  //     // rowData: data.AccessNumbers?.map(accessNumber => ({
+                  //     //   ...data,
+                  //     //   AccessNumber: accessNumber,
+                  //     // })),
+                  //     getRowNodeId: (item: any) => {
+                  //       return item.AccessNumber
+                  //     },
+                  //     prepareApiParams: (params, getRowParams) => {
+                  //       // const sites = formGroup.get('Sites').value;
+                  //       // params['id'] = nodeParams.data.AccessNumbers && nodeParams.data.AccessNumbers.length > 0 ? nodeParams.data.AccessNumbers : '-1';
+                  //       params['reportVoucherByAccountAndGoods'] = true;
+                  //       return params;
+                  //     },
+                  //     onDialogChoose: (chooseItems) => {
+                  //       console.log(chooseItems);
+                  //       if (chooseItems && chooseItems.length > 0) {
+                  //         // this.loading = true;
+                  //         this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                  //           context: {
+                  //             id: chooseItems.map(m => this.cms.getObjectId(m['AccessNumber']))
+                  //           }
+                  //         });
+                  //       }
+
+                  //     },
+                  //     columnDefs: [
+                  //       {
+                  //         ...agMakeSelectionColDef(this.cms),
+                  //         headerName: 'STT',
+                  //         // width: 52,
+                  //         field: 'Id',
+                  //         valueGetter: 'node.data.Id',
+                  //         // cellRenderer: 'loadingCellRenderer',
+                  //         // sortable: true,
+                  //         // pinned: 'left',
+                  //       },
+                  //       {
+                  //         headerName: this.cms.textTransform(this.cms.translate.instant('Warehouse.dateOfReceipted'), 'head-title'),
+                  //         field: 'DateOfReceipted',
+                  //         width: 180,
+                  //         pinned: 'left',
+                  //         filter: 'agDateColumnFilter',
+                  //         filterParams: {
+                  //           inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+                  //         },
+                  //         cellRenderer: AgDateCellRenderer,
+                  //       },
+                  //       {
+                  //         headerName: this.cms.translateText('Common.voucher'),
+                  //         field: 'Voucher',
+                  //         width: 150,
+                  //         filter: 'agTextColumnFilter',
+                  //         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                  //         filterParams: {
+                  //           filterOptions: ['contains'],
+                  //           textMatcher: ({ value, filterText }) => {
+                  //             var literalMatch = this.cms.smartFilter(value, filterText);
+                  //             return literalMatch;
+                  //           },
+                  //           trimInput: true,
+                  //           debounceMs: 1000,
+                  //         },
+                  //         cellRenderer: 'textRender',
+                  //         pinned: 'left',
+                  //       },
+                  //       {
+                  //         headerName: 'Nhà cung cấp',
+                  //         field: 'Object',
+                  //         pinned: 'left',
+                  //         width: 400,
+                  //         cellRenderer: AgTextCellRenderer,
+                  //         filter: AgSelect2Filter,
+                  //         valueGetter: 'node.data.ObjectName',
+                  //         filterParams: {
+                  //           select2Option: {
+                  //             ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                  //               placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  //                 item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  //                 return item;
+                  //               }
+                  //             }),
+                  //             multiple: true,
+                  //             logic: 'OR',
+                  //             allowClear: true,
+                  //           }
+                  //         },
+                  //       },
+                  //       {
+                  //         headerName: 'Tiêu đề',
+                  //         field: 'Title',
+                  //         width: 500,
+                  //         filter: 'agTextColumnFilter',
+                  //         autoHeight: true,
+                  //       },
+                  //       {
+                  //         headerName: 'Số truy xuất',
+                  //         field: 'AccessNumber',
+                  //         width: 300,
+                  //         pinned: 'right',
+                  //         filter: 'agTextColumnFilter',
+                  //         autoHeight: true,
+                  //       },
+                  //       {
+                  //         ...agMakeButtonsColDef(this.cms, [
+                  //           {
+                  //             name: 'print',
+                  //             // label: 'In',
+                  //             status: 'success',
+                  //             outline: false,
+                  //             icon: 'printer-outline',
+                  //             action: async (params: any, data: ProductModel) => {
+                  //               let editedItem = params.data;
+                  //               this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+                  //                 context: {
+                  //                   id: params.data.AccessNumber
+                  //                 }
+                  //               });
+                  //               return true;
+                  //             }
+                  //           },
+                  //         ]),
+                  //         headerName: 'Action'
+                  //       }
+                  //     ],
+                  //     onInit: (component) => {
+
+                  //     }
+                  //   }
+                  // });
+
                   this.cms.openDialog(AgDynamicListComponent, {
                     context: {
-                      title: 'Lịch sử nhập kho',
+                      title: 'Lịch sử nhập hàng',
                       width: '90%',
                       height: '95vh',
-                      apiPath: '/warehouse/reports',
-                      idKey: 'Voucher',
-                      rowMultiSelectWithClick: true,
-                      suppressRowClickSelection: false,
-                      // rowModelType: 'clientSide',
-                      // rowData: data.AccessNumbers?.map(accessNumber => ({
-                      //   ...data,
-                      //   AccessNumber: accessNumber,
-                      // })),
-                      getRowNodeId: (item: any) => {
-                        return item.AccessNumber
+                      apiPath: '/accounting/reports',
+                      idKey: ['Voucher', 'WriteNo'],
+                      getRowNodeId: (item) => {
+                        return item.Voucher + '-' + item.WriteNo;
                       },
-                      prepareApiParams: (params, getRowParams) => {
-                        // const sites = formGroup.get('Sites').value;
-                        // params['id'] = nodeParams.data.AccessNumbers && nodeParams.data.AccessNumbers.length > 0 ? nodeParams.data.AccessNumbers : '-1';
-                        params['reportVoucherByAccountAndGoods'] = true;
-                        return params;
+                      // rowMultiSelectWithClick: true,
+                      // suppressRowClickSelection: false,
+                      prepareApiParams: (exParams, getRowParams) => {
+                        exParams['eq_VoucherType'] = 'PURCHASE';
+                        exParams['eq_Accounts'] = [632, 151, 152, 153, 154, 155, 156, 157, 158];
+                        exParams['reportDetailByAccountAndObject'] = true;
+                        exParams['groupBy'] = 'Voucher,WriteNo';
+                        exParams['eq_Product'] = `[${nodeParams.node.data.Code}]`;
+                        return exParams;
                       },
                       onDialogChoose: (chooseItems) => {
-                        console.log(chooseItems);
-                        if (chooseItems && chooseItems.length > 0) {
-                          // this.loading = true;
-                          this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
-                            context: {
-                              id: chooseItems.map(m => this.cms.getObjectId(m['AccessNumber']))
-                            }
-                          });
-                        }
 
                       },
                       columnDefs: [
@@ -780,26 +803,23 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                           headerName: 'STT',
                           // width: 52,
                           field: 'Id',
-                          valueGetter: 'node.data.Id',
-                          // cellRenderer: 'loadingCellRenderer',
-                          // sortable: true,
-                          // pinned: 'left',
+                          valueGetter: 'node.data.Voucher',
                         },
                         {
-                          headerName: this.cms.textTransform(this.cms.translate.instant('Warehouse.dateOfReceipted'), 'head-title'),
-                          field: 'DateOfReceipted',
+                          headerName: 'Ngày nhập',
+                          field: 'VoucherDate',
                           width: 180,
-                          pinned: 'left',
                           filter: 'agDateColumnFilter',
                           filterParams: {
                             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
                           },
                           cellRenderer: AgDateCellRenderer,
+                          // initialSort: 'desc'
                         },
                         {
-                          headerName: this.cms.translateText('Common.voucher'),
+                          headerName: 'Voucher',
                           field: 'Voucher',
-                          width: 150,
+                          width: 200,
                           filter: 'agTextColumnFilter',
                           headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
                           filterParams: {
@@ -815,13 +835,13 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                           pinned: 'left',
                         },
                         {
-                          headerName: 'Nhà cung cấp',
+                          headerName: this.cms.textTransform(this.cms.translate.instant('Common.supplier'), 'head-title'),
                           field: 'Object',
                           pinned: 'left',
-                          width: 400,
+                          width: 250,
                           cellRenderer: AgTextCellRenderer,
-                          filter: AgSelect2Filter,
                           valueGetter: 'node.data.ObjectName',
+                          filter: AgSelect2Filter,
                           filterParams: {
                             select2Option: {
                               ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
@@ -838,47 +858,99 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                         },
                         {
                           headerName: 'Tiêu đề',
-                          field: 'Title',
-                          width: 500,
+                          field: 'VoucherDescription',
+                          width: 400,
                           filter: 'agTextColumnFilter',
-                          autoHeight: true,
-                        },
-                        {
-                          headerName: 'Số truy xuất',
-                          field: 'AccessNumber',
-                          width: 300,
-                          pinned: 'right',
-                          filter: 'agTextColumnFilter',
-                          autoHeight: true,
-                        },
-                        {
-                          ...agMakeButtonsColDef(this.cms, [
-                            {
-                              name: 'print',
-                              // label: 'In',
-                              status: 'success',
-                              outline: false,
-                              icon: 'printer-outline',
-                              action: (params: any, data: ProductModel) => {
-                                let editedItem = params.data;
-                                this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
-                                  context: {
-                                    id: params.data.AccessNumber
-                                  }
-                                });
-                              }
+                          headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                          filterParams: {
+                            filterOptions: ['contains'],
+                            textMatcher: ({ value, filterText }) => {
+                              var literalMatch = this.cms.smartFilter(value, filterText);
+                              return literalMatch;
                             },
-                          ]),
-                          headerName: 'Action'
-                        }
+                            trimInput: true,
+                            debounceMs: 1000,
+                          }
+                        },
+                        {
+                          headerName: 'Tên sản phẩm',
+                          field: 'Product',
+                          width: 400,
+                          valueGetter: 'node.data.Description',
+                          filter: 'agTextColumnFilter',
+                          headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                          filterParams: {
+                            filterOptions: ['contains'],
+                            textMatcher: ({ value, filterText }) => {
+                              var literalMatch = this.cms.smartFilter(value, filterText);
+                              return literalMatch;
+                            },
+                            trimInput: true,
+                            debounceMs: 1000,
+                          }
+                        },
+                        {
+                          ...agMakeNumberColDef(this.cms),
+                          headerName: 'Số lượng',
+                          field: 'Quantity',
+                          pinned: 'right',
+                          width: 120,
+                        },
+                        {
+                          headerName: 'ĐVT',
+                          field: 'ProductUnit',
+                          width: 100,
+                          pinned: 'right',
+                          // cellRenderer: AgTextCellRenderer,
+                          valueFormatter: 'node.data.ProductUnitLabel',
+                          filter: AgSelect2Filter,
+                          filterParams: {
+                            select2Option: {
+                              placeholder: 'Chọn...',
+                              allowClear: true,
+                              width: '100%',
+                              dropdownAutoWidth: true,
+                              minimumInputLength: 0,
+                              withThumbnail: false,
+                              keyMap: {
+                                id: 'id',
+                                text: 'text',
+                              },
+                              data: this.prds.unitList$.value,
+                              multiple: true,
+                              logic: 'OR',
+                            }
+                          },
+                        },
+                        // {
+                        //   ...agMakeCurrencyColDef(this.cms),
+                        //   headerName: 'Giá',
+                        //   field: 'Price',
+                        //   pinned: 'right',
+                        //   width: 150,
+                        // },
+                        // {
+                        //   ...agMakeCommandColDef(this, this.cms, false, false, false, [
+                        //     {
+                        //       name: 'extend',
+                        //       // label: 'In',
+                        //       status: 'danger',
+                        //       outline: false,
+                        //       icon: 'external-link-outline',
+                        //       action: async (params: any) => {
+                        //         this.cms.previewVoucher(null, params.node.data.Voucher);
+                        //         return true;
+                        //       }
+                        //     }])
+                        // }
                       ],
                       onInit: (component) => {
-
+                        component.actionButtonList = component.actionButtonList.filter(f => ['close', 'choose', 'preview', 'refresh'].indexOf(f.name) > -1);
                       }
                     }
                   });
 
-                  return;
+                  return true;
                 }
                 this.cms.openDialog(AgDynamicListComponent, {
                   context: {
@@ -1000,13 +1072,14 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                             status: 'success',
                             outline: false,
                             icon: 'printer-outline',
-                            action: (params: any, data: ProductModel) => {
+                            action: async (params: any, data: ProductModel) => {
                               let editedItem = params.data;
                               this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
                                 context: {
                                   id: params.data.AccessNumber
                                 }
                               });
+                              return true;
                             }
                           },
                         ]),

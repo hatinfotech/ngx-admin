@@ -22,6 +22,7 @@ import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-mod
 import { CustomHeader } from '../custom-element/ag-list/header/custom.component';
 import { StatusPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
 import { DataManagerFormComponent } from './data-manager-form.component';
+import { ResourcePermissionEditComponent } from '../lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -197,6 +198,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() getRowNodeId = (item: M) => {
     return this.makeId(item);
   }
+  @Input() getRowStyle: (params: any) => any;
+  @Input() getRowClass: (params: any) => any;
+  @Input() rowClassRules: any;
   @Input() components;
   //  = {
   //   loadingCellRenderer: (params) => {
@@ -590,13 +594,13 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         actions: [
           {
             label: 'Trở về',
-            icon: 'back',
+            icon: 'arrow-ios-back-outline',
             status: 'info',
             action: () => { },
           },
           {
             label: 'Xoá',
-            icon: 'delete',
+            icon: 'trash-2-outline',
             status: 'danger',
             action: () => {
               // this.apiService.delete(this.apiPath, ids, result => {
@@ -620,6 +624,18 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     });
   }
 
+  openPermissionForm(rowData: M) {
+    this.cms.openDialog(ResourcePermissionEditComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: this.makeId(rowData),
+        note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
+        resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData['Title'] || ''}`,
+        // resrouce: rowData,
+        apiPath: this.apiPath,
+      }
+    });
+  }
 
   /** Api delete funciton */
   async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {

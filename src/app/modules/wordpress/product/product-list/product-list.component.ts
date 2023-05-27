@@ -1,64 +1,50 @@
-import { WpSiteModel } from './../../../../models/wordpress.model';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { SmartTableButtonComponent, SmartTableCurrencyEditableComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { AccBankModel } from '../../../../models/accounting.model';
+import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { WordpressProductFormComponent } from '../product-form/product-form.component';
-import { FormGroup } from '@angular/forms';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { ProductModel } from '../../../../models/product.model';
-import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { DatePipe } from '@angular/common';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { WordpressService } from '../../wordpress.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
+import { WpSiteModel } from '../../../../models/wordpress.model';
 import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { AgCurrencyCellInput } from '../../../../lib/custom-element/ag-list/cell/input/curency.component';
 
 @Component({
   selector: 'ngx-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
-export class WordpressProductListComponent extends ServerDataManagerListComponent<AccBankModel> implements OnInit {
+export class WordpressProductListComponent extends AgGridDataManagerListComponent<ProductModel, WordpressProductFormComponent> implements OnInit {
 
   componentName: string = 'WordpressProductListComponent';
   formPath = '';
   apiPath = '/wordpress/products';
-  idKey = 'Id';
+  idKey = ['Id'];
   formDialog = WordpressProductFormComponent;
 
-  reuseDialog = true;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
 
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-  // _workingSite: any;
-  // set workingSite(value) {
-  //   if (!value) {
-  //     localStorage.setItem('wordpress_workingsite', null);
-  //   } else {
-  //     localStorage.setItem('wordpress_workingsite', JSON.stringify({ 'id': this.cms.getObjectId(value), 'text': this.cms.getObjectText(value) }));
-  //   }
-  //   this._workingSite = value;
-  // }
-  // get workingSite() {
-  //   if (!this._workingSite || !this._workingSite.id) {
-  //     this._workingSite = localStorage.getItem('wordpress_workingsite');
-  //     if (typeof this._workingSite === 'string') {
-  //       this._workingSite = JSON.parse(this._workingSite);
-  //     } else {
-  //       this._workingSite = null;
-  //     }
-  //   }
-  //   return this._workingSite;
-  // }
+  @Input() gridHeight = '100%';
   refCategoryList = [];
+  siteList: WpSiteModel[];
+  refCategoriesLoading = false;
 
   constructor(
     public apiService: ApiService,
@@ -66,22 +52,216 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<WordpressProductListComponent>,
+    public datePipe: DatePipe,
     public wordpressService: WordpressService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
-  siteList: WpSiteModel[];
-
-  // productListDialog: NbDialogRef<ProductListComponent> = null;
-
   async init() {
-    // await this.loadCache();
-    return super.init().then(async rs => {
+    return super.init().then(async state => {
 
-      // this.siteList = await this.apiService.getPromise<WpSiteModel[]>('/wordpress/wp-sites', { includeIdText: true }).then(rs => [{ id: 'NONE', text: 'Không chọn' }, ...rs]);
+      // const processingMap = AppModule.processMaps['purchaseOrder'];
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
+        },
+        {
+          ...agMakeImageColDef(this.cms, null, (rowData) => {
+            return rowData.Pictures?.map(m => m['LargeImage']);
+          }),
+          headerName: 'Hình',
+          pinned: 'left',
+          field: 'FeaturePicture',
+          width: 100,
+        },
+        {
+          headerName: 'Sản phẩm',
+          field: 'Name',
+          width: 300,
+          pinned: 'left',
+          filter: 'agTextColumnFilter', 
+          autoHeight: true,
+        },
+        {
+          headerName: 'Sku',
+          field: 'Sku',
+          width: 120,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          headerName: 'ID',
+          field: 'Product',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          headerName: 'RefId',
+          field: 'RefId',
+          width: 100,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+          }),
+          headerName: 'ĐVT',
+          field: 'Units',
+          width: 130,
+          valueGetter: (params: { data: ProductModel }) => {
+            const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
+            const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
+            return params.data?.Units?.map(unit => {
+              let text = '';
+              if (baseUnitId == unit?.id) {
+                text = unit.text;
+              } else {
+                text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
+              }
+              unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
+              if (unit.IsManageByAccessNumber) {
+                unit.status = 'danger';
+              }
+              if (!unit.IsAutoAdjustInventory) {
+                unit.status = 'warning';
+              }
+              unit.label = `${unit.text} (${unit.ConversionRatio})`;
+              return unit;
+            });
+          },
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/admin-product/units', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Danh mục',
+          field: 'Categories',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/admin-product/categories', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+                placeholder: 'Chọn danh mục...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Danh mục WP',
+          field: 'RefCategories',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: 'agTextColumnFilter',
+        },
+        {
+          headerName: 'Site',
+          field: 'Site',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          valueGetter: 'node.data.SiteName',
+          filter: 'agTextColumnFilter',
+        },
+        {
+          headerName: 'Cập nhật cuối',
+          field: 'LastSync',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          pinned: 'right',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        {
+          headerName: 'Giá niêm yết',
+          field: 'Price',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          pinned: 'right',
+          type: 'rightAligned',
+          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
+          cellRenderer: AgCurrencyCellInput,
+          cellStyle: { border: "none" },
+          cellRendererParams: {
+            changed: (value, params) => {
+              this.apiService.putPromise<any[]>('/wordpress/products/' + params.node.data.Id, {}, [{
+                Id: params.node.data.Id,
+                Price: value,
+              }]).then(rs => {
+                params.status = 'success';
+              });
+            }
+          }
+        },
+        {
+          headerName: 'Giá bán',
+          field: 'SalePrice',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          pinned: 'right',
+          type: 'rightAligned',
+          cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
+          cellRenderer: AgCurrencyCellInput,
+          cellStyle: { border: "none" },
+          cellRendererParams: {
+            changed: (value, params) => {
+              this.apiService.putPromise<any[]>('/wordpress/products/' + params.node.data.Id, {}, [{
+                Id: params.node.data.Id,
+                SalePrice: value,
+              }]).then(rs => {
+                params.status = 'success';
+              });
+            }
+          }
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, false, true, false),
+          headerName: 'Lệnh',
+        },
+      ] as ColDef[]);
+
       await this.wordpressService.siteList$.pipe(takeUntil(this.destroy$), filter(f => f && f.length > 0), take(1)).toPromise().then(siteList => {
         this.siteList = siteList;
       });
@@ -248,7 +428,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         icon: 'layout-outline',
         title: 'Gán/Gở danh mục',
         size: 'medium',
-        disabled: () => this.selectedIds.length === 0,
+        disabled: () => this.selectedIds.length === 0 || this.refCategoriesLoading,
         hidden: () => false,
         click: () => {
           this.cms.openDialog(DialogFormComponent, {
@@ -513,7 +693,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
 
               // Get ref categories
               if (this.cms.getObjectId(value) != 'NONE') {
-                this.loading = true;
+                this.refCategoriesLoading = true;
                 const toastRef = this.cms.showToast('Đang tải danh mục wordpress ' + this.cms.getObjectText(value), 'Tải danh mục wordpress', { status: 'info', duration: 60000 });
                 this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit', loadByTree: true }).then(rs => {
 
@@ -544,11 +724,11 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
                   //   return m;
                   // });
                 }).catch(err => {
-                  this.loading = false;
+                  this.refCategoriesLoading = false;
                   toastRef.close();
                   return Promise.reject(err);
                 });
-                this.loading = false;
+                this.refCategoriesLoading = false;
                 toastRef.close();
                 console.log(this.refCategoryList);
               } else {
@@ -556,19 +736,6 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
               }
             }
           });
-          //  else {
-          //   if (this.cms.getObjectId(value) && this.refCategoryList.length == 0) {
-          //     if (this.cms.getObjectId(value) != 'NONE') {
-          //       this.refCategoryList = await this.apiService.getPromise<any[]>('/wordpress/ref-categories', { site: this.cms.getObjectId(value), limit: 'nolimit' }).then(rs => rs.map(m => {
-          //         m.text = m.name;
-          //         return m;
-          //       }));
-          //       console.log(this.refCategoryList);
-          //     } else {
-          //       this.refCategoryList = [];
-          //     }
-          //   }
-          // }
 
         },
         disabled: () => {
@@ -580,209 +747,45 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
         },
       });
 
-      return rs;
-    });
-  }
-
-  editing = {};
-  rows = [];
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      columns: {
-        FeaturePicture: {
-          title: 'Hình',
-          type: 'custom',
-          width: '5%',
-          renderComponent: SmartTableThumbnailComponent,
-          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-            instance.valueChange.subscribe(value => {
-            });
-            instance.previewAction.subscribe((row: ProductModel) => {
-              const pictureList = row?.Pictures || [];
-              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
-                pictureList.push(row.FeaturePicture);
-              }
-              if (pictureList.length > 0) {
-                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
-                if (pictureList.length > 1) {
-                  const currentItems = pictureList.splice(currentIndex, 1);
-                  pictureList.unshift(currentItems[0]);
-                }
-                this.cms.openDialog(ImagesViewerComponent, {
-                  context: {
-                    images: pictureList.map(m => m['OriginImage']),
-                    imageIndex: 0,
-                  }
-                });
-              }
-            });
-            instance.uploadAction.subscribe((row: ProductModel) => {
-
-            });
-            instance.title = this.cms.translateText('click to change main product picture');
-          },
-        },
-        Product: {
-          title: this.cms.translateText('Common.code'),
-          type: 'string',
-          width: '5%',
-        },
-        Sku: {
-          title: 'Sku',
-          type: 'string',
-          width: '5%',
-        },
-        Name: {
-          title: this.cms.translateText('Common.name'),
-          type: 'string',
-          width: '20%',
-        },
-        RefId: {
-          title: 'RefId',
-          type: 'string',
-          width: '5%',
-          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-        },
-        Unit: {
-          title: 'ĐVT',
-          type: 'string',
-          width: '5%',
-          valuePrepareFunction: (cell: any, row) => {
-            return row.UnitName;
-          }
-        },
-        Categories: {
-          title: 'Danh mục',
-          type: 'string',
-          width: '10%',
-          valuePrepareFunction: (cell: any, row) => {
-            return (cell || []).map(m => this.cms.getObjectText(m)).join(', ');
-          }
-        },
-        RefCategories: {
-          title: 'Danh mục WP',
-          type: 'string',
-          width: '10%',
-          valuePrepareFunction: (cell: any, row) => {
-            return (cell || []).map(m => this.cms.getObjectText(m)).join(', ');
-          }
-        },
-        Site: {
-          title: 'Site',
-          type: 'string',
-          width: '10%',
-          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          valuePrepareFunction: (cell, row) => {
-            return row.SiteName;
-          }
-        },
-        Price: {
-          title: 'Giá niêm yết',
-          width: '10%',
-          type: 'currency-editable',
-          editable: true,
-          delay: 3000,
-          onChange: (value: number, row: any, instance: SmartTableCurrencyEditableComponent) => {
-            if (row.Id) {
-              instance.status = 'primary';
-              console.log(instance.rowData.Code);
-              this.apiService.putPromise<any[]>('/wordpress/products/' + row.Id, {}, [{
-                Id: row.Id,
-                Price: value,
-              }]).then(rs => {
-                console.log(instance.rowData.Code);
-                instance.status = 'success';
-              });
-            }
-          },
-        },
-        SalePrice: {
-          title: 'Giá bán',
-          width: '10%',
-          type: 'currency-editable',
-          editable: true,
-          delay: 3000,
-          onChange: (value: number, row: any, instance: SmartTableCurrencyEditableComponent) => {
-            if (row.Id) {
-              instance.status = 'primary';
-              console.log(instance.rowData.Code);
-              this.apiService.putPromise<any[]>('/wordpress/products/' + row.Id, {}, [{
-                Id: row.Id,
-                SalePrice: value,
-              }]).then(rs => {
-                console.log(instance.rowData.Code);
-                instance.status = 'success';
-              });
-            }
-          },
-        },
-        LastSync: {
-          title: 'Đồng bộ lần cuối',
-          type: 'datetime',
-          width: '6%',
-        },
-        State: {
-          title: this.cms.translateText('Common.state'),
-          type: 'string',
-          width: '5%',
-        },
-        // Sync: {
-        //   title: 'Sync',
-        //   type: 'custom',
-        //   width: '5%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'cloud-upload-outline';
-        //     instance.display = true;
-        //     instance.status = 'danger';
-        //     instance.valueChange.subscribe(value => {
-        //     });
-        //     instance.click.subscribe(async (row: AccBankModel) => {
-
-        //     });
-        //   },
-        // },
-      },
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
+  // }
 
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'ALL' && this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'NONE') {
-        params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
-      }
-      params['sort_Product'] = 'desc';
-      return params;
-    };
-
-    return source;
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeContact'] = true;
+    params['includeObject'] = true;
+    params['includeCreator'] = true;
+    params['includeRelativeVouchers'] = true;
+    // params['sort_Id'] = 'desc';
+    return params;
   }
 
-  numOfProducts: number = 0;
-  loadList(callback?: (list: any[]) => void) {
-    super.loadList(callback);
-    this.apiService.getPromise<any>(this.apiPath, { getNumOfProducts: true, eq_Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value) }).then(rs => {
-      this.numOfProducts = rs.data;
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(WordpressProductFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: ProductModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
     });
+    return false;
   }
 
-  async refresh() {
-
-    this.apiService.getPromise<any>(this.apiPath, { getNumOfProducts: true, eq_Site: this.cms.getObjectId(this.wordpressService.currentSite$?.value) }).then(rs => {
-      this.numOfProducts = rs.data;
-    });
-
-    return super.refresh();
+  onGridReady(params) {
+    super.onGridReady(params);
   }
-
 }

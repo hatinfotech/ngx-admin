@@ -7,7 +7,7 @@ import { Subject } from "rxjs";
 @Component({
     selector: 'ag-checkbox-cell-renderer',
     template: `
-      <nb-checkbox [formControl]="checkBoxControl" (change)="onChangeHandler($event)"></nb-checkbox>
+      <nb-checkbox [disabled]="params.disabled" [formControl]="checkBoxControl" (change)="onChangeHandler($event)"></nb-checkbox>
     `,
 })
 export class AgCheckboxCellRenderer implements ICellRendererAngularComp, OnDestroy {
@@ -24,6 +24,9 @@ export class AgCheckboxCellRenderer implements ICellRendererAngularComp, OnDestr
     agInit(params: any): void {
         this.params = params;
         this.checkBoxControl.setValue(this.params.value);
+        if (this.params.disabled) {
+            this.checkBoxControl.disable();
+        }
     }
 
     onChangeHandler(event) {

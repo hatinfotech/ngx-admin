@@ -1,42 +1,39 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
-import { CustomServerDataSource } from '../../../lib/custom-element/smart-table/custom-server.data-source';
-import { SmartTableThumbnailComponent, SmartTableDateTimeComponent, SmartTableButtonComponent } from '../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { SmartTableSetting } from '../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../lib/data-manager/server-data-manger-list.component';
-import { CashVoucherModel } from '../../../models/accounting.model';
-import { ContactGroupModel, ContactModel } from '../../../models/contact.model';
-import { UserGroupModel } from '../../../models/user-group.model';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
+import { ContactModel } from '../../../models/contact.model';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
-import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactFormComponent } from '../contact/contact-form/contact-form.component';
+import { AgGridDataManagerListComponent } from '../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { DatePipe } from '@angular/common';
+import { AppModule } from '../../../app.module';
+import { AgDateCellRenderer } from '../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeSelectionColDef } from '../../../lib/custom-element/ag-list/column-define/selection.define';
+import { AgSelect2Filter } from '../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-contact-all-list',
   templateUrl: './contact-all-list.component.html',
   styleUrls: ['./contact-all-list.component.scss']
 })
-export class ContactAllListComponent extends ServerDataManagerListComponent<ContactModel> implements OnInit {
+export class ContactAllListComponent extends AgGridDataManagerListComponent<ContactModel, ContactFormComponent> implements OnInit {
 
   componentName: string = 'ContactAllListComponent';
   formPath = '/contact/contact-form/form';
   apiPath = '/contact/contacts';
-  idKey = 'Code';
+  idKey = ['Code'];
   formDialog = ContactFormComponent;
 
-  reuseDialog = true;
-  static _dialog: NbDialogRef<ContactAllListComponent>;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
 
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-  groupsList: ContactGroupModel[];
+  @Input() gridHeight = 'calc(100vh - 230px)';
+
 
   constructor(
     public apiService: ApiService,
@@ -44,220 +41,202 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<ContactAllListComponent>,
+    public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
-    this.actionButtonList.unshift({
-      name: 'merge',
-      status: 'danger',
-      label: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
-      icon: 'checkmark-square',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.selectedIds.length === 0,
-      hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
-      click: () => {
-        console.log('merge contact', this.selectedIds);
-        return false;
-      },
-    });
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
   async init() {
-    this.groupsList = await this.apiService.getPromise<ContactGroupModel[]>('/contact/groups', { onlyIdText: true });
-    return super.init();
-  }
+    return super.init().then(async state => {
 
-  editing = {};
-  rows = [];
+      this.actionButtonList.unshift({
+        name: 'merge',
+        status: 'danger',
+        label: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
+        icon: 'checkmark-square',
+        title: this.cms.textTransform(this.cms.translate.instant('Common.merge'), 'head-title'),
+        size: 'medium',
+        disabled: () => this.selectedIds.length === 0,
+        hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+        click: () => {
+          console.log('merge contact', this.selectedIds);
+          return false;
+        },
+      });
 
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: this.isChoosedMode ? false : {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        AvatarUrl: {
-          title: 'Hình',
-          type: 'custom',
-          width: '5%',
-          valuePrepareFunction: (value: string, contact: ContactModel) => {
-            return contact.AvatarUrl;
-          },
-          renderComponent: SmartTableThumbnailComponent,
-          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.subscribe(async (row: ContactModel) => {
-            });
-            instance.title = this.cms.translateText('click to change main contact avatar');
-          },
+      const processingMap = AppModule.processMaps['purchaseOrder'];
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
         },
-        Name: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
-          type: 'string',
-          width: '20%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+        // {
+        //   ...agMakeImageColDef(this.cms, null, (rowData) => {
+        //     return rowData.AvatarUrl;
+        //   }),
+        //   headerName: 'Hình',
+        //   pinned: 'left',
+        //   field: 'AvatarUrl',
+        //   width: 100,
+        // },
+        {
+          headerName: 'Mã',
+          field: 'Code',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          pinned: 'left',
         },
-        Groups: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.groups'), 'head-title'),
-          type: 'html',
-          width: '20%',
-          valuePrepareFunction: (cell: any) => {
-            return cell && cell.map(group => `<div class="tag"><nb-icon icon="person-stalker" pack="ion"></nb-icon> ${group.text}</div></div>`).join('');
-          },
-          // filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                placeholder: this.cms.translateText('Common.groups') + '...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                // multiple: true,
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.groupsList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
+        {
+          headerName: 'Tên',
+          field: 'Name',
+          width: 200,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+          pinned: 'left',
         },
-        Phone: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.phone'), 'head-title'),
-          type: 'string',
-          width: '10%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+        {
+          headerName: 'Số điện thoại',
+          field: 'Phone',
+          width: 200,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+          pinned: 'left',
         },
-        Email: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.email'), 'head-title'),
-          type: 'string',
-          width: '20%',
+        {
+          headerName: 'Email',
+          field: 'Email',
+          width: 200,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+          // pinned: 'left',
         },
-        Code: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '10%',
-        },
-        Created: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.created'), 'head-title'),
-          type: 'custom',
-          width: '10%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateTimeRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
+        {
+          headerName: 'Nhóm',
+          field: 'Groups',
+          // pinned: 'left',
+          width: 250,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/groups', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+                placeholder: 'Chọn nhóm...', limit: 10, prepareReaultItem: (item) => {
+                  // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
           },
         },
-        Note: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.note'), 'head-title'),
-          type: 'string',
-          width: '10%',
+        {
+          headerName: 'Ghi chú',
+          field: 'Note',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
         },
-        Merge: {
-          title: this.cms.translateText('Common.preview'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'warning';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.approve');
-            instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CashVoucherModel) => {
-              this.cms.openDialog(ShowcaseDialogComponent, {
-                context: {
-                  title: this.cms.translateText('Common.confirm'),
-                  content: 'Contact.mergeConfirm',
-                  actions: [
-                    {
-                      label: this.cms.translateText('Common.close'),
-                      status: 'primary',
-                    },
-                    {
-                      label: this.cms.translateText('Common.merge'),
-                      status: 'danger',
-                      action: () => {
-                        this.apiService.putPromise<ContactModel[]>('/contact/contacts', { id: [rowData.Code], mergeContact: true, fromContacts: this.selectedItems.map(item => item.Code).join(',') }, [rowData]).then(rs => {
-                          // this.reset();
-                          this.unselectAll();
-                          this.refresh();
-                        });
-                      }
-                    },
-                  ],
-                },
-              });
-            });
+        {
+          headerName: 'Người tạo',
+          field: 'Creator',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
           },
-        }
-      },
+        },
+        {
+          headerName: 'Ngày tạo',
+          field: 'Created',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        // {
+        //   ...agMakeStateColDef(this.cms, processingMap, (data) => {
+        //     this.preview([data]);
+        //   }),
+        //   headerName: 'Trạng thái',
+        //   field: 'State',
+        //   width: 155,
+        // },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
+        },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
+  // }
 
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['sort_Id'] = 'desc';
-      // params['includeOrganizations'] = true;
-      params['includeGroups'] = true;
-      params['eq_IsDeleted'] = false;
-      return params;
-    };
-
-    return source;
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeGroups'] = true;
+    params['eq_IsDeleted'] = false;
+    return params;
   }
 
-  getList(callback: (list: UserGroupModel[]) => void) {
-    super.getList((rs) => {
-      if (callback) callback(rs);
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: ContactModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(ContactFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: ContactModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
     });
+    return false;
   }
 
-  async refresh() {
-    super.refresh();
+  onGridReady(params) {
+    super.onGridReady(params);
   }
-
 }

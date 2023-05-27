@@ -1,18 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { Component, Input, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { PurchaseProductFormComponent } from '../purchase-product-form/purchase-product-form.component';
-import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { PurchaseProductModel } from '../../../../models/purchase.model';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { FormGroup } from '@angular/forms';
+import { AppModule } from '../../../../app.module';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 
 @Component({
   selector: 'ngx-purchase-product-list',
@@ -20,7 +25,7 @@ import { DecimalPipe } from '@angular/common';
   styleUrls: ['./purchase-product-list.component.scss'],
   providers: [DecimalPipe],
 })
-export class PurchaseProductListComponent extends ServerDataManagerListComponent<PurchaseProductModel> implements OnInit {
+export class PurchaseProductListComponent extends AgGridDataManagerListComponent<PurchaseProductModel, PurchaseProductFormComponent> implements OnInit {
 
   componentName: string = 'PurchaseProductListComponent';
   formPath = '/purchase/product/form';
@@ -28,263 +33,195 @@ export class PurchaseProductListComponent extends ServerDataManagerListComponent
   idKey = ['Id'];
   formDialog = PurchaseProductFormComponent;
 
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
+
+  @Input() gridHeight = '100%';
+
+
   constructor(
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public decimalPipe: DecimalPipe,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
+    public ref: NbDialogRef<PurchaseProductListComponent>,
+    public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
-  editing = {};
-  rows = [];
-
-  typeList = [
-    { id: 'SUPPLIERPRODUCT', text: 'Tên sản phẩm theo NCC' },
-    { id: 'SUPPLIERPRODUCTSKU', text: 'Sku sản phẩm theo NCC' },
-    { id: 'SUPPLIERPRODUCTTAX', text: 'Tên thuế sản phẩm theo NCC' },
-    { id: 'SUPPLIERPRODUCTAXVALUE', text: 'Thuế theo NCC' },
-  ];
-  typeMap = {
-    SUPPLIERPRODUCT: { id: 'SUPPLIERPRODUCT', text: 'Tên sản phẩm theo NCC' },
-    SUPPLIERPRODUCTSKU: { id: 'SUPPLIERPRODUCTSKU', text: 'Sku sản phẩm theo NCC' },
-    SUPPLIERPRODUCTTAX: { id: 'SUPPLIERPRODUCTTAX', text: 'Tên thuế sản phẩm theo NCC' },
-    SUPPLIERPRODUCTAXVALUE: { id: 'SUPPLIERPRODUCTAXVALUE', text: 'Thuế theo NCC' },
-  };
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: {
-        position: 'right',
-      },
-      // add: this.configAddButton(),
-      // edit: this.configEditButton(),
-      // delete: this.configDeleteButton(),
-      // pager: this.configPaging(),
-      columns: {
-        Id: {
-          title: 'ID',
-          type: 'string',
-          width: '2%',
+  async init() {
+    return super.init().then(async state => {
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
         },
-        FeaturePicture: {
-          title: 'Hình',
-          type: 'custom',
-          width: '5%',
-          // valuePrepareFunction: (value: any, product: ProductModel) => {
-          //   return value['Thumbnail'];
-          // },
-          renderComponent: SmartTableThumbnailComponent,
-          onComponentInitFunction: (instance: SmartTableThumbnailComponent) => {
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.subscribe((row: PurchaseProductModel) => {
-              const pictureList = row?.Pictures || [];
-              if ((pictureList.length == 0 && row.FeaturePicture?.OriginImage)) {
-                pictureList.push(row.FeaturePicture);
-              }
-              if (pictureList.length > 0) {
-                const currentIndex = pictureList.findIndex(f => f.Id == row.FeaturePicture.Id) || 0;
-                if (pictureList.length > 1) {
-                  const currentItems = pictureList.splice(currentIndex, 1);
-                  pictureList.unshift(currentItems[0]);
+        {
+          ...agMakeImageColDef(this.cms, null, (rowData) => {
+            return rowData.Pictures?.map(m => m['LargeImage']);
+          }),
+          headerName: 'Hình',
+          pinned: 'left',
+          field: 'FeaturePicture',
+          width: 100,
+        },
+        {
+          headerName: 'Sản phẩm',
+          field: 'Product',
+          pinned: 'left',
+          width: 200,
+          valueGetter: 'node.data.Name',
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
+                placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
+                  // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
                 }
-                this.cms.openDialog(ImagesViewerComponent, {
-                  context: {
-                    images: pictureList.map(m => m['OriginImage']),
-                    imageIndex: 0,
-                  }
-                });
-              }
-            });
-            instance.title = this.cms.translateText('click to change main product picture');
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
           },
         },
-        Product: {
-          title: 'Sản phẩm',
-          type: 'string',
-          width: '20%',
-          valuePrepareFunction: (cell, row: PurchaseProductModel) => {
-            return `${row.Product}/${row.OriginalSku} - ${row.OriginalName}`;
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                ...this.cms.makeSelect2AjaxOption('/admin-product/products', { includeIdText: true }, {
-                  placeholder: 'Chọn sản phẩm...', limit: 10, prepareReaultItem: (item) => {
-                    // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                    return item;
-                  }
-                }),
-                multiple: true,
-                logic: 'OR',
-                allowClear: true,
-              },
-            },
+        {
+          headerName: 'Nhà cung cấp',
+          field: 'Supplier',
+          pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          valueGetter: 'node.data.SupplierName',
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
           },
         },
-        Supplier: {
-          title: 'Đối tượng',
-          type: 'string',
-          width: '20%',
-          valuePrepareFunction: (cell, row: PurchaseProductModel) => {
-            return row.SupplierName;
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true }, {
-                  placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                    item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                    return item;
-                  }
-                }),
-                multiple: true,
-                logic: 'OR',
-                allowClear: true,
-              },
-            },
-          },
+        {
+          headerName: 'Tên theo NCC',
+          field: 'Name',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
         },
-        Name: {
-          title: 'Tên theo NCC',
-          type: 'string',
-          width: '15%',
+        {
+          headerName: 'Sku NCC',
+          field: 'Sku',
+          width: 100,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
         },
-        Sku: {
-          title: 'Sku NCC',
-          type: 'string',
-          width: '5%',
+        {
+          headerName: 'Tên thuế',
+          field: 'TaxName',
+          width: 200,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
         },
-        TaxName: {
-          title: 'Tên thuế',
-          type: 'string',
-          width: '15%',
+        {
+          headerName: 'Thuế',
+          field: 'TaxValue',
+          width: 100,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
         },
-        TaxValue: {
-          title: 'Thuế',
-          type: 'string',
-          width: '5%',
-          valuePrepareFunction: (cell, row: PurchaseProductModel) => {
-            return this.decimalPipe.transform(cell) + '%';
+        {
+          headerName: 'Cập nhật cuối',
+          field: 'LastUpdate',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
           },
+          cellRenderer: AgDateCellRenderer,
         },
-        LastUpdate: {
-          title: 'Cập nhật cuối',
-          type: 'custom',
-          width: '15%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
+        {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
+          headerName: 'Chứng từ liên quan',
+          field: 'ReferenceVoucher',
+          width: 150,
+          pinned: 'right',
+          valueGetter: (params) => params.node?.data?.ReferenceVoucher ? [{ id: params.node.data.ReferenceVoucher, text: params.node.data.ReferenceVoucher }] : []
         },
-        ReferenceVoucher: {
-          title: 'Chứng từ liên quan',
-          type: 'custom',
-          renderComponent: SmartTableTagsComponent,
-          valuePrepareFunction: (cell: string, row: PurchaseProductModel) => {
-            return [{ id: cell, text: cell, type: row.ReferenceVoucher.replace(/^(\d{3})(.*)/, '$1') }] as any;
-          },
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
-              tag.type && this.cms.previewVoucher(tag.type, tag.id, null, (data, printComponent) => {
-                // this.refresh();
-              });
-            });
-          },
-          width: '10%',
+        {
+          ...agMakeCommandColDef(this, this.cms, true, true, false),
+          headerName: 'Lệnh',
         },
-      },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
+  // }
 
-    // Set DataSource: prepareData
-    source.prepareData = (data: PurchaseProductModel[]) => {
-      data.map((product: PurchaseProductModel) => {
-        // if (product.WarehouseUnit && product.WarehouseUnit.Name) {
-        //   product.WarehouseUnit.text = product.WarehouseUnit.Name;
-        // }
-
-        // if (product.Units && product.Units.length > 0) {
-        //   product.Containers = product.Units.filter(f => !!f['Container']).map(m => m['Container']);
-        //   for (const unitConversion of product.Units) {
-        //     if (unitConversion.IsManageByAccessNumber) {
-        //       unitConversion['status'] = 'danger';
-        //       unitConversion['tip'] = unitConversion['text'] + ' (QL theo số truy xuất)';
-        //     }
-        //   }
-        // }
-
-        // if (product.Container || product.Container.length > 0) {
-        //   // product.Container = [product.Container];
-        // } else {
-        //   product.Container = { type: 'NEWCONTAINER', id: 'Gán vị trí', text: 'Gán vị trí' };
-        // }
-
-        return product;
-      });
-      return data;
-    };
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      // params['includeCategories'] = true;
-      // params['includeGroups'] = true;
-      // params['includeWarehouseUnit'] = true;
-      // params['includeUnits'] = true;
-      // params['includeCreator'] = true;
-      // params['includeLastUpdateBy'] = true;
-
-      params['sort_Id'] = 'desc';
-      return params;
-    };
-
-    return source;
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeContact'] = true;
+    params['includeObject'] = true;
+    params['includeCreator'] = true;
+    params['includeRelativeVouchers'] = true;
+    // params['sort_Id'] = 'desc';
+    return params;
   }
 
-  /** Api get funciton */
-  executeGet(params: any, success: (resources: PurchaseProductModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: PurchaseProductModel[] | HttpErrorResponse) => void) {
-    params['includeCategories'] = true;
-    super.executeGet(params, success, error, complete);
-  }
-
-  getList(callback: (list: PurchaseProductModel[]) => void) {
-    super.getList((rs) => {
-      // rs.map((product: any) => {
-      //   product['Unit'] = product['Unit']['Name'];
-      //   if (product['Categories']) {
-      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
-      //   }
-      //   return product;
-      // });
-      if (callback) callback(rs);
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: PurchaseProductModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(PurchaseProductFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: PurchaseProductModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
     });
+    return false;
+  }
+
+  onGridReady(params) {
+    super.onGridReady(params);
   }
 }
-

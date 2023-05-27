@@ -3,22 +3,22 @@
         <nb-card-body>
             <nb-tabset>
                 <nb-tab *ngIf="components['PRICEREPORT']" tabTitle="{{components['PRICEREPORT'].title}}">
-                    <ngx-sales-price-report-list (onItemsChoosed)="onDialogChoose($event, 'PRICEREPORT')"></ngx-sales-price-report-list>
+                    <ngx-sales-price-report-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PRICEREPORT')"></ngx-sales-price-report-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['GOODSDELIVERY']" tabTitle="{{components['GOODSDELIVERY'].title}}">
-                    <ngx-warehouse-goods-delivery-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSDELIVERY')"></ngx-warehouse-goods-delivery-note-list>
+                    <ngx-warehouse-goods-delivery-note-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'GOODSDELIVERY')"></ngx-warehouse-goods-delivery-note-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['GOODSRECEIPT']" tabTitle="{{components['GOODSRECEIPT'].title}}">
-                    <ngx-warehouse-goods-receipt-note-list (onItemsChoosed)="onDialogChoose($event, 'GOODSRECEIPT')"></ngx-warehouse-goods-receipt-note-list>
+                    <ngx-warehouse-goods-receipt-note-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'GOODSRECEIPT')"></ngx-warehouse-goods-receipt-note-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['DEPLOYMENT']" tabTitle="{{components['DEPLOYMENT'].title}}">
-                    <ngx-deployment-voucher-list (onItemsChoosed)="onDialogChoose($event, 'DEPLOYMENT')"></ngx-deployment-voucher-list>
+                    <ngx-deployment-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'DEPLOYMENT')"></ngx-deployment-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['SALES']" tabTitle="{{components['SALES'].title}}">
-                    <ngx-sales-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALES')"></ngx-sales-voucher-list>
+                    <ngx-sales-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'SALES')"></ngx-sales-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['SALESRETURNS']" tabTitle="{{components['SALESRETURNS'].title}}">
-                    <ngx-sales-returns-voucher-list (onItemsChoosed)="onDialogChoose($event, 'SALESRETURNS')"></ngx-sales-returns-voucher-list>
+                    <ngx-sales-returns-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'SALESRETURNS')"></ngx-sales-returns-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['PURCHASEORDER']" tabTitle="{{components['PURCHASEORDER'].title}}">
                     <ngx-purchase-order-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PURCHASEORDER')"></ngx-purchase-order-voucher-list>
@@ -27,22 +27,22 @@
                     <ngx-purchase-voucher-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PURCHASE')"></ngx-purchase-voucher-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['CLBRTCOMMISSION']" tabTitle="{{components['CLBRTCOMMISSION'].title}}">
-                    <ngx-collaborator-commission-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTCOMMISSION')"></ngx-collaborator-commission-list>
+                    <ngx-collaborator-commission-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'CLBRTCOMMISSION')"></ngx-collaborator-commission-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['CLBRTAWARD']" tabTitle="{{components['CLBRTAWARD'].title}}">
-                    <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTAWARD')" [context]="components['CLBRTAWARD']"></ngx-collaborator-award-list>
+                    <ngx-collaborator-award-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'CLBRTAWARD')" [context]="components['CLBRTAWARD']"></ngx-collaborator-award-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['CLBRTORDER']" tabTitle="{{components['CLBRTORDER'].title}}">
-                    <ngx-collaborator-order-list (onItemsChoosed)="onDialogChoose($event, 'CLBRTORDER')" [context]="components['CLBRTORDER']"></ngx-collaborator-order-list>
+                    <ngx-collaborator-order-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'CLBRTORDER')" [context]="components['CLBRTORDER']"></ngx-collaborator-order-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['INVENTORYADJUST']" tabTitle="{{components['INVENTORYADJUST'].title}}">
-                    <ngx-collaborator-award-list (onItemsChoosed)="onDialogChoose($event, 'INVENTORYADJUST')" [context]="components['INVENTORYADJUST']"></ngx-collaborator-award-list>
+                    <ngx-collaborator-award-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'INVENTORYADJUST')" [context]="components['INVENTORYADJUST']"></ngx-collaborator-award-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['COMMERCEPOSORDER']" tabTitle="{{components['COMMERCEPOSORDER'].title}}">
-                    <ngx-commerce-pos-order-list (onItemsChoosed)="onDialogChoose($event, 'COMMERCEPOSORDER')" [context]="components['COMMERCEPOSORDER']"></ngx-commerce-pos-order-list>
+                    <ngx-commerce-pos-order-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'COMMERCEPOSORDER')" [context]="components['COMMERCEPOSORDER']"></ngx-commerce-pos-order-list>
                 </nb-tab>
                 <nb-tab *ngIf="components['WPORDER']" tabTitle="{{components['WPORDER'].title}}">
-                    <ngx-wordpress-order-list (onItemsChoosed)="onDialogChoose($event, 'WPORDER')" [context]="components['WPORDER']"></ngx-wordpress-order-list>
+                    <ngx-wordpress-order-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'WPORDER')" [context]="components['WPORDER']"></ngx-wordpress-order-list>
                 </nb-tab>
             </nb-tabset>
         </nb-card-body>

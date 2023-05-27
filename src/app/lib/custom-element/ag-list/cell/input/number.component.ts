@@ -56,7 +56,7 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy {
         let value = this.inputControl.value;
         let colId = this.params.column.colId;
         this.params.node.setDataValue(colId, value);
-        return this.params.changed(value, this.params);
+        return this.params.changed && this.params.changed(value, this.params);
     }
 
     ngOnDestroy() {

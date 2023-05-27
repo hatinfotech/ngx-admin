@@ -1,20 +1,12 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { PurchaseSimpleVoucherFormComponent } from '../purchase-simple-voucher-form/purchase-simple-voucher-form.component';
 import { PurchaseVoucherPrintComponent } from '../purchase-voucher-print/purchase-voucher-print.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { takeUntil } from 'rxjs/operators';
 // import { PurchaseModule } from '../../purchase.module';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -41,7 +33,7 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
   formPath = '/purchase/voucher/form';
   apiPath = '/purchase/vouchers';
   idKey = 'Code';
-  
+
   formDialog = PurchaseVoucherFormComponent;
   printDialog = PurchaseVoucherPrintComponent;
 
@@ -211,7 +203,7 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
         }
       });
 
-      const processingMap = AppModule.processMaps['purchaseOrder'];
+      const processingMap = AppModule.processMaps['purchaseVoucher'];
       await this.cms.waitForLanguageLoaded();
       this.columnDefs = this.configSetting([
         {
@@ -323,12 +315,8 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
           width: 155,
         },
         {
-          ...agMakeCommandColDef(this.cms, (data) => {
-            this.openForm([data.Code]);
-          }, (data) => {
-            this.deleteConfirm([data.Code]);
-          }),
-          headerName: 'Sửa/Xóa',
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
         },
       ] as ColDef[]);
 
@@ -345,8 +333,9 @@ export class PurchaseVoucherListComponent extends AgGridDataManagerListComponent
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
-    params['includeCreator'] = true;
     params['includeObject'] = true;
+    params['includeContact'] = true;
+    params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';
     return params;

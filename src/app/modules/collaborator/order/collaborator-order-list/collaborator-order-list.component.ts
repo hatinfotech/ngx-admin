@@ -56,7 +56,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public _http: HttpClient,
-    public ref: NbDialogRef<SalesPriceReportListComponent>,
+    public ref: NbDialogRef<CollaboratorOrderListComponent>,
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
     // public mobileService: MobileAppService,

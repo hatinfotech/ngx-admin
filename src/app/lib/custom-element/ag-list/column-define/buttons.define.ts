@@ -1,25 +1,12 @@
 import { ColDef } from "@ag-grid-community/core";
 import { CommonService } from "../../../../services/common.service";
 import { AgButtonsCellRenderer } from "../cell/buttons.component";
+import { AgCellButton } from "../cell/button.component";
 
 export const agMakeButtonsColDef = (
   cms: CommonService,
-  buttonsConfig: { name: string, label?: string, status: string, outline?: boolean, icon?: string, disabled?: (data: any, params?: any) => boolean, action: (data: any, params?: any) => void }[]
+  buttonsConfig: AgCellButton[]
 ): ColDef => {
-  // const buttons = [];
-  // for (const buttonConfig of buttonsConfig) {
-  //   buttons.push({
-  //     name: buttonConfig.name,
-  //     status: buttonConfig.status || 'warning',
-  //     icon: buttonConfig.icon || 'edit-2-outline',
-  //     outline: typeof buttonConfig.outline == 'undefined' ? false : buttonConfig.outline,
-  //     label: buttonConfig.label,
-  //     // disabled: (data) => buttonConfig.disabled && buttonConfig.disabled(data) || false,
-  //     action: (params: any, btnConfig: any) => {
-  //       buttonConfig.click(params.node.data, params);
-  //     }
-  //   });
-  // }
   const config: ColDef = {
     headerName: 'Action',
     field: 'Command',

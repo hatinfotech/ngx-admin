@@ -2,6 +2,17 @@ import { ICellRendererAngularComp } from "@ag-grid-community/angular";
 import { ICellRendererParams } from "@ag-grid-community/core";
 import { Component, OnDestroy } from "@angular/core";
 
+export interface AgCellButton {
+    name: string;
+    label?: string;
+    status: string;
+    outline?: boolean;
+    icon?: string;
+    appendTo?: 'head' | 'tail';
+    disabled?: (data: any, params?: any) => boolean;
+    action: (data: any, params?: any) => Promise<boolean>;
+}
+
 @Component({
     selector: 'ag-button-cell-renderer',
     template: `

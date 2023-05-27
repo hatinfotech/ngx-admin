@@ -6,7 +6,7 @@ import { Component, OnDestroy } from "@angular/core";
     selector: 'ag-buttons-cell-renderer',
     template: `
         <button *ngFor="let item of params.buttons" nbButton ghost [outline]="item.outline === false ? false : true" [status]="item.status || 'basic'" (click)="item.action(params, item) && false" [size]="item.size || 'small'">
-            <nb-icon *ngIf="item.icon" pack="eva" [icon]="item.icon"></nb-icon>{{item.label || '' | translate | headtitlecase}}
+            <nb-icon *ngIf="item.icon" pack="eva" [icon]="item.icon"></nb-icon><ng-container *ngIf="item.label">{{item.label || '' | translate | headtitlecase}}</ng-container>
         </button>
     `,
 })
