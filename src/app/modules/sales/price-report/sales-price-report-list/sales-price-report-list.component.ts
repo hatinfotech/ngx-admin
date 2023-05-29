@@ -87,14 +87,14 @@ export class SalesPriceReportListComponent extends AgGridDataManagerListComponen
         {
           headerName: 'Mã',
           field: 'Code',
-          width: 140,
+          width: 150,
           filter: 'agTextColumnFilter',
           pinned: 'left',
         },
         {
           headerName: 'Khách hàng',
           field: 'Object',
-          pinned: 'left',
+          // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
           filter: AgSelect2Filter,
@@ -133,9 +133,10 @@ export class SalesPriceReportListComponent extends AgGridDataManagerListComponen
           ...agMakeTagsColDef(this.cms, (tag) => {
             this.cms.previewVoucher(tag.type, tag.id);
           }),
+          pinned: 'right',
           headerName: 'Chứng từ liên quan',
           field: 'RelativeVouchers',
-          width: 360,
+          width: 240,
         },
         {
           headerName: 'Người tạo',
@@ -328,6 +329,8 @@ export class SalesPriceReportListComponent extends AgGridDataManagerListComponen
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeObject'] = true;
+    params['includeContact'] = true;
     params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     return params;

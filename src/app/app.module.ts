@@ -316,6 +316,11 @@ import { SaleProductListComponent } from './modules/sales/sales-product/sales-pr
 import { AgDynamicListComponent } from './modules/general/ag-dymanic-list/ag-dymanic-list.component';
 import { AccountingDetailByObjectReportAgComponent } from './modules/accounting/reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
+import { MasterPriceTableUpdateNoteListComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-list/master-price-table-update-note-list.component';
+import { MasterPriceTableUpdateNoteFormComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-form/master-price-table-update-note-form.component';
+import { MasterPriceTableUpdateNotePrintComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
+import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
+import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -369,6 +374,11 @@ export class DynamicLocaleId extends String {
     SalesDashboardComponent,
     SaleProductListComponent,
     SaleProductFormComponent,
+    MasterPriceTableUpdateNoteListComponent,
+    MasterPriceTableUpdateNoteFormComponent,
+    MasterPriceTableUpdateNotePrintComponent,
+    MasterPriceTableQueueComponent,
+    SalesMasterPriceTableComponent,
 
     // Purchase components
     PurchasePriceTableListComponent,

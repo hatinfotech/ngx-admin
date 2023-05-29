@@ -561,7 +561,7 @@ export class PurchaseGoodsListComponent extends AgGridDataManagerListComponent<P
               status: 'danger',
               outline: false,
               icon: 'external-link-outline',
-              action: async (params: any, data: ProductModel) => {
+              action: async (params: any) => {
                 // const filter = { id: params.node.data?.AccessNumbers };
                 this.cms.openDialog(AgDynamicListComponent, {
                   context: {

@@ -1,10 +1,9 @@
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
-import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService, NbDialogConfig } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { Component, EventEmitter, Input, OnInit, Output, Type, ViewChild } from '@angular/core';
-import { BaseComponent } from '../base-component';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { AgGridAngular } from '@ag-grid-community/angular';
@@ -12,16 +11,12 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 //   GridApi, ColumnApi, Module, AllCommunityModules,
 //   IGetRowsParams, IDatasource
 // } from '@ag-grid-community/all-modules';
-import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { CheckboxSelectionCallbackParams, ColDef, GridOptions, HeaderCheckboxSelectionCallbackParams, IGetRowsParams, IRowNode, ModuleRegistry, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
+import { ColDef, GridOptions, IGetRowsParams, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { CustomHeader } from '../custom-element/ag-list/header/custom.component';
-import { StatusPanelComponent } from 'ag-grid-community/dist/lib/components/framework/componentTypes';
-import { DataManagerFormComponent } from './data-manager-form.component';
 import { ResourcePermissionEditComponent } from '../lib-system/components/resource-permission-edit/resource-permission-edit.component';
 
 @Component({ template: '' })
@@ -165,7 +160,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     filter: true,
     floatingFilter: true,
     // suppressMenu: strue,
-    floatingFilterComponentParams: { suppressFilterButton: true },
+    floatingFilterComponentParams: {
+      suppressFilterButton: false
+    },
     // headerComponent: 'sortableHeaderComponent',
     // headerComponentParams: {
     //   menuIcon: 'fa-filter'
@@ -264,6 +261,9 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       this.onDialogChoose(this.selectedItems);
       this.onChoose(this.selectedItems);
       // this.close();
+    } else {
+      this.onItemsChoosed.emit(this.selectedItems);
+      this.close();
     }
   }
 
@@ -624,6 +624,58 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     });
   }
 
+  async delete(ids: string[], option?: { title?: string, content?: string }): Promise<void> {
+    // if (option?.skipConfirm) {
+    this.loading = true;
+    let toastRef = this.cms.showToast('Đang xóa các dòng được chọn...', 'Đang xóa dữ liệu', { status: 'warning', duration: 99999 });
+    return this.executeDelete(ids, (rs) => { }).then(statu => {
+      this.loading = false;
+      toastRef.close();
+      this.cms.showToast('Đã xóa các dòng được chọn', 'Hoàn tất xóa dữ liệu', { status: 'success', duration: 10000 });
+    }).catch(err => {
+      this.loading = false;
+      toastRef.close();
+      return Promise.reject(err);
+    });
+    // } else {
+    //   this.cms.openDialog(ShowcaseDialogComponent, {
+    //     context: {
+    //       title: option?.title || 'Xác nhận xoá dữ liệu',
+    //       content: option?.content || 'Dữ liệu sẽ bị xoá, bạn chắc chắn chưa ?',
+    //       actions: [
+    //         {
+    //           label: 'Trở về',
+    //           icon: 'arrow-ios-back-outline',
+    //           status: 'info',
+    //           action: () => { },
+    //         },
+    //         {
+    //           label: 'Xoá',
+    //           icon: 'trash-2-outline',
+    //           status: 'danger',
+    //           action: () => {
+    //             // this.apiService.delete(this.apiPath, ids, result => {
+    //             //   if (callback) callback();
+    //             // });
+    //             this.loading = true;
+    //             let toastRef = this.cms.showToast('Đang xóa các dòng được chọn...', 'Đang xóa dữ liệu', { status: 'warning', duration: 99999 });
+    //             return this.executeDelete(ids, (rs) => { }).then(statu => {
+    //               this.loading = false;
+    //               toastRef.close();
+    //               this.cms.showToast('Đã xóa các dòng được chọn', 'Hoàn tất xóa dữ liệu', { status: 'success', duration: 10000 });
+    //             }).catch(err => {
+    //               this.loading = false;
+    //               toastRef.close();
+    //               return Promise.reject(err);
+    //             });
+    //           },
+    //         },
+    //       ],
+    //     },
+    //   });
+    // }
+  }
+
   openPermissionForm(rowData: M) {
     this.cms.openDialog(ResourcePermissionEditComponent, {
       context: {
@@ -762,22 +814,24 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       if (settings) {
         const commandColumn: ColDef = settings.find(f => f.field == 'Command');
         if (commandColumn) {
-          commandColumn.width = 170;
-          if (commandColumn.cellRendererParams['buttons']) {
-            commandColumn.cellRendererParams['buttons'].push({
-              name: 'choose',
-              status: 'success',
-              icon: 'checkmark-square',
-              outline: false,
-              action: (params: any, button: any) => {
-                if (this.onDialogChoose) {
-                  this.onDialogChoose([params.data]);
-                }
-                this.onItemsChoosed.emit([params.data]);
-                this.close();
+          commandColumn.width = 40;
+          commandColumn.cellRendererParams['buttons'] = [];
+          // if (commandColumn.cellRendererParams['buttons']) {
+          commandColumn.cellRendererParams['buttons'].push({
+            name: 'choose',
+            status: 'success',
+            icon: 'checkmark-square',
+            outline: false,
+            action: (params: any, button: any) => {
+              if (this.onDialogChoose) {
+                this.onDialogChoose([params.data]);
               }
-            });
-          }
+              this.onItemsChoosed.emit([params.data]);
+              this.close();
+            }
+          });
+          // commandColumn.width += 40;
+          // }
         }
       }
     }

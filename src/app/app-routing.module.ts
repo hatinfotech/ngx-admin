@@ -129,6 +129,9 @@ import { PurchaseProductListComponent } from './modules/purchase/product/purchas
 import { WordpressSyncProfileListComponent } from './modules/wordpress/sync-profile/sync-profile-list/sync-profile-list.component';
 import { WordpressProductListComponent } from './modules/wordpress/product/product-list/product-list.component';
 import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
+import { MasterPriceTableUpdateNoteListComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-list/master-price-table-update-note-list.component';
+import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
+import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -501,7 +504,7 @@ const routes: Routes = [
   {
     path: 'sales/master-price-table/list',
     canActivate: [AuthGuardService],
-    component: MasterPriceTableListComponent,
+    component: SalesMasterPriceTableComponent,
     data: {
       reuse: true,
     },
@@ -533,6 +536,31 @@ const routes: Routes = [
     path: 'sales/sales-product/list',
     canActivate: [AuthGuardService],
     component: SaleProductListComponent,
+  },
+  // Master Price Table Update Note
+  {
+    path: 'sales/master-price-table-update-note/list',
+    canActivate: [AuthGuardService],
+    component: MasterPriceTableUpdateNoteListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'sales/master-price-table-queue',
+    canActivate: [AuthGuardService],
+    component: MasterPriceTableQueueComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  {
+    path: 'sales/master-price-table-update-note/list',
+    canActivate: [AuthGuardService],
+    component: MasterPriceTableUpdateNoteListComponent,
+    data: {
+      reuse: true,
+    },
   },
 
   // Purchase routes

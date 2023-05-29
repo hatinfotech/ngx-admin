@@ -25,7 +25,7 @@ import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/col
 import { AgCurrencyCellInput } from '../../../../lib/custom-element/ag-list/cell/input/curency.component';
 
 @Component({
-  selector: 'ngx-product-list',
+  selector: 'ngx-wp-product-list',
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })

@@ -25,7 +25,7 @@ export class MasterPriceTableListComponent extends DataManagerListComponent<Sale
   formPath = '/sales/master-price-table/form';
   apiPath = '/sales/master-price-tables';
   idKey = 'Code';
-  formDialog = MasterPriceTableFormComponent;
+  // formDialog = MasterPriceTableFormComponent;
   printDialog = MasterPriceTablePrintComponent;
 
   constructor(

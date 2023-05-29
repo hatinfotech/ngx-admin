@@ -44,7 +44,7 @@ export class SalesVoucherModel extends Model {
   Details?: SalesVoucherDetailModel[];
 }
 
-export class SalesVoucherDetailModel extends Model  {
+export class SalesVoucherDetailModel extends Model {
   Id?: any;
   SystemUuid?: string;
   Voucher?: string;
@@ -98,7 +98,7 @@ export class SalesReturnsVoucherModel extends Model {
   Details?: SalesReturnsVoucherDetailModel[];
 }
 
-export class SalesReturnsVoucherDetailModel extends Model  {
+export class SalesReturnsVoucherDetailModel extends Model {
   Id?: any;
   Voucher?: string;
   No?: number;
@@ -116,7 +116,7 @@ export class SalesReturnsVoucherDetailModel extends Model  {
   PriceTableDetail?: string;
 }
 
-export class SalesPriceReportModel extends Model  {
+export class SalesPriceReportModel extends Model {
   Id?: string & number;
   SequenceNumber?: string;
   Code?: string;
@@ -159,7 +159,7 @@ export class SalesPriceReportModel extends Model  {
 
 }
 
-export class SalesPriceReportDetailModel extends Model  {
+export class SalesPriceReportDetailModel extends Model {
   Id?: string & number;
   Voucher?: string;
   No?: number;
@@ -176,7 +176,7 @@ export class SalesPriceReportDetailModel extends Model  {
 }
 
 
-export class SalesPriceTableModel extends Model  {
+export class SalesPriceTableModel extends Model {
   Id?: string & number;
   Code?: string;
   Parent?: string & SalesPriceTableModel;
@@ -204,7 +204,7 @@ export class SalesPriceTableModel extends Model  {
   Details?: SalesPriceTableDetailModel[];
 }
 
-export class SalesPriceTableDetailModel extends Model  {
+export class SalesPriceTableDetailModel extends Model {
   Id?: string;
   No?: string | number;
   PriceTable?: string;
@@ -225,7 +225,7 @@ export class SalesPriceTableDetailModel extends Model  {
 }
 
 
-export class SalesMasterPriceTableModel extends Model  {
+export class SalesMasterPriceTableModel extends Model {
   Id?: string & number;
   Code?: string;
   Type?: string;
@@ -246,7 +246,7 @@ export class SalesMasterPriceTableModel extends Model  {
   Details?: (SalesMasterPriceTableDetailModel & ProductModel & { Price?: string | number })[];
 }
 
-export class SalesMasterPriceTableDetailModel extends Model  {
+export class SalesMasterPriceTableDetailModel extends Model {
   [key: string]: any;
   Id?: string | number;
   No?: string | number;
@@ -277,4 +277,39 @@ export interface SalesProductModel {
   LastUpdate?: string;
   FeaturePicture?: FileModel;
   Pictures?: FileModel[];
+}
+
+export interface MasterPriceTableUpdateNoteModel extends Model {
+  Id?: string & number;
+  Code?: string;
+  Title?: string;
+  Note?: string;
+  Created?: string;
+  Approved?: string;
+  Approver?: string;
+  State?: string;
+  Creator?: string;
+
+  Details?: MasterPriceTableUpdateNoteDetailModel[];
+}
+
+export interface MasterPriceTableUpdateNoteDetailModel extends Model {
+  Id?: any;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: number;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Description?: string;
+  Price?: string & number;
+  Image?: string;
+  Unit?: string & UnitModel;
+}
+export interface MasterPriceTableQueueModel extends Model {
+  Id?: any;
+  Product?: ProductModel;
+  Unit?: UnitModel;
+  RequestDate?: string;
+  RequestBy?: string;
+  Context?: string;
 }

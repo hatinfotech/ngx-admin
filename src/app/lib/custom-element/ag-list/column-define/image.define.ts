@@ -18,6 +18,7 @@ export const agMakeImageColDef = (
     filter: 'agTextColumnFilter',
     autoHeight: true,
     cellClass: ['ag-cell-image'],
+    cellStyle: { 'border': 'none' },
     cellRenderer: AgImageCellRenderer,
     cellRendererParams: {
       click: (image: FileModel, data) => {

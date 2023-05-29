@@ -72,7 +72,7 @@ export const agMakeCommandColDef = <F, M>(
     cellClass: ['ag-cell-items-center', 'ag-cell-justify-end', 'ag-cell-no-padding-left', 'ag-cell-no-padding-right'],
     cellRenderer: AgButtonsCellRenderer,
     resizable: false,
-    cellStyle: { 'text-overflow': 'initial' },
+    cellStyle: { 'text-overflow': 'initial', 'border': 'none' },
     cellRendererParams: {
       buttons: buttons,
     }

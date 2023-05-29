@@ -63,6 +63,7 @@ import { DataManagerPrintComponent } from '../lib/data-manager/data-manager-prin
 import { CommercePosDeploymentVoucherPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { MasterPriceTableUpdateNotePrintComponent } from '../modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
 
 declare var $: any;
 interface ClipboardItem {
@@ -1052,6 +1053,7 @@ export class CommonService {
     '103': AccountingOtherBusinessVoucherPrintComponent,
     '114': CollaboratorOrderPrintComponent,
     '128': CommercePosOrderPrintComponent,
+    '140': MasterPriceTableUpdateNotePrintComponent,
     'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
     'CLBRTCOMMISSION': CollaboratorCommissionPrintComponent,
     'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,

@@ -161,6 +161,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           disabled: () => {
             return false;
           },
+          hidden: () => this.isChoosedMode,
           click: () => {
             this.openForm();
             return false;
@@ -174,6 +175,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           title: this.cms.textTransform(this.cms.translate.instant('Common.delete'), 'head-title'),
           size: 'medium',
           disabled: () => this.selectedIds.length === 0,
+          hidden: () => this.isChoosedMode,
           click: () => {
             this.deleteConfirm(this.selectedIds.map(item => this.makeId(item)), () => this.loadList());
           },
@@ -186,6 +188,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           title: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
           size: 'medium',
           disabled: () => this.selectedIds.length === 0,
+          hidden: () => this.isChoosedMode,
           click: () => {
             this.openForm(this.selectedIds);
           },
@@ -198,6 +201,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           title: this.cms.textTransform(this.cms.translate.instant('Common.preview'), 'head-title'),
           size: 'medium',
           disabled: () => this.selectedIds.length === 0,
+          hidden: () => this.isChoosedMode,
           click: () => {
             this.getFormData(this.selectedIds).then(data => {
               this.preview(data);

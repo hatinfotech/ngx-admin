@@ -17,7 +17,7 @@ export const agMakeStateColDef = (
     type: 'rightAligned',
     cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
     cellRenderer: AgButtonCellRenderer,
-    cellStyle: { 'text-overflow': 'initial' },
+    cellStyle: { 'text-overflow': 'initial', 'border': 'none'  },
     cellRendererParams: {
       label: '...',
       onInit: (params: any, component: AgButtonCellRenderer) => {
