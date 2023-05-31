@@ -402,7 +402,11 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
   /** After main form create event */
   onAfterCreateSubmit(newFormData: M[]) {
+    this.id = newFormData.map(item => this.makeId(item));
     this.formLoad(newFormData);
+    if (this.mode === 'page') {
+      this.cms.location.go(this.generateUrlByIds(this.id));
+    }
     if (!this.silent) {
       this.toastrService.show('success', 'Dữ liệu đã được lưu lại', {
         status: 'success',
@@ -410,10 +414,6 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
         position: NbGlobalPhysicalPosition.TOP_RIGHT,
         duration: 3000,
       });
-    }
-    this.id = newFormData.map(item => this.makeId(item));
-    if (this.mode === 'page') {
-      this.cms.location.go(this.generateUrlByIds(this.id));
     }
     if (this.queryParam && this.queryParam['list']) {
       this.cms.componentChangeSubject.next({ componentName: this.queryParam['list'], state: true });
