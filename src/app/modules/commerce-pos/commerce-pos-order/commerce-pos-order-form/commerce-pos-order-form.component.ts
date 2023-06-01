@@ -1,7 +1,7 @@
-import { ProductUnitModel } from '../../../../models/product.model'
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { ProductUnitConversoinModel, ProductUnitModel } from '../../../../models/product.model';
+import { filter, pairwise, startWith, take, takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from '../../../../models/chat-room.model';
-import { SalesMasterPriceTableDetailModel, SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
+import { SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
 import { PriceReportModel } from '../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -21,22 +21,22 @@ import { CommercePosOrderModel, CommercePosOrderDetailModel } from '../../../../
 import { CommercePosOrderPrintComponent } from '../commerce-pos-order-print/commerce-pos-order-print.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
-import { BusinessModel } from '../../../../models/accounting.model';
-import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
+import { AccBankAccountModel, BusinessModel } from '../../../../models/accounting.model';
+import { GoodsModel, WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-commerce-pos-order-form',
   templateUrl: './commerce-pos-order-form.component.html',
   styleUrls: ['./commerce-pos-order-form.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe, DecimalPipe]
 })
 export class CommercePosOrderFormComponent extends DataManagerFormComponent<CommercePosOrderModel> implements OnInit {
 
@@ -67,7 +67,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   static _unitList: (UnitModel & { id?: string, text?: string })[];
   unitList: ProductUnitModel[];
 
-
+  warehouseContainerList = [];
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline',
@@ -85,7 +85,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         title: this.cms.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.cms.getObjectId(formGroup.get('Object').value);
       this.cms.openDialog(ContactFormComponent, {
         context: {
@@ -123,7 +123,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         title: this.cms.translateText('Common.addNewContact'),
       },
     },
-    action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       const currentObject = this.cms.getObjectId(formGroup.get('Contact').value);
       this.cms.openDialog(ContactFormComponent, {
         context: {
@@ -145,50 +145,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     },
   }];
 
-
-  // select2ContactOption = {
-  //   placeholder: 'Chọn liên hệ...',
-  //   allowClear: true,
-  //   width: '100%',
-  //   dropdownAutoWidth: true,
-  //   minimumInputLength: 0,
-  //   // multiple: true,
-  //   // tags: true,
-  //   keyMap: {
-  //     id: 'id',
-  //     text: 'text',
-  //   },
-  //   ajax: {
-  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-  //       console.log(settings);
-  //       const params = settings.data;
-  //       this.apiService.getPromise('/contact/contacts', { includeIdText: true, includeGroups: true, filter_Name: params['term'] }).then(rs => {
-  //         success(rs);
-  //       }).catch(err => {
-  //         console.error(err);
-  //         failure();
-  //       });
-  //     },
-  //     delay: 300,
-  //     processResults: (data: any, params: any) => {
-  //       console.info(data, params);
-  //       return {
-  //         results: data.map(item => {
-  //           item['id'] = item['Code'];
-  //           item['text'] = item['Code'] + ' - ' + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-  //           return item;
-  //         }),
-  //       };
-  //     },
-  //   },
-  // };
-
   uploadConfig = {
 
   };
 
-  select2SalesPriceReportOption = {
-    placeholder: 'Chọn bảng giá...',
+  select2OptionForPaymenntMethod = {
+    placeholder: 'Chọn phương thức thanh toán...',
     allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
@@ -199,31 +161,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       id: 'Code',
       text: 'Title',
     },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        this.apiService.getPromise('/sales/master-price-tables', { filter_Title: settings.data['term'] ? settings.data['term'] : '', limit: 20 }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(item => {
-            item['id'] = item['id'] || item['Code'];
-            item['text'] = (item['DateOfApproved'] ? ('[' + this.datePipe.transform(item['DateOfApproved'], 'short') + '] ') : '') + (item['text'] || item['Title']);
-            return item;
-          }),
-        };
-      },
-    },
+    data: [
+      { id: 'CASH', text: 'Tiền mặt' },
+      { id: 'BANKTRANSFER', text: 'Chuyển khoản' },
+      { id: 'DEBT', text: 'Công nợ' },
+      { id: 'MIXED', text: 'Hỗn hợp' },
+    ]
   };
 
   selectPriceReportOption = {
@@ -321,28 +264,6 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     },
   };
 
-  // customIcons: CustomIcon[] = [{
-  //   icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewProduct'), status: 'success', action: (formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
-  //     this.cms.openDialog(ProductFormComponent, {
-  //       context: {
-  //         inputMode: 'dialog',
-  //         // inputId: ids,
-  //         onDialogSave: (newData: ProductModel[]) => {
-  //           console.log(newData);
-  //           // const formItem = formGroupComponent.formGroup;
-  //           const newProduct: any = { ...newData[0], id: newData[0].Code, text: newData[0].Name, Units: newData[0].UnitConversions?.map(unit => ({ ...unit, id: this.cms.getObjectId(unit?.Unit), text: this.cms.getObjectText(unit?.Unit) })) };
-  //           formGroup.get('Product').patchValue(newProduct);
-  //         },
-  //         onDialogClose: () => {
-
-  //         },
-  //       },
-  //       closeOnEsc: false,
-  //       closeOnBackdropClick: false,
-  //     });
-  //   }
-  // }];
-
   customIcons: { [key: string]: CustomIcon[] } = {};
   getCustomIcons(name: string): CustomIcon[] {
     if (this.customIcons[name]) return this.customIcons[name];
@@ -362,7 +283,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
           title: this.cms.translateText('Common.addNewProduct'),
         },
       },
-      action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+      action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         const currentProduct = this.cms.getObjectId(formGroup.get('Product').value);
         this.cms.openDialog(ProductFormComponent, {
           context: {
@@ -387,7 +308,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   }
 
   unitCustomIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addUnit'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(ProductUnitFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -409,6 +330,39 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     }
   }];
 
+  goodsMap: { [key: string]: GoodsModel } = {};
+  async bulkLoadGoodsInfo(goodsIds: string[]) {
+    // Bulk load containers
+    const goodsList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+      select: 'Code',
+      includeUnit: true,
+      includeContainers: true,
+      eq_Code: '[' + goodsIds.join(',') + ']',
+      limit: 'nolimit'
+    });
+    for (const goods of goodsList) {
+      if (goods.Containers) {
+        goods.Containers = goods.Containers.map(m => ({
+          id: m.Container,
+          text: `[${m.ContainerFindOrder}] ${m.ContainerPath}: ${m.ContainerDescription} (SL tồn: ${this.decimalPipe.transform(m.Inventory, '1.0-0')}})`,
+          Unit: m.Unit
+        }))
+      }
+      if (!this.goodsMap[goods.Code]) {
+        this.goodsMap[goods.Code] = goods;
+      } else {
+        if (!this.goodsMap[goods.Code].Containers) {
+          this.goodsMap[goods.Code].Containers = [];
+        }
+        for (const container of goods.Containers) {
+          if (!this.goodsMap[goods.Code].Containers.some(f => this.cms.getObjectId(f) == this.cms.getObjectId(container))) {
+            this.goodsMap[goods.Code].Containers.push(container);
+          }
+        }
+      }
+    }
+  }
+
   constructor(
     public activeRoute: ActivatedRoute,
     public router: Router,
@@ -419,7 +373,8 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     public cms: CommonService,
     public ref: NbDialogRef<CommercePosOrderFormComponent>,
     public adminProductService?: AdminProductService,
-    public datePipe?: DatePipe
+    public datePipe?: DatePipe,
+    public decimalPipe?: DecimalPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -437,24 +392,24 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         this.preview([option.form?.value], 'form');
       },
     });
-    // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-    //   name: 'print',
-    //   status: 'info',
-    //   label: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
-    //   icon: 'link-2',
-    //   title: this.cms.textTransform(this.cms.translate.instant('Common.task'), 'head-title'),
-    //   size: 'medium',
-    //   disabled: () => this.isProcessing,
-    //   hidden: () => false,
-    //   click: (event: any, option: ActionControlListOption) => {
-    //     this.preview(option.form);
-    //   },
-    // });
+    
   }
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
   }
+
+  select2OptionForContainer = {
+    placeholder: 'Chọn kho/ngăn/kệ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
 
   select2OptionForProduct = {
     ...this.cms.makeSelect2AjaxOption('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true }, {
@@ -466,37 +421,6 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       }
     }),
     withThumbnail: true,
-    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    // allowClear: true,
-    // width: '100%',
-    // dropdownAutoWidth: true,
-    // minimumInputLength: 0,
-    // withThumbnail: true,
-    // // tags: false,
-    // keyMap: {
-    //   id: 'Code',
-    //   text: 'Name',
-    // },
-    // ajax: {
-    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-    //     console.log(settings);
-    //     this.apiService.getPromise('/admin-product/products', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name,FeaturePicture=>FeaturePicture,Pictures=>Pictures", limit: 40, includeUnit: true, includeUnits: true, 'search': settings.data['term'] }).then(rs => {
-    //       success(rs);
-    //     }).catch(err => {
-    //       console.error(err);
-    //       failure();
-    //     });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     return {
-    //       results: data.map(product => {
-    //         product.thumbnail = product?.FeaturePicture?.Thumbnail;
-    //         return product;
-    //       })
-    //     };
-    //   },
-    // },
   };
 
   select2OptionForUnit = {
@@ -522,6 +446,19 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       text: 'Name',
     },
   };
+
+  bankAccountList: AccBankAccountModel[] = [];
+  select2OptionForBankAccount: Select2Option = {
+    placeholder: 'Tài khoản ngân hàng...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  }
 
   // Type field option
   select2OptionForType = {
@@ -555,27 +492,13 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   async init(): Promise<boolean> {
     /** Load and cache tax list */
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
+    // this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path', limit: 'nolimit' });
     this.taxList = (await this.apiService.getPromise<TaxModel[]>('/accounting/taxes')).map(tax => {
       tax['id'] = tax.Code;
       tax['text'] = tax.Name;
       return tax;
     });
-    // if (!CommercePosOrderFormComponent._taxList) {
-    // } else {
-    //   this.taxList = CommercePosOrderFormComponent._taxList;
-    // }
-
-    /** Load and cache unit list */
-    // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { limit: 'nolimit' })).map(tax => {
-    //   tax['id'] = tax.Code;
-    //   tax['text'] = tax.Name;
-    //   return tax;
-    // });
-    // if (!CommercePosOrderFormComponent._unitList) {
-    // } else {
-    //   this.taxList = CommercePosOrderFormComponent._taxList;
-    // }
-
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;' ';AccountNumber;' ';Bank;' ';Branch)" });
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
 
     return super.init().then(status => {
@@ -613,6 +536,11 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       // Details form load
       if (itemFormData?.Details) {
         const details = this.getDetails(newForm);
+
+        // Bulk load containers
+        const goodsIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+        await this.bulkLoadGoodsInfo(goodsIds);
+
         details.clear();
         for (const detailData of itemFormData.Details) {
           detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
@@ -620,9 +548,17 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
+
+          if (detailData.Product) {
+            this.onSelectProduct(newDetailFormGroup, detailData.Product, true);
+            if (detailData.Product.Units) {
+              const seelctedUnit = detailData.Product.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(detailData.Unit));
+              if (seelctedUnit) {
+                this.onSelectUnit(newDetailFormGroup, null, seelctedUnit);
+              }
+            }
+          }
         }
-        // itemFormData.Details.forEach(detail => {
-        // });
       }
 
       // Direct callback
@@ -668,6 +604,11 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       _total: [''],
       RelativeVouchers: [''],
       RequireInvoice: [false],
+      PaymentMethod: [{id: 'CASH', text: 'Tiền mặt'}],
+      ReceiptBankAccount: [],
+      CashTransferAmount: [],
+      CashAmount: [],
+      CashBack: [],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -754,31 +695,18 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         }
         return null;
       }],
-      Price: ['', (control: FormControl) => {
-        if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-          return { invalidName: true, required: true, text: 'trường bắt buộc' };
-        }
-        return null;
-      }],
+      Price: [null],
       Unit: ['', (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      // Tax: ['NOTAX', (control: FormControl) => {
-      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
-      //   }
-      //   return null;
-      // }],
       ToMoney: [0],
       Image: [[]],
-      // Reason: [''],
-      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
       Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
       AccessNumbers: [''],
-      // IsDebt: [false],
+      Container: [],
     });
 
     if (data) {
@@ -804,6 +732,11 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       }
     });
     newForm['IsManageByAccessNumber'] = data?.Unit['IsManageByAccessNumber'] || false;
+
+    newForm.get('Unit').valueChanges.pipe(takeUntil(this.destroy$), startWith(null), pairwise()).subscribe(([prev, next]) => {
+      console.log(prev, next);
+      this.onSelectUnit(newForm, prev, next);
+    });
 
     return newForm;
   }
@@ -1002,161 +935,89 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
               this.formLoad([salesVoucher]);
             }
           });
-
-          // formGroup.get('ObjectName').setValue(selectedData.Name);
-          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-          // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-          // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
           // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
         }
       }
     }
   }
 
-  /** Choose product event */
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, doNotAutoFill?: boolean) {
+
     console.log(selectedData);
-    const priceTable = this.cms.getObjectId(parentForm.get('PriceTable').value);
-    const unitControl = detail.get('Unit');
-    detail.get('Description').setValue(selectedData.Name);
-    if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
-      const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
-      if (priceTable) {
-        this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-          priceTable: priceTable,
-          product: this.cms.getObjectId(selectedData),
+    const productId = this.cms.getObjectId(selectedData);
+    if (productId) {
+      if (!doNotAutoFill) {
+        const descriptionControl = detail.get('Description');
+        descriptionControl.setValue(selectedData['OriginName'] || selectedData['Name']);
+      }
+      detail['unitList'] = selectedData.Units;
+      if (!doNotAutoFill && selectedData.Units && selectedData?.Units.length > 0) {
+        const defaultUnit = selectedData.Units.find(f => f['DefaultImport'] === true);
+        detail.get('Unit').setValue(defaultUnit);
+      }
+      // detail['IsManageByAccessNumber'] = selectedData?.IsManageByAccessNumber;
+    }
+    return false;
+  }
+
+  async onSelectUnit(detail: FormGroup, prevUnit: ProductUnitConversoinModel, nextUnit: ProductUnitConversoinModel, force?: boolean) {
+    const unitId = this.cms.getObjectId(nextUnit);
+    const productId = this.cms.getObjectId(detail.get('Product').value);
+    if (typeof nextUnit?.IsManageByAccessNumber !== 'undefined') {
+      detail['IsManageByAccessNumber'] = nextUnit.IsManageByAccessNumber;
+      if (!this.isProcessing) {
+        detail.get('AccessNumbers').setValue(null);
+      }
+    }
+    if (unitId && productId) {
+
+      let containerList = [];
+
+      if (this.goodsMap[productId]) {
+        containerList = (this.goodsMap[productId].Containers || []).filter(f => this.cms.getObjectId(f.Unit) == unitId);
+      }
+      if (containerList.length == 0) {
+        containerList = await this.apiService.getPromise<any[]>('/warehouse/goods', {
+          select: 'Code',
           includeUnit: true,
-        }).then(rs => {
-          console.log(rs);
-          unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
-          // if (selectedData.Units) {
-          if (detaultUnit) {
-            const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-            detail.get('Unit').setValue('');
-            setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-            setTimeout(() => {
-              detail.get('Price').setValue(choosed.Price);
-              this.toMoney(parentForm, detail);
-            }, 0);
+          includeContainers: true,
+          eq_Code: productId,
+          eq_ConversionUnit: unitId
+        }).then(goodsList => {
+          if (goodsList && goodsList.length > 0) {
+            return goodsList[0].Containers.map(m => ({
+              id: m.Container,
+              text: `[${m.ContainerFindOrder}] ${m.ContainerPath}: ${m.ContainerDescription} (SL tồn: ${this.decimalPipe.transform(m.Inventory, '1.0-0')}})`
+            }));
           }
-          // } else {
-          //   detail['unitList'] = this.cms.unitList;
-          // }
+          return [];
         });
-      } else {
-        unitControl['UnitList'] = selectedData.Units;
-        // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-        unitControl.setValue(detaultUnit);
+      }
+      detail['ContainerList'] = containerList;
+      if (containerList && containerList.length == 1) {
+        detail.get('Container').setValue(containerList[0]);
       }
 
-    } else {
-      // detail.get('Description').setValue('');
-      detail.get('Unit').setValue('');
+      // Convertsion quantity
+      if (prevUnit && prevUnit.id && !prevUnit.ConversionRatio) {
+        const product: ProductModel = detail.get('Product').value;
+        if (product && (product.Units || product.UnitConversions)) {
+          if (!product.Units) {
+            product.Units = product.UnitConversions.map(m => ({ ...m, id: this.cms.getObjectId(m.Unit), text: m.Name }))
+          }
+        }
+        prevUnit = product?.Units.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(prevUnit))
+      }
+      if (prevUnit && nextUnit && this.cms.getObjectId(prevUnit) != this.cms.getObjectId(nextUnit) && prevUnit.ConversionRatio && nextUnit.ConversionRatio) {
+        const currentQuantity = parseFloat(detail.get('Quantity').value);
 
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
-    }
-    // Callculate: Doanh thu bán lẻ dựa triên thu chi
-    if (selectedData && this.cms.getObjectId(selectedData) == 'BANLE' && detailForm) {
-      this.apiService.getPromise('/accounting/reports', {
-        reportSummary: true,
-        Accounts: '1111',
-        toDate: this.cms.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
-      }).then(rs => {
-        console.log(rs);
-        this.cms.openDialog(DialogFormComponent, {
-          context: {
-            title: 'Tính doanh thu bán lẻ',
-            onInit: async (form, dialog) => {
-              const reatilRevenue = form.get('RetailRevenue');
-              form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
-                reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
-              });
-              return true;
-            },
-            controls: [
-              {
-                name: 'RealCash',
-                label: 'Tiền mặt cuối ngày',
-                placeholder: 'Tiền đếm được cuối ngày',
-                type: 'currency',
-                initValue: 0,
-              },
-              {
-                name: 'CurrentCash',
-                label: 'Tiền mặt hiện tại trên phền mềm',
-                placeholder: 'Tiền đếm được cuối ngày',
-                type: 'currency',
-                initValue: rs[0]['TailAmount'],
-                disabled: true,
-              },
-              {
-                name: 'RetailRevenue',
-                label: 'Doanh thu bán lẻ',
-                placeholder: 'Doanh thu bán lẻ',
-                type: 'currency',
-                disabled: true,
-              },
-            ],
-            actions: [
-              {
-                label: 'Trở về',
-                icon: 'back',
-                status: 'basic',
-                action: async () => {
-                  return true;
-                },
-              },
-              {
-                label: 'Tính doanh thu bán lẻ',
-                icon: 'generate',
-                status: 'success',
-                action: async (form: FormGroup) => {
-                  console.log(rs);
-                  detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
-                  this.toMoney(parentForm, detail, 'Product');
+        let baseQuantity = currentQuantity * prevUnit.ConversionRatio;
+        let nextQuantity = baseQuantity / nextUnit.ConversionRatio;
 
-                  return true;
-                },
-              },
-            ],
-          },
-        });
-      });
-    }
-    return false;
-  }
-
-  /** Choose unit event */
-  onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
-    if (selectedData && selectedData.Price !== null) {
-      if (selectedData.Price >= 0) {
-        detail.get('Price').setValue(selectedData.Price);
-        this.toMoney(formItem, detail);
+        detail.get('Quantity').setValue(nextQuantity);
       }
     }
-    return false;
   }
-
-  // calculatToMoney(detail: FormGroup) {
-  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-  //   let tax = detail.get('Tax').value;
-  //   if (tax) {
-  //     if (typeof tax === 'string') {
-  //       tax = this.taxList.filter(t => t.Code === tax)[0];
-  //     }
-  //     toMoney += toMoney * tax.Tax / 100;
-  //   }
-  //   return toMoney;
-  // }
-
-  // toMoney(formItem: FormGroup, detail: FormGroup) {
-  //   detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-  //   this.calulateTotal(formItem);
-  //   return false;
-  // }
 
   calulateTotal(formItem: FormGroup) {
     this.cms.takeUntil('calulcate_sales_voucher', 300).then(rs => {
@@ -1170,27 +1031,11 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   }
 
   calculatToMoney(detail: FormGroup, source?: string) {
-    // let tax = detail.get('Tax').value;
-    // if (typeof tax === 'string') {
-    //   tax = this.taxList.filter(t => t.Code === tax)[0];
-    // }
     if (source === 'ToMoney') {
       const price = detail.get('ToMoney').value / detail.get('Quantity').value;
-      // if (tax) {
-      //   price = price / (1 + parseFloat(tax.Tax) / 100);
-      // }
-      // console.log(detail.value);
       return price;
     } else {
       const toMoney = detail.get('Quantity').value * detail.get('Price').value;
-
-      // if (tax) {
-      //   if (typeof tax === 'string') {
-      //     tax = this.taxList.filter(t => t.Code === tax)[0];
-      //   }
-      //   toMoney += toMoney * tax.Tax / 100;
-      // }
-      // console.log(detail.value);
       return toMoney;
     }
   }
@@ -1212,33 +1057,6 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     });
     return false;
   }
-
-  // preview(formItem: FormGroup) {
-  //   const data: CommercePosOrderModel = formItem.value;
-  //   data.Details.forEach(detail => {
-  //     detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
-  //     detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
-  //   });
-  //   this.cms.openDialog(CommercePosOrderPrintComponent, {
-  //     context: {
-  //       title: 'Xem trước',
-  //       data: [data],
-  //       mode: 'preview',
-  //       idKey: ['Code'],
-  //       onSaveAndClose: (rs: CommercePosOrderModel) => {
-  //         this.saveAndClose();
-  //       },
-  //       onSaveAndPrint: (rs: CommercePosOrderModel) => {
-  //         this.save();
-  //       },
-  //     },
-  //   });
-  //   return false;
-  // }
-
-  // getRawFormData() {
-  //   return super.getRawFormData();
-  // }
 
   openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
     this.cms.openDialog(ReferenceChoosingDialogComponent, {
@@ -1315,16 +1133,6 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
                     continue;
                   }
                 } else {
-                  // delete goodsDeliveryNote.Id;
-                  // formGroup.patchValue(priceReport);
-                  // if (typeof priceReport.Object === 'string') {
-                  //   priceReport.Object = {
-                  //     id: priceReport.Object as string,
-                  //     text: priceReport.ObjectName,
-                  //     Code: priceReport.Object,
-                  //     Name: priceReport.ObjectName,
-                  //   };
-                  // }
                   delete refVoucher.Id;
                   // delete refVoucher.Code;
                   formGroup.patchValue({ ...refVoucher, Code: null, Details: [] });
@@ -1404,5 +1212,4 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     }
     return data;
   }
-
 }

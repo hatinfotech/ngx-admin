@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
@@ -8,7 +8,7 @@ import { CommercePosOrderFormComponent } from '../commerce-pos-order-form/commer
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { AppModule } from '../../../../app.module';
-import { ColDef, IGetRowsParams, RowHeightParams } from '@ag-grid-community/core';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { CommercePosOrderPrintComponent } from '../commerce-pos-order-print/commerce-pos-order-print.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -41,6 +41,12 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
   public rowHeight: number = 50;
   // @Input() suppressRowClickSelection = false;
 
+  paymentMethodMap = {
+    CASH: { id: 'CASH', text: 'Tiền mặt' },
+    BANKTRANSFER: { id: 'BANKTRANSFER', text: 'Chuyển khoản' },
+    DEBT: { id: 'DEBT', text: 'Công nợ' },
+    MIXED: { id: 'MIXED', text: 'Hỗn hợp' },
+  };
 
   constructor(
     public apiService: ApiService,
@@ -288,6 +294,40 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
           field: 'Amount',
           pinned: 'right',
           width: 150,
+        },
+        {
+          headerName: 'Tài khoản ngân hàng',
+          field: 'ReceiptBackAccount',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          // pinned: 'left',
+        },
+        {
+          headerName: 'PT Thanh toán',
+          field: 'PaymentMethod',
+          width: 150,
+          cellRenderer: AgTextCellRenderer,
+          valueGetter: (params) => this.paymentMethodMap[this.cms.getObjectId(params.node?.data?.PaymentMethod)],
+          // filter: 'agTextColumnFilter',
+          autoHeight: true,
+          pinned: 'right',
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              placeholder: 'Chọn phương thức thanh toán...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              withThumbnail: false,
+              multiple: true,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+              data: Object.keys(this.paymentMethodMap).map(m => this.paymentMethodMap[m]),
+            }
+          },
         },
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {

@@ -2878,7 +2878,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     const cashTransferAmount = orderForm.get('CashTransferAmount');
     const receivableDebt = orderForm['ReceivableDebt'] || 0;
     if (cashReceiptControl && totalAmount && decreaseForTotalControl && this.cms.getObjectId(orderForm.get('PaymentMethod').value) === 'CASH') {
-      let cashBack = cashReceiptControl.value - ((totalAmount.value) - decreaseForTotalControl.value - (orderForm['returnsObj'] && this.cms.getObjectId(orderForm['returnsObj'].get('PaymentMethod').value) === 'CASH' ? orderForm['returnsObj'].get('Amount').value : 0));
+      let cashBack = cashReceiptControl.value - ((totalAmount.value) - decreaseForTotalControl.value - (orderForm['returnsObj'] && this.cms.getObjectId(orderForm['returnsObj'].get('`PaymentMethod`').value) === 'CASH' ? orderForm['returnsObj'].get('Amount').value : 0));
 
       if (cashBack > 0) {
         orderForm['cashBack'] = cashBack;
