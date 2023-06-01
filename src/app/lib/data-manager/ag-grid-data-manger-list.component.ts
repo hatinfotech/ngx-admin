@@ -701,7 +701,10 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   reset() {
-    this.gridApi.setFilterModel(null);
+    this.gridApi!.setFilterModel(null);
+    this.gridColumnApi!.applyColumnState({
+      defaultState: { sort: null },
+    });
     // this.gridApi.setSortModel(null);
     this.gridApi.deselectAll();
     this.loadList();

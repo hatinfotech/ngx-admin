@@ -213,7 +213,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           name: 'reset',
           status: 'info',
           // label: 'Reset',
-          icon: 'reset',
+          icon: 'refresh-outline',
           title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
           size: 'medium',
           // disabled: () => {
