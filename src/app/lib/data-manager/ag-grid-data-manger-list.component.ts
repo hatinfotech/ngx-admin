@@ -47,98 +47,6 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   lastResponseHeader: HttpHeaders = null;
   @Input() prepareApiParams(params: any, getRowParams?: IGetRowsParams): any { };
 
-  // @Input() actionButtonList: ActionControl[] = [
-  //   {
-  //     name: 'delete',
-  //     status: 'danger',
-  //     label: 'Xoá',
-  //     icon: 'trash-2',
-  //     title: 'Xoá',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return !this.hadRowsSelected;
-  //     },
-  //     click: () => {
-  //       this.deleteSelected();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     name: 'edit',
-  //     status: 'warning',
-  //     label: 'Chỉnh',
-  //     icon: 'edit-2',
-  //     title: 'Chỉnh sửa',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return !this.hadRowsSelected;
-  //     },
-  //     click: () => {
-  //       this.editSelectedItem();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     name: 'preview',
-  //     status: 'primary',
-  //     label: 'Xem',
-  //     icon: 'external-link',
-  //     title: 'Xem trước',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return !this.hadRowsSelected;
-  //     },
-  //     click: () => {
-
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     name: 'add',
-  //     status: 'success',
-  //     label: 'Tạo',
-  //     icon: 'file-add',
-  //     title: 'Tạo mới',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return false;
-  //     },
-  //     click: () => {
-  //       this.createNewItem();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     name: 'reset',
-  //     status: 'info',
-  //     label: 'Reset',
-  //     icon: 'refresh',
-  //     title: 'Đặt lại từ đầu',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return false;
-  //     },
-  //     click: () => {
-  //       this.reset();
-  //       return false;
-  //     },
-  //   },
-  //   {
-  //     name: 'refresh',
-  //     status: 'success',
-  //     label: 'Refresh',
-  //     icon: 'sync',
-  //     title: 'Làm mới',
-  //     size: 'medium',
-  //     disabled: () => {
-  //       return false;
-  //     },
-  //     click: () => {
-  //       this.refresh();
-  //       return false;
-  //     },
-  //   },
-  // ];
 
   @ViewChild('agGrid', { static: true }) agGrid: AgGridAngular;
 
@@ -769,6 +677,26 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     }
 
     this.updateActionState();
+    // return false;
+  }
+
+  async refreshItems(ids: string[]): Promise<M[]> {
+    let query = { id: ids };
+    query = this.prepareApiParams(query);
+    return new Promise<M[]>((resolve, reject) => {
+      this.executeGet(query, list => {
+        for (const item of list) {
+          const node = this.gridApi.getRowNode(this.makeId(item));
+          if (node) {
+            node.setData(item);
+          }
+        }
+        this.updateActionState();
+        resolve(list);
+      }, err => {
+        reject(err);
+      });
+    });
     // return false;
   }
 

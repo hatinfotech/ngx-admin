@@ -209,21 +209,21 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
             return false;
           },
         },
-        // {
-        //   name: 'reset',
-        //   status: 'info',
-        //   // label: 'Reset',
-        //   icon: 'refresh',
-        //   title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
-        //   size: 'small',
-        //   disabled: () => {
-        //     return false;
-        //   },
-        //   click: () => {
-        //     this.reset();
-        //     return false;
-        //   },
-        // },
+        {
+          name: 'reset',
+          status: 'info',
+          // label: 'Reset',
+          icon: 'reset',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.reset'), 'head-title'),
+          size: 'medium',
+          // disabled: () => {
+          //   return false;
+          // },
+          click: () => {
+            this.reset();
+            return false;
+          },
+        },
         // {
         //   name: 'refresh',
         //   status: 'success',
@@ -865,14 +865,20 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
         idKey: ['Code'],
         // approvedConfirm: true,
         onChange: (data: M) => {
-          this.refresh();
+          // this.refresh();
+          this.refreshItems([this.makeId(data)]);
         },
-        onSaveAndClose: () => {
-          this.refresh();
+        onSaveAndClose: (data: M) => {
+          // this.refresh();
+          this.refreshItems([this.makeId(data)]);
         },
       },
       ...(userConfig || {})
     });
     return false;
+  }
+
+  async refreshItems(ids: string[]): Promise<M[]> {
+    return [];
   }
 }
