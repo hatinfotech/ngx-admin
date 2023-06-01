@@ -445,12 +445,12 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
         isDuplicate: true,
         onDialogSave: (newData: M[]) => {
           // if (onDialogSave) onDialogSave(row);
-          this.onClose(newData[0]);
+          this.onClose && this.onClose(newData[0]);
+          this.onChange && this.onChange(newData[0]);
         },
         onDialogClose: () => {
           // if (onDialogClose) onDialogClose();
           this.refresh();
-
         },
       },
     });

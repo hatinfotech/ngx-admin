@@ -190,7 +190,7 @@
                                             <div class="col-md-3 col-sm-3 col-is-3">
                                                 <ngx-form-group [hideLabel]="false" *ngIf="getFieldValue(detail, 'Type') === 'PRODUCT'" [formGroup]="detail" name="No" label="STT" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                     <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;" value="{{ic+1}}">
-                                                    <input type="hidden" formControlName="Id">
+                                                    <!-- <input type="hidden" formControlName="Id"> -->
                                                 </ngx-form-group>
                                                 <div class="form-group">
                                                     <label class="label" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">Gở</label>

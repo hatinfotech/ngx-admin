@@ -346,7 +346,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
           formItem.get('Description').setValue('Copy of: ' + formItem.get('Description').value);
           this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
             // Clear id
-            conditonFormGroup.get('Id').setValue('');
+            // conditonFormGroup.get('Id').setValue('');
           });
         });
       }

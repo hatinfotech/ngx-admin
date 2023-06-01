@@ -3,17 +3,10 @@ import { WarehouseGoodsReceiptNoteModel } from '../../../../models/warehouse.mod
 import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
-import { NbDialogConfig, NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { WarehouseGoodsReceiptNoteFormComponent } from '../warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
-import { takeUntil } from 'rxjs/operators';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { AppModule } from '../../../../app.module';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -239,7 +232,6 @@ export class WarehouseGoodsReceiptNoteListComponent extends AgGridDataManagerLis
             select2Option: {
               ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
                 placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
                   return item;
                 }
               }),
@@ -339,6 +331,7 @@ export class WarehouseGoodsReceiptNoteListComponent extends AgGridDataManagerLis
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeObject'] = true;
     params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';

@@ -1,17 +1,19 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { filter, takeUntil } from 'rxjs/operators';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { WarehouseService } from '../../warehouse.service';
-import { WarehouseDetailByGoodsReportComponent } from '../warehouse-detail-by-goods-report/warehouse-detail-by-goods-report.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { AccAccountFormComponent } from '../../../accounting/acc-account/acc-account-form/acc-account-form.component';
+import { AccountingService } from '../../../accounting/accounting.service';
+import { AccountingAccountDetailsReportPrintComponent } from '../../../accounting/reports/print/accounting-account-details-report-print/accounting-account-details-report-print.component';
+import { AccountingDetailByObjectReportAgComponent } from '../../../accounting/reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-summary-report',
@@ -20,11 +22,11 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 })
 export class WarehouseSummaryReportComponent extends ServerDataManagerListComponent<AccountModel> implements OnInit {
 
-  componentName: string = 'WarehouseSummaryReportComponent';
-  formPath = '/accounting/account/form';
-  apiPath = '/accounting/reports';
+  componentName: string = 'WarehouseSummaryReportComponentextends';
+  formPath = '/warehouse/account/form';
+  apiPath = '/warehouse/reports';
   idKey = 'Account';
-  // formDialog = AccAccountFormComponent;
+  formDialog = AccAccountFormComponent;
 
   reuseDialog = true;
 
@@ -44,7 +46,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
     public toastService: NbToastrService,
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseSummaryReportComponent>,
-    public accountingService: WarehouseService,
+    public accountingService: AccountingService,
   ) {
     super(apiService, router, cms, dialogService, toastService, ref);
   }
@@ -91,17 +93,34 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
       summaryReportBtn.status = 'info';
       summaryReportBtn.disabled = () => this.selectedIds.length <= 0;
       summaryReportBtn.click = () => {
-        // this.cms.openDialog(WarehouseAccountDetailsReportPrintComponent, {
-        //   context: {
-        //     showLoadinng: true,
-        //     // title: 'Xem trước',
-        //     accounts: this.selectedIds,
-        //     mode: 'print',
-        //     id: ['all']
-        //   },
-        // });
+        this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
+          context: {
+            showLoadinng: true,
+            // title: 'Xem trước',
+            accounts: this.selectedIds,
+            mode: 'print',
+            id: ['all']
+          },
+        });
       };
 
+      // const detailsReportBtn = {...summaryReportBtn};
+      // detailsReportBtn.status = 'primary';
+      // detailsReportBtn.name = 'detailReport';
+      // detailsReportBtn.label = detailsReportBtn.title = 'In báo cáo chi tiết';
+      // detailsReportBtn.disabled = () => this.selectedIds.length <= 0;
+      // detailsReportBtn.click = () => {
+      //   this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
+      //     context: {
+      //       showLoadinng: true,
+      //       // title: 'Xem trước',
+      //       mode: 'print',
+      //       id: ['all'],
+      //       objects: this.selectedIds,
+      //     },
+      //   });
+      // };
+      // this.actionButtonList.unshift(detailsReportBtn);
 
       // Auto refresh list on reportToDate changed
       this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
@@ -125,7 +144,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
       actions: false,
       columns: {
         Accounts: {
-          title: this.cms.translateText('Warehouse.account'),
+          title: this.cms.translateText('Accounting.account'),
           type: 'string',
           width: '10%',
           valuePrepareFunction: (cell: any, row: AccountModel) => {
@@ -181,42 +200,42 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
           width: '40%',
         },
         // HeadDebit: {
-        //   title: '[' + this.cms.translateText('Warehouse.headDebit'),
+        //   title: '[' + this.cms.translateText('Accounting.headDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // HeadCredit: {
-        //   title: this.cms.translateText('Warehouse.headCredit') + ']',
+        //   title: this.cms.translateText('Accounting.headCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         HeadAmount: {
-          title: '[' + this.cms.translateText('Warehouse.headAmount') + ']',
+          title: '[' + this.cms.translateText('Accounting.headAmount') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         GenerateDebit: {
-          title: '[' + this.cms.translateText('Warehouse.debitGenerate'),
+          title: '[' + this.cms.translateText('Accounting.debitGenerate'),
           type: 'acc-currency',
           width: '10%',
         },
         GenerateCredit: {
-          title: this.cms.translateText('Warehouse.creditGenerate') + ']',
+          title: this.cms.translateText('Accounting.creditGenerate') + ']',
           type: 'acc-currency',
           width: '10%',
         },
         // TailDebit: {
-        //   title: '[' + this.cms.translateText('Warehouse.tailDebit'),
+        //   title: '[' + this.cms.translateText('Accounting.tailDebit'),
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         // TailCredit: {
-        //   title: this.cms.translateText('Warehouse.tailCredit') + ']',
+        //   title: this.cms.translateText('Accounting.tailCredit') + ']',
         //   type: 'acc-currency',
         //   width: '10%',
         // },
         TailAmount: {
-          title: '[' + this.cms.translateText('Warehouse.tailAmount') + ']',
+          title: '[' + this.cms.translateText('Accounting.tailAmount') + ']',
           type: 'acc-currency',
           width: '10%',
         },
@@ -330,7 +349,8 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
   }
 
   openInstantDetailReport(rowData: any) {
-    this.cms.openDialog(WarehouseDetailByGoodsReportComponent, {
+    // this.cms.openDialog(AccountingDetailByObjectReportComponent, {
+    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,
@@ -338,7 +358,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
         toDate: null,
-        reportComponent: WarehouseDetailByGoodsReportComponent,
+        reportComponent: AccountingAccountDetailsReportPrintComponent,
       },
       closeOnEsc: false,
     })

@@ -4,16 +4,9 @@ import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { SmartTableButtonComponent, SmartTableDateTimeComponent, SmartTableRelativeVouchersComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { WarehouseInventoryAdjustNoteFormComponent } from '../inventory-adjust-note-form/inventory-adjust-note-form.component';
-import { takeUntil } from 'rxjs/operators';
 import { WarehouseInventoryAdjustNotePrintComponent } from '../inventory-adjust-note-print/inventory-adjust-note-print.component';
 import { AppModule } from '../../../../app.module';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
@@ -339,6 +332,7 @@ export class WarehouseInventoryAdjustNoteListComponent extends AgGridDataManager
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeObject'] = true;
     params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';

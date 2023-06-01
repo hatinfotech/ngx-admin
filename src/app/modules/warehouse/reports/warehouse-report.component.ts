@@ -79,59 +79,42 @@ export class WarehouseReportComponent extends BaseComponent {
     await this.cms.waitForReady();
     this.tabs = [
       {
-        title: this.cms.translateText('Warehouse.SummaryReport.label'),
-        route: '/accounting/report/summary',
+        title: this.cms.translateText('Báo cáo kho bãi'),
+        route: '/warehouse/report/summary',
         icon: 'pie-chart',
         // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       },
-      {
-        title: this.cms.translateText('Đối soát công nợ'),
-        route: '/accounting/report/cash-flow',
-        // icon: 'pie-chart',
-        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
-      },
-      {
-        title: this.cms.translateText('Warehouse.LiabilitiesReport.label'),
-        route: '/accounting/report/liabilities',
-        // icon: 'pie-chart',
-        // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
-      },
-      {
-        title: this.cms.translateText('Warehouse.ReceivablesFromCustomersReport.label'),
-        route: '/accounting/report/receivables-from-customers-report',
-        // icon: 'pie-chart',
-      },
-      {
-        title: this.cms.translateText('Warehouse.ReceivablesFromEmployeeReport.label'),
-        route: '/accounting/report/receivables-from-employee-report',
-        // icon: 'pie-chart',
-      },
-      {
-        title: this.cms.translateText('Góp vốn'),
-        route: '/accounting/report/contributed-capital-report',
-        // icon: 'pie-chart',
-      },
-      {
-        title: this.cms.translateText('Warehouse.ProfitReport.label'),
-        route: '/accounting/report/profit-report',
-        // icon: 'pie-chart',
-      },
       // {
-      //   title: 'Users',
-      //   icon: 'person',
-      //   route: './tab1',
+      //   title: this.cms.translateText('Đối soát công nợ'),
+      //   route: '/warehouse/report/cash-flow',
+      //   // icon: 'pie-chart',
+      //   // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       // },
       // {
-      //   title: 'Orders',
-      //   icon: 'paper-plane-outline',
-      //   responsive: true,
-      //   route: [ './tab2' ],
+      //   title: this.cms.translateText('Warehouse.LiabilitiesReport.label'),
+      //   route: '/warehouse/report/liabilities',
+      //   // icon: 'pie-chart',
+      //   // responsive: true, // hide title before `route-tabs-icon-only-max-width` value
       // },
       // {
-      //   title: 'Transaction',
-      //   icon: 'flash-outline',
-      //   responsive: true,
-      //   disabled: true,
+      //   title: this.cms.translateText('Warehouse.ReceivablesFromCustomersReport.label'),
+      //   route: '/warehouse/report/receivables-from-customers-report',
+      //   // icon: 'pie-chart',
+      // },
+      // {
+      //   title: this.cms.translateText('Warehouse.ReceivablesFromEmployeeReport.label'),
+      //   route: '/warehouse/report/receivables-from-employee-report',
+      //   // icon: 'pie-chart',
+      // },
+      // {
+      //   title: this.cms.translateText('Góp vốn'),
+      //   route: '/warehouse/report/contributed-capital-report',
+      //   // icon: 'pie-chart',
+      // },
+      // {
+      //   title: this.cms.translateText('Warehouse.ProfitReport.label'),
+      //   route: '/warehouse/report/profit-report',
+      //   // icon: 'pie-chart',
       // },
     ];
     return super.init();

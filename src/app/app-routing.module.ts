@@ -132,6 +132,8 @@ import { WordpressOrderFormComponent } from './modules/wordpress/order/order-for
 import { MasterPriceTableUpdateNoteListComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-list/master-price-table-update-note-list.component';
 import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
 import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
+import { WarehouseSummaryReportComponent } from './modules/warehouse/reports/summary-report/warehouse-summary-report.component';
+import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-report.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -406,7 +408,7 @@ const routes: Routes = [
   {
     path: 'warehouse/report',
     canActivate: [AuthGuardService],
-    component: AccountingReportComponent,
+    component: WarehouseReportComponent,
     children: [
       {
         path: '',
@@ -415,7 +417,7 @@ const routes: Routes = [
       },
       {
         path: 'summary',
-        component: AccountingSummaryReportComponent,
+        component: WarehouseSummaryReportComponent,
         data: {
           reuse: true,
         },
