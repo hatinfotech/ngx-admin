@@ -7,7 +7,7 @@ import { Select2AjaxOptions } from '../../../../vendor/ng2select2.copy/lib/ng2-s
 import { IdTextPair, Select2Options, Select2QueryOptions, Select2SelectionObject } from '../../../../vendor/ng2select2/lib/ng2-select2.interface';
 
 // declare var Search: any;
-
+declare var $: any;
 // Search.prototype.handleSearch = function (evt) {
 //   if (!this._keyUpPrevented) {
 //     var input = this.$search.val();
@@ -336,7 +336,11 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
       // }
 
       // }
-      this.value = '';
+      this.value = value;
+
+      if (this.controls && this.controls['selector']) {
+        $(this.controls['selector'].nativeElement).val(this.value).trigger('change');
+      }
     }
     // this.selectChange.emit(value);
   }
