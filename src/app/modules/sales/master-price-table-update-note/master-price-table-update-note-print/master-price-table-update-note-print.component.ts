@@ -30,6 +30,8 @@ export class MasterPriceTableUpdateNotePrintComponent extends DataManagerPrintCo
   idKey = ['Code'];
   formDialog = MasterPriceTableUpdateNoteFormComponent;
 
+  showPicture = true;
+
   constructor(
     public cms: CommonService,
     public router: Router,
@@ -47,6 +49,19 @@ export class MasterPriceTableUpdateNotePrintComponent extends DataManagerPrintCo
 
   async init() {
     const result = await super.init();
+
+    this.actionButtonList.unshift({
+      name: 'showPicture',
+      label: 'Hình ảnh',
+      title: 'H.Thị hình',
+      status: 'info',
+      size: 'medium',
+      icon: 'eye-outline',
+      click: () => {
+        this.showPicture = !this.showPicture;
+        return true;
+      }
+    });
     // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
     // if (this.data && this.data.length > 0) {

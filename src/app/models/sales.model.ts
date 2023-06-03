@@ -312,4 +312,10 @@ export interface MasterPriceTableQueueModel extends Model {
   RequestDate?: string;
   RequestBy?: string;
   Context?: string;
+  PreviousPurchasePrice?: number;
+  RelativePurchaseObject?: any;
+  RelativePurchaseObjectName?: string;
+  RelativeVoucher?: string;
+  CurrentPrice?: number;
+  RelativeDetail?: string;
 }

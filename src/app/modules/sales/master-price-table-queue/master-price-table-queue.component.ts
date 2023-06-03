@@ -83,21 +83,24 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
               data: [
                 {
                   Title: 'Cập nhật giá ' + new Date().toUTCString(),
-                  Details: this.selectedItems.map(m => ({
+                  Details: this.selectedItems.reverse().map(m => ({
                     Image: m.Product.Pictures,
                     Product: m.Product as any,
                     Unit: m.Unit as any,
                     Description: this.cms.getObjectText(m.Product),
-                    Price: m.CurrentPrice,
-                    PurchasePrice: m.PurchasePrice
+                    Price: m.OldPrice,
+                    PurchasePrice: m.PurchasePrice,
+
+                    // RelateDetail: m.RelativeDetail,
+                    RelativeQueueItem: m.Id,
                   })) as any
                 }
               ],
               onDialogSave: (newData) => {
                 if (newData[0].State === 'APPROVED') {
-                  this.delete(this.selectedIds).then(() => {
-                    this.refresh();
-                  });
+                  // this.delete(this.selectedIds).then(() => {
+                  this.refresh();
+                  // });
                 }
               },
             }
@@ -177,6 +180,15 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
           },
         },
         {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
+          headerName: 'Chứng từ liên quan',
+          field: 'RelativeVoucher',
+          valueGetter: params => params.node?.data?.RelativeVoucher ? [{ id: params.node.data.RelativeVoucher, text: params.node.data.RelativeVoucherTitle }] : [],
+          width: 180,
+        },
+        {
           headerName: 'Ngày yêu cầu',
           field: 'RequestDate',
           width: 180,
@@ -217,7 +229,7 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
         {
           ...agMakeCurrencyColDef(this.cms),
           headerName: 'Giá hiện tại',
-          field: 'CurrentPrice',
+          field: 'OldPrice',
           pinned: 'right',
           width: 150,
         },

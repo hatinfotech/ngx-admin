@@ -6,9 +6,9 @@
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
         <div style="display: flex;">
-          <div>
+          <!-- <div>
             <img style="margin-top: 2px;" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}" src="{{data.Signature}}">
-          </div>
+          </div> -->
           <div style="flex: 1;">
             <ngx-print-header></ngx-print-header>
           </div>
@@ -39,27 +39,37 @@
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
+                <td *ngIf="showPicture" style="white-space: nowrap">{{'Hình' | translate | headtitlecase}}</td>
                 <td>{{'Sku' | translate | headtitlecase}}</td>
-                <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
+                <td>{{'Common.description' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.quantity' | translate | headtitlecase}}</td> -->
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
-                <!-- <td class="text-align-right">{{'Giá cũ' | translate | headtitlecase}}</td> -->
-                <td class="text-align-right">{{'Giá mới' | translate | headtitlecase}}</td>
-                <!-- <td class="text-align-right">{{'Tỷ suất lợi nhuận' | translate | headtitlecase}}</td> -->
+                <td class="text-align-right">{{'Giá nhập trước' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Giá nhập' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Giá bán cũ' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'% Lợi nhuận' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Giá bán mới' | translate | headtitlecase}}</td>
+                <!-- <td class="text-align-right">{{'Ghi chú' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td> -->
               </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line">
                   <td>{{detail.No}}</td>
+                  <td *ngIf="showPicture">
+                    <div style="width: 80px; height: 80px; border-radius: 5px; overflow: hidden; background-position: center; background-repeat: no-repeat; background-size:cover;" [ngStyle]="{'backgroundImage': 'url(' + (detail?.Image && detail?.Image[0] &&  detail?.Image[0]?.SmallImage) + ')'}"></div>
+                    <!-- <img *ngIf="detail?.Image && detail?.Image[0]?.SmallImage" style="width: 150px;" [src]="detail?.Image[0]?.SmallImage"> -->
+                  </td>
                   <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
-                  <td [innerHTML]="renderValue(detail.Description)"></td>
+                  <td [innerHTML]="renderValue(detail.Description+'<br>'+'NCC: '+detail.RelativePurchaseObjectName)"></td>
                   <!-- <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td> -->
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
-                  <!-- <td class="text-align-right">{{renderValue(detail.OldPrice) | currency:'VND'}}</td> -->
-                  <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
-                  <!-- <td class="text-align-right">~{{renderValue(detail.ProfitMargin) | number:'1.0-0'}}%</td> -->
-                  <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->
+                  <td class="text-align-right">{{renderValue(detail.PreviousPurchasePrice) | currency:'VND'}}</td>
+                  <td class="text-align-right">{{renderValue(detail.PurchasePrice) | currency:'VND'}}</td>
+                  <td class="text-align-right">{{renderValue(detail.OldPrice) | currency:'VND'}}</td>
+                  <td class="text-align-right">{{renderValue(detail.ProfitMargin) | number:'1.0-0'}}%</td>
+                  <td class="text-align-right" [innerHTML]="(renderValue(detail.Price) | currency:'VND') + '<br>'"></td>
+                  <!-- <td class="text-align-right" style="width: 100px">&nbsp;</td> -->
                   <!-- <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td> -->
                 </tr>
               </ng-container>

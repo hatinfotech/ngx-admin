@@ -690,7 +690,6 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: MasterPriceTableUpdateNoteDetailModel): FormGroup {
     let newForm = null;
     newForm = this.formBuilder.group({
-      // Id: [''],
       SystemUuid: [''],
       No: [''],
       PriceType: ['REGULAR', Validators.required],
@@ -701,14 +700,10 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
         return null;
       }],
       Description: ['', Validators.required],
-      Ratio: [30],
-      // Quantity: [1, (control: FormControl) => {
-      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
-      //   }
-      //   return null;
-      // }],
-      CurrentPrice: { disabled: true, value: null },
+      RelateDetail: [],
+      RelativeQueueItem: [],
+      ProfitMargin: [30],
+      OldPrice: { disabled: true, value: null },
       PurchasePrice: { disabled: true, value: null },
       Price: ['', (control: FormControl) => {
         if (newForm && !this.cms.getObjectId(control.value)) {
@@ -722,21 +717,11 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
         }
         return null;
       }],
-      // Tax: ['NOTAX', (control: FormControl) => {
-      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
-      //   }
-      //   return null;
-      // }],
-      // ToMoney: [0],
       Image: [[]],
-      // Reason: [''],
-      // Business: { value: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE'), disabled: true },
-      // Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
     });
 
     if (data) {
-      data['CurrentPrice'] = data['Price'];
+      data['OldPrice'] = data['Price'];
       newForm.patchValue(data);
 
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
@@ -782,7 +767,8 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.updateInitialFormPropertiesCache(newChildFormGroup);
-    newChildFormGroup.get('Ratio').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup));
+    newChildFormGroup.get('ProfitMargin').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'ProfitMargin'));
+    newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Price'));
     // this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
@@ -823,152 +809,6 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
   }
   onRemoveActionFormGroup(mainIndex: number, index: number) {
   }
-  /** End Action Form */
-
-  // onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-  //         formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-  //         formGroup.get('ContactName').setValue(selectedData.Name);
-  //         if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ContactPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ContactPhone').setValue(selectedData['Phone']);
-  //         if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ContactEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ContactEmail').setValue(selectedData['Email']);
-  //         if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ContactAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ContactAddress').setValue(selectedData['Address']);
-  //         formGroup.get('ContactIdentifiedNumber').setValue(selectedData.TaxCode);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // onPriceTableChange(formGroup: FormGroup, selectedData: SalesMasterPriceTableModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-  //         // formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // onPriceReportVoucherChange(formGroup: FormGroup, selectedData: PriceReportModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-
-  //         this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + selectedData.Code, {
-  //           includeContact: true,
-  //           includeDetails: true,
-  //           includeProductUnitList: true,
-  //           includeProductPrice: true,
-  //         }).then(rs => {
-
-  //           if (rs && rs.length > 0) {
-  //             const salesVoucher: MasterPriceTableUpdateNoteModel = { ...rs[0] };
-  //             salesVoucher.PriceReportVoucher = selectedData.Code;
-  //             delete salesVoucher.Code;
-  //             delete salesVoucher.Id;
-  //             for (const detail of salesVoucher.Details) {
-  //               delete detail['Id'];
-  //               delete detail['Voucher'];
-  //               detail.Description = detail['Description'];
-  //             }
-  //             this.formLoad([salesVoucher]);
-  //           }
-  //         });
-
-  //         // formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
-
-  // onSalectPriceReport(formGroup: FormGroup, selectedData: ChatRoomModel, formIndex?: number) {
-  //   // console.info(item);
-
-  //   if (!this.isProcessing) {
-  //     if (selectedData && !selectedData['doNotAutoFill']) {
-
-  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-  //       if (selectedData.Code) {
-
-  //         // Get first price report => prototype
-  //         // const firstPriceReport = selectedData['PriceReports'] && selectedData['PriceReports'][0];
-  //         this.apiService.getPromise<PriceReportModel[]>('/sales/price-reports/' + this.cms.getObjectId(selectedData), {
-  //           includeContact: true,
-  //           includeDetails: true,
-  //           includeProductUnitList: true,
-  //           includeProductPrice: true,
-  //         }).then(rs => {
-
-  //           if (rs && rs.length > 0) {
-  //             const salesVoucher: MasterPriceTableUpdateNoteModel = { ...rs[0] };
-  //             // salesVoucher.PriceReportVoucher = selectedData.Code;
-  //             delete salesVoucher.Code;
-  //             delete salesVoucher.Id;
-  //             salesVoucher['SalesTask'] = { id: selectedData.Code, text: selectedData?.Description, Code: selectedData.Code, Description: selectedData.Description };
-  //             for (const detail of salesVoucher.Details) {
-  //               delete detail['Id'];
-  //               delete detail['Voucher'];
-  //               detail.Description = detail['Description'];
-  //             }
-  //             this.formLoad([salesVoucher]);
-  //           }
-  //         });
-
-  //         // formGroup.get('ObjectName').setValue(selectedData.Name);
-  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
-  //         // formGroup.get('ObjectTaxCode').setValue(selectedData.TaxCode);
-  //         // formGroup.get('ObjectBankName').setValue(selectedData.BankName);
-  //         // formGroup.get('ObjectBankCode').setValue(selectedData.BankAcc);
-  //       }
-  //     }
-  //   }
-  // }
 
   /** Choose product event */
   onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
@@ -977,34 +817,6 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
     const unitControl = detail.get('Unit');
     detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
-      // const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
-      // if (priceTable) {
-      //   this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-      //     priceTable: priceTable,
-      //     product: this.cms.getObjectId(selectedData),
-      //     includeUnit: true,
-      //   }).then(rs => {
-      //     console.log(rs);
-      //     unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
-      //     // if (selectedData.Units) {
-      //     if (detaultUnit) {
-      //       const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
-      //       detail.get('Unit').setValue('');
-      //       setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
-      //       setTimeout(() => {
-      //         detail.get('Price').setValue(choosed.Price);
-      //         this.toMoney(parentForm, detail);
-      //       }, 0);
-      //     }
-      //     // } else {
-      //     //   detail['unitList'] = this.cms.unitList;
-      //     // }
-      //   });
-      // } else {
-      //   unitControl['UnitList'] = selectedData.Units;
-      //   // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
-      //   unitControl.setValue(detaultUnit);
-      // }
 
     } else {
       // detail.get('Description').setValue('');
@@ -1013,301 +825,38 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
       unitControl['UnitList'] = [];
       unitControl['UnitList'] = null;
     }
-    // Callculate: Doanh thu bán lẻ dựa triên thu chi
-    // if (selectedData && this.cms.getObjectId(selectedData) == 'BANLE' && detailForm) {
-    //   this.apiService.getPromise('/accounting/reports', {
-    //     reportSummary: true,
-    //     eq_Accounts: '1111',
-    //     toDate: this.cms.getEndOfDate(parentForm.get('DateOfSale')?.value).toISOString(),
-    //   }).then(rs => {
-    //     console.log(rs);
-    //     this.cms.openDialog(DialogFormComponent, {
-    //       context: {
-    //         title: 'Tính doanh thu bán lẻ',
-    //         onInit: async (form, dialog) => {
-    //           const reatilRevenue = form.get('RetailRevenue');
-    //           form.get('RealCash').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(realCashValue => {
-    //             reatilRevenue.setValue(realCashValue - rs[0]['TailAmount']);
-    //           });
-    //           return true;
-    //         },
-    //         controls: [
-    //           {
-    //             name: 'RealCash',
-    //             label: 'Tiền mặt cuối ngày',
-    //             placeholder: 'Tiền đếm được cuối ngày',
-    //             type: 'currency',
-    //             initValue: 0,
-    //           },
-    //           {
-    //             name: 'CurrentCash',
-    //             label: 'Tiền mặt hiện tại trên phền mềm',
-    //             placeholder: 'Tiền đếm được cuối ngày',
-    //             type: 'currency',
-    //             initValue: rs[0]['TailAmount'],
-    //             disabled: true,
-    //           },
-    //           {
-    //             name: 'RetailRevenue',
-    //             label: 'Doanh thu bán lẻ',
-    //             placeholder: 'Doanh thu bán lẻ',
-    //             type: 'currency',
-    //             disabled: true,
-    //           },
-    //         ],
-    //         actions: [
-    //           {
-    //             label: 'Trở về',
-    //             icon: 'back',
-    //             status: 'basic',
-    //             action: async () => { return true; },
-    //           },
-    //           {
-    //             label: 'Tính doanh thu bán lẻ',
-    //             icon: 'generate',
-    //             status: 'success',
-    //             action: async (form: FormGroup) => {
-    //               console.log(rs);
-    //               detailForm.get('Price').setValue(form.get('RealCash').value - rs[0]['TailAmount']);
-    //               this.toMoney(parentForm, detail, 'Product');
-    //               return true;
-    //             },
-    //           },
-    //         ],
-    //       },
-    //     });
-    //   });
-    // }
     return false;
   }
 
   /** Choose unit event */
   onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
-    // if (selectedData && selectedData.Price !== null) {
-    //   if (selectedData.Price >= 0) {
-    //     detail.get('Price').setValue(selectedData.Price);
-    //     // this.toMoney(formItem, detail);
-    //   }
-    // }
     return false;
   }
 
-  // calculatToMoney(detail: FormGroup) {
-  //   let toMoney = detail.get('Quantity').value * detail.get('Price').value;
-  //   let tax = detail.get('Tax').value;
-  //   if (tax) {
-  //     if (typeof tax === 'string') {
-  //       tax = this.taxList.filter(t => t.Code === tax)[0];
-  //     }
-  //     toMoney += toMoney * tax.Tax / 100;
-  //   }
-  //   return toMoney;
-  // }
-
-  toMoney(formItem: FormGroup, detail: FormGroup) {
-    if (detail.get('PurchasePrice').value) {
-      detail.get('Price').setValue(this.calculatToMoney(detail));
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string) {
+    if (source == 'ProfitMargin' && detail.get('PurchasePrice').value && detail.get('ProfitMargin').value) {
+      detail.get('Price').setValue(detail.get('PurchasePrice').value + detail.get('PurchasePrice').value * detail.get('ProfitMargin').value / 100, { emitEvent: false });
+    }
+    if (source == 'Price' && detail.get('PurchasePrice').value && detail.get('Price').value) {
+      detail.get('ProfitMargin').setValue(100 * (detail.get('Price').value / detail.get('PurchasePrice').value - 1), { emitEvent: false });
     }
     // this.calulateTotal(formItem);
     return false;
   }
 
-  // calulateTotal(formItem: FormGroup) {
-  //   this.cms.takeUntil('calulcate_sales_voucher', 300).then(rs => {
-  //     let total = 0;
-  //     const details = this.getDetails(formItem);
-  //     for (let i = 0; i < details.controls.length; i++) {
-  //       total += this.calculatToMoney(details.controls[i] as FormGroup);
-  //     }
-  //     // formItem.get('_total').setValue(this.cms.roundUsing(total, Math.floor, 2));
-  //   });
-  // }
-
   calculatToMoney(detail: FormGroup, source?: string) {
-    // if (source === 'Ratio') {
-    const price = detail.get('PurchasePrice').value + detail.get('PurchasePrice').value * detail.get('Ratio').value / 100;
-    return price;
-    // } else {
-    //   const toMoney = detail.get('Quantity').value * detail.get('Price').value;
-    //   return toMoney;
-    // }
+    if (source == 'ProfitMargin') {
+      return detail.get('PurchasePrice').value + detail.get('PurchasePrice').value * detail.get('ProfitMargin').value / 100;
+    }
+    if (source == 'Price') {
+      return detail.get('Price').value + detail.get('PurchasePrice').value * detail.get('ProfitMargin').value / 100;
+    }
+    // return price;
   }
-
-  // toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-  //   this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
-  //     if (source === 'ToMoney') {
-  //       detail.get('Price').setValue(this.calculatToMoney(detail, source));
-  //     } else {
-  //       detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-  //     }
-  //     // Call culate total
-  //     const details = this.getDetails(formItem);
-  //     let total = 0;
-  //     for (let i = 0; i < details.controls.length; i++) {
-  //       total += this.calculatToMoney(details.controls[i] as FormGroup);
-  //     }
-  //     // formItem.get('_total').setValue(total);
-  //   });
-  //   return false;
-  // }
-
-  // preview(formItem: FormGroup) {
-  //   const data: MasterPriceTableUpdateNoteModel = formItem.value;
-  //   data.Details.forEach(detail => {
-  //     detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
-  //     detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
-  //   });
-  //   this.cms.openDialog(MasterPriceTableUpdateNotePrintComponent, {
-  //     context: {
-  //       title: 'Xem trước',
-  //       data: [data],
-  //       mode: 'preview',
-  //       idKey: ['Code'],
-  //       onSaveAndClose: (rs: MasterPriceTableUpdateNoteModel) => {
-  //         this.saveAndClose();
-  //       },
-  //       onSaveAndPrint: (rs: MasterPriceTableUpdateNoteModel) => {
-  //         this.save();
-  //       },
-  //     },
-  //   });
-  //   return false;
-  // }
 
   getRawFormData() {
     return super.getRawFormData();
   }
-
-  // openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
-  //   this.cms.openDialog(ReferenceChoosingDialogComponent, {
-  //     context: {
-  //       components: {
-  //         'PRICEREPORT': { title: 'Phiếu báo giá' },
-  //         'GOODSDELIVERY': { title: 'Phiếu xuất kho' },
-  //       },
-  //       onDialogChoose: async (chooseItems: any[], type?: string) => {
-  //         console.log(chooseItems, type);
-  //         const relationVoucher = formGroup.get('RelativeVouchers');
-  //         const relationVoucherValue: any[] = (relationVoucher.value || []);
-  //         const insertList = [];
-  //         this.onProcessing();
-  //         if (type === 'GOODSDELIVERY') {
-  //           const details = this.getDetails(formGroup);
-  //           for (let i = 0; i < chooseItems.length; i++) {
-  //             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-  //             if (index < 0) {
-  //               // get purchase order
-  //               const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
-
-  //               if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
-  //                 this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-  //                 continue;
-  //               }
-  //               if (this.cms.getObjectId(formGroup.get('Object').value)) {
-  //                 if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-  //                   this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
-  //                   continue;
-  //                 }
-  //               } else {
-  //                 delete refVoucher.Id;
-  //                 // delete refVoucher.Code;
-  //                 formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Object: { id: this.cms.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
-  //                 details.clear();
-  //               }
-  //               insertList.push(chooseItems[i]);
-
-  //               // Insert order details into voucher details
-  //               if (refVoucher?.Details) {
-  //                 details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
-  //                 for (const voucherDetail of refVoucher.Details) {
-  //                   if (voucherDetail.Type !== 'CATEGORY') {
-  //                     // delete voucherDetail.Id;
-  //                     // delete voucherDetail.Voucher;
-  //                     // delete voucherDetail.No;
-  //                     const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-  //                     newDtailFormGroup.get('Business').disable();
-  //                     details.push(newDtailFormGroup);
-  //                   }
-  //                 }
-  //               }
-
-  //             }
-  //           }
-  //           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
-  //           this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-  //         }
-  //         if (type === 'PRICEREPORT') {
-  //           const details = this.getDetails(formGroup);
-  //           for (let i = 0; i < chooseItems.length; i++) {
-  //             const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-  //             if (index < 0) {
-  //               // get purchase order
-  //               const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
-
-  //               if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
-  //                 this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-  //                 continue;
-  //               }
-  //               if (this.cms.getObjectId(formGroup.get('Object').value)) {
-  //                 if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-  //                   this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
-  //                   continue;
-  //                 }
-  //               } else {
-  //                 // delete goodsDeliveryNote.Id;
-  //                 // formGroup.patchValue(priceReport);
-  //                 // if (typeof priceReport.Object === 'string') {
-  //                 //   priceReport.Object = {
-  //                 //     id: priceReport.Object as string,
-  //                 //     text: priceReport.ObjectName,
-  //                 //     Code: priceReport.Object,
-  //                 //     Name: priceReport.ObjectName,
-  //                 //   };
-  //                 // }
-  //                 delete refVoucher.Id;
-  //                 // delete refVoucher.Code;
-  //                 formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
-  //                 details.clear();
-  //               }
-  //               insertList.push(chooseItems[i]);
-  //               if (refVoucher.RelativeVouchers && refVoucher.RelativeVouchers.length > 0) {
-  //                 for (const relativeVoucher of refVoucher.RelativeVouchers) {
-  //                   insertList.push(relativeVoucher);
-  //                 }
-  //               }
-
-  //               // Insert order details into voucher details
-  //               if (refVoucher?.Details) {
-  //                 details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
-  //                 for (const voucherDetail of refVoucher.Details) {
-  //                   if (voucherDetail.Type !== 'CATEGORY') {
-  //                     // delete voucherDetail.Id;
-  //                     // delete voucherDetail.Voucher;
-  //                     // delete voucherDetail.No;
-  //                     const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-  //                     newDtailFormGroup.get('Business').disable();
-  //                     newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
-  //                     details.push(newDtailFormGroup);
-  //                     await new Promise(resolve => setTimeout(() => resolve(true), 300));
-  //                     this.toMoney(formGroup, newDtailFormGroup);
-  //                   }
-  //                 }
-  //               }
-
-  //             }
-  //           }
-  //           relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
-  //           this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-  //         }
-
-  //         setTimeout(() => {
-  //           this.onProcessed();
-  //         }, 1000);
-  //       },
-  //     }
-  //   });
-  //   return false;
-  // }
 
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);

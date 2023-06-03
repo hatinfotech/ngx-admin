@@ -223,7 +223,7 @@ export class SalesVoucherListComponent extends AgGridDataManagerListComponent<Sa
           pinned: 'left',
         },
         {
-          headerName: 'Nhà cung cấp',
+          headerName: 'Khách hàng',
           field: 'Object',
           pinned: 'left',
           width: 200,
@@ -335,6 +335,7 @@ export class SalesVoucherListComponent extends AgGridDataManagerListComponent<Sa
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
     params['includeCreator'] = true;
     params['includeContact'] = true;
+    params['includeObject'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';
     return params;
