@@ -603,7 +603,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
         return null;
       }],
       Description: ['', Validators.required],
-      Quantity: [],
+      Quantity: [1],
       Price: [],
       Unit: ['', (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
@@ -1010,20 +1010,21 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
 
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
-      if (source === 'ToMoney') {
-        detail.get('Price').setValue(this.calculatToMoney(detail, source));
-      } else {
-        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
-      }
-      // Call culate total
-      const details = this.getDetails(formItem);
-      let total = 0;
-      for (let i = 0; i < details.controls.length; i++) {
-        total += this.calculatToMoney(details.controls[i] as FormGroup);
-      }
-      formItem.get('_total').setValue(total);
-    });
+    // this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+    if (source === 'ToMoney' && detail.get('ToMoney').value) {
+      detail.get('Price').setValue(this.calculatToMoney(detail, source), { emitEvent: false });
+    } else {
+      if(detail.get('Price').value)
+      detail.get('ToMoney').setValue(this.calculatToMoney(detail), { emitEvent: false });
+    }
+    // Call culate total
+    const details = this.getDetails(formItem);
+    let total = 0;
+    for (let i = 0; i < details.controls.length; i++) {
+      total += this.calculatToMoney(details.controls[i] as FormGroup);
+    }
+    formItem.get('_total').setValue(total);
+    // });
     return false;
   }
 

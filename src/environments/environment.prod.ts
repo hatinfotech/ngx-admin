@@ -6,7 +6,9 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.7.2.1',
+  version: '6.7.4.1',
+  // 6.7.4:   update product name by suplier product name, add revision feature and apply for product resource
+  // 6.7.3:   hotfix sales voucher can not choose Accounting Business
   // 6.7.2:   update master price table processing
   // 6.7.1:   hotfix Purchase Order Form not load units for choose
   // 6.7:   warehouse report v2

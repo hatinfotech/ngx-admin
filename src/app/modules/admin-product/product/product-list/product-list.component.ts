@@ -381,11 +381,54 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
             this.openForm([data.Code]);
           }, (data) => {
             this.deleteConfirm([data.Code]);
-          }),
+          }, false, [
+            {
+              name: 'revisions',
+              icon: 'clock-outline',
+              status: 'warning',
+              appendTo: 'head',
+              outline: false,
+              action: async (params) => {
+                this.apiService.getPromise<ProductModel[]>(this.apiPath + '/' + this.makeId(params.node.data), { includeRevisions: true }).then(products => {
+                  if (products[0].Revisions) {
+                    this.cms.openDialog(ProductListComponent, {
+                      context: {
+                        title: 'Lịch sử cập nhật của sản phẩm : ' + products[0].Name,
+                        height: '95vh',
+                        width: '95vw',
+                        rowModelType: 'clientSide',
+                        idKey: ['Code'],
+                        rowData: products[0].Revisions,
+                        onInit: (component) => {
+                          // component.actionButtonList = component.actionButtonList.filter(f => ['close', 'choose', 'preview', 'refresh', 'confirm'].indexOf(f.name) > -1);
+                          const cmdColIndex = component.columnDefs.findIndex(f => f.field == 'Command');
+                          component.columnDefs.splice(cmdColIndex - 1, 0, {
+                            headerName: 'Ngày lưu trữ',
+                            field: 'RevisionDate',
+                            width: 180,
+                            filter: 'agDateColumnFilter',
+                            pinned: 'right',
+                            filterParams: {
+                              inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+                            },
+                            cellRenderer: AgDateCellRenderer,
+                          });
+                        }
+                      }
+                    })
+                  }
+                })
+                return true;
+              }
+            }
+          ]),
           headerName: 'Sửa/Xóa',
         },
       ] as ColDef[]);
 
+      if (this.onInit) {
+        this.onInit(this);
+      }
       return rs;
     });
   }

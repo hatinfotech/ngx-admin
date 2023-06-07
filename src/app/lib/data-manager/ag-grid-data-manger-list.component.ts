@@ -13,7 +13,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 // } from '@ag-grid-community/all-modules';
 import { map, takeUntil } from 'rxjs/operators';
 import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
-import { ColDef, GridOptions, IGetRowsParams, RowHeightParams, SelectionChangedEvent } from '@ag-grid-community/core';
+import { ColDef, GridOptions, IGetRowsParams, RowHeightParams, RowModelType, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
@@ -40,6 +40,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   /** Resource id key */
   @Input() idKey: any;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
+  @Input() onInit: (component: AgGridDataManagerListComponent<M, F>) => void;
   @Output() onItemsChoosed = new EventEmitter<M[]>();
 
   public refreshPendding = false;
@@ -87,7 +88,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     // angularCompileHeaders: true,
   };
   @Input() rowSelection: 'single' | 'multiple' = 'multiple';
-  @Input() rowModelType = 'infinite';
+  @Input() rowModelType: RowModelType = 'infinite';
   @Input() pagination = false;
   @Input() paginationPageSize = 20;
   @Input() cacheBlockSize = this.paginationPageSize;
@@ -745,14 +746,16 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
       if (settings) {
         const commandColumn: ColDef = settings.find(f => f.field == 'Command');
         if (commandColumn) {
-          commandColumn.width = 40;
+          commandColumn.width = 90;
+          commandColumn.resizable = true;
           commandColumn.cellRendererParams['buttons'] = [];
           // if (commandColumn.cellRendererParams['buttons']) {
           commandColumn.cellRendererParams['buttons'].push({
             name: 'choose',
-            status: 'success',
+            label: 'Chọn',
+            status: 'primary',
             icon: 'checkmark-square',
-            outline: false,
+            outline: true,
             action: (params: any, button: any) => {
               if (this.onDialogChoose) {
                 this.onDialogChoose([params.data]);

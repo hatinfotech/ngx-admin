@@ -380,6 +380,10 @@ export class CommercePosOrderListComponent extends AgGridDataManagerListComponen
     return false;
   }
 
+  // async getFormData(ids: string[]) {
+  //   return this.apiService.getPromise<CommercePosOrderModel[]>('/sales/commerce-pos-orders', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
+  // }
+
   onGridReady(params) {
     super.onGridReady(params);
   }

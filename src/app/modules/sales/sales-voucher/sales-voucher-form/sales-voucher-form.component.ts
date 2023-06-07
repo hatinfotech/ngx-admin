@@ -1201,20 +1201,22 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
-    this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
-      if (source === 'ToMoney') {
-        detail.get('Price').setValue(this.calculatToMoney(detail, source));
-      } else {
-        detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+    // this.cms.takeUntil(this.componentName + '_ToMoney_ ' + index, 300).then(() => {
+    if (source === 'ToMoney' && detail.get('ToMoney').value) {
+      detail.get('Price').setValue(this.calculatToMoney(detail, source), { emitEvent: false });
+    } else {
+      if (detail.get('Price').value) {
+        detail.get('ToMoney').setValue(this.calculatToMoney(detail), { emitEvent: false });
       }
-      // Call culate total
-      const details = this.getDetails(formItem);
-      let total = 0;
-      for (let i = 0; i < details.controls.length; i++) {
-        total += this.calculatToMoney(details.controls[i] as FormGroup);
-      }
-      formItem.get('_total').setValue(total);
-    });
+    }
+    // Call culate total
+    const details = this.getDetails(formItem);
+    let total = 0;
+    for (let i = 0; i < details.controls.length; i++) {
+      total += this.calculatToMoney(details.controls[i] as FormGroup);
+    }
+    formItem.get('_total').setValue(total);
+    // });
     return false;
   }
 
@@ -1351,8 +1353,8 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null } as any);
+                      // newDtailFormGroup.get('Business').disable();
                       newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
                       details.push(newDtailFormGroup);
                       await new Promise(resolve => setTimeout(() => resolve(true), 300));

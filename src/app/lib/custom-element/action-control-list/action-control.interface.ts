@@ -14,7 +14,7 @@ export interface ActionControl {
   value?: any;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
-  click: (event?: any, option?: ActionControlListOption) => void;
+  click: (event?: any, option?: ActionControlListOption, context?: any) => void;
   change?: (event?: any, option?: ActionControlListOption) => void;
   typing?: (event?: any, option?: ActionControlListOption) => void;
 }

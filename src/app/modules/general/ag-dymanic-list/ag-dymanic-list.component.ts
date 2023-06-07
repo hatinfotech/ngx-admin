@@ -33,7 +33,6 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
   @Input() width = '100%';
   @Input() height = '500px';
   @Input() isEmbed = false;
-  @Input() onInit: (component: AgDynamicListComponent<M>) => void;
   @Output() onReady = new EventEmitter<any>();
 
 
@@ -63,36 +62,6 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
 
   async init() {
     return super.init().then(async state => {
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'unrecord',
-      //   status: 'warning',
-      //   label: 'Bỏ chọn đã lọc',
-      //   title: 'Bỏ ghi các phiếu đã chọn',
-      //   size: 'medium',
-      //   icon: 'checkmark-square-outline',
-      //   disabled: () => {
-      //     return this.selectedIds.length == 0;
-      //   },
-      //   click: () => {
-
-      //   }
-      // });
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'writetobook',
-      //   status: 'primary',
-      //   label: 'Chọn đã lọc',
-      //   title: 'Chọn đã lọc',
-      //   size: 'medium',
-      //   icon: 'checkmark-square-outline',
-      //   disabled: () => false,
-      //   click: () => {
-
-      //   }
-      // });
-
-      // await this.cms.waitForLanguageLoaded();
       if (this.onInit) {
         this.onInit(this);
       }

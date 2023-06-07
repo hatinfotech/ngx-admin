@@ -1,22 +1,20 @@
-import { deepExtend } from './../../../vendor/ng2-smart-table/src/lib/lib/helpers';
 import { LocalDataSource, ViewCell, Ng2SmartTableComponent } from 'ng2-smart-table';
 import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef, NbDialogConfig } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
-import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Injectable, Output, EventEmitter, ElementRef } from '@angular/core';
+import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Output, EventEmitter } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SmartTableAccCurrencyComponent, SmartTableBaseComponent, SmartTableButtonComponent, SmartTableCheckboxComponent, SmartTableCurrencyComponent, SmartTableCurrencyEditableComponent, SmartTableDateTimeComponent } from '../custom-element/smart-table/smart-table.component';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SmartTableFilterComponent } from '../custom-element/smart-table/smart-table.filter.component';
 import { ActionControl } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
 import { DataManagerPrintComponent } from './data-manager-print.component';
-import { ThisReceiver } from '@angular/compiler';
 
 export class SmartTableSetting {
   mode?: string;
@@ -96,6 +94,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   @Input() size?: string = 'medium';
   @Input() actionButtonList?: ActionControl[] = [];
 
+  @Input() extendActionButtons: ActionControl[] = [];
+  @Input() hideChooseButton: boolean = false;
+
   smartTable: Ng2SmartTableComponent;
   @ViewChild('smartTable') set content(content: Ng2SmartTableComponent) {
     if (content) { // initially setter gets called with undefined
@@ -137,15 +138,21 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
       // Wait for langluage service loaded
       this.actionButtonList = [
+        ...this.extendActionButtons.map(m => ({
+          ...m,
+          click: (event, option) => {
+            m.click(event, option, this);
+          }
+        })),
         {
           name: 'choose',
-          status: 'success',
+          status: 'primary',
           label: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
           icon: 'checkmark-square',
           title: this.cms.textTransform(this.cms.translate.instant('Common.choose'), 'head-title'),
           size: 'medium',
           disabled: () => this.selectedIds.length === 0,
-          hidden: () => !this.ref || Object.keys(this.ref).length === 0 ? true : false,
+          hidden: () => !this.isChoosedMode || this.hideChooseButton,
           click: () => {
             this.choose();
             return false;
@@ -203,9 +210,9 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           disabled: () => this.selectedIds.length === 0,
           hidden: () => this.isChoosedMode,
           click: () => {
-            this.getFormData(this.selectedIds).then(data => {
-              this.preview(data);
-            });
+            // this.getFormData(this.selectedIds).then(data => {
+            // });
+            this.preview(this.selectedItems);
             return false;
           },
         },
@@ -681,7 +688,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
       // });
     }
 
-    if (this.isChoosedMode) {
+    if (!this.hideChooseButton && this.isChoosedMode) {
       settings.columns['Choose'] = {
         title: this.cms.translateText('Common.choose'),
         type: 'custom',
@@ -692,7 +699,8 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
           instance.icon = 'checkmark-square';
           instance.label = this.cms.translateText('Common.choose');
           instance.display = true;
-          instance.status = 'success';
+          instance.status = 'primary';
+          instance.outline = true;
           instance.valueChange.subscribe(value => {
             // if (value) {
             //   instance.disabled = false;

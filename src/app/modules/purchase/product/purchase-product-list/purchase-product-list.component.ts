@@ -8,8 +8,6 @@ import { PurchaseProductModel } from '../../../../models/purchase.model';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
-import { FormGroup } from '@angular/forms';
-import { AppModule } from '../../../../app.module';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
@@ -17,7 +15,9 @@ import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeNumberColDef } from '../../../../lib/custom-element/ag-list/column-define/number.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 
 @Component({
   selector: 'ngx-purchase-product-list',
@@ -88,9 +88,9 @@ export class PurchaseProductListComponent extends AgGridDataManagerListComponent
         {
           headerName: 'Sản phẩm',
           field: 'Product',
-          pinned: 'left',
-          width: 200,
-          valueGetter: 'node.data.Name',
+          // pinned: 'left',
+          width: 300,
+          valueGetter: 'node.data.OriginalName',
           cellRenderer: AgTextCellRenderer,
           filter: AgSelect2Filter,
           filterParams: {
@@ -108,9 +108,30 @@ export class PurchaseProductListComponent extends AgGridDataManagerListComponent
           },
         },
         {
+          headerName: 'Sku',
+          field: 'OriginalSku',
+          width: 120,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          headerName: 'Sku NCC',
+          field: 'Sku',
+          width: 120,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          headerName: 'Tên theo NCC',
+          field: 'Name',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
           headerName: 'Nhà cung cấp',
           field: 'Supplier',
-          pinned: 'left',
+          // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
           valueGetter: 'node.data.SupplierName',
@@ -128,20 +149,6 @@ export class PurchaseProductListComponent extends AgGridDataManagerListComponent
               allowClear: true,
             }
           },
-        },
-        {
-          headerName: 'Tên theo NCC',
-          field: 'Name',
-          width: 300,
-          filter: 'agTextColumnFilter',
-          autoHeight: true,
-        },
-        {
-          headerName: 'Sku NCC',
-          field: 'Sku',
-          width: 100,
-          filter: 'agTextColumnFilter',
-          autoHeight: true,
         },
         {
           headerName: 'Tên thuế',
@@ -183,6 +190,138 @@ export class PurchaseProductListComponent extends AgGridDataManagerListComponent
         },
       ] as ColDef[]);
 
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'updateProductName',
+        status: 'danger',
+        label: 'Cập nhật tên theo NCC',
+        title: 'Cập nhật tên sản phẩm theo tên sản phẩm của nhà cung cấp',
+        size: 'medium',
+        icon: 'flip-2-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          this.cms.openDialog(AgDynamicListComponent, {
+            context: {
+              title: 'Xác nhận cập nhật tên sản phẩm theo nhà cung cấp',
+              width: '905px',
+              height: '95vh',
+              // apiPath: '/accounting/reports',
+              hideChooseButton: true,
+              rowModelType: 'clientSide',
+              idKey: ['Id'],
+              rowData: this.selectedItems,
+              // getRowNodeId: (item) => {
+              //   return item.Voucher + '-' + item.WriteNo;
+              // },
+              // rowMultiSelectWithClick: true,
+              // suppressRowClickSelection: false,
+              // prepareApiParams: (exParams, getRowParams) => {
+              //   exParams['eq_VoucherType'] = 'PURCHASE';
+              //   exParams['eq_Accounts'] = [632, 151, 152, 153, 154, 155, 156, 157, 158];
+              //   exParams['reportDetailByAccountAndObject'] = true;
+              //   exParams['groupBy'] = 'Voucher,WriteNo';
+              //   exParams['eq_Product'] = `[${params.node.data.Code}]`;
+              //   return exParams;
+              // },
+              extendActionButtons: [
+                {
+                  name: 'confirm',
+                  label: 'Xác nhận',
+                  title: 'Xác nhận thay đổi tên',
+                  size: 'medium',
+                  icon: 'checkmark-square-outline',
+                  status: 'danger',
+                  click: (event, option, component: AgDynamicListComponent<PurchaseProductModel>) => {
+                    if (component.rowData && component.rowData.length > 0) {
+                      component.loading = true;
+                      this.apiService.putPromise<any[]>('/admin-product/products', { id: component.rowData.map(m => this.cms.getObjectId(m.Product)) }, component.rowData.map(m => ({
+                        Code: m.Product,
+                        Name: m.Name,
+                      }))).then(rs => {
+                        component.loading = false;
+                        component.close();
+                        this.refresh();
+                      }).catch(err => {
+                        component.loading = false;
+                      });
+                    }
+                    return true;
+                  }
+                }
+              ],
+              onDialogChoose: (chooseItems) => {
+
+              },
+              columnDefs: [
+                {
+                  ...agMakeSelectionColDef(this.cms),
+                  headerName: 'STT',
+                  // width: 52,
+                  resizable: false,
+                  field: 'Product',
+                  valueGetter: 'node.data.Product',
+                },
+                {
+                  headerName: 'Tên cũ',
+                  field: 'OriginalName',
+                  width: 400,
+                  resizable: false,
+                  filter: 'agTextColumnFilter',
+                  headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                  filterParams: {
+                    filterOptions: ['contains'],
+                    textMatcher: ({ value, filterText }) => {
+                      var literalMatch = this.cms.smartFilter(value, filterText);
+                      return literalMatch;
+                    },
+                    trimInput: true,
+                    debounceMs: 1000,
+                  }
+                },
+                {
+                  headerName: 'Tên mới (double click để chỉnh)',
+                  field: 'Name',
+                  editable: true,
+                  resizable: false,
+                  width: 400,
+                  filter: 'agTextColumnFilter',
+                  headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                  filterParams: {
+                    filterOptions: ['contains'],
+                    textMatcher: ({ value, filterText }) => {
+                      var literalMatch = this.cms.smartFilter(value, filterText);
+                      return literalMatch;
+                    },
+                    trimInput: true,
+                    debounceMs: 1000,
+                  }
+                },
+                // {
+                //   ...agMakeCommandColDef(this, this.cms, false, false, false, [
+                //     {
+                //       name: 'extend',
+                //       // label: 'In',
+                //       status: 'danger',
+                //       outline: false,
+                //       icon: 'external-link-outline',
+                //       action: async (params: any) => {
+                //         this.cms.previewVoucher(null, params.node.data.Voucher);
+                //         return true;
+                //       }
+                //     }])
+                // }
+              ],
+              onInit: (component) => {
+                component.actionButtonList = component.actionButtonList.filter(f => ['close', 'choose', 'preview', 'refresh', 'confirm'].indexOf(f.name) > -1);
+              }
+            },
+            closeOnEsc: false,
+          });
+        }
+      });
+
       return state;
     });
   }
@@ -199,6 +338,7 @@ export class PurchaseProductListComponent extends AgGridDataManagerListComponent
     params['includeContact'] = true;
     params['includeObject'] = true;
     params['includeCreator'] = true;
+    params['includeOriginProduct'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';
     return params;
