@@ -1,0 +1,21 @@
+<div class="dialog-wrap {{inputMode}}" style="height: 100%; width: 95%; max-width: initial">
+    <nb-card class="small-header smart-table no-border" style="height: 100%;">
+        <nb-card-header>
+            <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : (('Bảng báo cáo chi tiết tài khoản kế toán ('+(infiniteInitialRowCount | number: '1.0-0')+')' | translate:{action: '', definition: cms.translate.instant('Common.table')} | headtitlecase) )" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+
+        <nb-card-body style="height: 100%">
+            <ag-grid-angular #agGrid style="display: block; height: 100%" id="myGrid" class="{{themeName}}"
+                [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [enableCellTextSelection]="enableCellTextSelection"
+                [rowMultiSelectWithClick]="rowMultiSelectWithClick" [suppressRowClickSelection]="suppressRowClickSelection" [enableCellTextSelection]="enableCellTextSelection"
+                [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+                [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize"
+                [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+                [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize"
+                [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged($event)"
+                [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight"
+                [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
+            </ag-grid-angular>
+        </nb-card-body>
+    </nb-card>
+</div> 

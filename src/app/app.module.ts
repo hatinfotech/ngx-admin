@@ -321,6 +321,7 @@ import { MasterPriceTableUpdateNoteFormComponent } from './modules/sales/master-
 import { MasterPriceTableUpdateNotePrintComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
 import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
 import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
+import { WarehouseDetailByObjectReportAgComponent } from './modules/warehouse/reports/detail-by-object-report-ag/detail-by-object-report-ag.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -432,6 +433,7 @@ export class DynamicLocaleId extends String {
     WarehouseReportComponent,
     WarehouseDetailByGoodsReportComponent,
     WarehouseSummaryReportComponent,
+    WarehouseDetailByObjectReportAgComponent,
 
 
     // Accounting components

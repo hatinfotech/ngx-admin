@@ -1,17 +1,15 @@
 import { CurrencyPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NbColorHelper, NbThemeService } from '@nebular/theme';
-import { takeWhile, takeUntil } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 import { ApiService } from '../../../services/api.service';
 import { Icon } from '../../../lib/custom-element/card-header/card-header.component';
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { PageModel } from '../../../models/page.model';
-import { from } from 'rxjs';
-import { lab } from 'd3-color';
 import { AccMasterBookModel } from '../../../models/accounting.model';
 interface CardSettings {
   title: string;
@@ -400,7 +398,7 @@ export class WarehouseDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999).toISOString() || null;
 
-    this.apiService.getPromise<any[]>('/accounting/reports', {
+    this.apiService.getPromise<any[]>('/warehouse/reports', {
       reportSummary: true,
       eq_Accounts: "156,152,153",
       groupBy: 'Account',
@@ -492,7 +490,7 @@ export class WarehouseDashboardComponent implements OnDestroy {
     // let revenueStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[511,512,515,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[641,642,811]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    let costStatistics632 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[156,152,153]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    let costStatistics632 = await this.apiService.getPromise<any[]>('/warehouse/statistics', { eq_Account: "[156,152,153]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // let costStatistics641 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[5212]", statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
 
     /** Prepare data */
@@ -567,9 +565,9 @@ export class WarehouseDashboardComponent implements OnDestroy {
     };
 
     // Inventory statistics
-    const inventoryValueStatistics156 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[156]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const inventoryValueStatistics152 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[152]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    const inventoryValueStatistics153 = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[153]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const inventoryValueStatistics156 = await this.apiService.getPromise<any[]>('/warehouse/statistics', { eq_Account: "[156]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const inventoryValueStatistics152 = await this.apiService.getPromise<any[]>('/warehouse/statistics', { eq_Account: "[152]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
+    const inventoryValueStatistics153 = await this.apiService.getPromise<any[]>('/warehouse/statistics', { eq_Account: "[153]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // const costOfGoodsSoldStatistics = await this.apiService.getPromise<any[]>('/accounting/statistics', { eq_Account: "[632]", increment: true, statisticsCost: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     // const cashFlowStatisticsData = [];
     // const inventoryCostStatistics = [];

@@ -14,6 +14,7 @@ import { AccAccountFormComponent } from '../../../accounting/acc-account/acc-acc
 import { AccountingService } from '../../../accounting/accounting.service';
 import { AccountingAccountDetailsReportPrintComponent } from '../../../accounting/reports/print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 import { AccountingDetailByObjectReportAgComponent } from '../../../accounting/reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { WarehouseDetailByObjectReportAgComponent } from '../detail-by-object-report-ag/detail-by-object-report-ag.component';
 
 @Component({
   selector: 'ngx-summary-report',
@@ -350,7 +351,7 @@ export class WarehouseSummaryReportComponent extends ServerDataManagerListCompon
 
   openInstantDetailReport(rowData: any) {
     // this.cms.openDialog(AccountingDetailByObjectReportComponent, {
-    this.cms.openDialog(AccountingDetailByObjectReportAgComponent, {
+    this.cms.openDialog(WarehouseDetailByObjectReportAgComponent, {
       context: {
         inputMode: 'dialog',
         // object: rowData.Object,
