@@ -322,6 +322,9 @@ import { MasterPriceTableUpdateNotePrintComponent } from './modules/sales/master
 import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
 import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 import { WarehouseDetailByObjectReportAgComponent } from './modules/warehouse/reports/detail-by-object-report-ag/detail-by-object-report-ag.component';
+import { MktMemberCardListComponent } from './modules/marketing/sales-voucher/member-card-list/member-card-list.component';
+import { MktMemberCardFormComponent } from './modules/marketing/sales-voucher/member-card-form/member-card-form.component';
+import { MktMemberCardPrintComponent } from './modules/marketing/sales-voucher/member-card-print/member-card-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -646,6 +649,11 @@ export class DynamicLocaleId extends String {
     WordpressOrderListComponent,
     WordpressOrderFormComponent,
     WordpressOrderPrintComponent,
+
+    // Marketing
+    MktMemberCardListComponent,
+    MktMemberCardFormComponent,
+    MktMemberCardPrintComponent,
 
     // General components
     AgDynamicListComponent,
@@ -1003,6 +1011,38 @@ export class AppModule {
   //   responseTitle: 'Common.approvedRequest',
   //   responseText: 'Common.approvedRequest',
   // };
+
+  static distributedState: ProcessMap = {
+    state: 'DISTRIBUTED',
+    label: 'Đã phát hành',
+    confirmLabel: 'Bạn có muốn phát hành',
+    status: 'success',
+    outline: true,
+    confirmTitle: 'Bạn có muốn phát hành',
+    confirmText: 'Bạn có muốn phát hành',
+    responseTitle: 'Đã phát hành',
+    responseText: 'Đã phát hành',
+  };
+  static notJustDistributedState: ProcessMap = {
+    state: 'NOTJUSTDISTRIBUTED',
+    status: 'warning',
+    label: 'Chưa phát hành',
+    confirmLabel: 'Hủy phát hành',
+    confirmTitle: 'Bạn có muốn hủy phát hành ?',
+    confirmText: 'Bạn có muốn hủy phát hành ?',
+    responseTitle: 'Đã hủy phát hành',
+    responseText: 'Đã hủy phát hành',
+  };
+  static lockedState: ProcessMap = {
+    state: 'LOCKED',
+    status: 'danger',
+    label: 'Đã khóa',
+    confirmLabel: 'Khóa',
+    confirmTitle: 'Bạn có muốn khóa ?',
+    confirmText: 'Bạn có muốn khóa ?',
+    responseTitle: 'Đã khóa',
+    responseText: 'Đã khóa',
+  };
 
   static processMaps = {
     common: {
@@ -1802,6 +1842,31 @@ export class AppModule {
         nextStates: [
           AppModule.approvedState,
           AppModule.unrecordedState,
+        ],
+      },
+    },
+    memberCard: {
+      "DISTRIBUTED": {
+        ...AppModule.distributedState,
+        nextState: 'LOCKED',
+        nextStates: [
+          AppModule.lockedState
+        ],
+      },
+      "LOCKED": {
+        ...AppModule.lockedState,
+        nextState: 'DISTRIBUTED',
+        nextStates: [
+          AppModule.distributedState
+        ],
+      },
+      "NOTJUSTDISTRIBUTED": {
+        ...AppModule.notJustDistributedState,
+        state: 'NOTJUSTDISTRIBUTED',
+        nextState: 'DISTRIBUTED',
+        nextStates: [
+          AppModule.distributedState,
+          AppModule.lockedState,
         ],
       },
     },

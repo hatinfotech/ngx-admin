@@ -14,6 +14,8 @@ import { agMakeCommandColDef } from '../../../lib/custom-element/ag-list/column-
 import { agMakeSelectionColDef } from '../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AgSelect2Filter } from '../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { DialogFormComponent } from '../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'ngx-contact-all-list',
@@ -102,7 +104,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
           field: 'Code',
           width: 140,
           filter: 'agTextColumnFilter',
-          pinned: 'left',
+          // pinned: 'left',
         },
         {
           headerName: 'Tên',
@@ -110,7 +112,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
           width: 200,
           filter: 'agTextColumnFilter',
           autoHeight: true,
-          pinned: 'left',
+          // pinned: 'left',
         },
         {
           headerName: 'Số điện thoại',
@@ -118,7 +120,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
           width: 200,
           filter: 'agTextColumnFilter',
           autoHeight: true,
-          pinned: 'left',
+          // pinned: 'left',
         },
         {
           headerName: 'Email',
@@ -196,7 +198,76 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
         //   width: 155,
         // },
         {
-          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          ...agMakeCommandColDef(this, this.cms, true, true, true, [
+            {
+              name: 'assignMemberCard',
+              appendTo: 'head',
+              title: 'Gán thẻ thành viên',
+              status: 'success',
+              icon: 'credit-card-outline',
+              outline: false,
+              action: async (params: { node: { data: ContactModel } }) => {
+                this.cms.openDialog(DialogFormComponent, {
+                  context: {
+                    title: 'Phát hành thẻ thành viên',
+                    width: '600px',
+                    onInit: async (form, dialog) => {
+                      return true;
+                    },
+                    controls: [
+                      {
+                        name: 'MemberCard',
+                        label: 'ID thẻ thành viên',
+                        placeholder: 'Quét ID thẻ thành viên...',
+                        type: 'text',
+                        focus: true,
+                        initValue: '',
+                      },
+                    ],
+                    actions: [
+                      {
+                        label: 'Trở về',
+                        icon: 'back',
+                        status: 'basic',
+                        action: async () => { return true; },
+                      },
+                      {
+                        label: 'Phát hành',
+                        icon: 'npm-outline',
+                        status: 'success',
+                        action: async (form: FormGroup) => {
+
+                          let memberCard: string[] = form.get('MemberCard').value.trim();
+
+                          if (memberCard) {
+                            let toastRef = null;
+                            try {
+                              // ids = [...new Set(ids)];
+                              this.loading = true;
+                              if (params.node?.data?.Code) {
+                                await this.apiService.putPromise('/marketing/member-cards/' + memberCard, { distribute: true, contact: params.node.data.Code }, [{ Code: memberCard }]);
+                                // toastRef.close();
+                                toastRef = this.cms.showToast('Thẻ thành viên đã được phát hành cho khách hàng ' + params.node.data.Name, 'Phát hành thẻ thành công', { status: 'success', duration: 10000 });
+                              }
+                              this.loading = false;
+                            } catch (err) {
+                              console.error(err);
+                              this.loading = false;
+                              toastRef.close();
+                              toastRef = this.cms.showToast('Chưa thể phát hành thẻ thành viên', 'Lỗi phát hành thẻ thành viên', { status: 'danger', duration: 30000 });
+                            }
+                          }
+
+                          return true;
+                        },
+                      },
+                    ],
+                  },
+                });
+                return true;
+              }
+            }
+          ]),
           headerName: 'Lệnh',
         },
       ] as ColDef[]);

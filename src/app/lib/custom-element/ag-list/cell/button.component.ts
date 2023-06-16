@@ -5,6 +5,7 @@ import { Component, OnDestroy } from "@angular/core";
 export interface AgCellButton {
     name: string;
     label?: string;
+    title?: string;
     status: string;
     outline?: boolean;
     icon?: string;

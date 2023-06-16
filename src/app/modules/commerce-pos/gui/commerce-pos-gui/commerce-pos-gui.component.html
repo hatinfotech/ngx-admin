@@ -196,6 +196,12 @@
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
+                                    <button nbButton fullWidth size="medium" [disabled]="!(orderForm.value.Object | objectid)" status="danger" class="pos-business-button" (click)="distributeMemberCard(orderForm)">
+                                        <nb-icon icon="credit-card-outline"></nb-icon>
+                                        <div class="button-label">Phát hành thẻ</div>
+                                    </button>
+                                </div>
+                                <div class="col-xxxl-4">
                                     <button nbButton fullWidth size="medium" status="primary" class="pos-business-button" (click)="makeNewOrder()">
                                         <div>
                                             <nb-icon icon="plus-square-outline"></nb-icon>
@@ -229,12 +235,6 @@
                                     <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
                                         <nb-icon icon="square-outline"></nb-icon>
                                         <div class="button-label">Tiền phí</div>
-                                    </button>
-                                </div>
-                                <div class="col-xxxl-4">
-                                    <button nbButton fullWidth size="medium" [disabled]="true" status="info" class="pos-business-button">
-                                        <nb-icon icon="square-outline"></nb-icon>
-                                        <div class="button-label">Quà tặng</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">

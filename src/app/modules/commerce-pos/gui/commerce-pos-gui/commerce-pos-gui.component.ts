@@ -30,6 +30,7 @@ import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-depl
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { resolve } from 'dns';
 import { AccBankAccountModel } from '../../../../models/accounting.model';
+import { MktMemberCardModel } from '../../../../models/marketing.model';
 
 declare const openDatabase;
 
@@ -1564,6 +1565,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       let unitId = null;
       let existsProduct: FormGroup = null;
       let product: ProductModel = option?.product || null;
+      let memberCard: MktMemberCardModel = null;
 
       if (!product) {
         if (option?.searchBySku || /^[a-z]+\d+/i.test(inputValue)) {
@@ -1791,6 +1793,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                       product.Price = this.productUnitMap[`${product.Code}-${unitId}`]?.Price;
                     }
                   }
+                } else if (new RegExp('^141' + coreId).test(inputValue)) {
+                  memberCard = await this.apiService.getPromise<ProductModel[]>('/marketing/member-cards/' + inputValue, {
+                    includeContact: true,
+                  }).then(rs => {
+                    return rs[0];
+                  });
+                  if (memberCard) {
+                    if (this.cms.getObjectId(memberCard.Contact)) {
+                      this.orderForm.get('Object').setValue(memberCard.Contact);
+                      this.orderForm.get('ObjectName').setValue(this.cms.getObjectText(memberCard.Contact));
+                      this.cms.showToast(`Khách hàng ${this.cms.getObjectText(memberCard.Contact)} đã được điền vào bill !`, 'Quét thẻ thành viên !', { ...this.toastDefaultConfig, status: 'success' });
+                    }
+                  }
+                  throw new Error('Trường hợp quét thẻ thành viên');
                 }
 
                 let unitIdLength = null;
@@ -3369,6 +3385,67 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     });
   }
+
+  distributeMemberCard(orderForm: FormGroup) {
+    this.cms.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Phát hành thẻ thành viên',
+        width: '600px',
+        onInit: async (form, dialog) => {
+          return true;
+        },
+        controls: [
+          {
+            name: 'MemberCard',
+            label: 'ID thẻ thành viên',
+            placeholder: 'Lấy thẻ thành viên chưa sử dụng quét và ID trên thẻ...',
+            type: 'text',
+            focus: true,
+            initValue: '',
+          },
+        ],
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'basic',
+            action: async () => { return true; },
+          },
+          {
+            label: 'Phát hành',
+            icon: 'npm-outline',
+            status: 'success',
+            action: async (form: FormGroup) => {
+
+              let memberCard: string[] = form.get('MemberCard').value.trim();
+
+              if (memberCard) {
+                let toastRef = null;
+                try {
+                  // ids = [...new Set(ids)];
+                  this.loading = true;
+                  if (this.cms.getObjectId(orderForm.value.Object)) {
+                    await this.apiService.putPromise('/marketing/member-cards/' + memberCard, { distribute: true, contact: this.cms.getObjectId(orderForm.value.Object) }, [{ Code: memberCard }]);
+                    // toastRef.close();
+                    toastRef = this.cms.showToast('Thẻ thành viên đã được phát hành cho khách hàng ' + this.cms.getObjectText(orderForm.value.Object), 'Phát hành thẻ thành công', { ...this.toastDefaultConfig, status: 'success', duration: 10000 });
+                  }
+                  this.loading = false;
+                } catch (err) {
+                  console.error(err);
+                  this.loading = false;
+                  toastRef.close();
+                  toastRef = this.cms.showToast('Chưa thể phát hành thẻ thành viên', 'Lỗi phát hành thẻ thành viên', { ...this.toastDefaultConfig, status: 'danger', duration: 30000 });
+                }
+              }
+
+              return true;
+            },
+          },
+        ],
+      },
+    });
+  }
+
   switchPaymentMethod(orderForm: FormGroup) {
     const paymnetMethodControl = orderForm.get('PaymentMethod');
 
