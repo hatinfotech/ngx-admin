@@ -58,9 +58,11 @@
                                             <div style="flex: 1;">
                                                 <div style="font-weight: bold;">{{item.text}}</div>
                                                 <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
-                                                <div>Vị trí: {{item.Container?.FindOrder || item.Container?.ContainerFindOrder}} - {{item.Container?.ShelfName}}, Tồn kho: {{ item.Inventory === null && 'đang kiểm tra...' || (item.Inventory | number)}}</div>
+                                                <div>Vị trí:  {{item.Container?.WarehouseName}}/{{item.Container?.ShelfName}}/{{item.Container?.FindOrder || item.Container?.ContainerFindOrder}}, Tồn kho: {{ item.Inventory === null && 'đang kiểm tra...' || (item.Inventory | number)}}</div>
                                                 <!-- <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div> -->
-                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span> <span style="font-size: 1.2rem; line-height: 1.2rem;color: var(---ck-color-base)">{{item.PriceOfBaseUnitText}}</span></div>
+                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span> 
+                                                    <!-- <span style="font-size: 1.2rem; line-height: 1.2rem;color: var(---ck-color-base)">{{item.PriceOfBaseUnitText}}</span> -->
+                                                </div>
                                             </div>
                                         </div>
                                     </cdk-virtual-scroll-viewport>
@@ -105,7 +107,8 @@
                                             <div style="width: 100%; height: 100%; flex: 1; height: 15rem;">
                                                 <img (click)="previewGoodsThumbnail(detail)" class="pos-product-image" src="{{detail.value.Image?.SmallImage}}" [ngStyle]="{'height': ((12 - getDetails(orderForm).controls.length) > 4 ? (12 - getDetails(orderForm).controls.length) : 5)+'rem'}">
                                             </div>
-                                            <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}} - Vị trí: {{detail.value?.FindOrder}}</div>
+                                            <div style="min-width: 10rem;">{{detail.value.Description | objecttext}} - SKU: {{detail.value.Sku}}<br>Vị trí: {{detail.value.Container?.WarehouseName}}/{{detail.value.Container?.ShelfName}}/{{detail.value?.FindOrder}}, <ng-container *ngIf="detail.value?.Inventory">Tồn kho: {{detail.value.Inventory}}</ng-container>
+                                            </div>
 
                                             <div *ngIf="detail.value?.RelativeVouchers && detail.value?.RelativeVouchers?.length > 0">
                                                 <div class="tag" *ngFor="let relativeVoucher of detail.value?.RelativeVouchers" nbTooltip="{{relativeVoucher.type}}: {{relativeVoucher.text}}">{{relativeVoucher.id}}</div>

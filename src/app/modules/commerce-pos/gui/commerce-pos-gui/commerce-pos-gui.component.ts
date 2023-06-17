@@ -354,6 +354,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
               FindOrder: productSearchIndex.ContainerFindOrder,
               Shelf: productSearchIndex.ContainerShelf,
               ShelfName: productSearchIndex.ContainerShelfName,
+              Warehouse: productSearchIndex.Warehouse,
+              WarehouseName: productSearchIndex.WarehouseName,
             },
             BaseUnit: { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel },
             // ConversionRatio: productSearchIndex.ConversionRatio,
@@ -656,7 +658,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Discount: [detail.Discount || 0],
       FindOrder: [detail.FindOrder || 0],
       Container: [detail.Container || 0],
-      RelativeVouchers: [detail.RelativeVouchers || []]
+      RelativeVouchers: [detail.RelativeVouchers || []],
+      Inventory: detail.Inventory,
     });
   }
 
@@ -1798,6 +1801,9 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                     includeContact: true,
                   }).then(rs => {
                     return rs[0];
+                  }).catch(err => {
+                    this.cms.showToast(`ID Thẻ ${inputValue} không tồn tại !`, 'ID Thẻ không tồn tại !', { ...this.toastDefaultConfig, status: 'success' });
+                    return Promise.reject(err);
                   });
                   if (memberCard) {
                     if (this.cms.getObjectId(memberCard.Contact)) {
@@ -2067,6 +2073,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
           Discount: 0,
           FindOrder: product?.FindOrder || product?.Container?.FindOrder,
           Container: product?.Container,
+          Inventory: product?.Inventory,
         });
         existsProductIndex = detailsControls.length - 1;
 
@@ -2349,24 +2356,30 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
     if (this.searchResults && this.searchResults.length > 0) {
       if (event.key == 'ArrowDown') {
-        if (this.searchResultActiveIndex < this.searchResults.length - 1) {
-          this.searchResultActiveIndex++;
-          this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
+        if (this.cms.dialogStack.length === 0) {
+          if (this.searchResultActiveIndex < this.searchResults.length - 1) {
+            this.searchResultActiveIndex++;
+            this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
+          }
           event.preventDefault();
         }
         return false;
       }
       if (event.key == 'ArrowUp') {
-        if (this.searchResultActiveIndex > 0) {
-          this.searchResultActiveIndex--;
-          this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
+        if (this.cms.dialogStack.length === 0) {
+          if (this.searchResultActiveIndex > 0) {
+            this.searchResultActiveIndex--;
+            this.searchListViewport.scrollToIndex(this.searchResultActiveIndex, 'smooth');
+          }
           event.preventDefault();
         }
         return false;
       }
       if (event.key == 'Enter') {
-        const product = this.searchResults[this.searchResultActiveIndex];
-        this.onChooseProduct(product);
+        if (this.cms.dialogStack.length === 0) {
+          const product = this.searchResults[this.searchResultActiveIndex];
+          this.onChooseProduct(product);
+        }
         event.preventDefault();
         return true;
       }
@@ -3363,10 +3376,40 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   onChooseProduct(product: ProductModel) {
     (document.activeElement as HTMLElement).blur();
-    this.searchEleRef.nativeElement.value = '';
-    this.searchResults = null;
+    if (product.Inventory <= 0) {
+      this.cms.openDialog(ShowcaseDialogComponent, {
+        context: {
+          title: 'Hết hàng',
+          content: `${product.Name}/${this.cms.getObjectText(product.Unit)} hiện đang hết hàng !, bạn có thể chọn lại vị trí khác hoặc bấm tiếp tục để thêm vào đơn.`,
+          actions: [
+            {
+              label: 'Chọn vị trí khác (Esc)',
+              status: 'primary',
+              action: () => {
 
-    this.barcodeProcess(null, { product: product });
+                return true;
+              }
+            },
+            {
+              label: 'Tiếp tục (Enter)',
+              status: 'danger',
+              keyShortcut: 'Enter',
+              focus: true,
+              action: () => {
+                this.searchEleRef.nativeElement.value = '';
+                this.searchResults = null;
+                this.barcodeProcess(null, { product: product });
+                return true;
+              }
+            }
+          ]
+        },
+      });
+    } else {
+      this.searchEleRef.nativeElement.value = '';
+      this.searchResults = null;
+      this.barcodeProcess(null, { product: product });
+    }
   }
 
   chooseCustomer() {
@@ -3415,6 +3458,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             label: 'Phát hành',
             icon: 'npm-outline',
             status: 'success',
+            keyShortcut: 'Enter',
             action: async (form: FormGroup) => {
 
               let memberCard: string[] = form.get('MemberCard').value.trim();

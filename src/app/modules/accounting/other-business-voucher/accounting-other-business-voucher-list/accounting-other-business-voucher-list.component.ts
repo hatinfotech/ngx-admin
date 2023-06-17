@@ -246,8 +246,8 @@ export class AccountingOtherBusinessVoucherListComponent extends AgGridDataManag
           },
         },
         {
-          headerName: 'Tiêu đề',
-          field: 'Title',
+          headerName: 'Mô tả',
+          field: 'Description',
           width: 300,
           filter: 'agTextColumnFilter',
           autoHeight: true,

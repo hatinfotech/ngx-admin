@@ -108,6 +108,7 @@ export class CommercePosReturnModel extends Model {
 }
 
 export class CommercePosReturnDetailModel extends Model {
+  [key: string]: any;
   Id?: string & number;
   Voucher?: string;
   No?: number;
