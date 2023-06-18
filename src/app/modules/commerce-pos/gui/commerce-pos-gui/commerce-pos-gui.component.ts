@@ -2,21 +2,19 @@ import { Select2Option } from './../../../../lib/custom-element/select2/select2.
 import { CurrencyPipe } from '@angular/common';
 import { DeploymentVoucherModel } from './../../../../models/deployment.model';
 import { DeploymentVoucherFormComponent } from './../../../deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
-import { WarehouseGoodsInContainerModel } from './../../../../models/warehouse.model';
-import { UnitModel } from './../../../../models/unit.model';
 import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ProductModel, ProductSearchIndexModel, ProductUnitModel } from './../../../../models/product.model';
 import { ContactModel } from './../../../../models/contact.model';
-import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel, CommercePosOrderDetailModel } from './../../../../models/commerce-pos.model';
-import { FormBuilder, FormGroup, FormArray, AbstractControl } from '@angular/forms';
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, ɵCodegenComponentFactoryResolver } from "@angular/core";
+import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel } from './../../../../models/commerce-pos.model';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef, NbGlobalPhysicalPosition } from "@nebular/theme";
 import { BaseComponent } from "../../../../lib/base-component";
 import { ApiService } from "../../../../services/api.service";
 import { CommonService } from "../../../../services/common.service";
 import screenfull from 'screenfull';
-import { concatMap, filter, finalize, map, take, takeUntil } from "rxjs/operators";
+import { concatMap, filter, finalize, take, takeUntil } from "rxjs/operators";
 import { SystemConfigModel } from "../../../../models/model";
 import { CurrencyMaskConfig } from "ng2-currency-mask";
 import { CommercePosBillPrintComponent } from '../commerce-pos-order-print/commerce-pos-bill-print.component';
@@ -24,13 +22,19 @@ import { CommercePosReturnsPrintComponent } from '../commerce-pos-returns-print/
 import { CommercePosPaymnentPrintComponent } from '../commerce-pos-payment-print/commerce-pos-payment-print.component';
 import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { CommercePosDeploymentVoucherPrintComponent } from '../commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
-import { resolve } from 'dns';
 import { AccBankAccountModel } from '../../../../models/accounting.model';
 import { MktMemberCardModel } from '../../../../models/marketing.model';
+import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
 
 declare const openDatabase;
 
@@ -160,6 +164,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     },
   }
   barCodeProcessQueue$ = new Subject<string>();
+  barcodeProcessHistory$ = new Subject<any>();
 
   constructor(
     public cms: CommonService,
@@ -185,6 +190,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     ).subscribe(result => {
       console.log('Barcode Queue result: ', result);
     });
+
+    this.barcodeProcessHistory$.pipe(
+      takeUntil(this.destroy$),
+      finalize(() => console.log('stopped scan barcode')),
+      concatMap(barcodeInfo => {
+        return this.cms.waitFor(15000, 576, () => this.apiService.postPromise('/commerce-pos/barcode-scan-history', {}, [barcodeInfo]).then(rs => true).catch(err => false));
+      })
+    ).subscribe(result => {
+      console.log('Barcode Queue result: ', result);
+    });
+  }
+
+  pushBarcodeScanHistory(data: any) {
+    this.barcodeProcessHistory$.next(data);
   }
 
   barcodeProcessQueue(barcode: string) {
@@ -2130,10 +2149,48 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       // this.isBarcodeProcessing.next(queueId + 1);
       // console.log('Barcode process sucess for queue: ' + queueId);
       console.log('barcode processed');
+      this.barcodeProcessHistory$.next({
+        Type: product ? 'PRODUCT' : 'OTHER',
+        Barcode: inputValue,
+        AccessNumber: accessNumber || inputValue,
+        Product: product.Code,
+        FeaturePicture: product.FeaturePicture,
+        Description: product?.Name || 'Unknown',
+        Unit: this.cms.getObjectId(product.Unit),
+        UnitLabel: this.cms.getObjectText(product.Unit),
+        RelativeOrder: this.orderForm?.value.Code,
+      });
       return existsProduct;
     } catch (err) {
       console.error(err);
       // this.isBarcodeProcessing.next(queueId + 1);
+      let voucherType = 'PRODUCT';
+      let text = null;
+
+      if (/^128/.test(inputValue)) {
+        voucherType = 'COMMERCEPOSORDER';
+        text = 'Đơn hàng';
+      }
+      if (/^129/.test(inputValue)) {
+        voucherType = 'COMMERCEPOSRETURN';
+        text = 'Phiếu trả hàng';
+      }
+      if (/^141/.test(inputValue)) {
+        voucherType = 'MEMBERCARD';
+        text = 'Thẻ thành viên';
+      }
+      if (/^113/.test(inputValue)) {
+        voucherType = 'DEPLOYMENT';
+        text = 'Phiếu triển khai';
+      }
+
+      this.barcodeProcessHistory$.next({
+        Type: 'OTHER',
+        VoucherType: voucherType,
+        Barcode: inputValue,
+        Description: text,
+        RelativeOrder: this.orderForm?.value.Code,
+      });
       return null;
     }
   }
@@ -3613,6 +3670,95 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       });
     }
+  }
+
+  openBarcodeProcessHistory() {
+    this.cms.openDialog(AgDynamicListComponent, {
+      context: {
+        title: 'Lịch sử quét mã',
+        // rowModelType: 'clientSide',
+        // rowData: this.barcodeProcessHistory$,
+        apiPath: '/commerce-pos/barcode-scan-history',
+        prepareApiParams: (params) => {
+          // params['sort_Id'] = 'desc';
+          params['includeProduct'] = true;
+          return params;
+        },
+        idKey: ['Id'],
+        height: '95vh',
+        width: '95vw',
+        columnDefs: [
+          {
+            ...agMakeSelectionColDef(this.cms),
+            headerName: 'Stt',
+            field: 'Id',
+            width: 100,
+            valueGetter: 'node.data.Id',
+            // sortingOrder: ['desc', 'asc'],
+            initialSort: 'desc',
+            headerCheckboxSelection: true,
+          },
+          {
+            headerName: 'Số truy xuất',
+            field: 'AccessNumber',
+            width: 150,
+            filter: 'agTextColumnFilter',
+            pinned: 'left',
+          },
+          {
+            ...agMakeImageColDef(this.cms, null, (rowData) => {
+              return rowData.Pictures?.map(m => m['LargeImage']);
+            }),
+            headerName: 'Hình',
+            // pinned: 'left',
+            field: 'FeaturePicture',
+            valueGetter: 'node.data.FeaturePicture',
+            width: 100,
+          },
+          {
+            headerName: 'Mô tả',
+            field: 'Description',
+            // pinned: 'left',
+            width: 300,
+            filter: 'agTextColumnFilter',
+            cellRenderer: AgTextCellRenderer,
+          },
+          {
+            headerName: 'ĐVT',
+            field: 'Unit',
+            valueGetter: 'node.data.Unit',
+            // pinned: 'left',
+            width: 100,
+            filter: 'agTextColumnFilter',
+            cellRenderer: AgTextCellRenderer,
+          },
+          {
+            headerName: 'Barcode',
+            field: 'Barcode',
+            width: 200,
+            filter: 'agTextColumnFilter',
+            // pinned: 'left',
+          },
+          {
+            headerName: 'Đơn hàng liên quan',
+            field: 'RelativeOrder',
+            width: 150,
+            filter: 'agTextColumnFilter',
+            // pinned: 'left',
+          },
+          {
+            headerName: 'Thời gian',
+            field: 'DateOfScan',
+            width: 180,
+            filter: 'agDateColumnFilter',
+            filterParams: {
+              inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+            },
+            cellRenderer: AgDateCellRenderer,
+          },
+        ]
+      }
+    })
   }
 
   playNewPipSound() {

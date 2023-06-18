@@ -404,8 +404,8 @@ export class CommonService {
     });
   }
 
-  async waitFor(sleep: number, maxTry: number, check: () => Promise<boolean>) {
-    return new Promise<void>((resovle, reject) => {
+  async waitFor<T>(sleep: number, maxTry: number, check: () => Promise<T>) {
+    return new Promise<T>((resovle, reject) => {
       let counter = 0;
       (async function loop() {
         console.log('wait for check...');
@@ -413,9 +413,9 @@ export class CommonService {
           reject('Timeout');
           return;
         }
-
-        if (await check()) {
-          resovle();
+        let result = await check();
+        if (result) {
+          resovle(result);
         } else {
           setTimeout(() => {
             loop();
