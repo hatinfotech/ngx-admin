@@ -40,6 +40,7 @@ import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/ce
 import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 // @Component({
 //   selector: 'btn-cell-renderer',
 //   template: `
@@ -332,7 +333,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         field: 'Unit',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -340,7 +341,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         field: 'Shelf',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -348,7 +349,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         field: 'Warehouse',
         width: 200,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -356,7 +357,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         field: 'Container',
         width: 300,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -372,7 +373,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
         field: 'Sku',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'left',
       },
       {

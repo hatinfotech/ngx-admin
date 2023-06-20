@@ -1,0 +1,38 @@
+// @import '~@nebular/theme/styles/theming';
+// @import '~@nebular/theme/styles/themes';
+// @import '../../../../../../assets/style/global.scss';
+
+
+// @include nb-install-component() {
+//   a.tag {
+//     line-height: 1rem;
+//     // color: nb;
+
+//     // &.success {
+//     //   background-color: nb-theme(color-success-default);
+//     // }
+//     // &.danger {
+//     //   background-color: nb-theme(color-danger-default);
+//     // }
+//     // &.info {
+//     //   background-color: nb-theme(color-info-default);
+//     // }
+//     // &.warning {
+//     //   background-color: nb-theme(color-warning-default);
+//     // }
+//     // &.primary {
+//     //   background-color: nb-theme(color-primary-default);
+//     // }
+//     // &.basic {
+//     //   background-color: nb-theme(color-basic-default);
+//     // }
+//   }
+  
+// }
+
+a.tag {
+  line-height: 1rem;
+  cursor: pointer;
+  color: while !important;
+  font-weight: normal;
+}

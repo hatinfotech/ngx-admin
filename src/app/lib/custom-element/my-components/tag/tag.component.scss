@@ -1,0 +1,11 @@
+@import '~@nebular/theme/styles/theming';
+@import '~@nebular/theme/styles/themes';
+
+@include nb-install-component() {
+  a.tag {
+    line-height: 1rem;
+    background-color: nb-theme(text-danger-color);
+    color: nb;
+  }
+  
+}

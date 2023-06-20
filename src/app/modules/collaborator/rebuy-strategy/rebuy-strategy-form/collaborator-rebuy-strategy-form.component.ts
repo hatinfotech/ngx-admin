@@ -23,6 +23,7 @@ import { CollaboratorPublisherListComponent } from '../../publisher/collaborator
 import { CollaboratorRebuyStrategyProductFormComponent } from '../product-form/collaborator-rebuy-strategy-product-form.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
@@ -85,7 +86,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1CommissionRatio',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -93,7 +94,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1WeeklyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -101,7 +102,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1MonthlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -109,7 +110,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1QuarterlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -117,7 +118,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1YearlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -198,7 +199,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Sku',
         width: 80,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
@@ -220,7 +221,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Unit',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -228,7 +229,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1CommissionRatio',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -236,7 +237,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1WeeklyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -244,7 +245,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1MonthlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -252,7 +253,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1QuarterlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -260,7 +261,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1YearlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {

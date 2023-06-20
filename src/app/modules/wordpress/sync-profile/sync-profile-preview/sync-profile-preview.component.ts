@@ -235,7 +235,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                         initialSort: 'desc',
                         width: 100,
                         filter: 'agTextColumnFilter',
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                         pinned: 'left',
                         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
                         filterParams: {
@@ -263,7 +263,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                           trimInput: true,
                           debounceMs: 1000,
                         },
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                         pinned: 'left',
                       },
                       {
@@ -338,7 +338,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                       },
                       {
                         headerName: 'Danh mục WP',
-                        field: 'RefCategoriesText',
+                        field: 'RefCategories',
                         width: 300,
                         filter: 'agTextColumnFilter',
                         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
@@ -370,7 +370,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
                         field: 'SiteName',
                         width: 100,
                         filter: 'agTextColumnFilter',
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                       },
                       {
                         ...agMakeCurrencyColDef(this.cms),
@@ -884,7 +884,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         field: 'Product',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
         filterParams: {
@@ -912,7 +912,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
           trimInput: true,
           debounceMs: 1000,
         },
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
@@ -936,7 +936,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         field: 'UnitName',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Giá niêm yết',
@@ -958,7 +958,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
       },
       {
         headerName: 'Danh mục WP',
-        field: 'RefCategoriesText',
+        field: 'RefCategories',
         width: 150,
         filter: 'agTextColumnFilter',
         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
@@ -971,14 +971,14 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
           trimInput: true,
           debounceMs: 1000,
         },
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Site',
         field: 'SiteName',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'SyncTime',
@@ -996,7 +996,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         width: 150,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Message',
@@ -1004,7 +1004,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
         width: 300,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Gở',

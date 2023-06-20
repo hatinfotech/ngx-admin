@@ -43,6 +43,7 @@ export interface CollaboratorOrderModel {
     State?: string;
     Permission?: string;
     PriceTable?: string;
+    Thread?: string;
     RelativeVouchers?: any[];
 }
 

@@ -39,9 +39,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
 
   /** Resource id key */
   @Input() idKey: any;
+  @Input() gridHeight = '100%';
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
   @Input() onInit: (component: AgGridDataManagerListComponent<M, F>) => void;
   @Output() onItemsChoosed = new EventEmitter<M[]>();
+
 
   public refreshPendding = false;
   lastRequestCount: number = 0;

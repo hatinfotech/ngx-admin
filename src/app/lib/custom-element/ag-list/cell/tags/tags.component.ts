@@ -1,6 +1,6 @@
 import { ICellRendererAngularComp } from "@ag-grid-community/angular";
 import { Component, OnDestroy } from "@angular/core";
-import { CommonService } from "../../../../services/common.service";
+import { CommonService } from "../../../../../services/common.service";
 import { ICellRendererParams } from "@ag-grid-community/core";
 
 export interface AgComponetTagModel {
@@ -18,17 +18,17 @@ export interface AgComponetTagModel {
     selector: 'ag-tags-cell-renderer',
     template: `
     <div>
-        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a>
+        <!-- <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a> -->
+        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap bg-color-{{tag.status}}-default" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}">
+            <nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}
+        </a>
+        <!-- <ngx-tag *ngFor="let tag of tags" [status]="tag?.status" [icon]="tag.icon" [iconPack]="tag.iconPack" [label]="tag.label" [nowrap]="nowrap" [toolTip]="tag.toolTip"></ngx-tag> -->
     </div>
     `,
-    styles: [
-        `
-        a.tag {
-            line-height: 1rem;
-            cursor: pointer;
-        }
-        `
-    ]
+    // styles: [
+        
+    // ],
+    styleUrls: ['./tags.component.scss'],
 })
 export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
 
@@ -49,7 +49,7 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
     }
 
     labelAsText(tag: AgComponetTagModel) {
-        if(tag.label) return tag.label;
+        if (tag.label) return tag.label;
         let voucherType = this.cms.voucherTypeMap[tag.type];
         let type = '';
         if (!voucherType) {
@@ -64,7 +64,7 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
     };
 
     renderToolTip(tag: AgComponetTagModel) {
-        if(tag.toolTip) return tag.toolTip;
+        if (tag.toolTip) return tag.toolTip;
         let voucherType = this.cms.voucherTypeMap[tag.type];
         let type = '';
         if (!voucherType) {
@@ -90,10 +90,12 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
                         type: '',
                     };
                 } else {
+                    let voucherType = this.cms.voucherTypeMap[inputTag.type];
                     tag = {
                         ...inputTag,
                         toolTip: this.renderToolTip(inputTag),
                         label: this.labelAsText(inputTag),
+                        status: voucherType?.status
                     };
                 }
                 renderTags.push(tag);

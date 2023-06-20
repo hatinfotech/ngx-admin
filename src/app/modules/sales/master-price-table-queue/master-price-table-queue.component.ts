@@ -88,7 +88,7 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
                     Product: m.Product as any,
                     Unit: m.Unit as any,
                     Description: this.cms.getObjectText(m.Product),
-                    Price: m.OldPrice,
+                    Price: m.RequestPrice || m.OldPrice,
                     PurchasePrice: m.PurchasePrice,
 
                     // RelateDetail: m.RelativeDetail,
@@ -230,6 +230,13 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
           ...agMakeCurrencyColDef(this.cms),
           headerName: 'Giá hiện tại',
           field: 'OldPrice',
+          pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Giá yêu cầu',
+          field: 'RequestPrice',
           pinned: 'right',
           width: 150,
         },

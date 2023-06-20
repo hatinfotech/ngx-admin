@@ -1,0 +1,1 @@
+<a  (click)="onClick($event)" class="tag nowrap" [ngStyle]="{'background-color': status == 'primary' ? '#3366ff' : (status == 'danger' ? '#ff708d' : (status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{toolTip}}"><nb-icon *ngIf="icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{label}}</a>

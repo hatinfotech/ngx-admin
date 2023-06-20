@@ -620,7 +620,7 @@ export class PurchaseGoodsListComponent extends AgGridDataManagerListComponent<P
                           trimInput: true,
                           debounceMs: 1000,
                         },
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                         pinned: 'left',
                       },
                       {

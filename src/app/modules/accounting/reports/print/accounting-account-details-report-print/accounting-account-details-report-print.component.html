@@ -7,40 +7,39 @@
             <div id="print-area">
                 <ngx-print-header></ngx-print-header>
                 <div>
-                    <div class="print-title">{{ data.Title || this.title | uppercase }}
-                    </div>
-                    <div class="under-title">Tài khoản: {{data.Account}} - Từ {{data.FromDate | date: 'short'}} đến {{ data.ToDate | date:'short' }}</div>
+                    <div class="print-title" [innerHTML]="data.Title || this.title | uppercase"></div>
+                    <div class="under-title"><span style="font-weight: bold;">TÀI KHOẢN: {{data.Account}}</span> - Từ {{data.FromDate | date: 'short'}} <span style="font-weight: bold;">đến</span> {{ data.ToDate | date:'short' }}</div>
                     <div class="under-title">Ngày giờ báo cáo: {{ data.ReportDate | date: 'short'}}</div>
                 </div>
-                <!-- <div>
+                <div *ngIf="data.Contact">
                     <div style="display: flex;">
                         <div style="flex: 1;">
-                            <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
-                                {{renderValue(data.ObjectName)}}
+                            <div class="under-line">{{'Kính gửi' | translate | headtitlecase}} :
+                                {{renderValue(data.Contact?.Name)}}
                             </div>
                         </div>
                         <div>
-                            <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
-                                {{renderValue(data.Object | objectid)}}
+                            <div class="under-line">{{'ID Liên hệ' | translate | headtitlecase}} :
+                                {{renderValue(data.Contact | objectid)}}
                             </div>
                         </div>
                     </div>
                     <div style="display: flex;">
                         <div style="flex: 1;">
                             <div class="under-line">{{'Common.phone' | translate | headtitlecase}} :
-                                {{renderValue(data.ObjectPhone)}}
+                                {{renderValue(data.Contact?.Phone)}}
                             </div>
                         </div>
                         <div>
                             <div class="under-line">{{'Common.email' | translate | headtitlecase}} :
-                                {{renderValue(data.ObjectEmail)}}
+                                {{renderValue(data.Contact?.Email)}}
                             </div>
                         </div>
                     </div>
                     <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
-                        {{renderValue(data.ObjectAddress)}}
+                        {{renderValue(data.Contact?.Address)}}
                     </div>
-                </div> -->
+                </div>
                 <div>
                     <div>
                         <table style="width: 100%;" class="print-voucher-detail-table ">

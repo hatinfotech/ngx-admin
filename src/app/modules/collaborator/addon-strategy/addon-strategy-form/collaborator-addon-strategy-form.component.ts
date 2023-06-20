@@ -22,6 +22,7 @@ import { CollaboratorAddonStrategyPublisherFormComponent } from '../publisher-fo
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 @Component({
   selector: 'ngx-collaborator-addon-strategy-form',
   templateUrl: './collaborator-addon-strategy-form.component.html',
@@ -84,7 +85,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1CommissionRatio',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -92,7 +93,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1WeeklyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -100,7 +101,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1MonthlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -108,7 +109,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1QuarterlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -116,7 +117,7 @@ export class CollaboratorAddonStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1YearlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {

@@ -10,6 +10,7 @@ import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { ContactModel } from '../../../../../models/contact.model';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -29,6 +30,7 @@ export class AccountingAccountDetailsReportPrintComponent extends DataManagerPri
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
   @Input() accounts: string[];
+  @Input() query = {};
 
   constructor(
     public cms: CommonService,
@@ -175,14 +177,24 @@ export class AccountingAccountDetailsReportPrintComponent extends DataManagerPri
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
-      }).then(data => {
+        ...this.query,
+      }).then(async data => {
+        let contact = null;
+        if (this.query && this.query['eq_Object']) {
+          const object = this.query['eq_Object'].replace(/\[|\]/g, '');
+          if (object) {
+            contact = await this.apiService.getPromise<ContactModel[]>('/contact/contacts/' + object, { includeIdText: true }).then(rs => rs[0]);
+          }
+        }
+        const accountInfo = this.accountingService.accountList$.value?.find(f => f.Code === account);
         const item = {
           Account: account,
-          Title: 'Sổ kế toán chi tiết ' + this.accountingService.accountList$.value?.find(f => f.Code === account)?.Name || 'unknow',
+          Title: 'Sổ chi tiết tài khoản kế toán<br>' + accountInfo?.Name || 'unknow',
           FromDate: fromDate,
           ToDate: toDate,
           ReportDate: new Date(),
-          Details: data
+          Details: data,
+          Contact: contact,
         };
         return item;
       }));

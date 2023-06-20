@@ -401,6 +401,7 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<any>
             IsManageByAccessNumber: this.columnList.find(f => this.cms.getObjectId(f) == 'IsManageByAccessNumber' + index),
             IsAutoAdjustInventory: this.columnList.find(f => this.cms.getObjectId(f) == 'IsAutoAdjustInventory' + index),
             IsExpirationGoods: this.columnList.find(f => this.cms.getObjectId(f) == 'IsExpirationGoods' + index),
+            UnitPrice: this.columnList.find(f => this.cms.getObjectId(f) == 'UnitPrice' + index),
           }, newForm);
           unitConversions.push(newUnitConversion);
           this.onAddUnitConversionFormGroup(newForm, 0, newUnitConversion);
@@ -535,6 +536,7 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<any>
     const newForm = this.formBuilder.group({
       Unit: [null],
       ConversionRatio: [null],
+      UnitPrice: [null],
       IsDefaultSales: [null],
       IsDefaultPurchase: [null],
       IsManageByAccessNumber: [null],

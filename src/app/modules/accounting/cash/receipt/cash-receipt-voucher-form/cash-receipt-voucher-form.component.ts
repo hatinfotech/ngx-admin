@@ -19,6 +19,8 @@ import { TaxModel } from '../../../../../models/tax.model';
 import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { AccBusinessFormComponent } from '../../../acc-business/acc-business-form/acc-business-form.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
+import { ReferenceChoosingDialogComponent } from '../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { CollaboratorOrderModel } from '../../../../../models/collaborator.model';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -48,7 +50,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent: FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -260,7 +262,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   };
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -316,7 +318,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit', sort_Code: 'asc' }).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
-      if(account.NumOfChildren > 0) {
+      if (account.NumOfChildren > 0) {
         account.disabled = true;
       }
       return account;
@@ -370,6 +372,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       DateOfVoucher: [null, Validators.required],
       RelativeVouchers: [''],
       BankAccount: [''],
+      Thread: [],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -577,7 +580,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     }
   }
 
-  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+  openRelativeVoucherChoosedDialogx(formGroup: FormGroup) {
     this.cms.openDialog(SalesVoucherListComponent, {
       context: {
         inputMode: 'dialog',
@@ -590,7 +593,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           for (let i = 0; i < chooseItems.length; i++) {
             await this.addRelativeVoucher(chooseItems[i], 'SALES', formGroup);
           }
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);
@@ -618,59 +621,97 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     if (index < 0) {
       const details = this.getDetails(formGroup);
       // get purchase order
-      let salesVoucher;
+      let refVoucher;
       switch (relativeVoucherType) {
         case 'SALES':
-          salesVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeObject: true, includeDetails: true }).then(rs => rs[0]);
+          refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeObject: true }).then(rs => rs[0]);
+          if (this.cms.getObjectId(refVoucher.State) != 'APPROVED') {
+            this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+            return false;
+          }
+        case 'CLBRTORDER':
+          refVoucher = await this.apiService.getPromise<CollaboratorOrderModel[]>('/collaborator/orders/' + relativeVoucher.Code, { includeObject: true }).then(rs => rs[0]);
+          if (this.cms.getObjectId(refVoucher.State) == 'NOTJUSTAPPROVED' || this.cms.getObjectId(refVoucher.State) == 'UNRECORDED') {
+            this.cms.toastService.show(this.cms.translateText('Đơn hàng CTV chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+            return false;
+          }
           break;
         default:
           return false;
       }
 
-      if (this.cms.getObjectId(salesVoucher.State) != 'APPROVED') {
-        this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-        return false;
+      if (refVoucher && refVoucher.Thread) {
+        formGroup.get('Thread').setValue(refVoucher.Thread);
       }
+
       if (this.cms.getObjectId(formGroup.get('Object').value)) {
-        if (this.cms.getObjectId(salesVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+        if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
           this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu bán hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
           return false;
         }
       } else {
-        delete salesVoucher.Id;
-        delete salesVoucher.Code;
-        formGroup.patchValue({ ...salesVoucher, Id: null, Details: [] });
-        formGroup.get('Description').patchValue('Thu tiền cho ' + salesVoucher.Title);
+        delete refVoucher.Id;
+        delete refVoucher.Code;
+        formGroup.patchValue({ ...refVoucher, Id: null, Details: [] });
+        formGroup.get('Description').patchValue('Thu tiền cho ' + refVoucher.Title);
         details.clear();
       }
 
       // insertList.push(chooseItems[i]);
 
       // Insert order details into voucher details
-      if (salesVoucher?.Details) {
-        // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
-        let totalMoney = 0;
-        const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
-        for (const voucherDetail of salesVoucher.Details) {
-          if (voucherDetail.Type !== 'CATEGORY') {
-            const tax = this.cms.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.cms.getObjectId(voucherDetail.Tax))['Tax'] : null;
-            totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
-          }
-        }
-        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
-          AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
-          Description: salesVoucher.Title,
-          DebitAccount: '1111',
-          CreditAccount: '131',
-          Amount: totalMoney,
-          Id: null,
-        });
-        details.push(newDtailFormGroup);
-      }
+      // if (refVoucher?.Details) {
+      // details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu đặt mua hàng: ' + purchaseVoucher.Code + ' - ' + purchaseVoucher.Title }));
+      // let totalMoney = 0;
+      // const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+      // for (const voucherDetail of refVoucher.Details) {
+      //   // if (voucherDetail.Type !== 'CATEGORY') {
+      //   //   // const tax = this.cms.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.cms.getObjectId(voucherDetail.Tax))['Tax'] : null;
+      //   //   // totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+      //   // }
+      // }
+      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+        AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
+        Description: refVoucher.Title,
+        DebitAccount: '1111',
+        CreditAccount: '131',
+        Amount: 0,
+        Id: null,
+      });
+      details.push(newDtailFormGroup);
+      // }
     }
     insertList.push(relativeVoucher);
-    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: relativeVoucherType }))]);
     return relativeVoucher;
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
+      context: {
+        components: {
+          'SALES': { title: 'Phiếu bán hàng' },
+          'PRICEREPORT': { title: 'Báo giá' },
+          'CLBRTORDER': { title: 'Đơn hàng CTV' },
+          // 'SALESRETURNS': { title: 'Phiếu hàng bán trả lại' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          // const relationVoucherValue: any[] = (relationVoucher.value || []);
+          // const insertList = [];
+          this.onProcessing();
+          for (let i = 0; i < chooseItems.length; i++) {
+            await this.addRelativeVoucher(chooseItems[i], type, formGroup);
+          }
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
+        },
+      }
+    })
+    return false;
   }
 
   openRelativeVoucher(relativeVocher: any) {
@@ -685,4 +726,3 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }
 
 }
-  

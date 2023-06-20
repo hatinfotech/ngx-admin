@@ -141,7 +141,7 @@
                 <button *ngIf="mode === 'preview'" nbButton hero status="success" (click)="saveAndClose(data);">
                     <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
                 </button>
-                <button *ngIf="mode === 'print'" nbButton hero status="warning" (click)="edit(data);">
+                <button *ngIf="mode === 'print'" nbButton hero status="warning" (click)="edit(data);" style="float: left">
                     <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
                 </button>
             </div>

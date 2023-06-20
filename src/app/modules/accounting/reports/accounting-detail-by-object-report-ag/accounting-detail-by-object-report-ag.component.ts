@@ -20,6 +20,8 @@ import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-
 import { AccountingService } from '../../accounting.service';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { agMakeAccCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/acc-currency.define';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { AccountingAccountDetailsReportPrintComponent } from '../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report-ag',
@@ -139,6 +141,35 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         this.actionButtonList = this.actionButtonList.filter(f => ['preview'].indexOf(f.name) < 0);
       }
 
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'printReport',
+        status: 'primary',
+        label: 'In báo cáo',
+        title: 'In báo cáo',
+        size: 'medium',
+        icon: 'printer',
+        // disabled: () => {
+        //   return this.selectedIds.length == 0;
+        // },
+        click: () => {
+          const filterModel = this.gridApi.getFilterModel();
+          let query = {};
+          const filterQuery = this.parseFilterToApiParams(filterModel);
+          query = this.prepareApiParams(filterQuery);
+          this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
+            context: {
+              showLoadinng: true,
+              // title: 'Xem trước',
+              accounts: this.accounts,
+              mode: 'print',
+              id: ['all'],
+              query: query
+            },
+          });
+        }
+      });
+
       // Auto refresh list on reportToDate changed
       // this.accountingService?.reportToDate$.pipe(takeUntil(this.destroy$), filter(f => f !== null)).subscribe(toDate => {
       //   console.log(toDate);
@@ -162,7 +193,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           headerName: ' Ngày chứng từ',
           field: 'VoucherDate',
           width: 170,
-          pinned: 'left',
+          // pinned: 'left',
           filter: 'agDateColumnFilter',
           filterParams: {
             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
@@ -172,7 +203,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
         {
           headerName: this.cms.translateText('Common.contact'),
           field: 'Object',
-          pinned: 'left',
+          // pinned: 'left',
           width: 200,
           // cellRenderer: AgTextCellRenderer,
           filter: AgSelect2Filter,
@@ -238,6 +269,14 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
               allowClear: true,
             }
           },
+        },
+        {
+          headerName: 'Luồng hạch toán',
+          field: 'Thread',
+          width: 180,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+          cellRenderer: AgTextCellRenderer,
         },
         {
           headerName: 'TK',
@@ -598,7 +637,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
     super.ngOnInit();
   }
 
-  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+  prepareApiParams(params: any, getRowParams?: IGetRowsParams) {
     if (this.object) {
       params['eq_Object'] = this.object;
     }

@@ -15,6 +15,7 @@ import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRo
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 
 @Component({
   selector: 'ngx-sync-profile-form',
@@ -531,14 +532,14 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
       //   width: 110,
       //   filter: 'agTextColumnFilter',
       //   pinned: 'left',
-      //   cellRenderer: 'textRender',
+      //   cellRenderer: AgTextCellRenderer,
       // },
       {
         headerName: 'Sku',
         field: 'Sku',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
@@ -560,7 +561,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
         field: 'Brand',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -568,7 +569,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
         field: 'WarehouseUnit',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -577,7 +578,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Nhóm',
@@ -585,7 +586,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'State',
@@ -593,7 +594,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
         width: 100,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
     ];
   }

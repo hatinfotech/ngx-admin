@@ -977,11 +977,23 @@ export class AppModule {
   };
   static depploymentState: ProcessMap = {
     state: 'DEPLOYMENT',
+    label: 'Common.deploying',
+    confirmLabel: 'Common.deploy',
+    status: 'primary',
+    outline: false,
+    confirmTitle: 'Common.deployed',
+    nextStateLabel: 'Common.deploy',
+    confirmText: 'Common.deployedConfirm',
+    responseTitle: 'Common.deployed',
+    responseText: 'Common.deployedSuccess',
+  };
+  static depploymentedState: ProcessMap = {
+    state: 'DEPLOYMENTED',
     label: 'Common.deployed',
     confirmLabel: 'Common.deploy',
     status: 'primary',
     outline: false,
-    confirmTitle: 'Common.deploy',
+    confirmTitle: 'Common.deployed',
     nextStateLabel: 'Common.deploy',
     confirmText: 'Common.deployedConfirm',
     responseTitle: 'Common.deployed',
@@ -1714,9 +1726,10 @@ export class AppModule {
       "APPROVED": {
         ...AppModule.approvedState,
         label: 'Chốt đơn',
-        nextState: 'COMPLETE',
+        nextState: 'DEPLOYMENT',
         nextStates: [
-          { ...AppModule.transportState, status: 'success' },
+          AppModule.depploymentState,
+          AppModule.transportState,
           AppModule.unrecordedState,
         ],
       },
@@ -1728,19 +1741,36 @@ export class AppModule {
           AppModule.unrecordedState,
         ],
       },
+      "DEPLOYMENT": {
+        ...AppModule.depploymentState,
+        nextState: 'COMPLETED',
+        nextStates: [
+          AppModule.completeState,
+          AppModule.unrecordedState,
+        ],
+      },
       "DELIVERED": {
         ...AppModule.deliveredState,
+        nextState: 'COMPLETED',
+        nextStates: [
+          AppModule.completeState,
+          AppModule.returnState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "COMPLETED": {
+        ...AppModule.completeState,
         nextState: 'UNRECORDED',
         nextStates: [
-          // { ...AppModule.returnState, status: 'danger' },
           AppModule.unrecordedState,
         ],
       },
       "RETURN": {
         ...AppModule.returnState,
-        nextState: 'COMPLETE',
+        nextState: 'COMPLETED',
         nextStates: [
-          { ...AppModule.completeState, status: 'success' },
+          // { ...AppModule.completeState, status: 'success' },
+          AppModule.completeState,
           AppModule.unrecordedState,
         ],
       },
@@ -1753,21 +1783,12 @@ export class AppModule {
       // },
       "UNRECORDED": {
         ...AppModule.unrecordedState,
-        nextState: 'APPROVED',
-        nextStates: [
-          AppModule.proccessingState,
-          // { ...AppModule.approvedState, label: 'Chốt đơn', status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "NOTJUSTAPPROVED": {
-        ...AppModule.notJustApprodedState,
         nextState: 'PROCESSING',
         nextStates: [
           AppModule.proccessingState,
         ],
       },
-      "": {
+      "NOTJUSTAPPROVED": {
         ...AppModule.notJustApprodedState,
         nextState: 'PROCESSING',
         nextStates: [

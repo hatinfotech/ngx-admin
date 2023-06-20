@@ -1,53 +1,56 @@
-import { ChatRoomMemberModel } from './../../../../models/chat-room.model';
-import { Title } from '@angular/platform-browser';
-import { CollaboratorOrderTeleCommitFormComponent } from './../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableRelativeVouchersComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateRangeFilterComponent, SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
-import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
-import { CollaboratorCommissionVoucherModel, CollaboratorOrderModel } from '../../../../models/collaborator.model';
-import { PageModel } from '../../../../models/page.model';
-import { PriceReportModel } from '../../../../models/price-report.model';
-import { UserGroupModel } from '../../../../models/user-group.model';
+import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { MobileAppService } from '../../../mobile-app/mobile-app.service';
-import { SalesPriceReportListComponent } from '../../../sales/price-report/sales-price-report-list/sales-price-report-list.component';
-import { SalesPriceReportPrintComponent } from '../../../sales/price-report/sales-price-report-print/sales-price-report-print.component';
-import { CollaboratorService } from '../../collaborator.service';
-import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
-import { ChatRoomModel } from '../../../../models/chat-room.model';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { DatePipe } from '@angular/common';
+import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
+import { FormGroup } from '@angular/forms';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
+import { MobileAppService } from '../../../mobile-app/mobile-app.service';
+import { CollaboratorService } from '../../collaborator.service';
+import { PageModel } from '../../../../models/page.model';
+import { filter, take } from 'rxjs/operators';
 
+declare const $: any;
 @Component({
   selector: 'ngx-collaborator-order-list',
   templateUrl: './collaborator-order-list.component.html',
   styleUrls: ['./collaborator-order-list.component.scss']
 })
-export class CollaboratorOrderListComponent extends ServerDataManagerListComponent<CollaboratorOrderModel> implements OnInit {
+export class CollaboratorOrderListComponent extends AgGridDataManagerListComponent<CollaboratorOrderModel, CollaboratorOrderFormComponent> implements OnInit {
 
-  componentName: string = 'CollaboratorOrderListComponent';
+  componentName: string = 'CommercePosOrderListComponent';
   formPath = '/collaborator/page/order/form';
   apiPath = '/collaborator/orders';
-  idKey = 'Code';
+  idKey = ['Code'];
   // formDialog = CollaboratorOrderFormComponent;
   printDialog = CollaboratorOrderPrintComponent;
 
-  reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorOrderListComponent>;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() gridHeight = 'calc(100vh - 230px)';
+  // @Input() suppressRowClickSelection = false;
 
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
+  paymentMethodMap = {
+    CASH: { id: 'CASH', text: 'Tiền mặt' },
+    BANKTRANSFER: { id: 'BANKTRANSFER', text: 'Chuyển khoản' },
+    DEBT: { id: 'DEBT', text: 'Công nợ' },
+    MIXED: { id: 'MIXED', text: 'Hỗn hợp' },
+  };
 
   constructor(
     public apiService: ApiService,
@@ -55,17 +58,29 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<CollaboratorOrderListComponent>,
+    public datePipe: DatePipe,
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
-    // public mobileService: MobileAppService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
   async init() {
-    return super.init().then(rs => {
+    return super.init().then(async state => {
+
+
       // Add page choosed
       this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
@@ -77,7 +92,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Page.title', { action: this.cms.translateText('Common.choose'), definition: '' }), 'head-title'),
           size: 'medium',
           select2: {
-            data: pageList, 
+            data: pageList,
             option: {
               placeholder: 'Chọn trang...',
               allowClear: true,
@@ -103,400 +118,357 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
           },
         });
       });
-      return rs;
-    });
-  }
 
-  editing = {};
-  rows = [];
+      // this.actionButtonList.unshift({
+      //   type: 'button',
+      //   name: 'unrecord',
+      //   status: 'warning',
+      //   label: 'Bỏ ghi',
+      //   title: 'Bỏ ghi các phiếu đã chọn',
+      //   size: 'medium',
+      //   icon: 'slash-outline',
+      //   disabled: () => {
+      //     return this.selectedIds.length == 0;
+      //   },
+      //   click: () => {
+      //     this.cms.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
+      //       {
+      //         label: 'Trở về',
+      //         status: 'basic',
+      //         action: () => {
+      //         }
+      //       },
+      //       {
+      //         label: 'Bỏ ghi',
+      //         status: 'warning',
+      //         focus: true,
+      //         action: () => {
+      //           this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+      //             this.cms.toastService.show('Bỏ ghi thành công !', 'Đơn hàng POS', { status: 'success' });
+      //             this.refresh();
+      //           });
+      //         }
+      //       },
+      //     ]);
+      //   }
+      // });
+      // this.actionButtonList.unshift({
+      //   type: 'button',
+      //   name: 'writetobook',
+      //   status: 'primary',
+      //   label: 'Duyệt',
+      //   title: 'Duyệt các phiếu đã chọn',
+      //   size: 'medium',
+      //   icon: 'checkmark-square-outline',
+      //   disabled: () => {
+      //     return this.selectedIds.length == 0;
+      //   },
+      //   click: () => {
+      //     this.cms.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
+      //       {
+      //         label: 'Trở về',
+      //         status: 'basic',
+      //         action: () => {
+      //         }
+      //       },
+      //       {
+      //         label: 'Duyệt',
+      //         status: 'primary',
+      //         focus: true,
+      //         action: () => {
+      //           this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
+      //             this.cms.toastService.show('Duyệt thành công !', 'Đơn hàng POS', { status: 'success' });
+      //             this.refresh();
+      //           });
+      //         }
+      //       },
+      //     ]);
+      //   }
+      // });
+      // this.actionButtonList.unshift({
+      //   type: 'button',
+      //   name: 'writetobook',
+      //   status: 'danger',
+      //   label: 'Ghi sổ lại',
+      //   title: 'Ghi sổ lại',
+      //   size: 'medium',
+      //   icon: 'npm-outline',
+      //   disabled: () => false,
+      //   click: () => {
+      //     this.cms.openDialog(DialogFormComponent, {
+      //       context: {
+      //         title: 'ID phiếu cần ghi sổ lại',
+      //         width: '600px',
+      //         onInit: async (form, dialog) => {
+      //           return true;
+      //         },
+      //         controls: [
+      //           {
+      //             name: 'Ids',
+      //             label: 'Link hình',
+      //             placeholder: 'Mỗi ID trên 1 dòng',
+      //             type: 'textarea',
+      //             initValue: this.selectedIds.join('\n'),
+      //           },
+      //         ],
+      //         actions: [
+      //           {
+      //             label: 'Trở về',
+      //             icon: 'back',
+      //             status: 'basic',
+      //             action: async () => { return true; },
+      //           },
+      //           {
+      //             label: 'Ghi sổ lại',
+      //             icon: 'npm-outline',
+      //             status: 'danger',
+      //             action: async (form: FormGroup) => {
 
-  stateDic = {
-    APPROVED: { label: this.cms.translateText('Common.approved'), status: 'success', outline: false },
-    DEPLOYMENT: { label: this.cms.translateText('Common.implement'), status: 'warning', outline: false },
-    // ACCEPTANCEREQUEST: { label: this.cms.translateText('Common.completeRequest'), status: 'primary', outline: false },
-    ACCEPTANCE: { label: this.cms.translateText('Common.acceptance'), status: 'info', outline: false },
-    COMPLETE: { label: this.cms.translateText('Common.completed'), status: 'success', outline: true },
-    CANCEL: { label: this.cms.translateText('Common.cancel'), status: 'info', outline: true },
-  };
+      //               let ids: string[] = form.get('Ids').value.trim()?.split('\n');
 
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: this.isChoosedMode ? false : {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        No: {
-          title: 'No.',
-          type: 'string',
-          width: '5%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+      //               if (ids && ids.length > 0) {
+      //                 let toastRef = this.cms.showToast('Các đơn hàng đang được ghi sổ lại', 'Đang ghi sổ lại', { status: 'info', duration: 60000 });
+      //                 try {
+      //                   ids = [...new Set(ids)];
+      //                   this.loading = true;
+      //                   await this.apiService.putPromise(this.apiPath, { reChangeState: 'UNRECORDED,APPROVED' }, ids.map(id => ({ Code: id.trim() })));
+      //                   toastRef.close();
+      //                   toastRef = this.cms.showToast('Các đơn hàng đã được ghi sổ lại', 'Hoàn tất ghi sổ lại', { status: 'success', duration: 10000 });
+      //                   this.loading = false;
+      //                 } catch (err) {
+      //                   console.error(err);
+      //                   this.loading = false;
+      //                   toastRef.close();
+      //                   toastRef = this.cms.showToast('Các đơn hàng chưa đượ ghi sổ lại do có lỗi xảy ra trong quá trình thực thi', 'Lỗi ghi sổ lại', { status: 'danger', duration: 30000 });
+      //                 }
+      //               }
+
+      //               return true;
+      //             },
+      //           },
+      //         ],
+      //       },
+      //     });
+      //   }
+      // });
+
+      const processingMap = AppModule.processMaps['collaboratoOrder'];
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
         },
-        // Code: {
-        //   title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
-        //   type: 'string',
-        //   width: '10%',
-        // },
-        ObjectPhone: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
-          type: 'html',
-          width: '20%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          valuePrepareFunction: (cell, row) => {
-            return 'KH: ' + row.ObjectName + (row.ObjectPhone ? ` <br>SĐT: ${row.ObjectPhone}` : '');
-          },
+        {
+          headerName: 'Mã',
+          field: 'Code',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          pinned: 'left',
         },
-        Code: {
-          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Order.label'), 'head-title'),
-          type: 'html',
-          width: '25%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
-          valuePrepareFunction: (cell, row) => {
-            return '<b>Mã Đơn Hàng: ' + row.Code + '</b><br>' + row.Title + '';
-          },
-        },
-        // RelationVoucher: {
-        //   title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
-        //   type: 'string',
-        //   width: '20%',
-        // },
-        PublisherName: {
-          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Publisher.label'), 'head-title'),
-          type: 'string',
-          width: '15%',
-          // filter: {
-          //   type: 'custom',
-          //   component: SmartTableDateTimeRangeFilterComponent,
-          // },
-          // valuePrepareFunction: (cell: string, row?: any) => {
-          //   return this.cms.getObjectText(cell);
-          // },
-        },
-        DateOfOrder: {
-          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Order.dateOforder'), 'head-title'),
-          type: 'custom',
-          width: '15%',
-          filter: {
-            type: 'custom',
-            component: SmartTableDateRangeFilterComponent,
-          },
-          renderComponent: SmartTableDateTimeComponent,
-          onComponentInitFunction: (instance: SmartTableDateTimeComponent) => {
-            // instance.format$.next('medium');
-          },
-        },
-        Amount: {
-          title: this.cms.textTransform(this.cms.translate.instant('Tiền hàng'), 'head-title'),
-          type: 'custom',
-          class: 'align-right',
-          width: '10%',
-          position: 'right',
-          renderComponent: SmartTableCurrencyComponent,
-          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-            instance.style = 'text-align: right';
-          },
-        },
-        Total: {
-          title: this.cms.textTransform(this.cms.translate.instant('Tổng tiền'), 'head-title'),
-          type: 'custom',
-          class: 'align-right',
-          width: '10%',
-          position: 'right',
-          renderComponent: SmartTableCurrencyComponent,
-          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-            instance.style = 'text-align: right';
-          },
-        },
-        RelativeVouchers: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableRelativeVouchersComponent,
-          onComponentInitFunction: (instance: SmartTableTagsComponent) => {
-            instance.click.subscribe((tag: { id: string, text: string, type: string }) => {
-              if (tag.type === 'PRICEREPORT') {
-                this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-                  context: {
-                    inputId: [tag.id],
-                    // inputMode: 'dialog',
-                    onDialogSave: () => { },
-                    onDialogClose: () => { },
-                  }
-                });
-              } else {
-                this.cms.previewVoucher(tag.type, tag.id);
-              }
-            });
-          },
-          width: '20%',
-        },
-        // Call: {
-        //   title: 'Call',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'phone-call-outline';
-        //     instance.display = true;
-        //     instance.status = 'success';
-        //     instance.valueChange.subscribe(value => {
-        //     });
-
-        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-        //       const priceReportRef = row.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
-        //       if (priceReportRef) {
-        //         this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
-        //           {
-        //             status: 'basic',
-        //             label: 'Trở về',
-        //           },
-        //           {
-        //             status: 'success',
-        //             icon: 'phone-call-outline',
-        //             label: 'Gọi ngay',
-        //             action: () => {
-        //               this.apiService.putPromise('/collaborator/price-reports/' + priceReportRef.id, { click2call: true }, [{ Code: priceReportRef.id }]).then(rs => {
-        //                 console.log(rs);
-        //               });
-        //             },
-        //           }
-        //         ]);
-        //       }
-        //     });
-        //   },
-        // },
-        // Task: {
-        //   title: 'Task',
-        //   type: 'custom',
-        //   width: '10%',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'message-circle';
-        //     instance.display = true;
-        //     instance.status = 'info';
-        //     instance.title = 'Tạo task trao đổi với CTV';
-        //     instance.valueChange.subscribe(value => {
-        //     });
-
-        //     instance.click.subscribe(async (row: CollaboratorOrderModel) => {
-        //       let task = row.RelativeVouchers?.find(f => f.type == 'CHATROOM');
-        //       if (task) {
-        //         this.cms.openMobileSidebar();
-        //         this.mobileAppService.openChatRoom({ ChatRoom: task.id });
-        //       } else {
-        //         // Assign resource to chat room
-        //         task = await this.apiService.putPromise<ChatRoomModel[]>('/chat/rooms', { assignResource: true }, [{
-        //           Code: null,
-        //           Resources: [
-        //             {
-        //               ResourceType: 'CLBRTORDER',
-        //               Resource: row.Code,
-        //               Title: row.Title,
-        //               Date: row.DateOfOrder,
-        //             }
-        //           ]
-        //         }]).then(rs => {
-        //           if (rs && rs.length > 0) {
-        //             // const link = rs[0].Resources[0];
-        //             // if (link && link.ChatRoom) {
-
-        //             // Add publisher to chat room
-        //             this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code }, [{
-        //               ChatRoom: rs[0].Code as any,
-        //               Type: 'CONTACT',
-        //               RefUserUuid: this.cms.getObjectId(row.Publisher),
-        //               Name: row.PublisherName,
-        //               Page: row.Page,
-        //               RefPlatform: 'PROBOXONE',
-        //               RefType: 'PUBLISHER',
-        //               id: this.cms.getObjectId(row.Publisher),
-        //             }]).then(rs2 => {
-
-        //               // Connect publisher
-        //               this.apiService.putPromise<ChatRoomMemberModel[]>('/chat/room-members', { chatRoom: rs[0].Code, connectRefContactMember: true }, [{
-        //                 Type: 'CONTACT',
-        //                 Contact: rs2[0].Contact,
-        //               }]).then(rs3 => {
-        //                 this.cms.openMobileSidebar();
-        //                 this.mobileAppService.openChatRoom({ ChatRoom: rs[0].Code });
-        //               });
-
-        //             });
-
-        //             // }
-        //             return { id: rs[0].Code, text: row.Title, type: 'TASK' };
-        //           }
-        //         });
-        //       }
-        //     });
-        //   },
-        // },
-        State: {
-          title: this.cms.translateText('Common.state'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'success';
-            // instance.style = 'text-align: right';
-            // instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.approved');
-            instance.label = this.cms.translateText('Common.approved');
-            instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.collaboratoOrder[value || ''];
-              instance.label = this.cms.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap.outline;
-              if (false) instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);// Todo: tmp disabled
-              // instance.disabled = (value === 'APPROVE');
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
-              // this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              // this.refresh();
-              if (rowData.State == 'PROCESSING') {
-                // const priceReportRef = rowData.RelativeVouchers?.find(f => f.type == 'PRICEREPORT');
-                // if (priceReportRef) {
-                //   this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-                //     context: {
-                //       inputId: [priceReportRef.id],
-                //       inputMode: 'dialog',
-                //       showLoadinng: true,
-                //       onDialogSave: () => {
-                //         this.refresh();
-                //       },
-                //       onDialogClose: () => { },
-                //     }
-                //   });
-                // }
-                this.openForm([rowData.Code]);
-              } else {
-                this.preview([rowData]);
-              }
-
-              // });
-            });
-          },
-        },
-        Permission: {
-          title: this.cms.translateText('Common.permission'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'shield';
-            instance.display = true;
-            instance.status = 'danger';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorCommissionVoucherModel) => {
-
-              this.cms.openDialog(ResourcePermissionEditComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [rowData.Code],
-                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                  apiPath: this.apiPath,
+        {
+          headerName: 'Khách hàng',
+          field: 'Object',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
                 }
-              });
-            });
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
           },
         },
-        Preview: {
-          title: this.cms.translateText('Common.show'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'external-link-outline';
-            instance.display = true;
-            instance.status = 'primary';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorOrderModel) => {
-              // this.apiService.getPromise<CollaboratorOrderModel[]>('/sales/price-reports', { id: [rowData.Code], includeContact: true, includeDetails: true, includeTax: true, useBaseTimezone: true }).then(rs => {
-              this.preview([rowData]);
-              // });
-              // this.getFormData([rowData.Code]).then(rs => {
-              //   this.preview(rs, 'list');
-              // });
-            });
+        {
+          headerName: 'Ngày bán hàng',
+          field: 'DateOfOrder',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
           },
-        }
-      },
+          cellRenderer: AgDateCellRenderer,
+        },
+        {
+          headerName: 'CTV Bán Hàng',
+          field: 'Publisher',
+          width: 150,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        // {
+        //   headerName: 'Người tạo',
+        //   field: 'Creator',
+        //   width: 150,
+        //   filter: 'agTextColumnFilter',
+        //   cellRenderer: AgTextCellRenderer,
+        // },
+        {
+          headerName: 'Tiêu đề',
+          field: 'Title',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Số tiền',
+          field: 'Amount',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Tổng tiền',
+          field: 'Total',
+          pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
+          headerName: 'Chứng từ liên quan',
+          field: 'RelativeVouchers',
+          width: 300,
+        },
+        {
+          headerName: 'Ngày tạo',
+          field: 'Created',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        // {
+        //   headerName: 'Tài khoản ngân hàng',
+        //   field: 'ReceiptBackAccount',
+        //   width: 140,
+        //   filter: 'agTextColumnFilter',
+        //   // pinned: 'left',
+        // },
+        // {
+        //   headerName: 'PT Thanh toán',
+        //   field: 'PaymentMethod',
+        //   width: 150,
+        //   cellRenderer: AgTextCellRenderer,
+        //   valueGetter: (params) => this.paymentMethodMap[this.cms.getObjectId(params.node?.data?.PaymentMethod)],
+        //   // filter: 'agTextColumnFilter',
+        //   autoHeight: true,
+        //   pinned: 'right',
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       placeholder: 'Chọn phương thức thanh toán...',
+        //       allowClear: true,
+        //       width: '100%',
+        //       dropdownAutoWidth: true,
+        //       minimumInputLength: 0,
+        //       withThumbnail: false,
+        //       multiple: true,
+        //       keyMap: {
+        //         id: 'id',
+        //         text: 'text',
+        //       },
+        //       data: Object.keys(this.paymentMethodMap).map(m => this.paymentMethodMap[m]),
+        //     }
+        //   },
+        // },
+        {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            // this.preview([data]);
+            if (data.State == 'PROCESSING') {
+              this.openForm([data.Code]);
+            } else {
+              this.preview([data]);
+            }
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          width: 155,
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          headerName: 'Lệnh',
+        },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorOrderModel[]>('/sales/price-reports', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
-  }
-
-  initDataSource() {
-    const source = super.initDataSource();
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['includeCreator'] = true;
-      params['includePublisher'] = true;
-      params['includeRelativeVouchers'] = true;
-      params['sort_Id'] = 'desc';
-      params['page'] = this.collaboratorService?.currentpage$?.value || null;
-      // params['eq_Type'] = 'PAYMENT';
-      return params;
-    };
-
-    return source;
-  }
-
-  /** Api get funciton */
-  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
-  //   params['includeCategories'] = true;
-  //   super.executeGet(params, success, error, complete);
+  // @Input() getRowHeight = (params: RowHeightParams<CollaboratorOrderModel>) => {
+  //   return 123;
   // }
 
-  getList(callback: (list: UserGroupModel[]) => void) {
-    super.getList((rs) => {
-      // rs.map((product: any) => {
-      //   product['Unit'] = product['Unit']['Name'];
-      //   if (product['Categories']) {
-      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
-      //   }
-      //   return product;
-      // });
-      if (callback) callback(rs);
-    });
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeCreator'] = true;
+    params['includePublisher'] = true;
+    params['includeRelativeVouchers'] = true;
+    params['sort_Id'] = 'desc';
+    params['page'] = this.collaboratorService?.currentpage$?.value || null;
+    return params;
   }
+
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: CollaboratorOrderModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(CollaboratorOrderFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: CollaboratorOrderModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
+    });
+    return false;
+  }
+
+  // async getFormData(ids: string[]) {
+  //   return this.apiService.getPromise<CollaboratorOrderModel[]>('/sales/commerce-pos-orders', { id: ids, includeContact: true, includeDetails: true, useBaseTimezone: true });
+  // }
+
+  onGridReady(params) {
+    super.onGridReady(params);
+    // const $(this.agGrid['_nativeElement']).offset().top;
+  }
+
+
 
   async preview(data: CollaboratorOrderModel[], source?: string) {
     this.cms.openDialog(CollaboratorOrderPrintComponent, {
@@ -514,27 +486,7 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
 
           printComponent.close();
           if (data.State === 'PROCESSING') {
-            // Get relative vouchers
-            // const order = await this.apiService.getPromise('/collaborator/orders/' + data.Code, {includeRelativeVouchers : true});
-            // if (data.RelativeVouchers && data.RelativeVouchers.length > 0) {
-            // const priceReportRef = data.RelativeVouchers.find(f => f.type === 'PRICEREPORT');
-            // if (priceReportRef) {
-            // this.cms.openDialog(CollaboratorOrderTeleCommitFormComponent, {
-            //   context: {
-            //     inputId: [priceReportRef.id],
-            //     inputMode: 'dialog',
-            //     onDialogSave: async (data) => {
-            //       console.log(data);
-            //       // setTimeout(() => {
-            //       this.refresh();
-            //       // }, 1000);
-            //     },
-            //     onDialogClose: () => { },
-            //   }
-            // });
             this.gotoForm(data.Code);
-            // }
-            // }
           } else {
             this.refresh();
           }
@@ -543,9 +495,6 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
         onSaveAndClose: () => {
           this.refresh();
         },
-        // onSaveAndClose: () => {
-        //   this.refresh();
-        // },
       },
     });
     return false;
@@ -557,5 +506,4 @@ export class CollaboratorOrderListComponent extends ServerDataManagerListCompone
       this.refresh();
     });
   }
-
 }

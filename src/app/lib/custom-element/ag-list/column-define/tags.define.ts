@@ -1,6 +1,6 @@
 import { ColDef } from "@ag-grid-community/core";
 import { CommonService } from "../../../../services/common.service";
-import { AgTagsCellRenderer } from "../cell/tags.component";
+import { AgTagsCellRenderer } from "../cell/tags/tags.component";
 
 export const agMakeTagsColDef = (
   cms: CommonService,

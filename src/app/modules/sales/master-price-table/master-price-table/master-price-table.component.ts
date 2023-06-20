@@ -360,7 +360,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                           trimInput: true,
                           debounceMs: 1000,
                         },
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                       },
                       {
                         headerName: 'Yêu cầu bởi',

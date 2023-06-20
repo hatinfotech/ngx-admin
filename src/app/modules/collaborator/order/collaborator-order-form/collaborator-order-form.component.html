@@ -51,7 +51,7 @@
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Publisher" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
-                                                    <ngx-select2 formControlName="Publisher" [select2Option]="select2OptionForContact" (selectChange)="onPublisherChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Publisher" [select2Option]="select2OptionForPublisher" (selectChange)="onPublisherChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
@@ -76,8 +76,7 @@
                                             </div>
                                         </div>
                                     </nb-tab>
-                                    <nb-tab tabTitle="{{'Shippper' | translate | headtitlecase}} (*)">
-                                        <!-- <label class="label label-with-border-below">{{'Common.mainInfo' | translate | headtitlecase}}</label> -->
+                                    <!-- <nb-tab tabTitle="{{'Shippper' | translate | headtitlecase}} (*)">
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Shipper" label="Shipper" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
@@ -105,7 +104,7 @@
                                                 </ngx-form-group>
                                             </div>
                                         </div>
-                                    </nb-tab>
+                                    </nb-tab> -->
                                 </nb-tabset>
                             </div>
                         </div>
@@ -143,17 +142,17 @@
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Province" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="District" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="District" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="District" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Ward" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="Ward" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Ward" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
@@ -163,7 +162,7 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
@@ -363,7 +362,7 @@
                         <button nbButton hero status="primary" (click)="preview(formItem)" [disabled]="!form.valid || isProcessing">
                             <nb-icon on b-icon pack="eva" icon="printer"></nb-icon>{{'Common.preview' | translate | headtitlecase}}
                         </button>
-                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">{{'Chốt đơn' | translate | headtitlecase}}</button>
+                        <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose(formItem)">{{((formItem.value?.State | objectid) == 'PROCESSING' ? 'Chốt đơn' : 'Lưu và đóng') | translate | headtitlecase}}</button>
                         <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero>{{'Common.save' | translate | headtitlecase}}</button>
                     </div>
                 </nb-card-footer>

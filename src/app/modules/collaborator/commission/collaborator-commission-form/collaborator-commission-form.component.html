@@ -71,9 +71,10 @@
                             <!-- <ngx-collaboartor-commission-detail (onInit)="onListInit($event, formItem, 'statistics')" (onUpdateTotalCommission)="updateTotalCommission($event, formItem, 'statistics')" [publisher]="this.cms.getObjectId(formItem.get('Publisher').value)" [page]="this.cms.getObjectId(formItem.get('Page').value)" [moment]="formItem.get('CommissionTo').value"></ngx-collaboartor-commission-detail> -->
                             <div class="col-md-12">
                                 <label class="label">{{'Doanh số và chiết khấu theo sản phẩm' | translate | headtitlecase}}</label>
-                                <div class="ag-grid-wrap" style="height: 300px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
+                                <ngx-ag-dynamic-list #commissionReport [columnDefs]="commissionColumnDefs" [rowModelType]="'clientSide'" [rowData]="commissionData" [idKey]="'Id'" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+                                <!-- <div class="ag-grid-wrap" style="height: 300px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
                                     <ngx-ag-list formControlName="CommissionStatictis" [columnDefs]="commissionColumnDefs" [data]="commissionData" (selectChange)="onGridChange($event, formItem.get('CommissionStatictis').value)"></ngx-ag-list>
-                                </div>
+                                </div> -->
                             </div>
                             <!-- <nb-tabset>
                                 <nb-tab tabTitle="{{'KPI Tuần' | translate | headtitlecase}}">

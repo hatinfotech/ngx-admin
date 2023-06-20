@@ -23,6 +23,8 @@ import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/co
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 // import { AgGridColumn } from '@ag-grid-community/angular';
 var CryptoJS = require("crypto-js");
 
@@ -395,14 +397,14 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         width: 110,
         filter: 'agTextColumnFilter',
         pinned: 'left',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Sku',
         field: 'Sku',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
@@ -424,7 +426,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         field: 'Brand',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -432,7 +434,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         field: 'WarehouseUnit',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -441,7 +443,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Nhóm',
@@ -449,7 +451,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Từ khóa',
@@ -457,7 +459,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
         width: 100,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
     ];
 
@@ -472,7 +474,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               field: 'Unit' + no,
               width: 150,
               filter: 'agTextColumnFilter',
-              cellRenderer: 'textRender',
+              cellRenderer: AgTextCellRenderer,
               // pinned: 'right',
             },
             {
@@ -480,8 +482,15 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               field: 'ConversionRatio' + no,
               width: 150,
               filter: 'agTextColumnFilter',
-              cellRenderer: 'textRender',
+              cellRenderer: AgTextCellRenderer,
               // pinned: 'right',
+            },
+            {
+              ...agMakeCurrencyColDef(this.cms),
+              headerName: 'Giá ' + no,
+              field: 'UnitPrice' + no,
+              // pinned: 'right',
+              width: 150,
             },
             {
               headerName: 'Mặc định bán ' + no,
@@ -556,7 +565,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               field: 'Property' + no,
               width: 150,
               filter: 'agTextColumnFilter',
-              cellRenderer: 'textRender',
+              cellRenderer: AgTextCellRenderer,
               // pinned: 'right',
             },
             {
@@ -564,7 +573,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
               field: 'PropertyValues' + no,
               width: 150,
               filter: 'agTextColumnFilter',
-              cellRenderer: 'textRender',
+              cellRenderer: AgTextCellRenderer,
               // pinned: 'right',
             },
           ]);
@@ -613,7 +622,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             width: 110,
             // cellStyle: { justifyContent: 'flex-end' },
             filter: 'agTextColumnFilter',
-            // cellRenderer: 'textRender',
+            // cellRenderer: AgTextCellRenderer,
             pinned: 'right',
             valueFormatter: (cell: ValueFormatterParams) => {
               return cell && cell.value && /\d+/.test(cell.value) && this.currencyPipe.transform(cell.value, 'VND') || cell?.value;
@@ -633,7 +642,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             width: 110,
             filter: 'agTextColumnFilter',
             pinned: 'right',
-            cellRenderer: 'textRender',
+            cellRenderer: AgTextCellRenderer,
           },
           {
             headerName: 'Message',
@@ -641,7 +650,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
             width: 150,
             filter: 'agTextColumnFilter',
             // pinned: 'right',
-            cellRenderer: 'textRender',
+            cellRenderer: AgTextCellRenderer,
           },
         ],
         {
@@ -1181,6 +1190,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
                   IsDefaultPurchase: newProduct['IsDefaultPurchase' + (r + 1)] && true || false,
                   IsAutoAdjustInventory: newProduct['IsAutoAdjustInventory' + (r + 1)] && true || false,
                   IsExpirationGoods: newProduct['IsExpirationGoods' + (r + 1)] && true || false,
+                  UnitPrice: newProduct['UnitPrice' + (r + 1)],
                 });
               }
             }
@@ -1311,19 +1321,20 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
       this.progressStatus = 'primary';
       if (updatePriceProductList.length > 0) {
         this.cms.toastService.show('Đang cập nhật giá mới', 'Cập nhật giá', { status: 'primary', duration: 30000 });
-        await this.apiService.putProgress('/sales/master-price-table-details', {}, updatePriceProductList.map(m => {
-          return {
-            MasterPriceTable: 'default',
-            Product: this.cms.getObjectId(m.Code),
-            ProductName: this.cms.getObjectId(m.Name),
-            Unit: this.cms.getObjectId(m.WarehouseUnit),
-            Price: m.SalesPrice,
-          };
-        }), progressInfo => {
-          console.log(progressInfo);
-          this.progress = progressInfo.progress;
-          this.progressLabel = progressInfo['item']['ProductName'] + ' (' + progressInfo.progress.toFixed(2) + '%)';
-        });
+        const priceUpdateData: any[] = [];
+        for (const updatePriceProduct of updatePriceProductList) {
+          for (const unitConversion of updatePriceProduct.UnitConversions) {
+            priceUpdateData.push({
+              MasterPriceTable: 'default',
+              Product: this.cms.getObjectId(updatePriceProduct.Code),
+              ProductName: this.cms.getObjectId(updatePriceProduct.Name),
+              Unit: this.cms.getObjectId(unitConversion.Unit),
+              UnitName: this.cms.getObjectText(unitConversion.Unit),
+              Price: unitConversion.UnitPrice,
+            });
+          }
+        }
+        await this.apiService.putPromise('/sales/master-price-table-details', { requestUpdatePrice: true }, priceUpdateData);
         this.progress = 0;
         for (const updatePriceProduct of updatePriceProductList) {
           const node = this.gridApi.getDisplayedRowAtIndex(updatePriceProduct.index);

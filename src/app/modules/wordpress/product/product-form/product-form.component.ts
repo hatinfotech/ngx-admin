@@ -15,6 +15,7 @@ import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRo
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 
 @Component({
   selector: 'ngx-product-form',
@@ -529,14 +530,14 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
       //   width: 110,
       //   filter: 'agTextColumnFilter',
       //   pinned: 'left',
-      //   cellRenderer: 'textRender',
+      //   cellRenderer: AgTextCellRenderer,
       // },
       {
         headerName: 'Sku',
         field: 'Sku',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
@@ -558,7 +559,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         field: 'Brand',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -566,7 +567,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         field: 'WarehouseUnit',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -575,7 +576,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'Nhóm',
@@ -583,7 +584,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         width: 200,
         filter: 'agTextColumnFilter',
         // pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
       {
         headerName: 'State',
@@ -591,7 +592,7 @@ export class WordpressProductFormComponent extends DataManagerFormComponent<AccB
         width: 100,
         filter: 'agTextColumnFilter',
         pinned: 'right',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
       },
     ];
   }

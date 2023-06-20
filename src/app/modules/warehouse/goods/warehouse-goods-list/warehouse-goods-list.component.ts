@@ -706,7 +706,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                   //           trimInput: true,
                   //           debounceMs: 1000,
                   //         },
-                  //         cellRenderer: 'textRender',
+                  //         cellRenderer: AgTextCellRenderer,
                   //         pinned: 'left',
                   //       },
                   //       {
@@ -831,7 +831,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                             trimInput: true,
                             debounceMs: 1000,
                           },
-                          cellRenderer: 'textRender',
+                          cellRenderer: AgTextCellRenderer,
                           pinned: 'left',
                         },
                         {
@@ -1024,7 +1024,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
                           trimInput: true,
                           debounceMs: 1000,
                         },
-                        cellRenderer: 'textRender',
+                        cellRenderer: AgTextCellRenderer,
                         pinned: 'left',
                       },
                       {

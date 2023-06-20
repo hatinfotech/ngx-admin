@@ -1,3 +1,4 @@
+import { AgDynamicListComponent } from './../../../general/ag-dymanic-list/ag-dymanic-list.component';
 import { CollaboratorAddonStrategyProductModel, CollaboratorAddonStrategyModel } from './../../../../models/collaborator.model';
 // import { Module, AllCommunityModules, GridApi, ColumnApi, IDatasource, IGetRowsParams, ColDef, RowNode, CellClickedEvent, CellDoubleClickedEvent, SuppressKeyboardEventParams, ICellRendererParams } from '@ag-grid-community/all-modules';
 import { CurrencyPipe } from '@angular/common';
@@ -21,6 +22,10 @@ import { ChangeDetectorRef } from '@angular/core';
 import { CollaboratorBasicStrategyProductFormComponent } from '../product-form/collaborator-basic-strategy-product-form.component';
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',
@@ -51,34 +56,38 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     /** AG-Grid */
     this.columnDefs = [
       {
+        ...agMakeSelectionColDef(this.cms),
+        headerName: 'STT',
+        field: 'Id',
+        valueGetter: 'node.data.Product',
+      },
+      {
+        ...agMakeImageColDef(this.cms),
         headerName: 'Hình',
         field: 'FeaturePicture',
         width: 100,
-        filter: 'agTextColumnFilter',
-        pinned: 'left',
-        autoHeight: true,
-        cellRenderer: 'imageRender',
       },
       {
         headerName: 'Sku',
         field: 'Sku',
         width: 100,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
-      {
-        headerName: 'ID',
-        width: 110,
-        valueGetter: 'node.data.Product',
-        cellRenderer: 'loadingCellRenderer',
-        sortable: false,
-      },
+      // {
+      //   headerName: 'ID',
+      //   width: 110,
+      //   valueGetter: 'node.data.Product',
+      //   cellRenderer: AgTextCellRenderer,
+      //   sortable: false,
+      // },
       {
         headerName: 'Tên sản phẩm',
         field: 'ProductName',
         width: 400,
         filter: 'agTextColumnFilter',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'left',
       },
       {
@@ -86,7 +95,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Unit',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -94,7 +103,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1CommissionRatio',
         width: 110,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -102,7 +111,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1WeeklyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -110,7 +119,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1MonthlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -118,7 +127,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1QuarterlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
@@ -126,64 +135,94 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         field: 'Level1YearlyAwardRatio',
         width: 150,
         filter: 'agTextColumnFilter',
-        cellRenderer: 'textRender',
+        cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
       {
-        headerName: 'Cài đặt',
-        field: 'id',
-        width: 130,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'btnCellRenderer',
-        cellRendererParams: {
-          icon: 'settings-2-outline',
-          status: 'primary',
-          label: 'Cài đặt',
-          clicked: (params: { node: IRowNode, data: CollaboratorAddonStrategyProductModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
-
-            // Setting for product
-            this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
-              context: {
-                data: [
-                  params.data,
-                ],
-                onDialogSave(newData) {
-                  console.log(newData);
-                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                  currentNode.setData(newData[0]);
-                },
-              }
-            });
-
-            return false;
-
+        ...agMakeCommandColDef(null, this.cms, false, (params) => {
+          this.gridApi.applyTransaction({ remove: [params.node.data] });
+        }, false, [
+          {
+            name: 'setting',
+            title: 'Cài đặt',
+            icon: 'settings-2-outline',
+            status: 'primary',
+            outline: false,
+            action: async (params) => {
+              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+                context: {
+                  data: [
+                    params.node.data,
+                  ],
+                  onDialogSave(newData) {
+                    console.log(newData);
+                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+                    currentNode.setData(newData[0]);
+                  },
+                }
+              });
+              return true;
+            }
           },
-        },
+        ]),
+        // width: 123,
+        headerName: 'Lệnh',
       },
-      {
-        headerName: 'Gở',
-        field: 'id',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        pinned: 'right',
-        cellRenderer: 'btnCellRenderer',
-        cellRendererParams: {
-          icon: 'minus-circle-outline',
-          status: 'danger',
-          label: 'Gở',
-          clicked: (params: { node: RowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
-            // alert(`${field} was clicked`);
-            console.log(params);
+      // {
+      //   headerName: 'Cài đặt',
+      //   field: 'id',
+      //   width: 130,
+      //   filter: 'agTextColumnFilter',
+      //   pinned: 'right',
+      //   cellRenderer: 'btnCellRenderer',
+      //   cellRendererParams: {
+      //     icon: 'settings-2-outline',
+      //     status: 'primary',
+      //     label: 'Cài đặt',
+      //     click: (params: { node: IRowNode, data: CollaboratorAddonStrategyProductModel, api: GridApi } & { [key: string]: any }) => {
+      //       // alert(`${field} was clicked`);
+      //       console.log(params);
 
-            // Remove row
-            params.api.applyTransaction({ remove: [params.node.data] });
-            return false;
-          },
-        },
-      },
+      //       // Setting for product
+      //       this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+      //         context: {
+      //           data: [
+      //             params.data,
+      //           ],
+      //           onDialogSave(newData) {
+      //             console.log(newData);
+      //             let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+      //             currentNode.setData(newData[0]);
+      //           },
+      //         }
+      //       });
+
+      //       return false;
+
+      //     },
+      //   },
+      // },
+      // {
+      //   headerName: 'Gở',
+      //   field: 'id',
+      //   width: 100,
+      //   filter: 'agTextColumnFilter',
+      //   pinned: 'right',
+      //   cellRenderer: 'btnCellRenderer',
+      //   cellRendererParams: {
+      //     icon: 'minus-circle-outline',
+      //     status: 'danger',
+      //     label: 'Gở',
+      //     clicked: (params: { node: RowNode, data: WarehouseInventoryAdjustNoteDetailModel, api: GridApi } & { [key: string]: any }) => {
+      //       // alert(`${field} was clicked`);
+      //       console.log(params);
+
+      //       // Remove row
+      //       params.api.applyTransaction({ remove: [params.node.data] });
+      //       return false;
+      //     },
+      //   },
+      // },
     ];
 
     this.pagination = false;
@@ -941,5 +980,97 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
 
     return false;
+  }
+
+  onGridInit(component: AgDynamicListComponent<any>) {
+    const $this = this;
+    let actionButtonList = component.actionButtonList;
+    actionButtonList = actionButtonList.filter(f => f.name != 'choose');
+    actionButtonList.unshift({
+      type: 'button',
+      name: 'delete',
+      title: 'Gở sản phẩm',
+      status: 'danger',
+      label: 'Gở',
+      iconPack: 'eva',
+      icon: 'minus-square-outline',
+      size: 'medium',
+      click: (event) => {
+        const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
+        $this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
+
+        return true;
+      }
+    });
+    actionButtonList.unshift({
+      type: 'button',
+      name: 'add',
+      title: 'Thêm sản phẩm',
+      status: 'success',
+      label: 'Thêm sản phẩm',
+      iconPack: 'eva',
+      icon: 'plus-square-outline',
+      size: 'medium',
+      click: (event) => {
+        // const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
+
+        this.cms.openDialog(CollaboratorProductListComponent, {
+          context: {
+            onDialogChoose(chooseItems) {
+              console.log(chooseItems);
+              const newRowNodeTrans = $this.gridApi.applyTransaction({
+                add: chooseItems.map(m => ({
+                  id: m.Product,
+                  text: m.ProductName,
+                  Product: m.Product,
+                  ProductName: m.ProductName,
+                  Sku: m.Sku,
+                  Unit: m.Unit,
+                  Pictures: m.Pictures,
+                  FeaturePicture: m.FeaturePicture,
+                }))
+              });
+              console.log('New Row Node Trans: ', newRowNodeTrans);
+            },
+          }
+        });
+
+        return true;
+      }
+    });
+
+    actionButtonList.unshift({
+      type: 'button',
+      name: 'settings',
+      title: 'Cấu hình',
+      status: 'primary',
+      label: 'Cài đặt',
+      iconPack: 'eva',
+      icon: 'settings-2-outline',
+      size: 'medium',
+      click: (event) => {
+        const selectedNodes: IRowNode[] = $this.gridApi.getSelectedNodes();
+
+        // Setting for product
+        if (selectedNodes && selectedNodes.length > 0) {
+          this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+            context: {
+              data: selectedNodes.map(m => m.data),
+              onDialogSave(newData) {
+                console.log(newData);
+                for (const itemData of newData) {
+                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
+                  currentNode.setData(itemData);
+                }
+              },
+            }
+          });
+        }
+
+        return true;
+      }
+    });
+
+    component.actionButtonList = actionButtonList;
   }
 }

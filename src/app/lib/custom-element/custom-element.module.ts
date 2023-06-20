@@ -37,7 +37,7 @@ import { AgButtonsCellRenderer } from './ag-list/cell/buttons.component';
 import { AgCurrencyCellRenderer } from './ag-list/cell/currency.component';
 import { AgDateCellRenderer } from './ag-list/cell/date.component';
 import { AgIdCellRenderer } from './ag-list/cell/id.component';
-import { AgTagsCellRenderer } from './ag-list/cell/tags.component';
+import { AgTagsCellRenderer } from './ag-list/cell/tags/tags.component';
 import { AgTextCellRenderer } from './ag-list/cell/text.component';
 import { AgImageCellRenderer } from './ag-list/cell/image.component';
 import { AgAccCurrencyCellRenderer } from './ag-list/cell/acc-currency.component';
@@ -45,6 +45,7 @@ import { AgImagesCellRenderer } from './ag-list/cell/images.component';
 import { AgNumberCellInput } from './ag-list/cell/input/number.component';
 import { AgNumberCellRenderer } from './ag-list/cell/number.component';
 import { AgCurrencyCellInput } from './ag-list/cell/input/curency.component';
+import { TagComponent } from './my-components/tag/tag.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 @NgModule({
@@ -87,7 +88,7 @@ import { AgCurrencyCellInput } from './ag-list/cell/input/curency.component';
     CustomHeader,
     PaginationControlComponent,
     SmartTableRelativeVouchersComponent,
-    
+    TagComponent,
     // AG-Grid custoemr component
     // - Cell
     AgTextCellRenderer,
@@ -191,6 +192,7 @@ import { AgCurrencyCellInput } from './ag-list/cell/input/curency.component';
     SmartTableAccCurrencyComponent,
     PaginationControlComponent,
     SmartTableRelativeVouchersComponent,
+    TagComponent,
   ],
   providers: [
     { provide: CurrencyPipe, useValue: {} },

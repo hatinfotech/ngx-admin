@@ -16,6 +16,11 @@ import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorCommissionDetailComponent } from './collaboartor-commission-detail/collaboartor-commission-detail.component';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { IGetRowsParams } from 'ag-grid-community';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { ColDef } from '@ag-grid-community/core';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { AgNumberCellRenderer } from '../../../../lib/custom-element/ag-list/cell/number.component';
+import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
 
 @Component({
   selector: 'ngx-collaborator-commission-form',
@@ -77,19 +82,21 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     },
   };
 
-  commissionColumnDefs = [
+  commissionColumnDefs: ColDef[] = [
     {
-      headerName: '#',
-      width: 120,
+      ...agMakeSelectionColDef(this.cms),
+      headerName: 'STT',
+      // width: 52,
+      field: 'Id',
       valueGetter: 'node.data.Product',
-      cellRenderer: 'loadingCellRenderer',
-      sortable: false,
+      // cellRenderer: 'loadingCellRenderer',
+      // sortable: true,
       // pinned: 'left',
-      checkboxSelection: true,
     },
     {
       headerName: 'Sản phẩm',
       field: 'Description',
+      cellRenderer: AgTextCellRenderer,
       width: 300,
       sortable: false,
       filter: 'agTextColumnFilter',
@@ -98,6 +105,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     {
       headerName: 'ĐVT',
       field: 'ProductUnit',
+      cellRenderer: AgTextCellRenderer,
       width: 120,
       sortable: false,
       filter: 'agTextColumnFilter',
@@ -106,6 +114,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     {
       headerName: 'SL bán',
       field: 'SumOfQuantity',
+      cellRenderer: AgNumberCellRenderer,
       width: 100,
       sortable: false,
       filter: 'agTextColumnFilter',
@@ -114,6 +123,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     {
       headerName: 'Doanh số',
       field: 'SumOfNetRevenue',
+      cellRenderer: AgCurrencyCellRenderer,
       width: 150,
       sortable: false,
       filter: 'agTextColumnFilter',
@@ -122,6 +132,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     {
       headerName: 'Chiết khấu',
       field: 'CommissionAmount',
+      cellRenderer: AgCurrencyCellRenderer,
       width: 150,
       sortable: false,
       filter: 'agTextColumnFilter',
@@ -129,19 +140,19 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     },
   ]
 
-  commissionData = {
-    rowCount: null,
-    getRows: async (getRowParams: IGetRowsParams) => {
-      this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.cms.getObjectId(this.array.controls[0].get('Page').value), publisher: this.cms.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
-        let lastRow = -1;
-        if (rs.length < 40) {
-          lastRow = getRowParams.startRow + rs.length;
-        }
-        getRowParams.successCallback(rs, lastRow);
-        return rs;
-      });
-    },
-  };
+  // commissionData = {
+  //   rowCount: null,
+  //   getRows: async (getRowParams: IGetRowsParams) => {
+  //     this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.cms.getObjectId(this.array.controls[0].get('Page').value), publisher: this.cms.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
+  //       let lastRow = -1;
+  //       if (rs.length < 40) {
+  //         lastRow = getRowParams.startRow + rs.length;
+  //       }
+  //       getRowParams.successCallback(rs, lastRow);
+  //       return rs;
+  //     });
+  //   },
+  // };
 
   onGridChange(event, data) {
 
@@ -263,6 +274,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     return data;
   }
 
+  commissionData = [];
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
 
     if (!this.isProcessing) {
@@ -287,8 +299,11 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
       }
     }
 
-    setTimeout(() => {
-      this.refreshAllTab(formGroup);
+    setTimeout(async () => {
+      // this.refreshAllTab(formGroup);
+      this.commissionData = await this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempCommissionReport: true, limit: 'nolimit', page: this.cms.getObjectId(this.array.controls[0].get('Page').value), publisher: this.cms.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
+        return rs;
+      });
     }, 500);
   }
 

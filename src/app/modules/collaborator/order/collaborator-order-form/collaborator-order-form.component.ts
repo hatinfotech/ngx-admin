@@ -196,6 +196,23 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     }
   }];
 
+
+
+  select2OptionForPublisher = {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', {
+      includeIdText: true,
+      includeGroups: true,
+      sort_SearchRank: 'desc',
+      eq_Groups: '[PUBLISHER]',
+    }, {
+      placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
+        item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        return item;
+      }
+    }),
+    // minimumInputLength: 1,
+  };
+
   // select2ContactOption = {
   //   placeholder: 'Chọn liên hệ...',
   //   allowClear: true,
@@ -738,22 +755,22 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // DirectReceiverName: [''],
       // PaymentStep: [''],
       // PriceTable: [''],
-      Shipper: [''],
-      ShipperName: [''],
-      ShipperPhone: [''],
-      ShipperEmail: [''],
-      ShipperAddress: [''],
+      // Shipper: [''],
+      // ShipperName: [''],
+      // ShipperPhone: [''],
+      // ShipperEmail: [''],
+      // ShipperAddress: [''],
       Publisher: [''],
       PublisherName: [''],
       PublisherPhone: [''],
       PublisherEmail: [''],
       PublisherAddress: [''],
-      Province: ['', Validators.required],
-      District: ['', Validators.required],
-      Ward: ['', Validators.required],
-      DeliveryAddress: ['', Validators.required],
-      DeliveryCost: [null],
-      OriginDeliveryCost: [null],
+      Province: [],
+      District: [],
+      Ward: [],
+      DeliveryAddress: [],
+      DeliveryCost: [],
+      OriginDeliveryCost: [],
       DateOfOrder: [new Date(), Validators.required],
       // DateOfDelivery: [''],
       Title: ['', Validators.required],
@@ -763,6 +780,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       RequireInvoice: [false],
       _total: [''],
       RelativeVouchers: [''],
+      State: [],
       Details: this.formBuilder.array([]),
     });
     if (data) {
@@ -965,27 +983,27 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     }
   }
 
-  onShipperChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-    // console.info(item);
+  // onShipperChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+  //   // console.info(item);
 
-    if (!this.isProcessing) {
-      if (selectedData && !selectedData['doNotAutoFill']) {
+  //   if (!this.isProcessing) {
+  //     if (selectedData && !selectedData['doNotAutoFill']) {
 
-        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
-        if (selectedData.Code) {
-          formGroup.get('ShipperName').setValue(selectedData.Name);
-          // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
-          // formGroup.get('ObjectEmail').setValue(selectedData.Email);
-          // formGroup.get('ObjectAddress').setValue(selectedData.Address);
+  //       // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+  //       if (selectedData.Code) {
+  //         formGroup.get('ShipperName').setValue(selectedData.Name);
+  //         // formGroup.get('ObjectPhone').setValue(selectedData.Phone);
+  //         // formGroup.get('ObjectEmail').setValue(selectedData.Email);
+  //         // formGroup.get('ObjectAddress').setValue(selectedData.Address);
 
-          if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ShipperPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ShipperPhone').setValue(selectedData['Phone']);
-          if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ShipperEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ShipperEmail').setValue(selectedData['Email']);
-          if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ShipperAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ShipperAddress').setValue(selectedData['Address']);
+  //         if (selectedData['Phone'] && selectedData['Phone']['restricted']) formGroup.get('ShipperPhone')['placeholder'] = selectedData['Phone']['placeholder']; else formGroup.get('ShipperPhone').setValue(selectedData['Phone']);
+  //         if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('ShipperEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('ShipperEmail').setValue(selectedData['Email']);
+  //         if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('ShipperAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('ShipperAddress').setValue(selectedData['Address']);
 
-        }
-      }
-    }
-  }
+  //       }
+  //     }
+  //   }
+  // }
 
   onContactChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
     // console.info(item);
@@ -1209,33 +1227,37 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   //   this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
   // }
 
-  saveAndClose() {
+  saveAndClose(formItem?: FormGroup) {
     // const createMode = !this.isEditMode;
-    this.save().then(rs => {
-      // this.goback();
-      // if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
-      //   this.preview(this.makeId(rs[0]), 'list', 'print');
-      // }
-      this.cms.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
-        {
-          label: 'Trở về',
-          status: 'basic',
-          action: () => {
+    if (this.cms.getObjectId(formItem?.value.State) == 'PROCESSING') {
+      this.save().then(rs => {
+        // this.goback();
+        // if (this.previewAfterSave || (this.previewAfterCreate && createMode)) {
+        //   this.preview(this.makeId(rs[0]), 'list', 'print');
+        // }
+        this.cms.showDialog('Chốt đơn', 'Bạn có muốn chuyển sang trạng thái chốt đơn ?', [
+          {
+            label: 'Trở về',
+            status: 'basic',
+            action: () => {
 
-          }
-        },
-        {
-          label: 'Chốt đơn',
-          status: 'success',
-          action: () => {
-            this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
-              this.cms.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
-              this.goback();
-            });
-          }
-        },
-      ])
-    });
+            }
+          },
+          {
+            label: 'Chốt đơn',
+            status: 'success',
+            action: () => {
+              this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
+                this.cms.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
+                this.goback();
+              });
+            }
+          },
+        ])
+      });
+    } else {
+      this.save().then(rs => this.goback());
+    }
     return false;
   }
 

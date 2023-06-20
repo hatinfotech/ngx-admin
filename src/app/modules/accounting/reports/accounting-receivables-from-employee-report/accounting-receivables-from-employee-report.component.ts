@@ -263,7 +263,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
 
       // params['reportReceivablesFromEmployee'] = true;
       params['includeColumnHeader'] = true;
-      params['eq_Accounts'] = '334';
+      params['eq_Accounts'] = '3341,3348';
       params['groupBy'] = 'Object';
       params['sort_TailCredit'] = 'asc';
 
@@ -303,7 +303,7 @@ export class AccountingReceivablesFromEmployeeReportComponent extends ServerData
       context: {
         inputMode: 'dialog',
         object: rowData.Object,
-        accounts: ['334'],
+        accounts: ['3341,3348'],
         fromDate: null,
         toDate: null,
         report: 'reportDetailByAccountAndObject',
