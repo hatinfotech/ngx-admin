@@ -1,5 +1,5 @@
-import { CashVoucherModel } from './../../../../models/accounting.model';
-import { CashReceiptVoucherFormComponent } from './../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
+import { CashVoucherModel } from '../../../../models/accounting.model';
+import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';

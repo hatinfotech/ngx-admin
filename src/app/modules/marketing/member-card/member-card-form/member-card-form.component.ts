@@ -1,8 +1,8 @@
-import { ProductUnitModel } from './../../../../models/product.model';
+import { ProductUnitModel } from '../../../../models/product.model';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { ChatRoomModel } from './../../../../models/chat-room.model';
-import { SalesMasterPriceTableModel, SalesPriceReportModel } from './../../../../models/sales.model';
-import { PriceReportModel } from './../../../../models/price-report.model';
+import { ChatRoomModel } from '../../../../models/chat-room.model';
+import { SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
+import { PriceReportModel } from '../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { environment } from '../../../../../environments/environment';

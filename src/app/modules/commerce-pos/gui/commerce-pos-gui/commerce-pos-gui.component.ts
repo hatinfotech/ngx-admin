@@ -3512,7 +3512,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             action: async () => { return true; },
           },
           {
-            label: 'Phát hành',
+            label: 'Cấp phát',
             icon: 'npm-outline',
             status: 'success',
             keyShortcut: 'Enter',
@@ -3526,16 +3526,16 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
                   // ids = [...new Set(ids)];
                   this.loading = true;
                   if (this.cms.getObjectId(orderForm.value.Object)) {
-                    await this.apiService.putPromise('/marketing/member-cards/' + memberCard, { distribute: true, contact: this.cms.getObjectId(orderForm.value.Object) }, [{ Code: memberCard }]);
+                    await this.apiService.putPromise('/marketing/member-cards/' + memberCard, { assign: true, contact: this.cms.getObjectId(orderForm.value.Object) }, [{ Code: memberCard }]);
                     // toastRef.close();
-                    toastRef = this.cms.showToast('Thẻ thành viên đã được phát hành cho khách hàng ' + this.cms.getObjectText(orderForm.value.Object), 'Phát hành thẻ thành công', { ...this.toastDefaultConfig, status: 'success', duration: 10000 });
+                    toastRef = this.cms.showToast('Thẻ thành viên đã được cấp phát cho khách hàng ' + this.cms.getObjectText(orderForm.value.Object), 'Cấp phát thẻ thành công', { ...this.toastDefaultConfig, status: 'success', duration: 10000 });
                   }
                   this.loading = false;
                 } catch (err) {
                   console.error(err);
                   this.loading = false;
                   toastRef.close();
-                  toastRef = this.cms.showToast('Chưa thể phát hành thẻ thành viên', 'Lỗi phát hành thẻ thành viên', { ...this.toastDefaultConfig, status: 'danger', duration: 30000 });
+                  toastRef = this.cms.showToast('Chưa thể cấp phát thẻ thành viên', 'Lỗi cấp phát thẻ thành viên', { ...this.toastDefaultConfig, status: 'danger', duration: 30000 });
                 }
               }
 

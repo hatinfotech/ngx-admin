@@ -1,0 +1,91 @@
+@import "../../../../../assets/style/print.css";
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+  #print-area {
+    page-break-after: initial;
+  }
+}
+.blabel {
+  border: 1px #000 dashed;
+  float: left;
+  page-break-after: always;
+  height: 30mm;
+  width: 50mm;
+  color: #000;
+  font-weight: normal;
+  overflow: hidden;
+  padding: 1mm;
+}
+.blabel .info {
+  clear: both;
+  overflow: hidden;
+  line-height: 2.2mm;
+  font-size: 2.2mm !important;
+  font-weight: normal;
+  max-height: 6.7mm;
+  margin-top: 0.4mm;
+  margin-bottom: 0.4mm;
+}
+.blabel .probox-link {
+  clear: both;
+  overflow: hidden;
+  line-height: 2.2mm;
+  font-size: 2.2mm !important;
+  font-weight: normal;
+  max-height: 6.7mm;
+  margin-top: 0.4mm;
+  margin-bottom: 0.4mm;
+  word-break: break-all;
+  inline-size: 170px;
+}
+.blabel .register-info {
+  line-height: 1.8mm;
+  font-size: 1.9mm !important;
+  font-weight: bold;
+}
+.blabel .access-number {
+  line-height: 2.2mm;
+  font-size: 2.2mm !important;
+  font-weight: normal;
+  margin-bottom: 0.5mm;
+  padding-top: 0.7mm;
+}
+.blabel .find-order {
+  line-height: 22px;
+}
+.blabel .product-price {
+  line-height: 2.2mm;
+  font-size: 2.2mm !important;
+  font-weight: bold;
+  margin-bottom: 0.5mm;
+  padding-top: 0.7mm;
+}
+.blabel .sku {
+  line-height: 1.8mm;
+  font-size: 2mm !important;
+  font-weight: normal;
+  white-space: nowrap;
+}
+.blabel .section-break {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px dashed black;
+}
+.bar-code {
+  height: 3.7mm;
+}
+.qr-code {
+  height: 9mm;
+  width: 9mm;
+}
+.page-break {
+  clear: left;
+  display: block;
+  page-break-after: always;
+}

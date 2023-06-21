@@ -84,9 +84,46 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
       });
 
       this.actionButtonList.unshift({
+        name: 'distribute',
+        label: 'Phát hành thẻ',
+        title: 'Phát hành các thẻ được chọn',
+        status: 'danger',
+        size: 'medium',
+        icon: 'cloud-upload-outline',
+        click: (event, option) => {
+          this.cms.showDialog('Phát hành thẻ', 'Bạn có muốn phát hành '+this.selectedIds.length+' thẻ được chọn ?', [
+            {
+              label: 'Trở về',
+              status: 'basic',
+              action: () => {
+                
+                return true;
+              }
+            },
+            {
+              label: 'Phát hành',
+              status: 'danger',
+              action: () => {
+                this.loading = true;
+                this.apiService.putPromise('/marketing/member-cards', { distribute: true, id: this.selectedIds }, this.selectedIds.map(m => ({ Code: m }))).then(rs => {
+                  this.loading = false;
+                  this.refreshItems(this.selectedIds);
+                  this.cms.showToast('Thẻ thành viên đã được phát hành !', 'Phát hành thẻ thành công', { status: 'success', duration: 10000 });
+                }).catch(err => {
+                  this.loading = false;
+                });
+                return true;
+              }
+            },
+          ]);
+          return true;
+        }
+      });
+
+      this.actionButtonList.unshift({
         type: 'button',
         name: 'generateMemberCards',
-        status: 'danger',
+        status: 'success',
         label: 'Khởi tạo ther',
         title: 'Khởi tạo thẻ hàng loạt',
         size: 'medium',
@@ -159,7 +196,7 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
           width: 100,
           valueGetter: 'node.data.Id',
           // sortingOrder: ['desc', 'asc'],
-          initialSort: 'desc',
+          initialSort: 'asc',
         },
         {
           headerName: 'ID Thẻ',
@@ -179,8 +216,8 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
           cellRenderer: AgDateCellRenderer,
         },
         {
-          headerName: 'Ngày phát hành',
-          field: 'DistributedDate',
+          headerName: 'Ngày cấp phát',
+          field: 'Assigned',
           width: 200,
           filter: 'agDateColumnFilter',
           filterParams: {
@@ -208,6 +245,16 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
               allowClear: true,
             }
           },
+        },
+        {
+          headerName: 'Ngày phát hành',
+          field: 'DistributedDate',
+          width: 200,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
         },
         {
           headerName: 'Người tạo',

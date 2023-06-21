@@ -1,0 +1,59 @@
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+    <nb-card [nbSpinner]="loading" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [option]="{controlOption: {}}" [size]="size" [icon]="favicon" [title]="(title | translate:{definition: '', action: cms.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <!-- <nb-card-header>
+            <div class="row">
+                <div class="col-sm-12">
+                    <ngx-form-group [formGroup]="filter" name="Product" label="Lọc theo sản phẩm" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                        <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProducts" [data]="productList"></ngx-select2>
+                    </ngx-form-group>
+                </div>
+            </div>
+        </nb-card-header> -->
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area" [formGroup]="choosedForms" [formGroup]="choosedForms">
+                <div class="member-card-wrap" style="
+                width: calc(50% - 2px); 
+                border: 1ox solid #000;
+                text-align: left;
+                float: left;
+                position: relative;
+                border: #000 1px dashed;
+                page-break-inside: avoid;
+                " *ngFor="let item of this.choosedForms.controls; let i = index;" [formGroup]="item">
+                    <div class="member-card" style="padding: 0.5cm;">
+                        <div style="display: flex;">
+                            <div style="display: flex; align-items: center; flex: 1">
+                                <div>
+                                    <img class="voucher-logo-image" [src]="registerInfo.posBillLogo" style="height: 35px !important; margin-right: 5px;"><br>
+                                    <div style="text-align: left; font-weight: bold; font-size: 16px;">THẺ THÀNH VIÊN</div>
+                                </div>
+                            </div>
+                            <div style="text-align: right; flex: 1">
+                                <ngx-barcode [bc-value]="item.value.Code" [bc-display-value]="false" [bc-format]="'CODE128'" [bc-height]="20" 
+                                [bc-width]="1" [bc-margin]="0" [bc-margin-top]="0" [bc-margin-bottom]="0" [bc-margin-left]="0" [bc-text-align]="'right'" [bc-text-position]="'bottom'"
+                                [bc-margin-right]="0" bc-element-type="img"></ngx-barcode>
+                                <div style="text-align: right;">{{item.value.Code}}</div>
+                            </div>
+                        </div>
+                        <div style="text-align: left;" [innerHTML]="registerInfo.voucherInfo"></div>
+                    </div>
+                </div>
+                <div style="clear:both"></div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton hero status="primary" (click)="print(0)">
+                    <nb-icon pack="eva" icon="printer"></nb-icon>{{'Common.print' | translate | headtitlecase}}
+                </button>
+                <ngx-pagination-control [total]="totalPage" [page]="page" (pageChange)="onPageChange($event)" [isProcessing]="loading"></ngx-pagination-control>
+                <button nbButton hero status="danger" (click)="close()">
+                    <nb-icon pack="eva" icon="close"></nb-icon>{{'Common.close' | translate | headtitlecase}}
+                </button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>
