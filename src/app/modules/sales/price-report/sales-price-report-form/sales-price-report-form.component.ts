@@ -27,9 +27,6 @@ import { ProductUnitFormComponent } from '../../../admin-product/unit/product-un
 import { DatePipe } from '@angular/common';
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 import { BusinessModel } from '../../../../models/accounting.model';
-import { PurchaseProductModel } from '../../../../models/purchase.model';
-
-
 
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {

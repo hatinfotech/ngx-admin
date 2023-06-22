@@ -1146,7 +1146,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 // get purchase order
                 const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/collaborator/orders/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                if (['TRANSPORT'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
                   this.cms.toastService.show(this.cms.translateText('Đơn hàng chưa chốt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }

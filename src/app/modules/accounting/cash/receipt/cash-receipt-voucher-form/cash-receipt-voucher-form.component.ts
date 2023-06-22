@@ -622,15 +622,18 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       const details = this.getDetails(formGroup);
       // get purchase order
       let refVoucher;
+      let totalMoney = 0;
       switch (relativeVoucherType) {
         case 'SALES':
           refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/sales-vouchers/' + relativeVoucher.Code, { includeObject: true }).then(rs => rs[0]);
+          totalMoney = refVoucher.Amount;
           if (this.cms.getObjectId(refVoucher.State) != 'APPROVED') {
             this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
             return false;
           }
         case 'CLBRTORDER':
           refVoucher = await this.apiService.getPromise<CollaboratorOrderModel[]>('/collaborator/orders/' + relativeVoucher.Code, { includeObject: true }).then(rs => rs[0]);
+          totalMoney = refVoucher.Total;
           if (this.cms.getObjectId(refVoucher.State) == 'NOTJUSTAPPROVED' || this.cms.getObjectId(refVoucher.State) == 'UNRECORDED') {
             this.cms.toastService.show(this.cms.translateText('Đơn hàng CTV chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
             return false;
@@ -650,9 +653,9 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
           return false;
         }
       } else {
-        delete refVoucher.Id;
-        delete refVoucher.Code;
-        formGroup.patchValue({ ...refVoucher, Id: null, Details: [] });
+        // delete refVoucher.Id;
+        // delete refVoucher.Code;
+        formGroup.patchValue({ ...refVoucher, Id: null, Code: null, Details: [] });
         formGroup.get('Description').patchValue('Thu tiền cho ' + refVoucher.Title);
         details.clear();
       }
@@ -672,10 +675,10 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       // }
       const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
         AccountingBusiness: 'RECEIPTCUSTOMERDEBT',
-        Description: refVoucher.Title,
+        Description: 'Thu tiền: ' + refVoucher.Title + ' (' + refVoucher.Code + ')',
         DebitAccount: '1111',
         CreditAccount: '131',
-        Amount: 0,
+        Amount: totalMoney || 0,
         Id: null,
       });
       details.push(newDtailFormGroup);

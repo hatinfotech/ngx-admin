@@ -271,7 +271,7 @@
                                                             </div>
                                                             <div class="col-lg-8 col-md-8 col-sm-9 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="trie" [touchedValidate]="false" [customIcons]="getCustomIcons(i + ic)" [option]="{parentForm: formItem}">
-                                                                    <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem, detail)"></ngx-select2>
+                                                                    <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem)"></ngx-select2>
                                                                 </ngx-form-group>
                                                             </div>
                                                         </div>
@@ -285,7 +285,7 @@
                                                             </div>
                                                             <div class="col-lg-2 col-md-2 col-sm-2 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                                 <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Voucher.unit" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false" [customIcons]="unitCustomIcons">
-                                                                    <ngx-select2 formControlName="Unit" [data]="detail.get('Unit')['UnitList'] || unitList" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event, formItem)"></ngx-select2>
+                                                                    <ngx-select2 formControlName="Unit" [data]="detail['UnitList'] || unitList" [select2Option]="select2OptionForUnit" (selectChange)="onSelectUnit(detail, $event, formItem)"></ngx-select2>
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-4 col-md-4 col-sm-4 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">

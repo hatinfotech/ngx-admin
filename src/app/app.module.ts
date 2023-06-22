@@ -322,9 +322,9 @@ import { MasterPriceTableUpdateNotePrintComponent } from './modules/sales/master
 import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
 import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 import { WarehouseDetailByObjectReportAgComponent } from './modules/warehouse/reports/detail-by-object-report-ag/detail-by-object-report-ag.component';
-import { MktMemberCardListComponent } from './modules/marketing/sales-voucher/member-card-list/member-card-list.component';
-import { MktMemberCardFormComponent } from './modules/marketing/sales-voucher/member-card-form/member-card-form.component';
-import { MktMemberCardPrintComponent } from './modules/marketing/sales-voucher/member-card-print/member-card-print.component';
+import { MktMemberCardListComponent } from './modules/marketing/member-card/member-card-list/member-card-list.component';
+import { MktMemberCardFormComponent } from './modules/marketing/member-card/member-card-form/member-card-form.component';
+import { MktMemberCardPrintComponent } from './modules/marketing/member-card/member-card-print/member-card-print.component';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -855,7 +855,7 @@ export class AppModule {
     state: 'PROCESSING',
     label: 'Common.processing',
     confirmLabel: 'Common.process',
-    status: 'primary',
+    status: 'danger',
     outline: false,
     confirmTitle: 'Common.processingConfirmTitle',
     confirmText: 'Common.processedConfirmText',
@@ -987,6 +987,17 @@ export class AppModule {
     responseTitle: 'Common.deployed',
     responseText: 'Common.deployedSuccess',
   };
+  static deployedState: ProcessMap = {
+    state: 'DEPLOYED',
+    label: 'Đã triển khai',
+    confirmLabel: 'Hoàn tất triển khai',
+    status: 'primary',
+    outline: false,
+    confirmTitle: 'Hoàn tất triển khai',
+    confirmText: 'Bạn có muốn hoàn tất triển khai ?',
+    responseTitle: 'Hoàn tất triển khai',
+    responseText: 'Đã hoàn tất triển khai !',
+  };
   static depploymentedState: ProcessMap = {
     state: 'DEPLOYMENTED',
     label: 'Common.deployed',
@@ -1028,12 +1039,23 @@ export class AppModule {
     state: 'DISTRIBUTED',
     label: 'Đã phát hành',
     confirmLabel: 'Bạn có muốn phát hành',
-    status: 'success',
+    status: 'info',
     outline: true,
     confirmTitle: 'Bạn có muốn phát hành',
     confirmText: 'Bạn có muốn phát hành',
     responseTitle: 'Đã phát hành',
     responseText: 'Đã phát hành',
+  };
+  static assignedState: ProcessMap = {
+    state: 'ASSIGNED',
+    label: 'Đã cấp phát',
+    confirmLabel: 'Bạn có muốn cấp phát',
+    status: 'success',
+    outline: true,
+    confirmTitle: 'Bạn có muốn cấp phát',
+    confirmText: 'Bạn có muốn cấp phát',
+    responseTitle: 'Đã cấp phát',
+    responseText: 'Đã cấp phát',
   };
   static notJustDistributedState: ProcessMap = {
     state: 'NOTJUSTDISTRIBUTED',
@@ -1743,6 +1765,14 @@ export class AppModule {
       },
       "DEPLOYMENT": {
         ...AppModule.depploymentState,
+        nextState: 'DEPLOYED',
+        nextStates: [
+          AppModule.deployedState,
+          AppModule.unrecordedState,
+        ],
+      },
+      "DEPLOYED": {
+        ...AppModule.deployedState,
         nextState: 'COMPLETED',
         nextStates: [
           AppModule.completeState,
@@ -1869,6 +1899,13 @@ export class AppModule {
     memberCard: {
       "DISTRIBUTED": {
         ...AppModule.distributedState,
+        nextState: 'ASSIGNED',
+        nextStates: [
+          AppModule.lockedState
+        ],
+      },
+      "ASSIGNED": {
+        ...AppModule.assignedState,
         nextState: 'LOCKED',
         nextStates: [
           AppModule.lockedState

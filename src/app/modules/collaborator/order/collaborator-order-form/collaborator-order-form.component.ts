@@ -13,7 +13,7 @@ import { ChatRoomMemberModel, ChatRoomModel } from '../../../../models/chat-room
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportModel, SalesPriceReportDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -300,50 +300,65 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   select2OptionForProduct = {
-    placeholder: 'Chọn Hàng hoá/dịch vụ...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    tags: false,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-    ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/collaborator/product-subscriptions', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
-      // },
-      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
-        console.log(settings);
-        const params = settings.data;
-        this.apiService.getPromise('/collaborator/products', {
-          includeIdText: true,
-          limit: 40,
-          includeUnit: false,
-          includeSubscribed: true,
-          includePrice: true,
-          'search': params['term'],
-          page: this.collaboratorService.currentpage$?.value,
-          sort_SearchRank: 'desc',
-        }).then(rs => {
-          success(rs);
-        }).catch(err => {
-          console.error(err);
-          failure();
-        });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data.map(product => {
-            product['text'] = `${product['text']} - ${product['id']}`;
-            return product;
-          })
-        };
-      },
-    },
+    // placeholder: 'Chọn Hàng hoá/dịch vụ...',
+    // allowClear: true,
+    // width: '100%',
+    // dropdownAutoWidth: true,
+    // minimumInputLength: 0,
+    // tags: false,
+    // keyMap: {
+    //   id: 'Code',
+    //   text: 'Name',
+    // },
+    // ajax: {
+    //   // url: params => {
+    //   //   return this.apiService.buildApiUrl('/collaborator/product-subscriptions', { select: "id=>Code,text=>Name,Code=>Code,Name=>Name", limit: 40, includeUnit: false, includeUnits: true, unitPrice: true, 'search': params['term'], page: this.collaboratorService.currentpage$?.value });
+    //   // },
+    //   transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+    //     console.log(settings);
+    //     const params = settings.data;
+    //     this.apiService.getPromise('/collaborator/products', {
+    //       includeIdText: true,
+    //       limit: 40,
+    //       includeUnit: false,
+    //       includeSubscribed: true,
+    //       includePrice: true,
+    //       'search': params['term'],
+    //       page: this.collaboratorService.currentpage$?.value,
+    //       sort_SearchRank: 'desc',
+    //     }).then(rs => {
+    //       success(rs);
+    //     }).catch(err => {
+    //       console.error(err);
+    //       failure();
+    //     });
+    //   },
+    //   delay: 300,
+    //   processResults: (data: any, params: any) => {
+    //     // console.info(data, params);
+    //     return {
+    //       results: data.map(product => {
+    //         product['text'] = `${product['text']} - ${product['id']}`;
+    //         return product;
+    //       })
+    //     };
+    //   },
+    // },
+
+    ...this.cms.makeSelect2AjaxOption('/admin-product/products', {
+      select: "id=>Code,text=>Name,Code=>Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures",
+      includeSearchResultLabel: true,
+      includeUnits: true,
+      sort_SearchRank: 'desc',
+    }, {
+      limit: 10,
+      placeholder: 'Chọn hàng hóa/dịch vụ...',
+      prepareReaultItem: (item) => {
+        item.thumbnail = item?.FeaturePicture?.Thumbnail;
+        return item;
+      }
+    }),
+    withThumbnail: true,
   };
 
   select2OptionForUnit = {
@@ -706,6 +721,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   /** Execute api post */
   executePost(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
     // params['page'] = this.collaboratorService?.currentpage$?.value;
+    params['page'] = this.cms.getObjectId(this.collaboratorService.currentpage$.value);
     return super.executePost(params, data, success, error);
   }
 
@@ -716,13 +732,29 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       if (itemFormData.Details) {
         const details = this.getDetails(newForm);
         details.clear();
-        itemFormData.Details.forEach(detailData => {
+
+        const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: productIds, includeIdText: true, includeUnitConversions: true }).then(rs => rs.reduce((prev, next, i) => {
+          prev[this.cms.getObjectId(next)] = next;
+          return prev;
+        }, {}));
+
+        const unitPriceMap = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
+          priceTable: 'default',
+          eq_Code: '[' + productIds.join(',') + ']',
+        }).then(rs => rs.reduce((result, current, index) => { result[current.Code + '-' + this.cms.getObjectId(current.Unit)] = current.Price; return result; }, {}));
+
+        for (const detailData of itemFormData.Details) {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
+          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].UnitConversions.map(m => {
+            m.Price = unitPriceMap[this.cms.getObjectId(detailData.Product) + '-' + this.cms.getObjectId(m)];
+            return m;
+          });
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
-        });
+        }
       }
 
       // Direct callback
@@ -1031,7 +1063,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   /** Choose product event */
-  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
+  onSelectProductx(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     if (selectedData) {
       detail.get('Description').setValue(selectedData.Name);
@@ -1072,6 +1104,27 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       detail.get('Unit').setValue('');
     }
     return false;
+  }
+
+  /** Choose product event */
+  async onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
+    console.log(selectedData);
+    const productId = this.cms.getObjectId(selectedData);
+    const unitPriceMap = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+      priceTable: 'default',
+      product: this.cms.getObjectId(detail.get('Product').value),
+      includeUnit: true,
+    }).then(rs => rs.reduce((result, current, index) => { result[current.Product + '-' + current.Unit] = current.Price; return result; }, {}));
+    if (productId) {
+      const descriptionControl = detail.get('Description');
+      descriptionControl.setValue(selectedData['OriginName']);
+      if (selectedData.Units && selectedData?.Units.length > 0) {
+        selectedData.Units.map(m => { m.Price = unitPriceMap[productId + '-' + this.cms.getObjectId(m)]; return m; })
+        const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
+        detail['UnitList'] = selectedData.Units;
+        detail.get('Unit').setValue(defaultUnit);
+      }
+    }
   }
 
   /** Choose unit event */

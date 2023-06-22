@@ -24,6 +24,7 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { PageModel } from '../../../../models/page.model';
 import { filter, take } from 'rxjs/operators';
+import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
 
 declare const $: any;
 @Component({
@@ -257,7 +258,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
-          headerName: 'ID',
+          headerName: 'Stt',
           field: 'Id',
           width: 100,
           valueGetter: 'node.data.Id',
@@ -265,13 +266,14 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
           initialSort: 'desc',
         },
         {
-          headerName: 'Mã',
+          headerName: 'ID',
           field: 'Code',
           width: 140,
           filter: 'agTextColumnFilter',
           pinned: 'left',
         },
         {
+          ...agMakeTextColDef(this.cms),
           headerName: 'Khách hàng',
           field: 'Object',
           // pinned: 'left',
@@ -303,16 +305,31 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
           cellRenderer: AgDateCellRenderer,
         },
         {
-          headerName: 'CTV Bán Hàng',
-          field: 'Publisher',
-          width: 150,
-          cellRenderer: AgTextCellRenderer,
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Tiêu đề',
+          field: 'Title',
+          width: 300,
+        },
+        {
+          headerName: 'Thực thi',
+          field: 'JobHandler',
+          width: 160,
+          autoHeight: true,
+          cellStyle: {
+            lineHeight: '0.9rem',
+            fontSize: '0.7rem'
+          },
+          cellRenderer: (params) => {
+            if (params.node?.data?.JobHandler) {
+              return `CV: ${params.node?.data?.JobHandler.JobName}<br>NV: ${this.cms.getObjectText(params.node?.data?.JobHandler)}<br>TG ${this.datePipe.transform(params.node?.data?.JobHandler?.JobAccepted, 'short')}`;
+            }
+            return this.cms.getObjectText(params.node?.data?.JobHandler);
+          },
           filter: AgSelect2Filter,
           filterParams: {
             select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true }, {
+                placeholder: 'Chọn nhân viên đang thự thi...', limit: 10, prepareReaultItem: (item) => {
                   return item;
                 }
               }),
@@ -321,27 +338,6 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
               allowClear: true,
             }
           },
-        },
-        // {
-        //   headerName: 'Người tạo',
-        //   field: 'Creator',
-        //   width: 150,
-        //   filter: 'agTextColumnFilter',
-        //   cellRenderer: AgTextCellRenderer,
-        // },
-        {
-          headerName: 'Tiêu đề',
-          field: 'Title',
-          width: 300,
-          filter: 'agTextColumnFilter',
-          autoHeight: true,
-        },
-        {
-          ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Số tiền',
-          field: 'Amount',
-          // pinned: 'right',
-          width: 150,
         },
         {
           ...agMakeCurrencyColDef(this.cms),
@@ -368,40 +364,33 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
           },
           cellRenderer: AgDateCellRenderer,
         },
-        // {
-        //   headerName: 'Tài khoản ngân hàng',
-        //   field: 'ReceiptBackAccount',
-        //   width: 140,
-        //   filter: 'agTextColumnFilter',
-        //   // pinned: 'left',
-        // },
-        // {
-        //   headerName: 'PT Thanh toán',
-        //   field: 'PaymentMethod',
-        //   width: 150,
-        //   cellRenderer: AgTextCellRenderer,
-        //   valueGetter: (params) => this.paymentMethodMap[this.cms.getObjectId(params.node?.data?.PaymentMethod)],
-        //   // filter: 'agTextColumnFilter',
-        //   autoHeight: true,
-        //   pinned: 'right',
-        //   filter: AgSelect2Filter,
-        //   filterParams: {
-        //     select2Option: {
-        //       placeholder: 'Chọn phương thức thanh toán...',
-        //       allowClear: true,
-        //       width: '100%',
-        //       dropdownAutoWidth: true,
-        //       minimumInputLength: 0,
-        //       withThumbnail: false,
-        //       multiple: true,
-        //       keyMap: {
-        //         id: 'id',
-        //         text: 'text',
-        //       },
-        //       data: Object.keys(this.paymentMethodMap).map(m => this.paymentMethodMap[m]),
-        //     }
-        //   },
-        // },
+        {
+          headerName: 'CTV Bán Hàng',
+          field: 'Publisher',
+          width: 150,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Số tiền',
+          field: 'Amount',
+          // pinned: 'right',
+          width: 150,
+        },
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             // this.preview([data]);
@@ -434,6 +423,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeObject'] = true;
     params['includeCreator'] = true;
     params['includePublisher'] = true;
     params['includeRelativeVouchers'] = true;
@@ -467,8 +457,6 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
     super.onGridReady(params);
     // const $(this.agGrid['_nativeElement']).offset().top;
   }
-
-
 
   async preview(data: CollaboratorOrderModel[], source?: string) {
     this.cms.openDialog(CollaboratorOrderPrintComponent, {

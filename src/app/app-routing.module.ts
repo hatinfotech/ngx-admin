@@ -134,7 +134,7 @@ import { MasterPriceTableQueueComponent } from './modules/sales/master-price-tab
 import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 import { WarehouseSummaryReportComponent } from './modules/warehouse/reports/summary-report/warehouse-summary-report.component';
 import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-report.component';
-import { MktMemberCardListComponent } from './modules/marketing/sales-voucher/member-card-list/member-card-list.component';
+import { MktMemberCardListComponent } from './modules/marketing/member-card/member-card-list/member-card-list.component';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {

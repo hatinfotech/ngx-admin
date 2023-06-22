@@ -227,7 +227,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
         {
           headerName: 'Liên hệ',
           field: 'Object',
-          pinned: 'left',
+          // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
           filter: AgSelect2Filter,
@@ -248,7 +248,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
         {
           headerName: 'Người triển khai',
           field: 'Driver',
-          pinned: 'left',
+          // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
           filter: AgSelect2Filter,

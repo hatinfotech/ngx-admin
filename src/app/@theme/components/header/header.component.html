@@ -14,6 +14,11 @@
   <nb-select size="small" [selected]="translate.currentLang" (selectedChange)="changeLanguage($event)" status="primary" style="margin-left: 1rem;">
       <nb-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{lang}}</nb-option>
   </nb-select>
+  <nb-button-group status="primary" size="small" style="margin-left: 1rem;">
+    <button nbButton (click)="zoomOutLayout()"><nb-icon pack="eva" icon="minimize-outline"></nb-icon></button>
+    <button nbButton (click)="zoomResetLayout()">Reset</button>
+    <button nbButton (click)="zoomInLayout()"><nb-icon pack="eva" icon="maximize-outline"></nb-icon></button>
+  </nb-button-group>
 
 
   <!-- <ngx-select2 [data]="domainList" [value]="activePbxDoamin" [select2Option]="domainListConfig"

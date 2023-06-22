@@ -4,7 +4,7 @@ import { NbMediaBreakpointsService, NbMenuService, NbSidebarService, NbThemeServ
 
 import { UserData } from '../../../@core/data/users';
 import { LayoutService } from '../../../@core/utils';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 // import { IvoipService } from '../../../modules/ivoip/ivoip-service';
 import { CommonService } from '../../../services/common.service';
@@ -13,6 +13,8 @@ import { VirtualPhoneService } from '../../../modules/virtual-phone/virtual-phon
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+
+declare var $: any;
 
 @Component({
   selector: 'ngx-header',
@@ -94,6 +96,26 @@ export class HeaderComponent implements OnInit, OnDestroy {
     // cms.langCode$.subscribe(langCode => {
     //   translate.use(langCode);
     // });
+
+    // this.cms.loginInfo$.pipe(takeUntil(this.destroy$), filter(f => !!f), take(1)).toPromise().then(userInfo => {
+    //   const layoutZoomSize = localStorage.getItem(this.cms.loginInfo?.user.Code + '_layout_zoom_size');
+    //   if (layoutZoomSize) {
+    //     this.layoutFontSize = parseInt(layoutZoomSize);
+    //     this.setZoomSizeLayout(parseInt(layoutZoomSize));
+    //   }
+    // });
+
+    const layoutZoomSize = localStorage.getItem('layout_zoom_size');
+    if (layoutZoomSize) {
+      $('html').css({ fontSize: layoutZoomSize + 'px' });
+    }
+    this.cms.loginInfo$.pipe(takeUntil(this.destroy$), filter(f => !!f)).subscribe(loginInfo => {
+      let layoutZoomSize = localStorage.getItem(loginInfo?.user.Code + '_layout_zoom_size');
+      if (!layoutZoomSize) {
+        layoutZoomSize = '16';
+      }
+      this.setZoomSizeLayout(parseInt(layoutZoomSize));
+    });
 
   }
 
@@ -292,5 +314,33 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   changeLanguage(localeCode: any) {
     this.cms.locale$.next({ locale: localeCode });
+  }
+
+  layoutFontSize = 16;
+  setZoomSizeLayout(size: number) {
+    this.layoutFontSize = size;
+    localStorage.setItem(this.cms.loginInfo?.user.Code + '_layout_zoom_size', this.layoutFontSize.toString());
+    localStorage.setItem('layout_zoom_size', this.layoutFontSize.toString());
+    $('html').css({ fontSize: this.layoutFontSize + 'px' });
+  }
+  zoomInLayout() {
+    if (this.layoutFontSize > 29) return;
+    this.layoutFontSize++;
+    localStorage.setItem(this.cms.loginInfo?.user.Code + '_layout_zoom_size', this.layoutFontSize.toString());
+    localStorage.setItem('layout_zoom_size', this.layoutFontSize.toString());
+    $('html').css({ fontSize: this.layoutFontSize + 'px' });
+  }
+  zoomOutLayout() {
+    if (this.layoutFontSize < 6) return;
+    this.layoutFontSize--;
+    localStorage.setItem(this.cms.loginInfo?.user.Code + '_layout_zoom_size', this.layoutFontSize.toString());
+    localStorage.setItem('layout_zoom_size', this.layoutFontSize.toString());
+    $('html').css({ fontSize: this.layoutFontSize + 'px' });
+  }
+  zoomResetLayout() {
+    this.layoutFontSize = 16;
+    localStorage.setItem(this.cms.loginInfo?.user.Code + '_layout_zoom_size', this.layoutFontSize.toString());
+    localStorage.setItem('layout_zoom_size', this.layoutFontSize.toString());
+    $('html').css({ fontSize: this.layoutFontSize + 'px' });
   }
 }

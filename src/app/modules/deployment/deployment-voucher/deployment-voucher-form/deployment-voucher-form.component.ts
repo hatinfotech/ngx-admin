@@ -1,4 +1,3 @@
-import { getTestBed } from '@angular/core/testing';
 import { ProductUnitModel } from './../../../../models/product.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Input, OnInit, Type } from '@angular/core';
@@ -33,6 +32,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 
 @Component({
   selector: 'ngx-deployment-voucher-form',
@@ -1340,6 +1340,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
           'PRICEREPORT': { title: 'Phiếu báo giá' },
           'PURCHASE': { title: 'Phiếu mua hàng' },
           'PURCHASEORDER': { title: 'Phiếu đặt mua hàng' },
+          'CLBRTORDER': { title: 'Đơn hàng CTV' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
           console.log(chooseItems, type);
@@ -1586,7 +1587,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                 }
                 if (this.cms.getObjectId(formGroup.get('Object').value)) {
                   if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu báo giá không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu báo giá không giống với phiếu triển khai'), this.cms.translateText('Common.warning'), { status: 'warning' });
                     continue;
                   }
                 } else {
@@ -1624,6 +1625,57 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
                       if (product.Type == 'PRODUCT') {
                         const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
                         newDtailFormGroup.get('Business').disable();
+                        newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
+                        details.push(newDtailFormGroup);
+                        await new Promise(resolve => setTimeout(() => resolve(true), 300));
+                        this.toMoney(formGroup, newDtailFormGroup);
+                      }
+                    }
+                  }
+                }
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+          }
+          if (type === 'CLBRTORDER') {
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                const details = this.getDetails(formGroup);
+                // get purchase order
+                const refVoucher = await this.apiService.getPromise<CollaboratorOrderModel[]>('/collaborator/orders/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+
+                if (['DEPLOYMENT'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                  this.cms.toastService.show(this.cms.translateText('Đơn hàng CTV chưa được phép triển khai !'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong đơn hàng CTV không giống với phiếu triển khai'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete refVoucher.Id;
+                  formGroup.patchValue({ ...refVoucher, DirectReceiverName: refVoucher.ObjectName, DirectReceiverPhone: refVoucher.ObjectPhone, DeliveryAddress: refVoucher.ObjectAddress, Code: null, Details: [] });
+                  details.clear();
+                }
+                insertList.push(chooseItems[i]);
+                if (refVoucher.RelativeVouchers && refVoucher.RelativeVouchers.length > 0) {
+                  for (const relativeVoucher of refVoucher.RelativeVouchers) {
+                    insertList.push(relativeVoucher);
+                  }
+                }
+
+                // Insert order details into voucher details
+                if (refVoucher?.Details) {
+                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Đơn hàng CTV: ' + refVoucher.Code + ' - ' + refVoucher.Title } as any));
+                  for (const voucherDetail of refVoucher.Details) {
+                    if (voucherDetail.Type !== 'CATEGORY') {
+                      const product = await this.apiService.getPromise<ProductModel[]>('/admin-product/products/' + voucherDetail.Product.Code).then(rs => rs[0]);
+                      if (product.Type == 'PRODUCT') {
+                        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
+                        // newDtailFormGroup.get('Business').disable();
                         newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
                         details.push(newDtailFormGroup);
                         await new Promise(resolve => setTimeout(() => resolve(true), 300));
