@@ -734,7 +734,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         details.clear();
 
         const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
-        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: productIds, includeIdText: true, includeUnitConversions: true }).then(rs => rs.reduce((prev, next, i) => {
+        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/admin-product/products', { id: productIds, includeIdText: true, includeUnits: true }).then(rs => rs.reduce((prev, next, i) => {
           prev[this.cms.getObjectId(next)] = next;
           return prev;
         }, {}));
@@ -747,7 +747,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         for (const detailData of itemFormData.Details) {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
-          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].UnitConversions.map(m => {
+          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].Units.map(m => {
             m.Price = unitPriceMap[this.cms.getObjectId(detailData.Product) + '-' + this.cms.getObjectId(m)];
             return m;
           });
@@ -755,6 +755,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup);
         }
+        this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
       // Direct callback
@@ -916,8 +917,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
   addDetailFormGroup(parentFormGroup: FormGroup) {
     const newChildFormGroup = this.makeNewDetailFormGroup(parentFormGroup);
-    this.getDetails(parentFormGroup).push(newChildFormGroup);
+    const detailsFormArray = this.getDetails(parentFormGroup).controls;
+    detailsFormArray.push(newChildFormGroup);
     this.onAddDetailFormGroup(parentFormGroup, newChildFormGroup);
+    this.setNoForArray(detailsFormArray as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
     return false;
   }
   removeDetailGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
@@ -1118,6 +1121,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     if (productId) {
       const descriptionControl = detail.get('Description');
       descriptionControl.setValue(selectedData['OriginName']);
+      detail.get('Image').setValue(selectedData.Pictures || (selectedData.FeaturePicture ? [selectedData.FeaturePicture] : []));
       if (selectedData.Units && selectedData?.Units.length > 0) {
         selectedData.Units.map(m => { m.Price = unitPriceMap[productId + '-' + this.cms.getObjectId(m)]; return m; })
         const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
@@ -1300,7 +1304,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
             label: 'Chốt đơn',
             status: 'success',
             action: () => {
-              this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, rs).then(rs => {
+              this.apiService.putPromise(this.apiPath + '/' + this.id[0], { changeState: 'APPROVED' }, [{ Code: this.id[0] }]).then(rs => {
                 this.cms.toastService.show(`Đơn hàng ${rs[0].Code} đã được chốt`, 'Đã chốt đơn', { status: 'success' })
                 this.goback();
               });

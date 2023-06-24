@@ -904,6 +904,17 @@ export class AppModule {
     responseTitle: 'Đã chuyển sang hàng đợi',
     responseText: 'Đã chuyển sang hàng đợi thành công',
   };
+  static queueState: ProcessMap = {
+    state: 'QUEUE',
+    label: 'Chờ xử lý',
+    confirmLabel: 'Đẩy vào hàng đợi',
+    status: 'warning',
+    outline: false,
+    confirmTitle: 'Chuyển sang hàng đợi',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái đợi ?',
+    responseTitle: 'Đã chuyển sang hàng đợi',
+    responseText: 'Đã chuyển sang hàng đợi thành công',
+  };
   static confirmationRequestedState: ProcessMap = {
     state: 'CONFIRMATIONREQUESTED',
     label: 'Common.confirmRequested',
@@ -1507,6 +1518,13 @@ export class AppModule {
           AppModule.approvedState,
         ],
       },
+      "QUEUE": {
+        ...AppModule.queueState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
       "NOTJUSTAPPROVED": {
         ...AppModule.notJustApprodedState,
         nextState: 'APPROVED',
@@ -1748,46 +1766,47 @@ export class AppModule {
       "APPROVED": {
         ...AppModule.approvedState,
         label: 'Chốt đơn',
-        nextState: 'DEPLOYMENT',
-        nextStates: [
-          AppModule.depploymentState,
-          AppModule.transportState,
-          AppModule.unrecordedState,
-        ],
-      },
-      "TRANSPORT": {
-        ...AppModule.transportState,
-        nextState: 'DELIVERED',
-        nextStates: [
-          { ...AppModule.deliveredState, status: 'success' },
-          AppModule.unrecordedState,
-        ],
-      },
-      "DEPLOYMENT": {
-        ...AppModule.depploymentState,
-        nextState: 'DEPLOYED',
-        nextStates: [
-          AppModule.deployedState,
-          AppModule.unrecordedState,
-        ],
-      },
-      "DEPLOYED": {
-        ...AppModule.deployedState,
         nextState: 'COMPLETED',
         nextStates: [
+          // AppModule.depploymentState,
+          // AppModule.transportState,
           AppModule.completeState,
           AppModule.unrecordedState,
         ],
       },
-      "DELIVERED": {
-        ...AppModule.deliveredState,
-        nextState: 'COMPLETED',
-        nextStates: [
-          AppModule.completeState,
-          AppModule.returnState,
-          AppModule.unrecordedState,
-        ],
-      },
+      // "TRANSPORT": {
+      //   ...AppModule.transportState,
+      //   nextState: 'DELIVERED',
+      //   nextStates: [
+      //     { ...AppModule.deliveredState, status: 'success' },
+      //     AppModule.unrecordedState,
+      //   ],
+      // },
+      // "DEPLOYMENT": {
+      //   ...AppModule.depploymentState,
+      //   nextState: 'DEPLOYED',
+      //   nextStates: [
+      //     AppModule.deployedState,
+      //     AppModule.unrecordedState,
+      //   ],
+      // },
+      // "DEPLOYED": {
+      //   ...AppModule.deployedState,
+      //   nextState: 'COMPLETED',
+      //   nextStates: [
+      //     AppModule.completeState,
+      //     AppModule.unrecordedState,
+      //   ],
+      // },
+      // "DELIVERED": {
+      //   ...AppModule.deliveredState,
+      //   nextState: 'COMPLETED',
+      //   nextStates: [
+      //     AppModule.completeState,
+      //     AppModule.returnState,
+      //     AppModule.unrecordedState,
+      //   ],
+      // },
       "COMPLETED": {
         ...AppModule.completeState,
         nextState: 'UNRECORDED',

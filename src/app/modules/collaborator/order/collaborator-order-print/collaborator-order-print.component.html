@@ -88,6 +88,10 @@
                                 <td class="text-align-right">{{data['DeliveryCost'] | currency:'VND'}}</td>
                             </tr>
                             <tr>
+                                <td colspan="6" class="text-align-right">{{'Phí triển khai' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{0 | currency:'VND'}}</td>
+                            </tr>
+                            <tr>
                                 <td colspan="6" class="text-align-right"><b>{{'Tổng cộng' | translate | headtitlecase}}</b></td>
                                 <td class="text-align-right"><b>{{(data['Total'] + data['DeliveryCost']) | currency:'VND'}}</b></td>
                             </tr>

@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.9.2.1',
+  version: '6.9.2.2',
+  // 6.9.2:   collaborator dev v3: auto cordinate to employee in relative group b2
   // 6.9.2:   collaborator dev v3: auto cordinate to employee in relative group
   // 6.9.1:   hotupdate marketing print member card feature
   // 6.9.0:   collaborator dev v3: rebuild book entry processing
