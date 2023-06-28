@@ -50,7 +50,7 @@
                                     <nb-tab tabTitle="{{'Cộng tác viên' | translate | headtitlecase}} (*)">
                                         <div class="row">
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="Publisher" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
+                                                <ngx-form-group [formGroup]="formItem" name="Publisher" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="publisherControlIcons" [touchedValidate]="false">
                                                     <ngx-select2 formControlName="Publisher" [select2Option]="select2OptionForPublisher" (selectChange)="onPublisherChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>

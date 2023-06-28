@@ -147,6 +147,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   };
 
   platformList: IdTextModel[] = [
+    { id: 'PROBOXONE', text: 'ProBox One' },
     { id: 'ZALO', text: 'Zalo' },
     { id: 'FACEBOOK', text: 'Facebook' },
     { id: 'TELEGRAM', text: 'Telegram' },
@@ -342,7 +343,8 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     const newForm = this.formBuilder.group({
       Id: [''],
       Platform: ['', Validators.required],
-      Page: ['', Validators.required],
+      AppUid: ['', Validators.required],
+      Page: [],
       UserUid: ['', Validators.required],
       State: [''],
     });

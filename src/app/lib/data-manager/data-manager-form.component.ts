@@ -814,6 +814,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     ...this.cms.makeSelect2AjaxOption('/contact/contacts', {
       includeIdText: true,
       includeGroups: true,
+      eq_IsDeleted: false,
       sort_SearchRank: 'desc',
     }, {
       placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {

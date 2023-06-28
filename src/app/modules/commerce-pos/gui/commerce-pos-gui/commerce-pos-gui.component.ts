@@ -378,7 +378,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
             },
             BaseUnit: { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel },
             // ConversionRatio: productSearchIndex.ConversionRatio,
-            Unit: { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq },
+            Unit: { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq, IsAutoAdjustInventory: !!productSearchIndex.IsAutoAdjustInventory, IsManageByAccessNumber: !!productSearchIndex.IsManageByAccessNumber },
             // Shelf: { id: goodsInContainer.ContainerShelf, text: goodsInContainer.ContainerShelfName },
             Price: productSearchIndex.Price,
             PriceOfBaseUnitText: productSearchIndex.Price && productSearchIndex.BaseUnit != productSearchIndex.Unit && (' (' + (this.currencyPipe.transform(productSearchIndex.Price / productSearchIndex.ConversionRatio, 'VND') + '/' + productSearchIndex.BaseUnitLabel) + ')') || '',
@@ -3433,7 +3433,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
 
   onChooseProduct(product: ProductModel) {
     (document.activeElement as HTMLElement).blur();
-    if (product.Inventory <= 0) {
+    if (product.Unit?.IsAutoAdjustInventory && product.Inventory <= 0) {
       this.cms.openDialog(ShowcaseDialogComponent, {
         context: {
           title: 'Hết hàng',

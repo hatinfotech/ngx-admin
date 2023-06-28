@@ -24,6 +24,9 @@ export const environment = {
     enabled: false,
     url: 'http://localhost:8100',
   },
+  proboxApp: {
+    deepLink: 'http://localhost:8200',
+  },
 };
 
 // export const environmentx = {

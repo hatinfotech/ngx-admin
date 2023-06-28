@@ -3,8 +3,7 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.Contact.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)"
-                        [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.Contact.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
@@ -155,19 +154,25 @@
                                                         <ngx-select2 formControlName="Platform" [select2Option]="select2OptionForPlatForm" [data]="platformList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
-                                                <div class="col-sm-4">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Page" label="Contact.page" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
-                                                        <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage"></ngx-select2>
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Page" label="Contact.page" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="false">
+                                                        <!-- <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage"></ngx-select2> -->
+                                                        <input nbInput fullWidth formControlName="Page" placeholder="{{'Page' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
-                                                <div class="col-sm-4">
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="AppUid" label="App ID" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <input nbInput fullWidth formControlName="AppUid" placeholder="{{'App ID' | translate | headtitlecase}}">
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
                                                     <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="UserUid" label="Contact.useruid" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
                                                         <input nbInput fullWidth formControlName="UserUid" placeholder="{{'Common.useruid' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
-                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'FOLLOW', text: this.cms.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.cms.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.cms.translateText('Common.znsRequest')}]"></ngx-select2>
+                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'ACTIVATED', text: this.cms.translateText('Kích hoạt')}, {id: 'FOLLOW', text: this.cms.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.cms.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.cms.translateText('Common.znsRequest')}]"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                             </div>

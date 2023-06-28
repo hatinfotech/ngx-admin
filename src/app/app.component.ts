@@ -48,9 +48,7 @@ export class AppComponent implements OnInit {
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
     this.cms.configReady$.subscribe(ready => {
       if (ready) {
-        this.cms.getMenuTree(menuTree => {
-          this.cms.languageLoaded$.pipe(filter(f => f)).subscribe(() => this.menu = this.translateMenu(menuTree));
-        });
+        this.loadMenu();
       }
     });
 
@@ -63,18 +61,13 @@ export class AppComponent implements OnInit {
 
     // translate.use('vi');
 
-    this.authService.onAuthenticationChange().pipe(filter(state => state === true), take(1)).toPromise().then(state => {
+    this.authService.onAuthenticationChange().pipe(filter(state => state === true)).subscribe(state => {
       if (state) {
-        this.cms.getMenuTree(menuTree => this.menu = this.translateMenu(menuTree));
-        // this.cms.langCode$.subscribe(langCode => {
-        //   if (langCode) {
-        //     this.locale = langCode;
-        //   }
-        // });
+        this.loadMenu();
       } else {
         this.menu = [
           {
-            title: 'Loading',
+            title: 'Loading...',
             icon: 'monitor-outline',
             link: '/loading',
           },
@@ -83,6 +76,23 @@ export class AppComponent implements OnInit {
     });
     this.notificatinoSerivce.active();
 
+  }
+
+  async loadMenu() {
+    this.cms.takeOnce('load_main_menu', 5000).then(() => {
+      this.menu = [
+        {
+          title: 'Loading...',
+          icon: 'monitor-outline',
+          link: '/loading',
+        },
+      ];
+      this.cms.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
+        this.cms.getMenuTree(menuTree => {
+          this.menu = this.translateMenu(menuTree);
+        });
+      });
+    });
   }
 
   translateMenu(menuTree: NbMenuItem[]) {

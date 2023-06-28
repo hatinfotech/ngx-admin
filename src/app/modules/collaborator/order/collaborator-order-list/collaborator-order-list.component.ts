@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { AppModule } from '../../../../app.module';
@@ -8,8 +8,6 @@ import { CommonService } from '../../../../services/common.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';
-import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
-import { FormGroup } from '@angular/forms';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
@@ -363,6 +361,27 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
             inRangeFloatingFilterDateFormat: 'DD/MM/YY',
           },
           cellRenderer: AgDateCellRenderer,
+        },
+        {
+          headerName: 'Người tạo',
+          field: 'Creator',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'];
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
         },
         {
           headerName: 'CTV Bán Hàng',

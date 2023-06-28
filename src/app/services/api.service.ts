@@ -556,6 +556,15 @@ export class ApiService {
         });
       }
     }
+    if ([500].indexOf(e.status) > -1) {
+      if (!silent) {
+        this.toastService.show(this.joinLogs(e, 'toast'), 'API: Yêu cầu chưa được xử lý', {
+          status: 'danger',
+          duration: 15000,
+        });
+      }
+    }
+
     let errorMessage = '';
     if (e.error instanceof ErrorEvent) {
       // client-side error

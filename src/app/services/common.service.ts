@@ -490,7 +490,7 @@ export class CommonService {
   }
 
   getMenuTree(callback: (menuTree: NbMenuItem[]) => void) {
-    this.apiService.get<NbMenuItem[]>('/menu/menu-items', { limit: 999999, restrictPms: true, isTree: true, includeUsers: true, select: 'id=>Code,group=>Group,title,link=>Link=>Title,icon=>Icon,children=>Children' }, list => {
+    this.apiService.get<NbMenuItem[]>('/menu/menu-items', { limit: 'nolimit', restrictPms: true, isTree: true, includeUsers: true, select: 'id=>Code,group=>Group,title,link=>Link=>Title,icon=>Icon,children=>Children' }, list => {
       callback(list);
     });
   }
@@ -1557,6 +1557,26 @@ export class CommonService {
   // toastContainer = null;
   showToast(message: any, title?: any, userConfig?: Partial<NbToastrConfig>): NbToastRef {
     return this.toastService.show(message, title, userConfig);
+  }
+
+  showError(err: any, option?: { timeout?: number, position?: 'top' | 'center' | 'bottom', cssClass?: string }) {
+    console.error(err);
+    if (err && err.column && err.line) {
+      // Evaluting error => skip
+      return;
+    }
+    if (err.error?.errorCode == 1062) {
+      if (Array.isArray(err.error?.logs)) {
+        err.error.logs.unshift('Dữ liệu đã tồn tại');
+      }
+    }
+    return this.toastService.show(
+      err && err.logs && err.logs[0] && err.logs.join('<br>') || err && err.error && err.error.logs && err.error.logs.join('<br>') || err || 'Lỗi không xác định !',
+      'Thông báo lỗi',
+      {
+        status: 'danger'
+      }
+    );
   }
 
   toTimeString(totalSeconds: number) {

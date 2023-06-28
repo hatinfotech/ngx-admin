@@ -9,30 +9,28 @@
                     <div [formGroup]="formItem">
                         <!-- <input type="hidden" nbInput fullWidth formControlName="Code"> -->
                         <div class="row">
-                            <input type="hidden" formControlName="Page">
-                            <input type="hidden" formControlName="Publisher">
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="Phone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="Phone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Phone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="Email" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="Email" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Email" placeholder="{{'Common.email' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="Address" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="Address" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Address" placeholder="{{'Common.address' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
-                                <ngx-form-group [formGroup]="formItem" name="IdentifiedNumber" label="Common.identifiedNumber" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                                <ngx-form-group [formGroup]="formItem" name="IdentifiedNumber" label="Common.identifiedNumber" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="IdentifiedNumber" placeholder="{{'Common.identifiedNumber' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>

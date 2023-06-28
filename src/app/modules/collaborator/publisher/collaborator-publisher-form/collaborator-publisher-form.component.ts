@@ -9,6 +9,7 @@ import { ContactDetailModel } from '../../../../models/contact.model';
 import { PageModel } from '../../../../models/page.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-publisher-form',
@@ -18,7 +19,7 @@ import { CommonService } from '../../../../services/common.service';
 export class CollaboratorPublisherFormComponent extends DataManagerFormComponent<CollaboratorPublisherModel> implements OnInit {
 
   componentName: string = 'CollaboratorPublisherFormComponent';
-  idKey = ['Publisher', 'Page'];
+  idKey = ['Id'];
   baseFormUrl = '/collaborator/publisher/form';
   apiPath = '/collaborator/publishers';
 
@@ -31,6 +32,7 @@ export class CollaboratorPublisherFormComponent extends DataManagerFormComponent
     public dialogService: NbDialogService,
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorPublisherFormComponent>,
+    public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
@@ -113,13 +115,13 @@ export class CollaboratorPublisherFormComponent extends DataManagerFormComponent
   makeNewFormGroup(data?: PageModel): FormGroup {
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
-      Page: { value: '', disabled: true },
-      Publisher: [{ value: '', disabled: true }],
-      Name: [{ value: '', disabled: true }],
-      Phone: [{ value: '', disabled: true }],
-      Email: [{ value: '', disabled: true }],
-      Address: [{ value: '', disabled: true }],
-      IdentifiedNumber: [{ value: '', disabled: true }],
+      Page: [this.collaboratorService.currentpage$.value],
+      Publisher: [],
+      Name: [],
+      Phone: [],
+      Email: [],
+      Address: [],
+      IdentifiedNumber: [],
       Level: ['STARTER'],
     });
     if (data) {
