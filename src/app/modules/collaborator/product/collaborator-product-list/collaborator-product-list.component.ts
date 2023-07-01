@@ -67,9 +67,9 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/collaborator/product-categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/collaborator/product-groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/collaborator/product-units', { includeIdText: true, limit: 'nolimit' }));
+    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
   }
 
   async init() {
@@ -160,6 +160,39 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
         });
       });
 
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'exportPdf',
+        status: 'primary',
+        label: 'Báo chiết khấu (PDF)',
+        title: 'Xuất báo giá chiết khấu cho CTV ra PDF',
+        size: 'medium',
+        icon: 'download-outline',
+        disabled: () => {
+          return this.selectedIds.length == 0;
+        },
+        click: () => {
+          const product = this.selectedItems.map(m => this.cms.getObjectId(m.Product));
+          let params = {
+            type: 'pdf',
+            report: 'ExportProductCommission',
+            eq_Product: '[' + product.join(',') + ']'
+          };
+          params['includeCategories'] = true;
+          params['includeGroups'] = true;
+          params['includeProduct'] = true;
+          params['includeUnit'] = true;
+          params['includeUnitPrices'] = true;
+          params['includeCommissionRatio'] = true;
+          params['productOfPage'] = true;
+          params['sort_Id'] = 'desc';
+          if (this.collaboratorService.currentpage$.value) {
+            params['page'] = this.collaboratorService.currentpage$.value;
+          }
+          window.open(this.apiService.buildApiUrl(this.apiPath, params), '__blank');
+        }
+      });
+
       return rs;
     });
   }
@@ -211,6 +244,16 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
             // });
             // instance.title = this.cms.translateText('click to change main product picture');
           },
+        },
+        Product: {
+          title: 'Code',
+          type: 'string',
+          width: '5%',
+        },
+        Sku: {
+          title: 'Sku',
+          type: 'string',
+          width: '10%',
         },
         Name: {
           title: 'Tên',
@@ -305,15 +348,13 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
             }).join('<br>');
           },
         },
-        Product: {
-          title: 'Code',
-          type: 'string',
+        Level1CommissionRatio: {
+          title: 'CKCBL1',
+          type: 'number',
           width: '5%',
-        },
-        Sku: {
-          title: 'Sku',
-          type: 'string',
-          width: '10%',
+          valuePrepareFunction: (cell) => {
+            return cell + '%';
+          }
         },
         Cycle: {
           title: 'Chu kỳ',
@@ -439,8 +480,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
       params['includeProduct'] = true;
       params['includeUnit'] = true;
       params['includeUnitPrices'] = true;
-      // params['includeFeaturePicture'] = true;
-      // params['includeUnitConversions'] = true;
+      params['includeCommissionRatio'] = true;
       params['productOfPage'] = true;
       params['sort_Id'] = 'desc';
       if (this.collaboratorService.currentpage$.value) {

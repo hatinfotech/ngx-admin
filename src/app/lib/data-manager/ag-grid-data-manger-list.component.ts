@@ -593,7 +593,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
         inputMode: 'dialog',
         inputId: this.makeId(rowData),
         note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-        resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData['Title'] || ''}`,
+        resourceName: this.cms.translateText('resource', { action: '', definition: '' }) + ` ${rowData['Title'] || ''}`,
         // resrouce: rowData,
         apiPath: this.apiPath,
       }

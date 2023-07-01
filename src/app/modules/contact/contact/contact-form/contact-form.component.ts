@@ -164,6 +164,23 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       text: 'text',
     },
   };
+  select2OptionForLocationType = {
+    placeholder: this.cms.translateText('Common.type') + '...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      {id: 'HOME', text: 'Nhà riêng'},
+      {id: 'WORK', text: 'Nơi làm việc'},
+      {id: 'OTHER', text: 'Khác'},
+    ]
+  };
   select2BaseOption = {
     placeholder: this.cms.translateText('Common.select') + '...',
     allowClear: true,
@@ -174,6 +191,94 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     keyMap: {
       id: 'id',
       text: 'text',
+    },
+  };
+
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
+  select2OptionForProvince = {
+    placeholder: 'Chọn tỉnh/TP...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+  select2OptionForDistrict = {
+    placeholder: 'Chọn quận/huyện...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        const formGroup = options?.formGroup;
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('Province').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('District').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
     },
   };
 
@@ -228,6 +333,15 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
         });
       }
 
+      if (itemFormData.Locations) {
+        itemFormData.Locations.forEach(location => {
+          const locationFormGroup = this.makeNewLocationFormGroup(location);
+          this.getLocations(newForm).push(locationFormGroup);
+          const comIndex = this.getLocations(newForm).length - 1;
+          this.onAddLocationFormGroup(newForm, comIndex, locationFormGroup);
+        });
+      }
+
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
@@ -246,6 +360,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
     params['includeGroups'] = true;
     params['includeDetails'] = true;
     params['includeOutsideReferences'] = true;
+    params['includeLocations'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -259,6 +374,9 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       Email: [''],
       Address: [''],
       Title: [''],
+      Province: [''],
+      District: [''],
+      Ward: [''],
       ShortName: [''],
       // Sex: [''],
       Note: [''],
@@ -266,6 +384,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       Groups: [''],
       Details: this.formBuilder.array([]),
       OutsideReferences: this.formBuilder.array([]),
+      Locations: this.formBuilder.array([]),
     });
     if (data) {
       newForm.patchValue(data);
@@ -371,6 +490,43 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
   onAddOutsideReferenceFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
   }
   onRemoveOutsideReferenceFormGroup(formItem: FormGroup, index: number) {
+  }
+  /** End Details Form */
+
+  /** Outside References Form */
+  makeNewLocationFormGroup(data?: ContactDetailModel): FormGroup {
+    const newForm = this.formBuilder.group({
+      Id: [''],
+      Type: ['HOME', Validators.required],
+      Province: [''],
+      District: [''],
+      Ward: [],
+      Address: [''],
+      State: ['ACTIVE'],
+    });
+
+    if (data) {
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+  getLocations(formItem: FormGroup) {
+    return formItem.get('Locations') as FormArray;
+  }
+  addLocationFormGroup(formItem: FormGroup) {
+    const newFormGroup = this.makeNewLocationFormGroup();
+    this.getLocations(formItem).push(newFormGroup);
+    this.onAddDetailFormGroup(formItem, this.getLocations(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeLocationGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getLocations(parentForm).removeAt(index);
+    this.onRemoveLocationFormGroup(formItem, index);
+    return false;
+  }
+  onAddLocationFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+  }
+  onRemoveLocationFormGroup(formItem: FormGroup, index: number) {
   }
   /** End Details Form */
 }

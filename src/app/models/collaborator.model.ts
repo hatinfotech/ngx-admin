@@ -35,6 +35,7 @@ export interface CollaboratorOrderModel {
     DateOfOrder?: string;
     DateOfDelivery?: string;
     DeliveryAddress?: string;
+    FullDeliveryAddress?: string;
     DirectReceiverName?: string;
     IsExportVatInvoice?: string;
     Title?: string;

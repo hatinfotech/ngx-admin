@@ -177,7 +177,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   }
 
   approvedConfirm(data: CollaboratorOrderModel, index: number) {
-    if (['COMPLETE'].indexOf(data.State) > -1) {
+    if (['COMPLETE'].indexOf(this.cms.getObjectId(data.State)) > -1) {
       this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
           label: this.cms.translateText('Common.close'),
@@ -309,7 +309,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
           datanium['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
-      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[datanium.State || ''];
+      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[this.cms.getObjectId(datanium.State) || ''];
     }
 
     // for (const i in data) {

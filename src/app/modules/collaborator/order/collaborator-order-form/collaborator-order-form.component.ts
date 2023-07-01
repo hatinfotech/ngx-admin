@@ -368,6 +368,13 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       text: 'text',
     },
   };
+
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
   select2OptionForProvince = {
     placeholder: 'Chọn tỉnh/TP...',
     allowClear: false,
@@ -401,13 +408,6 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       },
     },
   };
-
-  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
-    return {
-      ...select2Options,
-      formGroup
-    }
-  }
   select2OptionForDistrict = {
     placeholder: 'Chọn quận/huyện...',
     allowClear: false,

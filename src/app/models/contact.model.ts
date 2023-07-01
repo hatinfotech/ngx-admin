@@ -18,6 +18,7 @@ export class ContactModel {
   Title?: string;
   ShortName?: string;
   Address?: string;
+  FullAddress?: string;
   Address2?: string;
   Address3?: string;
   MapUrl?: string;
@@ -93,12 +94,14 @@ export class ContactModel {
   Groups?: ContactGroupModel[];
   Details?: ContactDetailModel[] & { [key: string]: any };
   OutsideReferences?: OutsideReferenceModel[] & { [key: string]: any };
+  Locations?: ContactLocation[];
 
   constructor() { }
 
 }
 
 export class ContactDetailModel {
+  [key: string]: any;
   Id?: string;
   Contact?: string;
   Type?: string | ContactDetailTypeModel;
@@ -108,6 +111,7 @@ export class ContactDetailModel {
   DateOfInvalidConfirm?: string;
 }
 export class OutsideReferenceModel {
+  [key: string]: any;
   Id?: string;
   Contact?: string;
   Platform?: string;
@@ -120,6 +124,17 @@ export class OutsideReferenceModel {
   Phone?: string;
   Address?: string;
   State?: string;
+}
+export class ContactLocation {
+  Id?: string;
+  Contact?: string;
+  Type?: string;
+  Provice?: any;
+  District?: any;
+  Ward?: any;
+  Address?: string;
+  FullAddress?: string;
+  State?: any;
 }
 
 export class ContactDetailTypeModel {

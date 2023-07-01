@@ -118,39 +118,25 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
         });
       });
 
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'unrecord',
-      //   status: 'warning',
-      //   label: 'Bỏ ghi',
-      //   title: 'Bỏ ghi các phiếu đã chọn',
-      //   size: 'medium',
-      //   icon: 'slash-outline',
-      //   disabled: () => {
-      //     return this.selectedIds.length == 0;
-      //   },
-      //   click: () => {
-      //     this.cms.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
-      //       {
-      //         label: 'Trở về',
-      //         status: 'basic',
-      //         action: () => {
-      //         }
-      //       },
-      //       {
-      //         label: 'Bỏ ghi',
-      //         status: 'warning',
-      //         focus: true,
-      //         action: () => {
-      //           this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-      //             this.cms.toastService.show('Bỏ ghi thành công !', 'Đơn hàng POS', { status: 'success' });
-      //             this.refresh();
-      //           });
-      //         }
-      //       },
-      //     ]);
-      //   }
-      // });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'exportPdf',
+        status: 'primary',
+        label: 'Download PDF',
+        title: 'Xuất danh sách đơn hiện tại ra PDF',
+        size: 'medium',
+        icon: 'download-outline',
+        // disabled: () => {
+        //   return this.selectedIds.length == 0;
+        // },
+        click: () => {
+          let query = {
+            type: 'pdf',
+            ...this.parseFilterToApiParams(this.gridApi.getFilterModel())
+          };
+          window.open(this.apiService.buildApiUrl(this.apiPath, this.prepareApiParams(query)), '__blank');
+        }
+      });
       // this.actionButtonList.unshift({
       //   type: 'button',
       //   name: 'writetobook',
@@ -413,7 +399,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             // this.preview([data]);
-            if (data.State == 'PROCESSING') {
+            if (this.cms.getObjectId(data.State) == 'PROCESSING') {
               this.openForm([data.Code]);
             } else {
               this.preview([data]);
@@ -441,7 +427,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
   //   return 123;
   // }
 
-  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+  prepareApiParams(params: any, getRowParams?: IGetRowsParams) {
     params['includeObject'] = true;
     params['includeCreator'] = true;
     params['includePublisher'] = true;
@@ -492,7 +478,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
         onChange: async (data: CollaboratorOrderModel, printComponent: CollaboratorOrderPrintComponent) => {
 
           printComponent.close();
-          if (data.State === 'PROCESSING') {
+          if (this.cms.getObjectId(data.State) === 'PROCESSING') {
             this.gotoForm(data.Code);
           } else {
             this.refresh();

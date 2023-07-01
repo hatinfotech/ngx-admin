@@ -48,7 +48,22 @@
                                     <input type="text" nbInput fullWidth formControlName="Phone" placeholder="{{'Contact.phone' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Province" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="District" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="District" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Ward" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Ward" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Address" label="Contact.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="Address" placeholder="{{'Contact.address' | translate | headtitlecase}}">
                                 </ngx-form-group>
@@ -150,28 +165,28 @@
                                             </div>
                                             <div class="row fit-content-column">
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Platform" label="Contact.outsideReferencePlatform" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Platform" label="Contact.outsideReferencePlatform" [array]="getOutsideReferences(formItem)" [index]="io" [allowCopy]="false" [required]="true">
                                                         <ngx-select2 formControlName="Platform" [select2Option]="select2OptionForPlatForm" [data]="platformList"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Page" label="Contact.page" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="false">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="Page" label="Contact.page" [array]="getOutsideReferences(formItem)" [index]="io" [allowCopy]="false" [required]="false">
                                                         <!-- <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage"></ngx-select2> -->
                                                         <input nbInput fullWidth formControlName="Page" placeholder="{{'Page' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="AppUid" label="App ID" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="AppUid" label="App ID" [array]="getOutsideReferences(formItem)" [index]="io" [allowCopy]="false" [required]="true">
                                                         <input nbInput fullWidth formControlName="AppUid" placeholder="{{'App ID' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-3">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="UserUid" label="Contact.useruid" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="UserUid" label="Contact.useruid" [array]="getOutsideReferences(formItem)" [index]="io" [allowCopy]="false" [required]="true">
                                                         <input nbInput fullWidth formControlName="UserUid" placeholder="{{'Common.useruid' | translate | headtitlecase}}">
                                                     </ngx-form-group>
                                                 </div>
                                                 <div class="col-sm-2">
-                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(outsideReference)" [index]="io" [allowCopy]="false" [required]="true">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="outsideReference" name="State" label="Contact.state" [array]="getOutsideReferences(formItem)" [index]="io" [allowCopy]="false" [required]="true">
                                                         <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'ACTIVATED', text: this.cms.translateText('Kích hoạt')}, {id: 'FOLLOW', text: this.cms.translateText('Common.follow')}, {id: 'UNFOLLOW', text: this.cms.translateText('Common.unfollow')}, {id: 'ZNSREQUEST', text: this.cms.translateText('Common.znsRequest')}]"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
@@ -180,6 +195,85 @@
                                                 <div class="form-group" style="text-align: right;">
                                                     <!-- <label class="label">CM</label> -->
                                                     <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeOutsideReferenceGroup(formItem, outsideReference, i)">
+                                                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Detail form -->
+                            </div>
+                            <div class="col-sm-12">
+                                <br>
+                                <hr>
+                                <label class="label">Vị trí</label>
+
+                                <!-- Detail form -->
+                                <div class="row fit-row form-detail-header">
+                                    <div class="fit-fist-col label column">Stt</div>
+                                    <div class="row fit-content-column">
+                                        <div class="col-sm-2 label column">{{'Loại' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'TP/Tỉnh' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'Quận/Huyện' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'Phường/Xã' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'Số nhà, tên đường' | translate | headtitlecase}}</div>
+                                        <div class="col-sm-2 label column">{{'Common.state' | translate | headtitlecase}}</div>
+                                    </div>
+                                    <div class="fit-last-col column">
+                                        <button class="fit-control-button" nbButton status="success" (click)="addLocationFormGroup(formItem)" size="medium" hero>
+                                            <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div formArrayName="Locations" class="form-details">
+                                    <!-- <div formArrayName="Details" class="form-details"> -->
+                                    <hr>
+                                    <div class="form-detail-item" *ngFor="let location of getLocations(formItem).controls; let io=index" [formGroup]="location">
+                                        <div class="row fit-row">
+                                            <div class="fit-fist-col label">
+                                                <div class="form-group">
+                                                    <!-- <label class="label">Stt</label> -->
+                                                    <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ io + 1 }}">
+                                                </div>
+                                            </div>
+                                            <div class="row fit-content-column">
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="Type" label="Loại" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Type" [select2Option]="select2OptionForLocationType"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="Province" label="TP/Tỉnh" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Province" [select2Option]="makeSelect2Option(select2OptionForProvince, location)"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="District" label="Quận/Huyện" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="District" [select2Option]="makeSelect2Option(select2OptionForDistrict, location)"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="Ward" label="Phường/Xã" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="Ward" [select2Option]="makeSelect2Option(select2OptionForWard, location)"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="Address" label="Số nhà, tên đường" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <input nbInput fullWidth formControlName="Address" placeholder="{{'Số nhà, tên đường' | translate | headtitlecase}}">
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="State" label="Contact.state" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'ACTIVE', text: this.cms.translateText('Hoạt động')}, {id: 'ALTERNATIVE', text: this.cms.translateText('Thay thế')}]"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                            </div>
+                                            <div class="fit-last-col">
+                                                <div class="form-group" style="text-align: right;">
+                                                    <!-- <label class="label">CM</label> -->
+                                                    <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeLocationGroup(formItem, location, i)">
                                                         <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
                                                     </button>
                                                 </div>
