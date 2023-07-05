@@ -10,6 +10,11 @@
                         <!-- <input type="hidden" nbInput fullWidth formControlName="Code"> -->
                         <div class="row">
                             <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="Contact" label="ID Liên hệ" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Contact" [select2Option]="select2OptionForContact"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
                                 </ngx-form-group>
