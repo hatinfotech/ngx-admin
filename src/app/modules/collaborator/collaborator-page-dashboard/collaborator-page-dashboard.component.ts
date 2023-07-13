@@ -305,14 +305,14 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
     const fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0)).toISOString() || null;
     const toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59).toISOString() || null;
 
-    this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PUBLISHER,PRODUCT,ORDER,NETVENUE', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
-      this.summaryReport = summaryReport;
-      console.log(summaryReport);
-    });
+    // this.apiService.getPromise<any>('/collaborator/statistics', { summaryReport: 'PAGE,PUBLISHER,PRODUCT,ORDER,NETVENUE', page: pages, reportBy: reportType, toDate: toDate, limit: 'nolimit' }).then(summaryReport => {
+    //   this.summaryReport = summaryReport;
+    //   console.log(summaryReport);
+    // });
 
-    const tmpRevenueStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_DateOfOrder: fromDate, le_DateOfOrder: toDate, limit: 'nolimit' });
+    const tmpRevenueStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportTempNetRevenue: true, page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
     const commissionStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { page: pages, reportBy: reportType, ge_VoucherDate: fromDate, le_VoucherDate: toDate, limit: 'nolimit' });
-    
+
     this.commissionStatisticsData = {
       labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
         : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
@@ -394,7 +394,7 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
         },
         {
           label: 'Chưa xử lý',
-          data: tmpRevenueStatistics.map  (statistic => parseInt(statistic.NumOfNotProcessingOrder)),
+          data: tmpRevenueStatistics.map(statistic => parseInt(statistic.NumOfNotProcessingOrder)),
           borderColor: this.colors.warning,
           // backgroundColor: colors.success,
           // backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.3),
@@ -417,77 +417,80 @@ export class CollaboratorPageDashboardComponent implements OnDestroy {
       ],
     };
 
-    const publisherRegisteredStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportPublisherRegisterd: true, page: pages, reportBy: reportType, ge_Assigned: fromDate, le_Assigned: toDate, limit: 'nolimit' });
-    this.publisherRegisteredStatisticsData = {
-      labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
-        : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
-          : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
-      datasets: [
-        {
-          label: 'Đã đăng ký',
-          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfRegisteredPublisher)),
-          borderColor: this.colors.success,
-          // backgroundColor: colors.primary,
-          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: 8,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Hủy đăng ký',
-          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfApprovedOrder) + parseInt(statistic.NumOfUnregisteredPublisher)),
-          borderColor: this.colors.danger,
-          // backgroundColor: colors.primary,
-          // backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
-          // fill: true,
-          // borderDash: [5, 5],
-          pointRadius: 8,
-          pointHoverRadius: 10,
-        },
-        {
-          label: 'Tổng',
-          data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfPublisher)),
-          borderColor: this.colors.info,
-          // backgroundColor: colors.info,
-          backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.3),
-          // fill: true,
-          borderDash: [1, 1],
-          pointRadius: 8,
-          pointHoverRadius: 10,
-        },
-      ],
-    };
+    if (false) {
+      const publisherRegisteredStatistics = await this.apiService.getPromise<any[]>('/collaborator/statistics', { reportPublisherRegisterd: true, page: pages, reportBy: reportType, ge_Assigned: fromDate, le_Assigned: toDate, limit: 'nolimit' });
+      this.publisherRegisteredStatisticsData = {
+        labels: reportType === 'MONTH' ? tmpRevenueStatistics.map(statistic => statistic['Month'] + '/' + statistic['Year'])
+          : (reportType === 'DAY' ? tmpRevenueStatistics.map(statistic => statistic['Day'] + '/' + statistic['Month'])
+            : (reportType === 'HOUR' ? tmpRevenueStatistics.map(statistic => statistic['Hour']) : tmpRevenueStatistics.map(statistic => this.dayLabel[statistic['DayOfWeek']]))),
+        datasets: [
+          {
+            label: 'Đã đăng ký',
+            data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfRegisteredPublisher)),
+            borderColor: this.colors.success,
+            // backgroundColor: colors.primary,
+            // backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.3),
+            // fill: true,
+            // borderDash: [5, 5],
+            pointRadius: 8,
+            pointHoverRadius: 10,
+          },
+          {
+            label: 'Hủy đăng ký',
+            data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfApprovedOrder) + parseInt(statistic.NumOfUnregisteredPublisher)),
+            borderColor: this.colors.danger,
+            // backgroundColor: colors.primary,
+            // backgroundColor: NbColorHelper.hexToRgbA(this.colors.primary, 0.3),
+            // fill: true,
+            // borderDash: [5, 5],
+            pointRadius: 8,
+            pointHoverRadius: 10,
+          },
+          {
+            label: 'Tổng',
+            data: publisherRegisteredStatistics.map(statistic => parseInt(statistic.NumOfPublisher)),
+            borderColor: this.colors.info,
+            // backgroundColor: colors.info,
+            backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.3),
+            // fill: true,
+            borderDash: [1, 1],
+            pointRadius: 8,
+            pointHoverRadius: 10,
+          },
+        ],
+      };
 
-    // Publisher summary report
-    this.apiService.getPromise<any>('/collaborator/statistics', {
-      // summaryReport: 'PUBLISHER',
-      page: pages,
-      reportBy: 'PUBLISHERSUMMARY',
-      groupBy: 'Publisher',
-      sort_NetRevenue: 'desc',
-      le_VoucherDate: toDate,
-      ge_VoucherDate: fromDate,
-      limit: 10,
-    }).then(publishers => {
-      this.publishers = publishers;
-      console.log(publishers);
-    });
+      // Publisher summary report
+      this.apiService.getPromise<any>('/collaborator/statistics', {
+        // summaryReport: 'PUBLISHER',
+        page: pages,
+        reportBy: 'PUBLISHERSUMMARY',
+        groupBy: 'Publisher',
+        sort_NetRevenue: 'desc',
+        le_VoucherDate: toDate,
+        ge_VoucherDate: fromDate,
+        limit: 10,
+      }).then(publishers => {
+        this.publishers = publishers;
+        console.log(publishers);
+      });
 
-    // Product summary report
-    this.apiService.getPromise<any>('/collaborator/statistics', {
-      // summaryReport: 'PUBLISHER',
-      page: pages,
-      reportBy: 'PRODUCTSUMMARY',
-      groupBy: 'Product',
-      sort_NetRevenue: 'desc',
-      le_VoucherDate: toDate,
-      ge_VoucherDate: fromDate,
-      limit: 10,
-    }).then(products => {
-      this.products = products;
-      console.log(products);
-    });
+
+      // Product summary report
+      this.apiService.getPromise<any>('/collaborator/statistics', {
+        // summaryReport: 'PUBLISHER',
+        page: pages,
+        reportBy: 'PRODUCTSUMMARY',
+        groupBy: 'Product',
+        sort_NetRevenue: 'desc',
+        le_VoucherDate: toDate,
+        ge_VoucherDate: fromDate,
+        limit: 10,
+      }).then(products => {
+        this.products = products;
+        console.log(products);
+      });
+    }
   }
 
   getUpcomingMonday() {

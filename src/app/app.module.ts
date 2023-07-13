@@ -88,11 +88,6 @@ import { ProductFormComponent } from './modules/admin-product/product/product-fo
 import { ProductListComponent } from './modules/admin-product/product/product-list/product-list.component';
 import { ProductUnitFormComponent } from './modules/admin-product/unit/product-unit-form/product-unit-form.component';
 import { ProductUnitListComponent } from './modules/admin-product/unit/product-unit-list/product-unit-list.component';
-import { CollaboratorAwardDetailPrintComponent } from './modules/collaborator/award/collaborator-award-detail-print/collaborator-award-detail-print.component';
-import { CollaboartorAwardDetailComponent } from './modules/collaborator/award/collaborator-award-form/collaboartor-award-detail/collaboartor-award-detail.component';
-import { CollaboratorAwardFormComponent } from './modules/collaborator/award/collaborator-award-form/collaborator-award-form.component';
-import { CollaboratorAwardListComponent } from './modules/collaborator/award/collaborator-award-list/collaborator-award-list.component';
-import { CollaboratorAwardPrintComponent } from './modules/collaborator/award/collaborator-award-print/collaborator-award-print.component';
 import { ChartjsBarHorizontalComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-bar-horizontal.component';
 import { ChartjsBarComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-bar.component';
 import { ChartjsLineComponent } from './modules/collaborator/collaborator-page-dashboard/chartjs-line.component';
@@ -109,14 +104,6 @@ import { PublisherCommissionStatisticsComponent } from './modules/collaborator/c
 import { CollaboratorPublisherReportComponent } from './modules/collaborator/collaborator-publisher-report/collaborator-publisher-report.component';
 import { CollaboratorPublisherSummaryComponent } from './modules/collaborator/collaborator-publisher-summary/collaborator-publisher-summary.component';
 import { CollaboratorPublisherComponent } from './modules/collaborator/collaborator-publisher/collaborator-publisher.component';
-import { CollaboratorCommissionPaymentFormComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-form/collaborator-commission-payment-form.component';
-import { CollaboratorCommissionPaymentListComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component';
-import { CollaboratorCommissionPaymentPrintComponent } from './modules/collaborator/commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component';
-import { CollaboratorCommissionDetailPrintComponent } from './modules/collaborator/commission/collaborator-commission-detail-print/collaborator-commission-detail-print.component';
-import { CollaboartorCommissionDetailComponent } from './modules/collaborator/commission/collaborator-commission-form/collaboartor-commission-detail/collaboartor-commission-detail.component';
-import { CollaboratorCommissionFormComponent } from './modules/collaborator/commission/collaborator-commission-form/collaborator-commission-form.component';
-import { CollaboratorCommissionListComponent } from './modules/collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
-import { CollaboratorCommissionPrintComponent } from './modules/collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
 import { CollaboratorOrderFormComponent } from './modules/collaborator/order/collaborator-order-form/collaborator-order-form.component';
 import { CollaboratorOrderListComponent } from './modules/collaborator/order/collaborator-order-list/collaborator-order-list.component';
 import { CollaboratorOrderPrintComponent } from './modules/collaborator/order/collaborator-order-print/collaborator-order-print.component';
@@ -129,7 +116,6 @@ import { CollaboratorProductFormComponent } from './modules/collaborator/product
 import { CollaboratorProductListComponent } from './modules/collaborator/product/collaborator-product-list/collaborator-product-list.component';
 import { CollaboratorProductPreviewListComponent } from './modules/collaborator/product/collaborator-product-preview-list/collaborator-product-preview-list.component';
 import { CollaboratorSubscriptionProductComponent } from './modules/collaborator/product/collaborator-subscription-product/collaborator-subscription-product.component';
-import { CollaboratorPublisherFormComponent } from './modules/collaborator/publisher/collaborator-publisher-form/collaborator-publisher-form.component';
 import { CollaboratorPublisherListComponent } from './modules/collaborator/publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorUnitFormComponent } from './modules/collaborator/unit/collaborator-unit-form/collaborator-unit-form.component';
 import { CollaboratorUnitListComponent } from './modules/collaborator/unit/collaborator-unit-list/collaborator-unit-list.component';
@@ -225,9 +211,6 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { ProcessMap } from './models/process-map.model';
 import { DynamicListDialogComponent } from './modules/dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { CollaboratorOrderTeleCommitFormComponent } from './modules/collaborator/order/collaborator-order-tele-commit/collaborator-order-tele-commit.component';
-import { CollaboratorEducationArticleListComponent } from './modules/collaborator/education-article/education-article-list/collaborator-education-article-list.component';
-import { CollaboratorEducationArticleFormComponent } from './modules/collaborator/education-article/education-article-form/collaborator-education-article-form.component';
-import { CollaboratorEducationArticlePrintComponent } from './modules/collaborator/education-article/education-article-print/collaborator-education-article-print.component';
 import { AccountingReceivablesFromCustomersReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
 import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
@@ -271,20 +254,6 @@ import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-d
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
 import { CoreConnectionFormComponent } from './modules/core-connection/core-connection-form/core-connection-form.component';
-import { CollaboratorPageComponent } from './modules/collaborator/collaborator-page/collaborator-page.component';
-import { CollaboratorBasicStrategyListComponent } from './modules/collaborator/basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
-import { CollaboratorBasicStrategyFormComponent } from './modules/collaborator/basic-strategy/basic-strategy-form/collaborator-basic-strategy-form.component';
-import { CollaboratorBasicStrategyProductFormComponent } from './modules/collaborator/basic-strategy/product-form/collaborator-basic-strategy-product-form.component';
-import { CollaboratorAdvanceStrategyListComponent } from './modules/collaborator/advance-strategy/advance-strategy-list/collaborator-advance-strategy-list.component';
-import { CollaboratorAdvanceStrategyFormComponent } from './modules/collaborator/advance-strategy/advance-strategy-form/collaborator-advance-strategy-form.component';
-import { CollaboratorAdvanceStrategyPublisherFormComponent } from './modules/collaborator/advance-strategy/publisher-form/collaborator-advance-strategy-publisher-form.component';
-import { CollaboratorAddonStrategyListComponent } from './modules/collaborator/addon-strategy/addon-strategy-list/collaborator-addon-strategy-list.component';
-import { CollaboratorAddonStrategyFormComponent } from './modules/collaborator/addon-strategy/addon-strategy-form/collaborator-addon-strategy-form.component';
-import { CollaboratorAddonStrategyPublisherFormComponent } from './modules/collaborator/addon-strategy/publisher-form/collaborator-addon-strategy-publisher-form.component';
-import { CollaboratorRebuyStrategyListComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component';
-import { CollaboratorRebuyStrategyFormComponent } from './modules/collaborator/rebuy-strategy/rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
-import { CollaboratorRebuyStrategyPublisherFormComponent } from './modules/collaborator/rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component';
-import { CollaboratorRebuyStrategyProductFormComponent } from './modules/collaborator/rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component';
 import { AccountingContributedCapitalReportComponent } from './modules/accounting/reports/accounting-contributed-capital-report/accounting-contributed-capital-report.component';
 import { WarehouseReportComponent } from './modules/warehouse/reports/warehouse-report.component';
 import { WarehouseDetailByGoodsReportComponent } from './modules/warehouse/reports/warehouse-detail-by-goods-report/warehouse-detail-by-goods-report.component';
@@ -325,6 +294,7 @@ import { WarehouseDetailByObjectReportAgComponent } from './modules/warehouse/re
 import { MktMemberCardListComponent } from './modules/marketing/member-card/member-card-list/member-card-list.component';
 import { MktMemberCardFormComponent } from './modules/marketing/member-card/member-card-form/member-card-form.component';
 import { MktMemberCardPrintComponent } from './modules/marketing/member-card/member-card-print/member-card-print.component';
+import { collaboratorComponents } from './modules/collaborator/collaborator.module';
 // import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
@@ -584,37 +554,7 @@ export class DynamicLocaleId extends String {
     PageFormComponent,
 
     // Collaborator
-    CollaboratorPageComponent,
-    CollaboratorCommissionListComponent,
-    CollaboratorCommissionFormComponent,
-    CollaboratorCommissionPrintComponent,
-    CollaboratorCommissionPaymentListComponent,
-    CollaboratorCommissionPaymentFormComponent,
-    CollaboratorCommissionPaymentPrintComponent,
-    CollaboartorCommissionDetailComponent,
-    CollaboratorPublisherFormComponent,
-    CollaboratorCommissionDetailPrintComponent,
-    CollaboratorAwardListComponent,
-    CollaboratorAwardFormComponent,
-    CollaboratorAwardPrintComponent,
-    CollaboartorAwardDetailComponent,
-    CollaboratorAwardDetailPrintComponent,
-    CollaboratorEducationArticleListComponent,
-    CollaboratorEducationArticleFormComponent,
-    CollaboratorEducationArticlePrintComponent,
-    CollaboratorBasicStrategyListComponent,
-    CollaboratorBasicStrategyFormComponent,
-    CollaboratorBasicStrategyProductFormComponent,
-    CollaboratorAdvanceStrategyListComponent,
-    CollaboratorAdvanceStrategyFormComponent,
-    CollaboratorAdvanceStrategyPublisherFormComponent,
-    CollaboratorAddonStrategyListComponent,
-    CollaboratorAddonStrategyFormComponent,
-    CollaboratorAddonStrategyPublisherFormComponent,
-    CollaboratorRebuyStrategyListComponent,
-    CollaboratorRebuyStrategyFormComponent,
-    CollaboratorRebuyStrategyPublisherFormComponent,
-    CollaboratorRebuyStrategyProductFormComponent,
+    ...collaboratorComponents,
 
     DynamicListDialogComponent,
 
@@ -1483,9 +1423,9 @@ export class AppModule {
       "APPROVED": {
         ...AppModule.approvedState,
         outline: true,
-        nextState: 'UNRECORDED',
+        nextState: 'COMPLETED',
         nextStates: [
-          AppModule.unrecordedState,
+          AppModule.completeState,
         ],
       },
       // "DEPLOYMENT": {
@@ -1530,6 +1470,13 @@ export class AppModule {
         nextState: 'APPROVED',
         nextStates: [
           AppModule.approvedState,
+        ],
+      },
+      "COMPLETED": {
+        ...AppModule.completeState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState,
         ],
       },
       "": {
@@ -1790,14 +1737,14 @@ export class AppModule {
       //     AppModule.unrecordedState,
       //   ],
       // },
-      // "DEPLOYED": {
-      //   ...AppModule.deployedState,
-      //   nextState: 'COMPLETED',
-      //   nextStates: [
-      //     AppModule.completeState,
-      //     AppModule.unrecordedState,
-      //   ],
-      // },
+      "DEPLOYED": {
+        ...AppModule.deployedState,
+        nextState: 'COMPLETED',
+        nextStates: [
+          AppModule.completeState,
+          AppModule.unrecordedState,
+        ],
+      },
       // "DELIVERED": {
       //   ...AppModule.deliveredState,
       //   nextState: 'COMPLETED',

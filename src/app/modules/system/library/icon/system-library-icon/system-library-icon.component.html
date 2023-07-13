@@ -1,5 +1,24 @@
 <div class="row">
-  <div class="col-md-12 col-lg-6">
+  <div class="col-md-6 col-lg-6">
+    <nb-card>
+      <nb-card-header>
+        Chart variables
+      </nb-card-header>
+      <nb-card-body>
+        <table style="width: 100%; border: 1px solid #ccc">
+          <tr *ngFor="let variable of variableTable">
+            <td style="border: 1px solid #ccc">{{variable.path}}</td>
+            <td style="border: 1px solid #ccc">{{variable.value}}</td>
+            <td style="border: 1px solid #ccc"><div style="width: 32px; height: 32px; background-color: {{variable.value}};"></div></td>
+          </tr>
+        </table>
+      </nb-card-body>
+      <nb-card-footer>
+        <a href="https://akveo.github.io/eva-icons/?utm_campaign=eva_icons%20-%20home%20-%20ngx_admin%20code%20embed&utm_source=ngx_admin&utm_medium=embedded&utm_content=icons_eva_icons_card" target="_blank">See all Eva Icons</a>
+      </nb-card-footer>
+    </nb-card>
+  </div>
+  <div class="col-md-6 col-lg-6">
     <nb-card>
       <nb-card-header>
         Eva Icons
@@ -13,7 +32,7 @@
     </nb-card>
   </div>
 
-  <div class="col-md-12 col-lg-6">
+  <div class="col-md-12 col-lg-12">
     <nb-card>
       <nb-card-header>
         Font awesome icons
@@ -28,7 +47,8 @@
         </a>
       </nb-card-footer>
     </nb-card>
-
+  </div>
+  <div class="col-md-12 col-lg-12">
     <nb-card>
       <nb-card-header>
         Ionicons
@@ -42,6 +62,5 @@
         <a href="http://ionicons.com/" target="_blank">See all ionicons</a>
       </nb-card-footer>
     </nb-card>
-
   </div>
 </div>

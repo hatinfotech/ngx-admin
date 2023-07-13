@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NbIconLibraries } from '@nebular/theme';
+import { NbColorHelper, NbIconLibraries, NbThemeService } from '@nebular/theme';
 import { CommonService } from '../../../../../services/common.service';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-system-library-icon',
@@ -9,9 +10,14 @@ import { CommonService } from '../../../../../services/common.service';
 })
 export class SystemLibraryIconComponent implements OnInit {
   evaIcons = [];
+  alive: boolean;
+  colors: any;
+
+  variableTable: { path: string, value: string }[] = [];
   constructor(
     public iconsLibrary: NbIconLibraries,
     public cms: CommonService,
+    private themeService: NbThemeService,
   ) {
     // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     // iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
@@ -23,6 +29,33 @@ export class SystemLibraryIconComponent implements OnInit {
     // this.icons.fontAwesome = Array.from(iconsLibrary.getPack('fa').icons.keys());
     // this.icons.fontAwesomeRegular = Array.from(iconsLibrary.getPack('far').icons.keys());
 
+    this.themeService.getJsTheme()
+      // .pipe(takeWhile(() => this.alive))
+      .subscribe(theme => {
+        theme.variables;
+        // this.chartjs = theme.variables.chartjs;
+        this.colors = theme.variables;
+        this.variableTable = [];
+        for (let i = 0; i <= 5000; i++) {
+          this.variableTable.push({ path: 'color-mix-' + i, value: NbColorHelper.mix(this.colors.danger, this.colors.warning, i) });
+        }
+        this.prepareJsThemeVariable(theme.variables, 'this.colors');
+      });
+  }
+
+  prepareJsThemeVariable(variables: any, path?: string) {
+    if (Array.isArray(variables)) {
+      for (const index in variables) {
+        this.prepareJsThemeVariable(variables[index], path + '[' + index + ']');
+      }
+    } else if (typeof variables == 'object') {
+      for (const variable in variables) {
+        this.prepareJsThemeVariable(variables[variable], path + '.' + variable);
+      }
+    } else {
+      this.variableTable.push({ path: path, value: variables });
+      console.log(path + ': ' + variables);
+    }
   }
 
   showIconInfo(icon: string, pack?: string) {
