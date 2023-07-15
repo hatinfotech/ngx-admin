@@ -80,6 +80,10 @@ export class CollaboratorDashboardComponent extends BaseComponent {
   liabilitityDebt = [];
   topGoodsList = [];
   topEmployeeList = [];
+  topOnlinePublishers = [];
+  topOrderedPublishers = [];
+  topAssignedPublishers = [];
+  topNotOtderedPublishers = [];
 
   masterBook: AccMasterBookModel;
 
@@ -491,6 +495,8 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       pages = pages.map(page => this.cms.getObjectId(page));
       pages = pages.join(',');
     }
+
+    const today = new Date();
     const dateRange: Date[] = this.formItem.get('DateRange').value;
     let fromDate = dateRange && dateRange[0] && (new Date(dateRange[0].getFullYear(), dateRange[0].getMonth(), dateRange[0].getDate(), 0, 0, 0, 0)) || null;
     let toDate = dateRange && dateRange[1] && new Date(dateRange[1].getFullYear(), dateRange[1].getMonth(), dateRange[1].getDate(), 23, 59, 59, 999) || null;
@@ -574,6 +580,22 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       });
       this.apiService.getPromise<any>('/collaborator/reports', { eq_Accounts: '511,512,515', eq_VoucherType: 'CLBRTORDER', isn_Product: null, ne_ContraAccount: '911', groupBy: 'Employee', includeEmployeeInfo: true, fromDate: fromDateStr, toDate: toDateStr, sort_CreditGenerate: 'desc', limit: 10, ...extendproductsQuery }).then(rs => {
         this.topEmployeeList = rs;
+        console.log(rs);
+      });
+      this.apiService.getPromise<any>('/collaborator/publishers/top/online-publishers', { limit: 10 }).then(rs => {
+        this.topOnlinePublishers = rs;
+        console.log(rs);
+      });
+      this.apiService.getPromise<any>('/collaborator/publishers/top/ordered-publishers', { limit: 10 }).then(rs => {
+        this.topOrderedPublishers = rs;
+        console.log(rs);
+      });
+      this.apiService.getPromise<any>('/collaborator/publishers/top/assigned-publishers', { limit: 10 }).then(rs => {
+        this.topAssignedPublishers = rs;
+        console.log(rs);
+      });
+      this.apiService.getPromise<any>('/collaborator/publishers/top/not-ordered-publishers', { limit: 10 }).then(rs => {
+        this.topNotOtderedPublishers = rs;
         console.log(rs);
       });
     }));
@@ -1186,6 +1208,211 @@ export class CollaboratorDashboardComponent extends BaseComponent {
               pointRadius: pointRadius,
               pointHoverRadius: 10,
             },
+          ],
+        }
+      };
+      resolve(true);
+    }));
+
+    // Publisher statistics
+    promiseAll.push(new Promise(async (resolve, reject) => {
+      let labels: any[], timeline: any[], mergeData: any[];
+      let lineData = {};
+
+      /** Load data */
+      let statisticsData = await Promise.all([
+        this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/online-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/ordered-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/created-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/publishers/top/online-publishers', { limit: 10 }),
+        this.apiService.getPromise<any[]>('/collaborator/publishers/top/ordered-publishers', { limit: 10 }),
+        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        // this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit' }),
+        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+      ]);
+
+      /** Prepare data */
+      // lineData['numOfOrderLine1Data'] = statisticsData[0].map(statistic => { statistic.Label = statistic.Timeline; statistic.Timeline = statistic.Timeline; return statistic; });
+      lineData['numOfOrderLine1Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
+      lineData['numOfOrderLine2Data'] = statisticsData[1].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
+      lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
+      // lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      // lineData['numOfOrderLine4Data'] = statisticsData[3].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      // lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = statistic.NumOfVouchers; statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+      // lineData['numOfOrderLine6Data'] = statisticsData[5].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+
+      timeline = [...new Set([
+        ...lineData['numOfOrderLine1Data'].map(item => item['Timeline']),
+        ...lineData['numOfOrderLine2Data'].map(item => item['Timeline']),
+        ...lineData['numOfOrderLine3Data'].map(item => item['Timeline']),
+        // ...lineData['numOfOrderLine3Data'].map(item => item['Timeline']),
+        // ...lineData['numOfOrderLine4Data'].map(item => item['Timeline']),
+        // ...lineData['numOfOrderLine5Data'].map(item => item['Timeline']),
+        // ...lineData['numOfOrderLine6Data'].map(item => item['Timeline']),
+      ].sort())];
+      labels = [];
+
+      mergeData = timeline.map(t => {
+        const point1 = lineData['numOfOrderLine1Data'].find(f => f.Timeline == t);
+        const point2 = lineData['numOfOrderLine2Data'].find(f => f.Timeline == t);
+        const point3 = lineData['numOfOrderLine3Data'].find(f => f.Timeline == t);
+        // const point3 = lineData['numOfOrderLine3Data'].find(f => f.Timeline == t);
+        // const point4 = lineData['numOfOrderLine4Data'].find(f => f.Timeline == t);
+        // const point5 = lineData['numOfOrderLine5Data'].find(f => f.Timeline == t);
+        // const point6 = lineData['numOfOrderLine6Data'].find(f => f.Timeline == t);
+        labels.push(
+          point1?.Label
+          || point2?.Label
+          || point3?.Label
+          // || point4?.Label
+          // || point5?.Label
+          // || point6?.Label
+        );
+        return {
+          Label: t,
+          Line1: point1 || { Value: 0 },
+          Line2: point2 || { Value: 0 },
+          Line3: point3 || { Value: 0 },
+          // Line4: point4 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          // Line5: point5 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          // Line6: point6 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+        };
+      });
+
+      // Chart 1
+      this.charts['publisher'] = {
+        type: 'line',
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          legend: {
+            position: 'bottom',
+            labels: {
+              fontColor: this.chartjs.textColor,
+            },
+          },
+          hover: {
+            mode: 'index',
+          },
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'Chu kỳ hiện tại',
+                },
+                gridLines: {
+                  display: true,
+                  color: this.chartjs.axisLineColor,
+                },
+                ticks: {
+                  fontColor: this.chartjs.textColor
+                },
+                // stacked: true,
+              },
+            ],
+            yAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: 'CTV Bán Hàng',
+                },
+                gridLines: {
+                  display: true,
+                  color: this.chartjs.axisLineColor,
+                },
+                ticks: {
+                  fontColor: this.chartjs.textColor,
+                  callback: (value, index, values) => {
+                    return this.decimalPipe.transform(value || 0, '1.0-0');
+                  }
+                },
+                // stacked: true,
+              },
+            ],
+          },
+          tooltips: {
+            callbacks: {
+              label: (tooltipItem, data) => {
+                if (data?.datasets) {
+                  return this.decimalPipe.transform(tooltipItem.yLabel, '1.0-0') + ' CTV ' + data?.datasets[tooltipItem?.datasetIndex]?.label;
+                }
+                return '';
+              }
+            }
+          }
+        },
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Online',
+              data: mergeData.map(point => point.Line1['Value']),
+              borderColor: this.colors.info,
+              backgroundColor: NbColorHelper.hexToRgbA(this.colors.info, 0.2),
+              pointRadius: pointRadius,
+              pointHoverRadius: 10,
+            },
+            {
+              label: 'Có đơn',
+              data: mergeData.map(point => point.Line2['Value']),
+              borderColor: this.colors.success,
+              backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0.2),
+              pointRadius: pointRadius,
+              pointHoverRadius: 10,
+            },
+            {
+              label: 'Mới',
+              data: mergeData.map(point => point.Line3['Value']),
+              borderColor: this.colors.warning,
+              backgroundColor: NbColorHelper.hexToRgbA(this.colors.warning, 0.2),
+              pointRadius: pointRadius,
+              pointHoverRadius: 10,
+            },
+            // {
+            //   label: 'Đặt hàng',
+            //   data: mergeData.map(point => point.Line2['Value']),
+            //   borderColor: NbColorHelper.mix(this.colors.danger, this.colors.warning, 66),
+            //   backgroundColor: NbColorHelper.shade(NbColorHelper.mix(this.colors.danger, this.colors.warning, 66), 0),
+            //   pointRadius: pointRadius,
+            //   pointHoverRadius: 10,
+            // },
+            // {
+            //   label: 'Đã chốt',
+            //   data: mergeData.map(point => point.Line3['NumOfOrders']),
+            //   borderColor: this.colors.primary,
+            //   backgroundColor: NbColorHelper.shade(this.colors.primary, 0),
+            //   pointRadius: pointRadius,
+            //   pointHoverRadius: 10,
+            // },
+            // {
+            //   label: 'Đang xử lý',
+            //   data: mergeData.map(point => point.Line2['NumOfOrders']),
+            //   borderColor: this.colors.info,
+            //   backgroundColor: NbColorHelper.shade(this.colors.info, 0),
+            //   pointRadius: pointRadius,
+            //   pointHoverRadius: 10,
+            // },
+            // {
+            //   label: 'Đơn mới',
+            //   data: mergeData.map(point => point.Line1['NumOfOrders']),
+            //   borderColor: this.colors.warning,
+            //   backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
+            //   pointRadius: pointRadius,
+            //   pointHoverRadius: 10,
+            // },
+            // {
+            //   label: 'Đơn bị hủy',
+            //   data: mergeData.map(point => point.Line6['NumOfOrders']),
+            //   borderColor: this.colors.danger,
+            //   backgroundColor: NbColorHelper.shade(this.colors.danger, 0),
+            //   pointRadius: pointRadius,
+            //   pointHoverRadius: 10,
+            // },
           ],
         }
       };

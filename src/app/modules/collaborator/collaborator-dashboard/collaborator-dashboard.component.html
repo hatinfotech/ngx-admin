@@ -124,7 +124,43 @@
       margin-bottom: 0;">
         <nb-tabset fullWidth>
 
-          <nb-tab tabTitle="TOP HH">
+          <nb-tab tabTitle="OL">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
+              <nb-list-item class="contact" *ngFor="let c of topOnlinePublishers">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOnline) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="OD">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
+              <nb-list-item class="contact" *ngFor="let c of topOrderedPublishers">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="NO">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
+              <nb-list-item class="contact" *ngFor="let c of topNotOtderedPublishers">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="AS">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
+              <nb-list-item class="contact" *ngFor="let c of topAssignedPublishers">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.Assigned) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </nb-tab>
+
+          <nb-tab tabTitle="HH">
             <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
                 <nb-user style="flex: 9;" [picture]="c.ProductFeaturePicture?.Thumbnail" [name]="c.Description" [title]="'SL: ' + c.TailCreditQuantity + ' ' + c.ProductUnitLabel" size="large"></nb-user>
@@ -133,7 +169,7 @@
             </nb-list>
           </nb-tab>
 
-          <nb-tab tabTitle="TOP CTV">
+          <nb-tab tabTitle="CTV">
             <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
               <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
@@ -183,10 +219,10 @@
               </nb-card-back>
             </nb-flip-card>
           </nb-tab>
-          <nb-tab tabTitle="Công nợ">
+          <nb-tab tabTitle="CTV Bán Hàng">
             <nb-card class="size-giant chart small-header" style="height: calc(100vh - 26.5rem)">
               <nb-card-body class="commission-statistics-wrapper">
-                <chart type="line" [data]="debtStatisticsData" [options]="options"></chart>
+                <chart *ngIf="charts['publisher']"  [type]="charts['publisher'].type" [data]="charts['publisher'].data" [options]="charts['publisher'].options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
