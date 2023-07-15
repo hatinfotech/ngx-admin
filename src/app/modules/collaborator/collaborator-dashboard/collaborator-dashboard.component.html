@@ -1,4 +1,4 @@
-<div class="page-deskboard">
+<div class="page-deskboard" [nbSpinner]="loading">
 
   <div class="row">
     <div class="col-xxxl-3 col-md-3 col-sm-6">
@@ -73,28 +73,28 @@
   <div class="row">
     <div class="col-xxxl-12 col-md-12">
       <nb-card>
-        <nb-card-body>
+        <nb-card-body style="padding: 0.5rem; padding-bottom: 0;">
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="row">
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [index]="0" [allowCopy]="false" [required]="true">
+                  <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="true">
                     <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [index]="0" [allowCopy]="false" [required]="true">
+                  <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="true">
                     <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
                     <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="Page" label="Chi nhánh" [index]="0" [allowCopy]="false" [required]="false">
-                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="[]" (selectChange)="onChangePage($event)"></ngx-select2>
+                  <ngx-form-group [formGroup]="formItem" name="Publishers" label="CTV" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="Publishers" [select2Option]="select2OptionForPublihsers" (selectChange)="onChangePage($event)"></ngx-select2>
                   </ngx-form-group>
                 </div>
                 <div class="col-sm-3">
-                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [index]="0" [allowCopy]="false" [required]="false">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
                     <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
                   </ngx-form-group>
                 </div>
@@ -104,7 +104,6 @@
               <div class="row">
                 <div class="col-sm-12">
                   <div class="form-group">
-                    <label class="label">Action</label>
                     <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
                   </div>
                 </div>
@@ -119,84 +118,89 @@
   <div class="row">
 
     <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
-      <nb-card size="giant" class="same-height-chart" style="height: calc(100vh - 21.8rem);
+      <nb-card size="giant" class="same-height-chart top-card" style="height: calc(100vh - 19.2rem);
       padding-bottom: 0;
       margin-bottom: 0;">
-        <nb-tabset fullWidth>
+        <nb-card-header>
+          <div class="form-group">
+            <ngx-select2 [formControl]="topListChoose" [select2Option]="select2OptionForTopTab" (selectChange)="onChangePage($event)"></ngx-select2>
+          </div>
+        </nb-card-header>
+        <div class="top">
 
-          <nb-tab tabTitle="OL">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
-              <nb-list-item class="contact" *ngFor="let c of topOnlinePublishers">
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPONLINEPUBLISHERS'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
+              <nb-list-item class="contact" *ngFor="let c of topOnlinePublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ (c.LastOnline) | date:'short' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-          <nb-tab tabTitle="OD">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
-              <nb-list-item class="contact" *ngFor="let c of topOrderedPublishers">
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPORDEREDPUBLISHERS'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
+              <nb-list-item class="contact" *ngFor="let c of topOrderedPublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-          <nb-tab tabTitle="NO">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
-              <nb-list-item class="contact" *ngFor="let c of topNotOtderedPublishers">
-                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPNOTORDEREDPUBLISHERS'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
+              <nb-list-item class="contact" *ngFor="let c of topNotOtderedPublishers"(click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+                <nb-user  [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-          <nb-tab tabTitle="AS">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
-              <nb-list-item class="contact" *ngFor="let c of topAssignedPublishers">
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPASSIGNEDPUBLISHERS'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
+              <nb-list-item class="contact" *ngFor="let c of topAssignedPublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ (c.Assigned) | date:'short' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-          <nb-tab tabTitle="HH">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPPRODUCTSBYREVENUE'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
               <nb-list-item class="contact" *ngFor="let c of topGoodsList">
                 <nb-user style="flex: 9;" [picture]="c.ProductFeaturePicture?.Thumbnail" [name]="c.Description" [title]="'SL: ' + c.TailCreditQuantity + ' ' + c.ProductUnitLabel" size="large"></nb-user>
                 <span style="flex: 1;" class="caption">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-          <nb-tab tabTitle="CTV">
-            <nb-list class="scrollable-container" style="height: calc(100vh - 24.9rem);">
-              <nb-list-item class="contact" *ngFor="let c of topEmployeeList">
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPPUBLISHERSBYREVENUE'">
+            <nb-list class="scrollable-container" style="height: calc(100vh - 22.3rem);">
+              <nb-list-item class="contact" *ngFor="let c of topEmployeeList" (click)="onPublisherClickClick({id: c.Employee, text: c.EmployeeName})">
                 <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
                 <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
               </nb-list-item>
             </nb-list>
-          </nb-tab>
+          </div>
 
-        </nb-tabset>
+        </div>
       </nb-card>
     </div>
 
     <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
-      <nb-card class="size-giant chart small-header" style="height: calc(100vh - 21.8rem);
+      <nb-card class="size-giant chart small-header" style="height: calc(100vh - 19.2rem);
       padding-bottom: 0;
       margin-bottom: 0;">
         <nb-tabset fullWidth>
           <nb-tab tabTitle="Đơn hàng">
             <nb-flip-card [showToggleButton]="true" [flipped]="flipped">
               <nb-card-front>
-                <nb-card class="size-giant chart small-header" style="height: calc(100vh - 24.9rem); border: none;">
+                <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.3rem); border: none;">
                   <nb-card-body class="commission-statistics-wrapper">
                     <div class="row">
-                      <div class="col-md-12" style="height: calc((100vh - 28.6rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - 26rem) / 2)">
                         <chart *ngIf="charts['order']"  [type]="charts['order'].type" [data]="charts['order'].data" [options]="charts['order'].options"></chart>
                       </div>
-                      <div class="col-md-12" style="height: calc((100vh - 28.6rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - 26rem) / 2)">
                         <chart *ngIf="charts['orderPrevious']"  [type]="charts['orderPrevious'].type" [data]="charts['orderPrevious'].data" [options]="charts['orderPrevious'].options"></chart>
                       </div>
                     </div>
@@ -204,13 +208,13 @@
                 </nb-card>
               </nb-card-front>
               <nb-card-back>
-                <nb-card class="size-giant chart small-header" style="height: calc(100vh - 24.9rem); border: none;">
+                <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.3rem); border: none;">
                   <nb-card-body class="commission-statistics-wrapper">
                     <div class="row">
-                      <div class="col-md-12" style="height: calc((100vh - 28.6rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - 26rem) / 2)">
                         <chart *ngIf="charts['revenue']"  [type]="charts['revenue'].type" [data]="charts['revenue'].data" [options]="charts['revenue'].options"></chart>
                       </div>
-                      <div class="col-md-12" style="height: calc((100vh - 28.6rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - 26rem) / 2)">
                         <chart *ngIf="charts['revenuePrevious']"  [type]="charts['revenuePrevious'].type" [data]="charts['revenuePrevious'].data" [options]="charts['revenuePrevious'].options"></chart>
                       </div>
                     </div>
@@ -220,28 +224,28 @@
             </nb-flip-card>
           </nb-tab>
           <nb-tab tabTitle="CTV Bán Hàng">
-            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 26.5rem)">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart *ngIf="charts['publisher']"  [type]="charts['publisher'].type" [data]="charts['publisher'].data" [options]="charts['publisher'].options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
           <nb-tab tabTitle="Dòng tiền thuần">
-            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 26.5rem)">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="debtCompareStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
           <nb-tab tabTitle="Lưu chuyển tiền tệ">
-            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 26.5rem)">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="cashFlowStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
           <nb-tab tabTitle="Lãi/lỗ">
-            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 26.5rem)">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="profitStatisticsData" [options]="options"></chart>
               </nb-card-body>

@@ -144,3 +144,12 @@
     margin-bottom: 1rem;
   }
 }
+
+.top-card nb-card-header {
+  padding: 0.2rem;
+  .form-group {
+    // height: 3rem;
+    margin: 0;
+    padding: 0;
+  }
+}

@@ -1,7 +1,7 @@
 import { AccMasterBookModel } from '../../../models/accounting.model';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../models/product.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NbColorHelper, NbDialogRef, NbThemeService } from '@nebular/theme';
@@ -17,6 +17,7 @@ import { lab } from 'd3-color';
 import { CollaboratorService } from '../collaborator.service';
 import { BaseComponent } from '../../../lib/base-component';
 import { Router } from '@angular/router';
+import { Select2Option } from '../../../lib/custom-element/select2/select2.component';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -91,7 +92,8 @@ export class CollaboratorDashboardComponent extends BaseComponent {
   filterChangedQueue$ = new Subject<any>();
 
   charts: { [key: string]: { type: string, options?: any, data: any } } = {};
-
+  topListChoose = new FormControl('TOPONLINEPUBLISHERS');
+  
   constructor(
     public router: Router,
     private themeService: NbThemeService,
@@ -251,7 +253,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     this.formItem = this.formBuilder.group({
       DateReport: ['HOUR', Validators.required],
       DateRange: [this.dateReportList.find(f => f.id === 'HOUR').range],
-      Page: [[]],
+      Publishers: [[]],
       ProductGroup: { value: '', disabled: true },
     });
     // this.formItem.get('DateReport').valueChanges.subscribe(value => {
@@ -335,10 +337,48 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       text: 'text',
     },
   };
+  select2OptionForTopTab = {
+    placeholder: 'Chọn danh sách top...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      {id: 'TOPONLINEPUBLISHERS', text: 'Top CTV có vừa online'},
+      {id: 'TOPORDEREDPUBLISHERS', text: 'Top CTV có vừa có đơn'},
+      {id: 'TOPNOTORDEREDPUBLISHERS', text: 'Top CTV không có đơn'},
+      {id: 'TOPASSIGNEDPUBLISHERS', text: 'Top CTV mới gia nhập'},
+      {id: 'TOPPRODUCTSBYREVENUE', text: 'Top sản phẩm theo danh thu'},
+      {id: 'TOPPUBLISHERSBYREVENUE', text: 'Top CTV theo danh thu'},
+    ]
+  };
+  select2OptionForPublihsers: Select2Option = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/publishers', {
+      includeIdText: true,
+      // includeGroups: true,
+      // eq_IsDeleted: false,
+      // sort_SearchRank: 'desc',
+      // eq_Groups: '[PUBLISHER]',
+    }, {
+      placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
+        // item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        item['id'] = item['Contact'];
+        item['text'] = item['Name'];
+        return item;
+      }
+    }),
+    // minimumInputLength: 1,
+    multiple: true,
+  };
 
-  select2DateReportOption = {
+  select2DateReportOption: Select2Option = {
     placeholder: 'Chọn thời gian...',
-    allowClear: true,
+    allowClear: false,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
@@ -478,10 +518,15 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     return (item['DayOfWeek']).toString().padStart(2, "0");
   }
 
+  onPublisherClickClick(publisher: any) {
+    this.formItem.get('Publishers').setValue([publisher]);
+  }
+
   async refresh() {
 
     const promiseAll = [];
     const reportType = this.cms.getObjectId(this.formItem.get('DateReport').value);
+    this.loading = true;
 
     // let branches = this.formItem.get('Branchs').value?.map(branch => this.cms.getObjectId(branch));
     // let products = this.formItem.get('Products')?.value?.map(m => this.cms.getObjectId(m)) || [];
@@ -489,12 +534,13 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     // let productCategories = this.formItem.get('ProductCategories')?.value?.map(m => this.cms.getObjectId(m)) || [];
     // let employees = this.formItem.get('Employees')?.value?.map(m => this.cms.getObjectId(m)) || [];
     // let objects = this.formItem.get('Objects')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let publishersFilter = this.formItem.get('Publishers')?.value?.map(m => this.cms.getObjectId(m)) || [];
 
-    let pages = this.formItem.get('Page').value;
-    if (pages) {
-      pages = pages.map(page => this.cms.getObjectId(page));
-      pages = pages.join(',');
-    }
+    // let pages = this.formItem.get('Page').value;
+    // if (pages) {
+    //   pages = pages.map(page => this.cms.getObjectId(page));
+    //   pages = pages.join(',');
+    // }
 
     const today = new Date();
     const dateRange: Date[] = this.formItem.get('DateRange').value;
@@ -545,8 +591,13 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       // ...(objects.length > 0 ? { eq_Object: `[${objects.join(',')}]` } : {}),
     }
 
+    // const publishersQuery = {};
+    // if (publishersFilter) {
+    //   publishersQuery['eq_Publisher'] = '[' + publishersFilter.join(',') + ']';
+    // }
+
     promiseAll.push(new Promise((resolve, reject) => {
-      this.apiService.getPromise<any[]>('/collaborator/reports', { reportSummaryx: true, eq_Accounts: "511,521,515,521,632,635,642,641,623,2288,711,811,131,331,3349,", eq_VoucherType: '[CLBRTORDER,CLBRTCOMMISSION,CLBRTAWARD]', groupBy: 'Account', skipHeaderx: true, branch: pages, toDate: toDateStr, fromDate: fromDateStr, limit: 'nolimit' }).then(async summaryReport => {
+      this.apiService.getPromise<any[]>('/collaborator/reports', { reportSummaryx: true, eq_Accounts: "511,521,515,521,632,635,642,641,623,2288,711,811,131,331,3349,", eq_VoucherType: '[CLBRTORDER,CLBRTCOMMISSION,CLBRTAWARD]', groupBy: 'Account', skipHeaderx: true, toDate: toDateStr, fromDatex: fromDateStr, limit: 'nolimit' }).then(async summaryReport => {
         // console.log(summaryReport);
 
         const humanResourceReport = await this.apiService.getPromise('/collaborator/reports', { humanResource: true });
@@ -598,6 +649,8 @@ export class CollaboratorDashboardComponent extends BaseComponent {
         this.topNotOtderedPublishers = rs;
         console.log(rs);
       });
+
+      resolve(true);
     }));
 
     let pointRadius: number = 1;
@@ -616,13 +669,13 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
       /** Load data */
       let statisticsData = await Promise.all([
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
         // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'COMPLETED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Employee: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
       ]);
 
       /** Prepare data */
@@ -918,13 +971,13 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
       /** Load data */
       let statisticsData = await Promise.all([
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
         // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'COMPLETED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDateStrPrevious, le_VoucherDate: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
+        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStrPrevious, le_VoucherDate: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Employee: '[' + publishersFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publishersFilter && publishersFilter.length > 0 && { eq_Publisher: '[' + publishersFilter.join(',') + ']' } || {}) }),
       ]);
 
       /** Prepare data */
@@ -1421,7 +1474,13 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
 
     // await Promise.all([promise1, promise1_1, promise2, promise3, promise4, promise5, promise6, promise7]);
-    await Promise.all(promiseAll);
+    await Promise.all(promiseAll).then(rs => {
+      this.loading = false;
+      return rs;
+    }).catch(err => {
+      this.loading = false;
+      return Promise.reject(err);
+    });
     return true;
 
   }
