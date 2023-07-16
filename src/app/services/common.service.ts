@@ -1139,10 +1139,23 @@ export class CommonService {
   }
 
   getBeginOfDate(date: Date) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 999)
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
   }
   getEndOfDate(date: Date) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 0)
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59, 999);
+  }
+  getBeginOfMonth(date: Date) {
+    return new Date(date.getFullYear(), date.getMonth(), 1, 0, 0, 0, 0);
+  }
+  getEndOfMonth(date: Date) {
+    const endOfMonth = new Date(date);
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1); // go to next month
+    endOfMonth.setDate(0); // go to end of pevious month
+    endOfMonth.setHours(23); // go to end of day
+    endOfMonth.setMinutes(59); // go to end of day
+    endOfMonth.setSeconds(59); // go to end of day
+    endOfMonth.setMilliseconds(999); // go to end of day
+    return endOfMonth;
   }
 
   private _lastVoucherDate: Date;

@@ -20,8 +20,11 @@
 // }
 
 @import "../../../@theme/styles/themes";
-
+// :root {
+// }
 @include nb-install-component() {
+  --summary-components-height: 16.8rem;
+  --tabset-height: 3.1rem;
   nb-card.status-card {
     flex-direction: row;
     align-items: center;

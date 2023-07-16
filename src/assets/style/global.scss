@@ -192,6 +192,7 @@ $statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
 /* Layout */
 body {
   min-width: inherit !important;
+  --header-nav-height: 5.05rem;
 }
 
 body nb-layout[authState="logout"] .layout nb-layout-header,

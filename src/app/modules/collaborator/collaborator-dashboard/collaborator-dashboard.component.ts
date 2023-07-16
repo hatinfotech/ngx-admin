@@ -92,8 +92,15 @@ export class CollaboratorDashboardComponent extends BaseComponent {
   filterChangedQueue$ = new Subject<any>();
 
   charts: { [key: string]: { type: string, options?: any, data: any } } = {};
-  topListChoose = new FormControl('TOPONLINEPUBLISHERS');
-  
+  topListChoose = new FormControl('TOPORDEREDPUBLISHERS');
+
+  dateReportList = [
+    // { id: 'HOUR', text: 'Phân tích theo ngày', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
+    // { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23, 59, 59)] },
+    // { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
+    // { id: 'MONTH', text: 'Phân tích theo năm', range: [new Date(new Date().getFullYear(), 0, 1), new Date()] },
+  ];
+
   constructor(
     public router: Router,
     private themeService: NbThemeService,
@@ -250,9 +257,10 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     // });
 
     // const currentDate = new Date();
+    const today = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: ['HOUR', Validators.required],
-      DateRange: [this.dateReportList.find(f => f.id === 'HOUR').range],
+      DateReport: [{id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)'}, Validators.required],
+      DateRange: [[this.cms.getBeginOfDate(today), this.cms.getEndOfDate(today)]],
       Publishers: [[]],
       ProductGroup: { value: '', disabled: true },
     });
@@ -303,19 +311,18 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
       this.apiService.getPromise<AccMasterBookModel[]>('/accounting/master-books/current', {}).then(rs => {
         this.masterBook = rs[0];
-        const current = new Date();
-        const previousMonth = new Date(current.getTime() - 31 * 24 * 60 * 60 * 1000);
+        const today = new Date();
+        const previousMonth = new Date(today.getTime() - 31 * 24 * 60 * 60 * 1000);
         let fromDate = new Date(this.masterBook.DateOfBeginning);
-        const previous12month = current.clone();
+        const previous12month = today.clone();
         previous12month.setFullYear(previous12month.getFullYear() - 1);
         previous12month.setMonth(previous12month.getMonth() + 1);
         previous12month.setDate(1);
-
         this.dateReportList = [
-          { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), current.getDate(), current.getHours(), current.getMinutes(), current.getSeconds(), current.getMilliseconds())] },
-          { id: 'MONTH', text: 'Phân tích theo năm', range: [previous12month, new Date()] },
-          { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
-          { id: 'HOUR', text: 'Phân tích theo ngày', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
+          { id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)', range: [this.cms.getBeginOfDate(today), this.cms.getEndOfDate(today)] },
+          { id: 'DAY', text: 'Phân tích theo tháng (30 ngày gần nhất)', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0, 0), new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds(), today.getMilliseconds())] },
+          { id: 'DAYOFWEEK', text: 'Phân tích theo tuần (các ngày trong tuần)', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
+          { id: 'MONTH', text: 'Phân tích theo năm (các tháng trong năm)', range: [previous12month, today] },
         ];
       });
       this.formItem.get('DateReport').valueChanges.subscribe(value => {
@@ -349,12 +356,12 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       text: 'text',
     },
     data: [
-      {id: 'TOPONLINEPUBLISHERS', text: 'Top CTV có vừa online'},
-      {id: 'TOPORDEREDPUBLISHERS', text: 'Top CTV có vừa có đơn'},
-      {id: 'TOPNOTORDEREDPUBLISHERS', text: 'Top CTV không có đơn'},
-      {id: 'TOPASSIGNEDPUBLISHERS', text: 'Top CTV mới gia nhập'},
-      {id: 'TOPPRODUCTSBYREVENUE', text: 'Top sản phẩm theo danh thu'},
-      {id: 'TOPPUBLISHERSBYREVENUE', text: 'Top CTV theo danh thu'},
+      { id: 'TOPONLINEPUBLISHERS', text: 'Top CTV có vừa online' },
+      { id: 'TOPORDEREDPUBLISHERS', text: 'Top CTV có vừa có đơn' },
+      { id: 'TOPNOTORDEREDPUBLISHERS', text: 'Top CTV không có đơn' },
+      { id: 'TOPASSIGNEDPUBLISHERS', text: 'Top CTV mới gia nhập' },
+      { id: 'TOPPRODUCTSBYREVENUE', text: 'Top sản phẩm theo danh thu' },
+      { id: 'TOPPUBLISHERSBYREVENUE', text: 'Top CTV theo danh thu' },
     ]
   };
   select2OptionForPublihsers: Select2Option = {
@@ -388,22 +395,15 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     },
   };
 
-  dateReportList = [
-    { id: 'DAY', text: 'Phân tích theo tháng', range: [new Date(new Date().getFullYear(), new Date().getMonth(), 1, 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), 31, 23, 59, 59)] },
-    { id: 'MONTH', text: 'Phân tích theo năm', range: [new Date(new Date().getFullYear(), 0, 1), new Date()] },
-    { id: 'DAYOFWEEK', text: 'Phân tích theo tuần', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
-    { id: 'HOUR', text: 'Phân tích theo ngày', range: [new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 0, 0, 0), new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 23, 59, 59)] },
-  ];
-
-  dayLabel = {
-    "1": "Chủ nhật",
-    "2": "Thứ hai",
-    "3": "Thứ ba",
-    "4": "Thứ tư",
-    "5": "Thứ năm",
-    "6": "Thứ sáu",
-    "7": "Thứ bảy",
-  };
+  // dayLabel = {
+  //   "1": "Chủ nhật",
+  //   "2": "Thứ hai",
+  //   "3": "Thứ ba",
+  //   "4": "Thứ tư",
+  //   "5": "Thứ năm",
+  //   "6": "Thứ sáu",
+  //   "7": "Thứ bảy",
+  // };
 
   onDateReportChange(dateReport: any) {
     console.log(dateReport);
@@ -492,6 +492,15 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
   }
 
+  weekDayMap = {
+    1: 'CN',
+    2: 'T2',
+    3: 'T3',
+    4: 'T4',
+    5: 'T5',
+    6: 'T6',
+    7: 'T7',
+  };
   makeStaticLabel(item: any, reportType: string) {
     if (reportType === 'MONTH') {
       return (item['Month']).toString().padStart(2, "0") + '/' + (item['Year']).toString().padStart(2, "0");
@@ -502,7 +511,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     if (reportType === 'HOUR') {
       return (item['Hour']).toString().padStart(2, "0");
     }
-    return (item['DayOfWeek']).toString().padStart(2, "0");
+    return this.weekDayMap[item['DayOfWeek']] + ':' + (item['Day']).toString().padStart(2, "0") + '/' + (item['Month']).toString().padStart(2, "0");
   }
 
   makeTimeline(item: any, reportType: string) {
@@ -515,6 +524,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     if (reportType === 'HOUR') {
       return (item['Hour']).toString().padStart(2, "0");
     }
+    return item['Year'] + '/' + (item['Month']).toString().padStart(2, "0") + '/' + (item['Day']).toString().padStart(2, "0");
     return (item['DayOfWeek']).toString().padStart(2, "0");
   }
 
@@ -560,6 +570,15 @@ export class CollaboratorDashboardComponent extends BaseComponent {
 
       const previousToDate = toDate.clone();
       previousToDate.setDate(toDate.getDate() - 1);
+      toDateStrPrevious = previousToDate.toISOString();
+    }
+    if (reportType == 'DAYOFWEEK') {
+      const previousFromDate = fromDate.clone();
+      previousFromDate.setDate(fromDate.getDate() - 7);
+      fromDateStrPrevious = previousFromDate.toISOString();
+
+      const previousToDate = toDate.clone();
+      previousToDate.setDate(toDate.getDate() - 7);
       toDateStrPrevious = previousToDate.toISOString();
     }
     if (reportType == 'DAY') {
@@ -1277,33 +1296,19 @@ export class CollaboratorDashboardComponent extends BaseComponent {
         this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/online-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
         this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/ordered-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
         this.apiService.getPromise<any[]>('/collaborator/publishers/statistics/created-publishers', { reportBy: reportType, le_DateOfLog: toDateStr, ge_DateOfLog: fromDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/publishers/top/online-publishers', { limit: 10 }),
-        this.apiService.getPromise<any[]>('/collaborator/publishers/top/ordered-publishers', { limit: 10 }),
-        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        // this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, branch: pages, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit' }),
-        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+        // this.apiService.getPromise<any[]>('/collaborator/publishers/top/online-publishers', { limit: 10 }),
+        // this.apiService.getPromise<any[]>('/collaborator/publishers/top/ordered-publishers', { limit: 10 }),
       ]);
 
       /** Prepare data */
-      // lineData['numOfOrderLine1Data'] = statisticsData[0].map(statistic => { statistic.Label = statistic.Timeline; statistic.Timeline = statistic.Timeline; return statistic; });
       lineData['numOfOrderLine1Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
       lineData['numOfOrderLine2Data'] = statisticsData[1].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
       lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); return statistic; });
-      // lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      // lineData['numOfOrderLine4Data'] = statisticsData[3].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      // lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = statistic.NumOfVouchers; statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-      // lineData['numOfOrderLine6Data'] = statisticsData[5].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
 
       timeline = [...new Set([
         ...lineData['numOfOrderLine1Data'].map(item => item['Timeline']),
         ...lineData['numOfOrderLine2Data'].map(item => item['Timeline']),
         ...lineData['numOfOrderLine3Data'].map(item => item['Timeline']),
-        // ...lineData['numOfOrderLine3Data'].map(item => item['Timeline']),
-        // ...lineData['numOfOrderLine4Data'].map(item => item['Timeline']),
-        // ...lineData['numOfOrderLine5Data'].map(item => item['Timeline']),
-        // ...lineData['numOfOrderLine6Data'].map(item => item['Timeline']),
       ].sort())];
       labels = [];
 
@@ -1311,10 +1316,6 @@ export class CollaboratorDashboardComponent extends BaseComponent {
         const point1 = lineData['numOfOrderLine1Data'].find(f => f.Timeline == t);
         const point2 = lineData['numOfOrderLine2Data'].find(f => f.Timeline == t);
         const point3 = lineData['numOfOrderLine3Data'].find(f => f.Timeline == t);
-        // const point3 = lineData['numOfOrderLine3Data'].find(f => f.Timeline == t);
-        // const point4 = lineData['numOfOrderLine4Data'].find(f => f.Timeline == t);
-        // const point5 = lineData['numOfOrderLine5Data'].find(f => f.Timeline == t);
-        // const point6 = lineData['numOfOrderLine6Data'].find(f => f.Timeline == t);
         labels.push(
           point1?.Label
           || point2?.Label
@@ -1355,7 +1356,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
                 display: true,
                 scaleLabel: {
                   display: true,
-                  labelString: 'Chu kỳ hiện tại',
+                  labelString: 'Thời gian',
                 },
                 gridLines: {
                   display: true,
