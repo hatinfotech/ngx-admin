@@ -320,8 +320,8 @@ export class CollaboratorDashboardComponent extends BaseComponent {
         previous12month.setDate(1);
         this.dateReportList = [
           { id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)', range: [this.cms.getBeginOfDate(today), this.cms.getEndOfDate(today)] },
-          { id: 'DAY', text: 'Phân tích theo tháng (30 ngày gần nhất)', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0, 0), new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds(), today.getMilliseconds())] },
           { id: 'DAYOFWEEK', text: 'Phân tích theo tuần (các ngày trong tuần)', range: [this.getUpcomingMonday(), this.getUpcomingSunday()] },
+          { id: 'DAY', text: 'Phân tích theo tháng (30 ngày gần nhất)', range: [new Date(previousMonth.getFullYear(), previousMonth.getMonth(), previousMonth.getDate(), 0, 0, 0, 0), new Date(today.getFullYear(), today.getMonth(), today.getDate(), today.getHours(), today.getMinutes(), today.getSeconds(), today.getMilliseconds())] },
           { id: 'MONTH', text: 'Phân tích theo năm (các tháng trong năm)', range: [previous12month, today] },
         ];
       });

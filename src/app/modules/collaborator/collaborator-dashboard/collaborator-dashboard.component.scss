@@ -20,11 +20,13 @@
 // }
 
 @import "../../../@theme/styles/themes";
+
 // :root {
 // }
 @include nb-install-component() {
   --summary-components-height: 16.8rem;
   --tabset-height: 3.1rem;
+
   nb-card.status-card {
     flex-direction: row;
     align-items: center;
@@ -53,6 +55,7 @@
       nb-icon {
         font-size: 3.75rem;
       }
+
       nb-icon[pack="ion"] {
         height: initial;
         width: initial;
@@ -62,24 +65,16 @@
         &.status-#{$status} {
           $left-color: nb-theme(button-hero-#{$status}-left-background-color);
           $right-color: nb-theme(button-hero-#{$status}-right-background-color);
-          background-image: linear-gradient(
-            to right,
-            $left-color,
-            $right-color
-          );
+          background-image: linear-gradient(to right,
+              $left-color,
+              $right-color );
 
           &:hover {
-            $left-hover-color: nb-theme(
-              button-hero-#{$status}-hover-left-background-color
-            );
-            $right-hover-color: nb-theme(
-              button-hero-#{$status}-hover-right-background-color
-            );
-            background-image: linear-gradient(
-              to right,
-              $left-hover-color,
-              $right-hover-color
-            );
+            $left-hover-color: nb-theme(button-hero-#{$status}-hover-left-background-color);
+            $right-hover-color: nb-theme(button-hero-#{$status}-hover-right-background-color);
+            background-image: linear-gradient(to right,
+                $left-hover-color,
+                $right-hover-color );
           }
         }
       }
@@ -143,16 +138,33 @@
   nb-card.size-giant {
     // height: 31.52rem;
   }
+
   nb-card {
     margin-bottom: 1rem;
   }
 }
 
 .top-card nb-card-header {
-  padding: 0.2rem;
+  padding: 0.25rem;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+
   .form-group {
     // height: 3rem;
     margin: 0;
     padding: 0;
+  }
+}
+
+// How to use theme variables (https://akveo.github.io/nebular/docs/design-system/default-theme)
+@include nb-install-component() {
+  nb-list {
+    nb-list-item {
+      cursor: pointer;
+
+      &:hover {
+        background-color: nb-theme(color-info-transparent-hover);
+      }
+    }
   }
 }
