@@ -33,26 +33,19 @@
               </div>
             </div>
 
-            <div style="display: flex">
-              <div style="flex: 1">
-                <label class="label">{{'Danh sách CTV Bán Hàng' | translate | headtitlecase}}</label>
+            <div class="row">
+              <div class="col-md-6">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS CTV Bán Hàng'" [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Publisher']" (onReady)="onGridReady($event)" (onNodesSelected)="onPublishersSelected($event)" (onComponentInit)="onGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
               </div>
-              <div>
-                <button style="margin: 0.2rem;" nbButton status="success" size="tiny" (click)="addProduct(formItem)">Thêm</button>
-                <button style="margin: 0.2rem;" nbButton status="primary" size="tiny" (click)="editSelectedPublishers(formItem)">Cài đặt</button>
-                <button style="margin: 0.2rem;" nbButton status="danger" size="tiny" (click)="removeSelectedPublishers(formItem)">Gỡ</button>
+              <div class="col-md-6">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'DS sản phẩm theo CTV: ' + (productExtendData?.publisher?.PublisherName || '' )" [columnDefs]="productsColumnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['Product', 'Unit']" (onReady)="onProductGridReady($event)" (onComponentInit)="onProductGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
               </div>
-            </div>
-            <div class="ag-grid-wrap" style="height: 300px; border: #ccc 1px solid; border-radius: 3px; overflow: hidden;">
-              <ag-grid-angular #agGrid style="width: 100%; height: 100%;" id="myGrid" class="ag-theme-balham{{themeName ? ('-'+themeName) : ''}}" [modules]="modules" [columnDefs]="columnDefs" [floatingFilter]="false" [debug]="true" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowDeselection]="true" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination" [getRowStyle]="getRowStyle" (cellDoubleClicked)="cellDoubleClicked($event)">
-              </ag-grid-angular>
             </div>
 
           </div>
         </nb-card-body>
         <nb-card-footer>
           <div class="buttons-row" style="text-align: right;">
-            <!-- <button nbButton status="warning" (click)="addFormGroup($event)" hero>Thêm cái nữa</button> -->
             <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
             <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>Lưu</button>
           </div>

@@ -1,8 +1,8 @@
 <div class="card-header-container size-{{size}}" >
-  <div class="title item">
+  <div class="title item" [ngClass]="{'headtitle-nowrap': titleNowrap}">
     <nb-icon *ngIf="icon" [pack]="icon.pack" [icon]="icon.name"></nb-icon> {{title}}
   </div>
   <div class="controls item">
-    <ngx-action-control-list [list]="controls" [option]="option?.controlOption"></ngx-action-control-list>
+    <ngx-action-control-list [nowrap]="titleNowrap" [list]="controls" [option]="option?.controlOption"></ngx-action-control-list>
   </div>
 </div>

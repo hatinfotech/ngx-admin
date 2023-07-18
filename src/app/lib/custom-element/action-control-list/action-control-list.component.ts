@@ -15,6 +15,7 @@ export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewI
   @Input() hideLabel: boolean = false;
   @Input() hideIcon: boolean = false;
   @Input() option: ActionControlListOption;
+  @Input() nowrap = false;
 
   @ViewChild('actionList') actionListEle: ElementRef;
   protected destroy$: Subject<void> = new Subject<void>();

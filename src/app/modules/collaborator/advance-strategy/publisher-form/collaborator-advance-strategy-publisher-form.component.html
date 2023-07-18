@@ -49,7 +49,7 @@
               </div>
               <div class="col-sm-2">
                 <ngx-form-group [formGroup]="formItem" name="IsAutoExtended" label="Cho phép bán thêm" [array]="array" [index]="i" [allowCopy]="true" [required]="false">
-                  <nb-checkbox formControlName="IsAutoExtended" title="Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách">Cho phép team CSKH tư vấn bán thêm</nb-checkbox>
+                  <nb-checkbox formControlName="IsAutoExtended" title="Cho phép team CSKH tư vấn bán thêm nhằm tiết kiệm chi phí vận chuyển cho khách"><span style="white-space:normal !important">Cho phép team CSKH tư vấn bán thêm</span></nb-checkbox>
                 </ngx-form-group>
               </div>
 
@@ -68,7 +68,7 @@
                   <div class="form-detail-item">
                     <div class="row">
                       <div class="col-sm-3">
-                        <ngx-form-group [formGroup]="formItem" name="Level1Badge" label="CTV Bán Hàng Đồng 1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level1Badge" label="CTV Bán Hàng Đồng 1" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                           <input type="text"nbInput fullWidth formControlName="Level1Badge" placeholder="CTV Bán Hàng Đồng 1">
                         </ngx-form-group>
                       </div>
@@ -109,7 +109,7 @@
                   <div class="form-detail-item">
                     <div class="row">
                       <div class="col-sm-2">
-                        <ngx-form-group [formGroup]="formItem" name="Level2ExtBadge" label="Label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level2ExtBadge" label="Label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                           <input type="text" nbInput fullWidth formControlName="Level2ExtBadge" placeholder="CTV Bán Hàng Bạc 2">
                         </ngx-form-group>
                       </div>
@@ -158,7 +158,7 @@
                   <div class="form-detail-item">
                     <div class="row">
                       <div class="col-sm-2">
-                        <ngx-form-group [formGroup]="formItem" name="Level3ExtBadge" label="Label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                        <ngx-form-group [hideLabel]="true" [formGroup]="formItem" name="Level3ExtBadge" label="Label" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                           <input type="text" nbInput fullWidth formControlName="Level3ExtBadge" placeholder="CTV Bán Hàng Vàng 3">
                         </ngx-form-group>
                       </div>

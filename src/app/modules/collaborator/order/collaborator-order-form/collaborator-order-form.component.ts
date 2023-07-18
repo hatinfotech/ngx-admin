@@ -24,6 +24,7 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -147,6 +148,59 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       text: 'Name',
     },
   };
+
+  select2Options = {};
+  makeSelect2OptionForAddonProfiles(formItem: FormGroup, formDetail: FormGroup, detailIndex: number): Select2Option {
+    if (!this.select2Options['AddonProfiles']) {
+      this.select2Options['AddonProfiles'] = {};
+    }
+    if (!this.select2Options['AddonProfiles'][detailIndex]) {
+      this.select2Options['AddonProfiles'][detailIndex] = {
+        placeholder: 'Add-on Profiles...',
+        allowClear: true,
+        width: '100%',
+        dropdownAutoWidth: true,
+        minimumInputLength: 0,
+        multiple: false,
+        keyMap: {
+          id: 'Code',
+          text: 'Name',
+        },
+        ajax: {
+          transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+            console.log(settings);
+            const params = settings.data;
+            this.apiService.getPromise('/collaborator/addon-strategies/by-publisher', {
+              filter_StrategyTitle: params['term'] ? params['term'] : '',
+              page: this.cms.getObjectId(formItem.get('Page').value),
+              publisher: this.cms.getObjectId(formItem.get('Publisher').value),
+              product: this.cms.getObjectId(formDetail.get('Product').value),
+              unit: this.cms.getObjectId(formDetail.get('Unit').value),
+              limit: 20
+            }).then(rs => {
+              success(rs);
+            }).catch(err => {
+              console.error(err);
+              failure();
+            });
+            return null;
+          },
+          delay: 300,
+          processResults: (data: any, params: any) => {
+            // console.info(data, params);
+            return {
+              results: data.map(item => {
+                item['id'] = item['Strategy'];
+                item['text'] = item['StrategyTitle'];
+                return item;
+              }),
+            };
+          },
+        },
+      };
+    }
+    return this.select2Options['AddonProfiles'][detailIndex];
+  }
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
@@ -288,9 +342,6 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       text: 'Title',
     },
     ajax: {
-      // url: params => {
-      //   return this.apiService.buildApiUrl('/sales/master-price-tables', { filter_Title: params['term'] ? params['term'] : '', limit: 20 });
-      // },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
         console.log(settings);
         const params = settings.data;
@@ -719,14 +770,14 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         details.clear();
 
         const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => `${this.cms.getObjectId(this.collaboratorService.currentpage$.value)}-${this.cms.getObjectId(m.Product)}`);
-        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/collaborator/page-products', { 
-          id: productIds, 
+        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/collaborator/page-products', {
+          id: productIds,
           includeIdText: true,
           includeProduct: true,
           includeUnit: true,
           includeUnitPrices: true,
           productOfPage: true,
-         }).then(rs => rs.reduce((prev, next, i) => {
+        }).then(rs => rs.reduce((prev, next, i) => {
           prev[this.cms.getObjectId(next)] = next;
           return prev;
         }, {}));
@@ -889,6 +940,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // Reason: [''],
       // AccessNumbers: [],
       // Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
+      AddonProfiles: [],
     });
 
     if (data) {

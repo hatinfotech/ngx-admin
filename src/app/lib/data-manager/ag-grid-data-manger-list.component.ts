@@ -12,7 +12,7 @@ import { AgGridAngular } from '@ag-grid-community/angular';
 //   IGetRowsParams, IDatasource
 // } from '@ag-grid-community/all-modules';
 import { map, takeUntil } from 'rxjs/operators';
-import { ColumnApi, GridApi, IDatasource, Module } from 'ag-grid-community';
+import { ColumnApi, GridApi, IDatasource, IRowNode, Module } from 'ag-grid-community';
 import { ColDef, GridOptions, IGetRowsParams, RowHeightParams, RowModelType, SelectionChangedEvent } from '@ag-grid-community/core';
 import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
@@ -42,7 +42,10 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() gridHeight = '100%';
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
   @Input() onInit: (component: AgGridDataManagerListComponent<M, F>) => void;
+  @Output() onComponentInit =  new EventEmitter<AgGridDataManagerListComponent<M, F>>();
   @Output() onItemsChoosed = new EventEmitter<M[]>();
+  @Output() onItemsSelected = new EventEmitter<M[]>();
+  @Output() onNodesSelected = new EventEmitter<IRowNode<M>[]>();
 
 
   public refreshPendding = false;
@@ -322,9 +325,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   onSelectionChanged(event: SelectionChangedEvent<M>) {
-    console.log(event);
     this.selectedItems = this.gridApi.getSelectedRows();
     this.selectedIds = this.selectedItems.map(m => this.makeId(m));
+    console.log('onSelectionChanged: ', event, this.selectedItems, this.selectedIds);
+    this.onItemsSelected.emit(this.selectedItems);
+    this.onNodesSelected.emit(this.gridApi.getSelectedNodes());
   }
 
   getList(callback: (list: M[]) => void) {

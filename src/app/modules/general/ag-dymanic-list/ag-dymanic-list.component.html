@@ -1,6 +1,6 @@
 <nb-card class="small-header ag-grid-card" style="height: 100%;" [nbSpinner]="loading" [ngStyle]="{width: width, height: height, margin: isEmbed && '0 !important' || null}">
   <nb-card-header>
-    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : 'Danh sách') + ' - ' + (selectedIds.length ?  ('Đã chọn '+selectedIds.length + '/') : '') + infiniteInitialRowCount" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [titleNowrap]="titleNowrap" [size]="size" [icon]="favicon" [title]="(title ? title : 'Danh sách') +  (selectedIds.length ?  (' - ' +'Đã chọn ' + selectedIds.length) : '') + (infiniteInitialRowCount && ('/' + infiniteInitialRowCount) || '')" [controls]="actionButtonList"></ngx-card-header>
   </nb-card-header>
 
   <nb-card-body>
@@ -25,18 +25,19 @@
     [getRowNodeId]="getRowNodeId" 
     [components]="components" 
     [rowData]="rowData" 
-    (gridReady)="onGridReady($event)" 
-    (selectionChanged)="onSelectionChanged($event)" 
     [multiSortKey]="multiSortKey" 
     [rowDragManaged]="rowDragManaged" 
     [getRowHeight]="getRowHeight" 
     [rowHeight]="rowHeight" 
     [rowHeight]="rowHeight" 
-    (columnResized)="onColumnResized()" 
-    (rowSelected)="onRowSelected()" 
     [pagination]="pagination"
     [rowMultiSelectWithClick]="rowMultiSelectWithClick"
     [suppressRowClickSelection]="suppressRowClickSelection"
+    (columnResized)="onColumnResized()" 
+    (rowSelected)="onRowSelected()" 
+    (gridReady)="onGridReady($event)" 
+    (selectionChanged)="onSelectionChanged($event)" 
+    (onRowDataUpdated)="_onRowDataUpdated($event)" 
     >
     </ag-grid-angular>
   </nb-card-body>

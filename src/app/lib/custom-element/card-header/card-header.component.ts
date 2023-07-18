@@ -12,7 +12,8 @@ export class CardHeaderComponent implements OnInit {
   @Input() icon?: Icon;
   @Input() size?: string;
   @Input() controls?: ActionControl[];
-  @Input() option?: {controlOption: ActionControlListOption};
+  @Input() option?: { controlOption: ActionControlListOption };
+  @Input() titleNowrap: boolean = false;
 
   constructor() {
     console.log('debug');

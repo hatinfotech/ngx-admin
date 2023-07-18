@@ -506,8 +506,10 @@ export interface CollaboratorAdvanceStrategyPublisherModel {
     ExtendTermPublishers?: string;
     ExtendTermRatio?: string;
     Description?: string;
+    Products?: CollaboratorAdvanceStrategyProductModel[];
 }
 
+export interface CollaboratorAdvanceStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorAddonStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorRebuyStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorAddonStrategyPublisherModel extends CollaboratorAdvanceStrategyPublisherModel { }

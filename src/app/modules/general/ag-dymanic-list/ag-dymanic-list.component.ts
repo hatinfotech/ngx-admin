@@ -8,7 +8,7 @@ import { ApiService } from "../../../services/api.service";
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from "@nebular/theme";
 import { Router } from "@angular/router";
 import { CommonService } from "../../../services/common.service";
-import { IGetRowsParams } from "@ag-grid-community/core";
+import { IGetRowsParams, RowDataUpdatedEvent } from "@ag-grid-community/core";
 
 
 @Component({
@@ -33,7 +33,10 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
   @Input() width = '100%';
   @Input() height = '500px';
   @Input() isEmbed = false;
+  @Input() extendData?: any;
+  @Input() titleNowrap: boolean = false;
   @Output() onReady = new EventEmitter<any>();
+  @Output() onRowDataUpdated = new EventEmitter<M>();
 
 
   constructor(
@@ -65,6 +68,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
       if (this.onInit) {
         this.onInit(this);
       }
+      this.onComponentInit.emit(this);
       return state;
     });
   }
@@ -115,4 +119,9 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
   openFormDialplog(ids?: string[], onDialogSave?: (newData: Model[]) => void, onDialogClose?: () => void): void {
     throw new Error("Method not implemented.");
   }
+
+  _onRowDataUpdated?(event: RowDataUpdatedEvent<M>) {
+    console.log('onRowDataUpdated', event);
+    this.onRowDataUpdated.emit(null);
+  };
 }

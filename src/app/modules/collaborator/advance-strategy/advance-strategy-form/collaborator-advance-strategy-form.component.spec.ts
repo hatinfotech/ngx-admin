@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CollaboratorAdvanceStrategyFormComponent } from './collaborator-advance-strategy-form-form.component';
+import { CollaboratorAdvanceStrategyFormComponent } from './collaborator-advance-strategy-form.component';
 
 describe('CollaboratorAdvanceStrategyFormComponent', () => {
   let component: CollaboratorAdvanceStrategyFormComponent;

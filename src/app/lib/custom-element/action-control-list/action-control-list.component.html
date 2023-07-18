@@ -1,4 +1,4 @@
-<div class="action-list" #actionList>
+<div class="action-list" #actionList [ngClass]="{'action-list-nowrap': nowrap}">
   <div class="buttons-row">
     <!-- <ng-content select="ngx-action-control-begin"></ng-content> -->
     <ng-template ngFor let-control [ngForOf]="list" let-i="index">
