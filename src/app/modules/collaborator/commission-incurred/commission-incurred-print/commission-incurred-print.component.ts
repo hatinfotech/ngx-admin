@@ -1,5 +1,4 @@
-import { SalesPriceReportModel } from './../../../../models/sales.model';
-import { CollaboratorOrderModel, CollaboratorOrderDetailModel } from './../../../../models/collaborator.model';
+import { SalesPriceReportModel } from '../../../../models/sales.model';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -14,31 +13,31 @@ import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { CollaboratorService } from '../../collaborator.service';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
-import { CollaboratorOrderTeleCommitPrintComponent } from '../collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
-import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
+import { CollaboratorCommissionIncurredFormComponent } from '../commission-incurred-form/commission-incurred-form.component';
 import { filter, take } from 'rxjs/operators';
+import { CollaboratorCommissionIncurredDetailModel, CollaboratorCommissionIncurredModel } from '../../../../models/collaborator.model';
 
 @Component({
-  selector: 'ngx-collaborator-order-print',
-  templateUrl: './collaborator-order-print.component.html',
-  styleUrls: ['./collaborator-order-print.component.scss']
+  selector: 'ngx-collaborator-commission-incurred-print',
+  templateUrl: './commission-incurred-print.component.html',
+  styleUrls: ['./commission-incurred-print.component.scss']
 })
-export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<CollaboratorOrderModel> implements OnInit {
+export class CollaboratorCommissionIncurredPrintComponent extends DataManagerPrintComponent<CollaboratorCommissionIncurredModel> implements OnInit {
 
   /** Component name */
-  componentName = 'CollaboratorOrderPrintComponent';
+  componentName = 'CollaboratorCommissionIncurredPrintComponent';
   title: string = 'Xem trước đơn hàng';
-  apiPath = '/collaborator/orders';
+  apiPath = '/collaborator/commissions-incurred';
   env = environment;
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
-  formDialog = CollaboratorOrderFormComponent;
+  formDialog = CollaboratorCommissionIncurredFormComponent;
 
   constructor(
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<CollaboratorOrderPrintComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionIncurredPrintComponent>,
     public collaboratorService: CollaboratorService,
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
@@ -74,13 +73,13 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //     }
     //   }
-    //   this.processMapList[i] = AppModule.processMaps.collaboratoOrder[data.State || ''];
+    //   this.processMapList[i] = AppModule.processMaps.collaboratoCommissionIncurred[data.State || ''];
     // }
     this.summaryCalculate(this.data);
     return result;
   }
 
-  // getIdentified(data: CollaboratorOrderModel): string[] {
+  // getIdentified(data: CollaboratorCommissionIncurredModel): string[] {
   //   if (this.idKey && this.idKey.length > 0) {
   //     return this.idKey.map(key => data[key]);
   //   } else {
@@ -88,7 +87,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   //   }
   // }
 
-  renderTitle(data: CollaboratorOrderModel) {
+  renderTitle(data: CollaboratorCommissionIncurredModel) {
     return `Don_Hang_${this.getIdentified(data).join('-')}` + (data.DateofOrder ? ('_' + this.datePipe.transform(data.DateofOrder, 'short')) : '');
   }
 
@@ -109,7 +108,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     }
   }
 
-  toMoney(detail: CollaboratorOrderDetailModel) {
+  toMoney(detail: CollaboratorCommissionIncurredDetailModel) {
     if (detail.Type !== 'CATEGORY') {
       let toMoney = detail['Quantity'] * detail['Price'];
       if (detail.Tax) {
@@ -123,7 +122,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return 0;
   }
 
-  getTotal(data: CollaboratorOrderModel) {
+  getTotal(data: CollaboratorCommissionIncurredModel) {
     let total = 0;
     const details = data.Details;
     let no = 1;
@@ -137,7 +136,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return total;
   }
 
-  saveAndClose(data: CollaboratorOrderModel) {
+  saveAndClose(data: CollaboratorCommissionIncurredModel) {
     if (this.onSaveAndClose) {
       this.onSaveAndClose(data);
     }
@@ -155,7 +154,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     return '';
   }
 
-  prepareCopy(data: CollaboratorOrderModel) {
+  prepareCopy(data: CollaboratorCommissionIncurredModel) {
     this.close();
     this.cms.openDialog(SalesPriceReportFormComponent, {
       context: {
@@ -163,7 +162,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: CollaboratorOrderModel[]) => {
+        onDialogSave: (newData: CollaboratorCommissionIncurredModel[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose && this.onClose(newData[0]);
           this.onSaveAndClose && this.onSaveAndClose(newData[0]);
@@ -176,7 +175,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     });
   }
 
-  approvedConfirm(data: CollaboratorOrderModel, index: number) {
+  approvedConfirm(data: CollaboratorCommissionIncurredModel, index: number) {
     if (['COMPLETE'].indexOf(this.cms.getObjectId(data.State)) > -1) {
       this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
         {
@@ -234,7 +233,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<CollaboratorOrderModel[]>(this.apiPath, params, [{ Page: data.Page, Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<CollaboratorCommissionIncurredModel[]>(this.apiPath, params, [{ Page: data.Page, Code: data.Code }]).then(rs => {
             this.loading = true;
             this.onChange && this.onChange(data);
             this.close();
@@ -260,7 +259,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorOrderModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
+    return this.apiService.getPromise<CollaboratorCommissionIncurredModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
         this.setDetailsNo(rs[0].Details, (detail: SalesPriceReportDetailModel) => detail.Type !== 'CATEGORY');
         // let total = 0;
@@ -284,11 +283,11 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     });
   }
 
-  getItemDescription(item: CollaboratorOrderModel) {
+  getItemDescription(item: CollaboratorCommissionIncurredModel) {
     return item?.Title;
   }
 
-  summaryCalculate(data: CollaboratorOrderModel[]) {
+  summaryCalculate(data: CollaboratorCommissionIncurredModel[]) {
 
     for (const i in data) {
       const datanium = data[i];
@@ -309,7 +308,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
           datanium['Total'] += detail['ToMoney'] = this.toMoney(detail);
         }
       }
-      this.processMapList[i] = AppModule.processMaps.collaboratoOrder[this.cms.getObjectId(datanium.State) || ''];
+      this.processMapList[i] = AppModule.processMaps.collaboratoCommissionIncurred[this.cms.getObjectId(datanium.State) || ''];
     }
 
     // for (const i in data) {
@@ -327,7 +326,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   openRelativeVoucher(relativeVocher: any) {
     if (relativeVocher) {
       if (relativeVocher.type == 'PRICEREPORT') {
-        this.cms.openDialog(CollaboratorOrderTeleCommitPrintComponent, {
+        this.cms.openDialog(CollaboratorCommissionIncurredPrintComponent, {
           context: {
             showLoadinng: true,
             title: 'Xem trước',

@@ -1379,7 +1379,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(this.cms.getObjectId(relativeVocher.type), relativeVocher);
     return false;
   }
 

@@ -24,6 +24,7 @@ import { CollaboratorSubscriptionProductComponent } from "./product/collaborator
 import { CollaboratorPublisherListComponent } from "./publisher/collaborator-publisher-list/collaborator-publisher-list.component";
 import { CollaboratorRebuyStrategyListComponent } from "./rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component";
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
+import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -300,6 +301,14 @@ export const collaboratorRoutes: Routes = [
         path: 'collaborator/rebuy-strategy/list',
         canActivate: [AuthGuardService],
         component: CollaboratorRebuyStrategyListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/commission-incurred/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorCommissionIncurredListComponent,
         data: {
           reuse: true,
         },

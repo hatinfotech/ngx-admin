@@ -63,6 +63,57 @@ export interface CollaboratorOrderDetailModel {
     Currency?: string;
     Unit?: string;
 }
+export interface CollaboratorCommissionIncurredModel {
+    [key: string]: any;
+    Id?: string;
+    Page?: string;
+    Publisher?: string;
+    PublisherName?: string;
+    PublisherPhone?: string;
+    PublisherEmail?: string;
+    PublisherAddress?: string;
+    ReferralContact?: string;
+    ReferralContactName?: string;
+    ReferralContactPhone?: string;
+    ReferralContactEmail?: string;
+    ReferralContactAddress?: string;
+    Code?: string;
+    Object?: string;
+    ObjectName?: string;
+    ObjectAddress?: string;
+    ObjectPhone?: string;
+    ObjectEmail?: string;
+    ObjectTaxCode?: string;
+    ObjectBank?: string;
+    ObjectBankName?: string;
+    ObjectBankAccount?: string;
+    ObjectIdentifiedNumber?: string;
+    VoucherDate?: string;
+    IsExportVatInvoice?: string;
+    Title?: string;
+    Note?: string;
+    SubNote?: string;
+    State?: string;
+    Permission?: string;
+    Thread?: string;
+    RelativeVouchers?: any[];
+
+    Details?: CollaboratorCommissionIncurredDetailModel[];
+}
+
+export interface CollaboratorCommissionIncurredDetailModel {
+    [key: string]: any;
+    Id?: string;
+    Voucher?: string;
+    Type?: string;
+    No?: number;
+    Image?: string;
+    Product?: string;
+    Description?: string;
+    Quantity?: number;
+    Price?: number;
+    Unit?: string;
+}
 
 export interface CollaboratorCommissionVoucherModel {
     [key: string]: any;

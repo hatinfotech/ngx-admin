@@ -1077,7 +1077,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(this.cms.getObjectId(relativeVocher.type), relativeVocher);
     // if (relativeVocher) {
     //   if (relativeVocher.type == 'PURCHASEORDER') {
     //     this.cms.openDialog(PurchaseOrderVoucherPrintComponent, {

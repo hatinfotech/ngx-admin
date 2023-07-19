@@ -64,6 +64,7 @@ import { CommercePosDeploymentVoucherPrintComponent } from '../modules/commerce-
 import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { MasterPriceTableUpdateNotePrintComponent } from '../modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
+import { CollaboratorCommissionIncurredPrintComponent } from '../modules/collaborator/commission-incurred/commission-incurred-print/commission-incurred-print.component';
 
 declare var $: any;
 interface ClipboardItem {
@@ -188,6 +189,7 @@ export class CommonService {
     COMMERCEPOSORDER: { prefix: '128', id: 'COMMERCEPOSORDER', text: 'Đơn hàng POS', symbol: 'DHPOS', status: 'success' },
     COMMERCEPOSRETURN: { prefix: '129', id: 'COMMERCEPOSRETURN', text: 'Phiếu trả hàng POS', symbol: 'PTHPOS', status: 'warning' },
     DEPLOYMENT: { prefix: '113', id: 'DEPLOYMENT', text: 'Phiếu triển khai', symbol: 'PTK', status: 'danger' },
+    CLBRTCOMMISSIONINCURRED: { prefix: '142', id: 'CLBRTCOMMISSIONINCURRED', text: 'Chiết khấu phát sinh', symbol: 'CKPS', status: 'info' },
     CLBRTORDER: { prefix: '114', id: 'CLBRTORDER', text: 'Đơn hàng CTV', symbol: 'DHCTV', status: 'info' },
     CLBRTCOMMISSION: { prefix: '139', id: 'CLBRTCOMMISSION', text: 'Phiếu chốt chiết khấu CTV', symbol: 'CKCTV', status: 'success' },
     CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK', status: 'warning' },
@@ -1036,6 +1038,7 @@ export class CommonService {
     'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
+    'CLBRTCOMMISSIONINCURRED': CollaboratorCommissionIncurredPrintComponent,
     'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
     'COMMERCEPOSORDER80': CommercePosBillPrintComponent,
     'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,
@@ -1059,6 +1062,7 @@ export class CommonService {
     '128': CommercePosOrderPrintComponent,
     '139': CollaboratorCommissionPrintComponent,
     '140': MasterPriceTableUpdateNotePrintComponent,
+    '142': CollaboratorCommissionIncurredPrintComponent,
     'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
     'CLBRTCOMMISSION': CollaboratorCommissionPrintComponent,
     'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,
@@ -1069,6 +1073,7 @@ export class CommonService {
     'CLBRTQUARTERLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTYEARLYAWARD': CollaboratorAwardPrintComponent,
     'CLBRTEXTENDTERM': CollaboratorEducationArticlePrintComponent,
+    'CLBRTCOMMISSIONINCURRED': CollaboratorCommissionIncurredPrintComponent,
     'COMMERCEPOSORDER': CommercePosOrderPrintComponent,
     'COMMERCEPOSORDER80': CommercePosBillPrintComponent,
     'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,

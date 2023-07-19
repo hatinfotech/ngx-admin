@@ -16,6 +16,9 @@ import { CollaboratorRevenueStatisticsComponent } from "./collaborator-dashboard
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
 import { CollaboratorMostOfDebtComponent } from "./collaborator-dashboard/collaborator-most-of-debt/collaborator-most-of-debt.component";
 import { CollaboratorPageComponent } from "./collaborator-page/collaborator-page.component";
+import { CollaboratorCommissionIncurredFormComponent } from "./commission-incurred/commission-incurred-form/commission-incurred-form.component";
+import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
+import { CollaboratorCommissionIncurredPrintComponent } from "./commission-incurred/commission-incurred-print/commission-incurred-print.component";
 import { CollaboratorCommissionPaymentFormComponent } from "./commission-payment/collaborator-commission-payment-form/collaborator-commission-payment-form.component";
 import { CollaboratorCommissionPaymentListComponent } from "./commission-payment/collaborator-commission-payment-list/collaborator-commission-payment-list.component";
 import { CollaboratorCommissionPaymentPrintComponent } from "./commission-payment/collaborator-commission-payment-print/collaborator-commission-payment-print.component";
@@ -68,4 +71,7 @@ export const collaboratorComponents = [
     CollaboratorDashboardComponent,
     CollaboratorRevenueStatisticsComponent,
     CollaboratorMostOfDebtComponent,
+    CollaboratorCommissionIncurredListComponent,
+    CollaboratorCommissionIncurredFormComponent,
+    CollaboratorCommissionIncurredPrintComponent,
 ];

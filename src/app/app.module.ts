@@ -1792,6 +1792,29 @@ export class AppModule {
         ],
       },
     },
+    collaboratoCommissionIncurred: {
+      "NOTJUSTAPPROVED": {
+        ...AppModule.notJustApprodedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'UNRECORDED',
+        nextStates: [
+          AppModule.unrecordedState,
+        ],
+      },
+      "UNRECORDED": {
+        ...AppModule.unrecordedState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+        ],
+      },
+    },
     collaboratorEdutcationArticle: {
       "APPROVED": {
         ...AppModule.approvedState,

@@ -696,7 +696,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
   }
 
   openRelativeVoucher(relativeVocher: any) {
-    if (relativeVocher) this.cms.previewVoucher(relativeVocher.type, relativeVocher);
+    if (relativeVocher) this.cms.previewVoucher(this.cms.getObjectId(relativeVocher.type), relativeVocher);
     // if (relativeVocher && relativeVocher.type == 'PURCHASE') {
     //   this.cms.openDialog(PurchaseVoucherPrintComponent, {
     //     context: {

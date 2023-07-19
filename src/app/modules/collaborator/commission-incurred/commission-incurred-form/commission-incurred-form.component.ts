@@ -23,15 +23,17 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
-import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { CollaboratorCommissionIncurredPrintComponent } from '../commission-incurred-print/commission-incurred-print.component';
+import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 
 @Component({
-  selector: 'ngx-collaborator-order-form',
-  templateUrl: './collaborator-order-form.component.html',
-  styleUrls: ['./collaborator-order-form.component.scss']
+  selector: 'ngx-collaborator-commission-incurred-form',
+  templateUrl: './commission-incurred-form.component.html',
+  styleUrls: ['./commission-incurred-form.component.scss']
 })
-export class CollaboratorOrderFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
+export class CollaboratorCommissionIncurredFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -41,7 +43,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public toastrService: NbToastrService,
     public dialogService: NbDialogService,
     public cms: CommonService,
-    public ref: NbDialogRef<CollaboratorOrderFormComponent>,
+    public ref: NbDialogRef<CollaboratorCommissionIncurredFormComponent>,
     public collaboratorService: CollaboratorService,
     public adminProductService: AdminProductService,
     public mobileAppService: MobileAppService,
@@ -64,9 +66,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     });
   }
 
-  componentName: string = 'CollaboratorOrderFormComponent';
+  componentName: string = 'CollaboratorCommissionIncurredFormComponent';
   idKey = 'Code';
-  apiPath = '/collaborator/orders';
+  apiPath = '/collaborator/commissions-incurred';
   baseFormUrl = '/collaborator/order/form';
   listUrl = '/collaborator/page/order/list';
 
@@ -547,7 +549,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   async init(): Promise<boolean> {
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Code: '[CLBRTTMPCOMMISSION,NETREVENUE,NETREVENUESERVICE]', select: 'id=>Code,text=>Name,type=>Type' });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id
@@ -563,34 +565,34 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         });
       }
 
-      this.actionButtonList.unshift({
-        type: 'button',
-        name: 'click2call',
-        status: 'danger',
-        label: 'Gọi cho khách',
-        icon: 'phone-call-outline',
-        title: 'Gọi cho khách',
-        size: 'medium',
-        click: () => {
-          this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
-            {
-              status: 'basic',
-              label: 'Trở về',
-            },
-            {
-              status: 'danger',
-              icon: 'phone-call-outline',
-              label: 'Gọi ngay',
-              action: () => {
-                this.apiService.putPromise(this.apiPath + '/' + this.id[0], { click2call: true }, [{ Code: this.id[0] }]).then(rs => {
-                  console.log(rs);
-                });
-              },
-            }
-          ]);
-          return false;
-        },
-      });
+      // this.actionButtonList.unshift({
+      //   type: 'button',
+      //   name: 'click2call',
+      //   status: 'danger',
+      //   label: 'Gọi cho khách',
+      //   icon: 'phone-call-outline',
+      //   title: 'Gọi cho khách',
+      //   size: 'medium',
+      //   click: () => {
+      //     this.cms.showDialog('Click2Call', 'Bạn có muốn gọi cho khách hàng không ? hệ thống sẽ gọi xuống cho số nội bộ của bạn trước, hãy đảm bảo số nội bộ của bạn đang online !', [
+      //       {
+      //         status: 'basic',
+      //         label: 'Trở về',
+      //       },
+      //       {
+      //         status: 'danger',
+      //         icon: 'phone-call-outline',
+      //         label: 'Gọi ngay',
+      //         action: () => {
+      //           this.apiService.putPromise(this.apiPath + '/' + this.id[0], { click2call: true }, [{ Code: this.id[0] }]).then(rs => {
+      //             console.log(rs);
+      //           });
+      //         },
+      //       }
+      //     ]);
+      //     return false;
+      //   },
+      // });
 
       this.actionButtonList.unshift({
         type: 'button',
@@ -820,27 +822,16 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       ObjectAddress: { value: null, disabled: true },
       ObjectBankName: { value: null, disabled: true },
       ObjectBankAccount: { value: null, disabled: true },
-      // ObjectIdentifiedNumber: [''],
-      // Contact: [''],
-      // ContactName: [''],
-      // ContactPhone: [''],
-      // ContactEmail: [''],
-      // ContactAddress: [''],
-      // ContactIdentifiedNumber: [''],
-      // ObjectTaxCode: [''],
-      // DirectReceiverName: [''],
-      // PaymentStep: [''],
-      // PriceTable: [''],
-      // Shipper: [''],
-      // ShipperName: [''],
-      // ShipperPhone: [''],
-      // ShipperEmail: [''],
-      // ShipperAddress: [''],
       Publisher: ['', Validators.required],
       PublisherName: { value: null, disabled: true },
       PublisherPhone: { value: null, disabled: true },
       PublisherEmail: { value: null, disabled: true },
       PublisherAddress: { value: null, disabled: true },
+      ReferralContact: [],
+      ReferralContactName: { value: null, disabled: true },
+      ReferralContactPhone: { value: null, disabled: true },
+      ReferralContactEmail: { value: null, disabled: true },
+      ReferralContactAddress: { value: null, disabled: true },
       Province: [],
       District: [],
       Ward: [],
@@ -856,6 +847,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       RequireInvoice: [false],
       RelativeVouchers: [''],
       State: [],
+      Thread: [],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -931,6 +923,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Type: ['PRODUCT'],
       Product: [''],
       Description: [''],
+      CommissionRatio: [0],
       Quantity: [1],
       Price: { value: null, disabled: true },
       Unit: [''],
@@ -939,8 +932,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Image: [[]],
       // Reason: [''],
       // AccessNumbers: [],
-      // Business: [this.accountingBusinessList.filter(f => f.id === 'NETREVENUE')],
-      AddonProfiles: [],
+      Business: [],
+      // AddonProfiles: [],
     });
 
     if (data) {
@@ -1229,7 +1222,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
       detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
     };
-    this.cms.openDialog(CollaboratorOrderPrintComponent, {
+    this.cms.openDialog(CollaboratorCommissionIncurredPrintComponent, {
       context: {
         title: 'Xem trước',
         mode: 'preview',
@@ -1360,6 +1353,61 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     } else {
       this.save().then(rs => this.goback());
     }
+    return false;
+  }
+
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
+      context: {
+        components: {
+          'CLBRTORDER': { title: 'Đơn đặt mua hàng' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          this.onProcessing();
+          if (type === 'CLBRTORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get voucher
+                const refVoucher = await this.apiService.getPromise<CollaboratorOrderModel[]>('/collaborator/orders/' + chooseItems[i].Code, { includeContact: true, includeRelativeVouchers: true, includeIdText: true }).then(rs => rs[0]);
+
+                // Check voucher state
+                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                  this.cms.showToast(this.cms.translateText('Phiếu chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.showToast(this.cms.translateText('Thông tin liên hệ không khớp'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete refVoucher.Id;
+                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Details: [] });
+                  // details.clear();
+                }
+                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'CLBRTORDER' });
+
+                if (refVoucher.Thread) {
+                  formGroup.get('Thread').setValue(refVoucher.Thread);
+                }
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+          }
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
+        },
+      }
+    })
     return false;
   }
 
