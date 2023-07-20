@@ -1,0 +1,40 @@
+<nb-card class="small-header ag-grid-card" style="height: 100%; margin-bottom: 0;" [nbSpinner]="loading">
+    <nb-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : (('Bảng tra cứu chiết khấu' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase))) + ' ('+((infiniteInitialRowCount || 0) | number: '1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
+    </nb-card-header>
+  
+    <nb-card-body>
+        <ag-grid-angular #agGrid style="width: 100%;" [ngStyle]="{'height': gridHeight}" id="myGrid" class="{{themeName}}"
+          [modules]="modules" 
+          [columnDefs]="columnDefs" 
+          [debug]="true" 
+          [enableCellTextSelection]="enableCellTextSelection"
+          [ensureDomOrder]="ensureDomOrder"
+          [rowMultiSelectWithClick]="rowMultiSelectWithClick" 
+          [suppressRowClickSelection]="suppressRowClickSelection"
+          [defaultColDef]="defaultColDef" 
+          [rowSelection]="rowSelection"
+          [rowModelType]="rowModelType" 
+          [paginationPageSize]="paginationPageSize" 
+          [cacheOverflowSize]="cacheOverflowSize"
+          [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
+          [infiniteInitialRowCount]="infiniteInitialRowCount" 
+          [maxBlocksInCache]="maxBlocksInCache" 
+          [cacheBlockSize]="cacheBlockSize"
+          [getRowNodeId]="getRowNodeId" 
+          [components]="components" 
+          [rowData]="rowData" 
+          (gridReady)="onGridReady($event)" 
+          (selectionChanged)="onSelectionChanged($event)"
+          [multiSortKey]="multiSortKey" 
+          [rowDragManaged]="rowDragManaged" 
+          [getRowHeight]="getRowHeight" 
+          [rowHeight]="rowHeight"
+          (columnResized)="onColumnResized()" 
+          (rowSelected)="onRowSelected()"
+          
+          [pagination]="pagination">
+        </ag-grid-angular>
+    </nb-card-body>
+  </nb-card>
+  

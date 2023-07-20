@@ -35,6 +35,7 @@ import { CollaboratorRebuyStrategyProductFormComponent } from "./rebuy-strategy/
 import { CollaboratorRebuyStrategyPublisherFormComponent } from "./rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component";
 import { CollaboratorRebuyStrategyFormComponent } from "./rebuy-strategy/rebuy-strategy-form/collaborator-rebuy-strategy-form.component";
 import { CollaboratorRebuyStrategyListComponent } from "./rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component";
+import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
 
 export const collaboratorComponents = [
     CollaboratorPageComponent,
@@ -74,4 +75,5 @@ export const collaboratorComponents = [
     CollaboratorCommissionIncurredListComponent,
     CollaboratorCommissionIncurredFormComponent,
     CollaboratorCommissionIncurredPrintComponent,
+    CollaboratorStrategyCompileRuleListComponent,
 ];

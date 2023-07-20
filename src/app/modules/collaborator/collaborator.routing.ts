@@ -25,6 +25,7 @@ import { CollaboratorPublisherListComponent } from "./publisher/collaborator-pub
 import { CollaboratorRebuyStrategyListComponent } from "./rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component";
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
 import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
+import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -309,6 +310,14 @@ export const collaboratorRoutes: Routes = [
         path: 'collaborator/commission-incurred/list',
         canActivate: [AuthGuardService],
         component: CollaboratorCommissionIncurredListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/strategy-compile-rule/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorStrategyCompileRuleListComponent,
         data: {
           reuse: true,
         },

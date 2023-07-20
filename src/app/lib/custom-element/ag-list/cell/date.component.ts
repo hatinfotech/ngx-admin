@@ -5,7 +5,7 @@ import { Component, OnDestroy } from "@angular/core";
 @Component({
     selector: 'ag-date-cell-renderer',
     template: `
-      <span>{{params.value | date: 'short'}}</span>
+      <span>{{params.value | date: params?.format || 'short'}}</span>
     `,
 })
 export class AgDateCellRenderer implements ICellRendererAngularComp, OnDestroy {

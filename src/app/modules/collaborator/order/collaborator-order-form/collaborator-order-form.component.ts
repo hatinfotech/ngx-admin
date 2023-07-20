@@ -163,8 +163,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         minimumInputLength: 0,
         multiple: false,
         keyMap: {
-          id: 'Code',
-          text: 'Name',
+          id: 'id',
+          text: 'text',
         },
         ajax: {
           transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
@@ -277,15 +277,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
 
   select2OptionForPublisher = {
-    ...this.cms.makeSelect2AjaxOption('/contact/contacts', {
-      includeIdText: true,
-      includeGroups: true,
-      eq_IsDeleted: false,
-      sort_SearchRank: 'desc',
-      eq_Groups: '[PUBLISHER]',
-    }, {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/publishers', {}, {
       placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
-        item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        item['id'] = item.Contact;
+        item['text'] = item.Name;
         return item;
       }
     }),
