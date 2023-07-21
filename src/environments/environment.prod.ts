@@ -6,8 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.9.3.7',
-  // 6.9.3.7:   collaborator dev v3: commission incurred voucher
+  version: '6.9.3.8',
+  // 6.9.3.7:   collaborator dev v3: update some list using ag-grid
   // 6.9.3.4:   collaborator dev v3: statistics chart for order and revenue
   // 6.9.3:   collaborator dev v3: 
   // 6.9.2.3:   collaborator dev v3: load product form collaborator, load price in server, permission config
