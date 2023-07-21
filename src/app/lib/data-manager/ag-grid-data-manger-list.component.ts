@@ -42,7 +42,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   @Input() gridHeight = '100%';
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
   @Input() onInit: (component: AgGridDataManagerListComponent<M, F>) => void;
-  @Output() onComponentInit =  new EventEmitter<AgGridDataManagerListComponent<M, F>>();
+  @Output() onComponentInit = new EventEmitter<AgGridDataManagerListComponent<M, F>>();
   @Output() onItemsChoosed = new EventEmitter<M[]>();
   @Output() onItemsSelected = new EventEmitter<M[]>();
   @Output() onNodesSelected = new EventEmitter<IRowNode<M>[]>();
@@ -709,9 +709,20 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   }
 
   reset() {
+
     this.gridApi!.setFilterModel(null);
+    const initSortColums = this.columnDefs.filter(f => f.initialSort).reduce((prev, current, index) => {
+      prev[current.field] = current;
+      return prev;
+    }, {});
+    const columnsState = this.gridColumnApi.getColumnState().filter(f => initSortColums[f.colId]).map(columnState => {
+      columnState.sort = initSortColums[columnState.colId].initialSort;
+      return columnState;
+    });
+
     this.gridColumnApi!.applyColumnState({
-      defaultState: { sort: null },
+      // defaultState: { sort: null },
+      state: columnsState,
     });
     // this.gridApi.setSortModel(null);
     this.gridApi.deselectAll();
