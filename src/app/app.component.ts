@@ -7,12 +7,14 @@ import { NotificationService } from './services/notification.service';
 import { Component, OnInit } from '@angular/core';
 import { AnalyticsService } from './@core/utils/analytics.service';
 import { SeoService } from './@core/utils/seo.service';
-import { NbMenuItem, NbIconLibraries, NbThemeService } from '@nebular/theme';
+import { NbMenuItem, NbIconLibraries, NbThemeService, NbMenuService } from '@nebular/theme';
 import { CommonService } from './services/common.service';
 import { NbAuthService } from '@nebular/auth';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, take } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
+import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'ngx-app',
@@ -41,7 +43,10 @@ export class AppComponent implements OnInit {
     public authService: NbAuthService,
     public translate: TranslateService,
     public notificatinoSerivce: NotificationService,
+    // public menuInternalService: NbMenuInternalService,
+    // public menuService: NbMenuService,
     private titleService: Title,
+    public router: Router,
   ) {
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
@@ -61,7 +66,7 @@ export class AppComponent implements OnInit {
 
     // translate.use('vi');
 
-    this.authService.onAuthenticationChange().pipe(filter(state => state === true)).subscribe(state => {
+    this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
         this.loadMenu();
       } else {
@@ -75,33 +80,47 @@ export class AppComponent implements OnInit {
       }
     });
     this.notificatinoSerivce.active();
-
   }
 
   async loadMenu() {
     this.cms.takeOnce('load_main_menu', 5000).then(() => {
-      this.menu = [
-        {
-          title: 'Loading...',
-          icon: 'monitor-outline',
-          link: '/loading',
-        },
-      ];
+      // this.menu = [
+      //   {
+      //     title: 'Loading...',
+      //     icon: 'monitor-outline',
+      //     link: '/loading',
+      //   },
+      // ];
       this.cms.languageLoaded$.pipe(filter(f => f), take(1)).toPromise().then(() => {
         this.cms.getMenuTree(menuTree => {
-          this.menu = this.translateMenu(menuTree);
+          this.menu = this.prepareMenu(menuTree);
         });
       });
     });
+
+
+    this.cms.languageLoaded$.pipe(filter(state => state)).subscribe(() => {
+      this.cms.getMenuTree(menuTree => {
+        this.menu = this.prepareMenu(menuTree);
+      });
+    });
+
   }
 
-  translateMenu(menuTree: NbMenuItem[]) {
-    for (let i = 0; i < menuTree.length; i++) {
-      if (/\./.test(menuTree[i].title)) {
-        menuTree[i].title = this.cms.textTransform(this.translate.instant(menuTree[i].title), 'head-title');
+  prepareMenu(menuTree: NbMenuItem[], parent?: NbMenuItem) {
+    for (const item of menuTree) {
+      if (/\./.test(item.title)) {
+        item.title = this.cms.textTransform(this.translate.instant(item.title), 'head-title');
       }
-      if (menuTree[i].children) {
-        this.translateMenu(menuTree[i].children);
+      item.selected = item.link == window.location.pathname.replace(/^\/[^\/]+/i, '');
+      if (item.selected) {
+        if (parent) parent.expanded = true;
+      }
+      if (item.children) {
+        this.prepareMenu(item.children, item);
+        if (item.expanded) {
+          if (parent) parent.expanded = true;
+        }
       }
     }
     return menuTree;
