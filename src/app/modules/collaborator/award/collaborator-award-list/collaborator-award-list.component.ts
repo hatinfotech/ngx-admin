@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent, SmartTableRelativeVouchersComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -16,13 +16,28 @@ import { CommonService } from '../../../../services/common.service';
 import { CollaboratorAwardFormComponent } from '../collaborator-award-form/collaborator-award-form.component';
 import { CollaboratorAwardPrintComponent } from '../collaborator-award-print/collaborator-award-print.component';
 import { CollaboartorAwardDetailComponent } from '../collaborator-award-form/collaboartor-award-detail/collaboartor-award-detail.component';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { DatePipe } from '@angular/common';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { ContactModel } from '../../../../models/contact.model';
+import { PageModel } from '../../../../models/page.model';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { CollaboratorService } from '../../collaborator.service';
 
 @Component({
   selector: 'ngx-collaborator-award-list',
   templateUrl: './collaborator-award-list.component.html',
   styleUrls: ['./collaborator-award-list.component.scss']
 })
-export class CollaboratorAwardListComponent extends ServerDataManagerListComponent<CollaboratorAwardVoucherModel> implements OnInit {
+export class CollaboratorAwardListComponent extends AgGridDataManagerListComponent<CollaboratorAwardVoucherModel, CollaboratorAwardFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorAwardListComponent';
   formPath = '/collaborator/award-voucher/form';
@@ -30,17 +45,10 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
   idKey = 'Code';
   formDialog = CollaboratorAwardFormComponent;
 
-  @Input('context') context?: any;
-
-  reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorAwardListComponent>;
-
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-
-  @Input('filter') filter: any;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
+  // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
     public apiService: ApiService,
@@ -48,236 +56,203 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<CollaboratorAwardListComponent>,
+    public datePipe: DatePipe,
+    public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
   async init() {
-    // await this.loadCache();
-    return super.init().then(rs => {
-      const addButton = this.actionButtonList.find(f => f.name === 'add');
-      if (addButton) {
-        addButton.label = this.cms.translateText('Collaborator.Award.label');
-        addButton.icon = 'flash-outline';
-        addButton.status = 'primary';
-        // addButton.click = () => {
-        //   this.cms.openDialog(CollaboartorAwardDetailComponent, {
-        //     context: {
+    return super.init().then(async state => {
+      // Add page choosed
+      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+        this.actionButtonList.unshift({
+          type: 'select2',
+          name: 'pbxdomain',
+          status: 'success',
+          label: 'Select page',
+          icon: 'plus',
+          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Page.title', { action: this.cms.translateText('Common.choose'), definition: '' }), 'head-title'),
+          size: 'medium',
+          select2: {
+            data: pageList, option: {
+              placeholder: 'Chọn trang...',
+              allowClear: true,
+              width: '100%',
+              dropdownAutoWidth: true,
+              minimumInputLength: 0,
+              keyMap: {
+                id: 'id',
+                text: 'text',
+              },
+            }
+          },
+          value: this.collaboratorService.currentpage$.value,
+          change: (value: any, option: any) => {
+            this.onChangePage(value);
+          },
+          disabled: () => {
+            return false;
+          },
+          click: () => {
+            return false;
+          },
+        });
+      });
 
-        //     }
-        //   })
-        // };
-      }
-      return rs;
-    });
-  }
+      await this.cms.waitForLanguageLoaded();
 
-  editing = {};
-  rows = [];
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        No: {
-          title: 'No.',
-          type: 'string',
-          width: '5%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+      const processingMap = AppModule.processMaps['commissionVoucher'];
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Code',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
+          headerCheckboxSelection: true,
         },
-        Cycle: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.cycle'), 'head-title'),
-          type: 'string',
-          width: '5%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
+          field: 'PublisherName',
+          // pinned: 'left',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          cellRenderer: AgTextCellRenderer,
         },
-        PublisherName: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
-          type: 'string',
-          width: '10%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
+          field: 'Description',
+          // pinned: 'left',
+          width: 250,
+          filter: 'agTextColumnFilter',
+          cellRenderer: AgTextCellRenderer,
         },
-        Description: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
-          type: 'string',
-          width: '20%',
-          filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+        {
+          ...agMakeTagsColDef(this.cms, (tag) => {
+            this.cms.previewVoucher(tag.type, tag.id);
+          }),
+          headerName: 'Chứng từ liên quan',
+          field: 'RelativeVouchers',
+          width: 300,
         },
-        RelativeVouchers: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.relationVoucher'), 'head-title'),
-          type: 'custom',
-          renderComponent: SmartTableRelativeVouchersComponent,
-          width: '10%',
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Mã',
+          field: 'Code',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          // pinned: 'left',
         },
-        Code: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.code'), 'head-title'),
-          type: 'string',
-          width: '10%',
-        },
-        AwardFrom: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.fromDate'), 'head-title'),
-          type: 'datetime',
-          width: '10%',
-        },
-        AwardTo: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.toDate'), 'head-title'),
-          type: 'datetime',
-          width: '10%',
-        },
-        Amount: {
-          title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
-          type: 'custom',
-          class: 'align-right',
-          width: '10%',
-          position: 'right',
-          renderComponent: SmartTableCurrencyComponent,
-          onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
-            // instance.format$.next('medium');
-            instance.style = 'text-align: right';
+        {
+          headerName: this.cms.textTransform(this.cms.translate.instant('Common.fromDate'), 'head-title'),
+          field: 'AwardFrom',
+          width: 150,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+          cellRendererParams: {
+            format: 'shortDate'
           },
         },
-        State: {
-          title: this.cms.translateText('Common.approve'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'success';
-            // instance.disabled = this.isChoosedMode;
-            instance.title = this.cms.translateText('Common.approved');
-            instance.label = this.cms.translateText('Common.approved');
-            instance.init.subscribe(awardVoucher => {
-              const processMap = AppModule.processMaps.awardVoucher[awardVoucher.State || ''];
-              instance.label = this.cms.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap?.outline;
-              instance.disabled = !this.cms.checkPermission(this.componentName, processMap.nextState);
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherModel) => {
-              // this.apiService.getPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, { id: [rowData.Code], includeContact: true, includeDetails: true, useBaseTimezone: true }).then(rs => {
-              this.preview([rowData['Code']]);
-              // });
-            });
+        {
+          headerName: this.cms.textTransform(this.cms.translate.instant('Common.toDate'), 'head-title'),
+          field: 'AwardTo',
+          width: 150,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+          cellRendererParams: {
+            format: 'shortDate'
           },
         },
-        Preview: {
-          title: this.cms.translateText('Common.show'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'external-link-outline';
-            instance.display = true;
-            instance.status = 'primary';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-              // instance.icon = value ? 'unlock' : 'lock';
-              // instance.status = value === 'REQUEST' ? 'warning' : 'success';
-              // instance.disabled = value !== 'REQUEST';
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorAwardVoucherModel) => {
-              this.getFormData([rowData.Code]).then(rs => {
-                this.preview(rs);
-              });
-            });
-          },
-        }
-      },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
+          field: 'Amount',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            // this.preview([data]);
+            if (this.cms.getObjectId(data.State) == 'PROCESSING') {
+              this.openForm([data.Code]);
+            } else {
+              this.preview([data]);
+            }
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          width: 155,
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, (data) => {
+            this.deleteConfirm([data.Code]);
+          }, false, [
+          ]),
+          headerName: 'Sửa/Xóa',
+        },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
-
-    // Set DataSource: prepareData
-    // source.prepareData = (data: UserGroupModel[]) => {
-    //   // const paging = source.getPaging();
-    //   // data.map((product: any, index: number) => {
-    //   //   product['No'] = (paging.page - 1) * paging.perPage + index + 1;
-    //   //   return product;
-    //   // });
-    //   return data;
-    // };
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      // params['includeParent'] = true;
-      params['includeRelativeVouchers'] = true;
-      params['sort_Created'] = 'desc';
-      // params['eq_Type'] = 'RECEIPT';
-      if (this.filter) {
-        for (const key in this.filter) {
-          params[key] = this.filter[key];
-        }
-      }
-      return params;
-    };
-
-    return source;
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['page'] = this.collaboratorService?.currentpage$?.value;
+    return params;
   }
 
-  /** Api get funciton */
-  // executeGet(params: any, success: (resources: UserGroupModel[]) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: UserGroupModel[] | HttpErrorResponse) => void) {
-  //   params['includeCategories'] = true;
-  //   super.executeGet(params, success, error, complete);
-  // }
-
-  getList(callback: (list: UserGroupModel[]) => void) {
-    super.getList((rs) => {
-      // rs.map((product: any) => {
-      //   product['Unit'] = product['Unit']['Name'];
-      //   if (product['Categories']) {
-      //     product['CategoriesRendered'] = product['Categories'].map(cate => cate['text']).join(', ');
-      //   }
-      //   return product;
-      // });
-      if (callback) callback(rs);
-    });
-  }
-
-  async getFormData(ids: string[]) {
-    return this.apiService.getPromise<CollaboratorAwardVoucherModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true });
-  }
-
-  async preview(ids: any[]) {
-    this.cms.openDialog(CollaboratorAwardPrintComponent, {
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: ContactModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(ContactFormComponent, {
       context: {
-        showLoadinng: true,
-        title: 'Xem trước',
-        id: typeof ids[0] === 'string' ? ids as any : null,
-        data: typeof ids[0] !== 'string' ? ids as any : null,
-        idKey: ['Code'],
-        sourceOfDialog: 'list',
-        // approvedConfirm: true,
-        onClose: (data: CollaboratorAwardVoucherModel) => {
-          this.refresh();
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: ContactModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
         },
       },
     });
     return false;
   }
 
+  onGridReady(params) {
+    super.onGridReady(params);
+  }
+
+  onChangePage(page: PageModel) {
+    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+      this.refresh();
+    });
+  }
 }

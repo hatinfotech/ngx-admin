@@ -10,7 +10,6 @@ import { ProductModel, ProductUnitModel } from '../../../../models/product.model
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorService } from '../../collaborator.service';
-import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { ChangeDetectorRef } from '@angular/core';
 import { CollaboratorAddonStrategyPublisherFormComponent } from '../publisher-form/collaborator-addon-strategy-publisher-form.component';
 import { ColDef, ColumnApi, GridApi, IRowNode } from '@ag-grid-community/core';

@@ -43,6 +43,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @Input() size?: string = 'medium';
   @Input() actionButtonList?: ActionControl[] = [];
 
+  isDialog = false;
+
   constructor(
     public cms: CommonService,
     public router: Router,
@@ -57,6 +59,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
       }
     });
+
+    this.isDialog = this.ref instanceof NbDialogRef;
   }
 
   // init() {

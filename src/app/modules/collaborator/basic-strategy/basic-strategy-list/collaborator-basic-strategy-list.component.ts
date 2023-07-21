@@ -1,21 +1,25 @@
 import { CollaboratorService } from '../../collaborator.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
-import { UnitModel } from '../../../../models/unit.model';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorBasicStrategyFormComponent } from '../basic-strategy-form/collaborator-basic-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { CollaboratorBasicStrategyModel } from '../../../../models/collaborator.model';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { ContactModel } from '../../../../models/contact.model';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
 
 @Component({
   selector: 'ngx-collaborator-basic-strategy-list',
@@ -23,7 +27,7 @@ import { CollaboratorBasicStrategyModel } from '../../../../models/collaborator.
   styleUrls: ['./collaborator-basic-strategy-list.component.scss'],
   providers: [CurrencyPipe, DatePipe],
 })
-export class CollaboratorBasicStrategyListComponent extends ServerDataManagerListComponent<CollaboratorBasicStrategyModel> implements OnInit {
+export class CollaboratorBasicStrategyListComponent extends AgGridDataManagerListComponent<CollaboratorBasicStrategyModel, CollaboratorBasicStrategyFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorBasicStrategyListComponent';
   formPath = '/collaborator/product/form';
@@ -32,18 +36,10 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
   formDialog = CollaboratorBasicStrategyFormComponent;
   currentPage: PageModel;
 
-  reuseDialog = true;
-  static _dialog: NbDialogRef<CollaboratorBasicStrategyListComponent>;
-
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-
-  // Category list for filter
-  categoryList: ProductCategoryModel[] = [];
-  groupList: ProductGroupModel[] = [];
-  unitList: UnitModel[] = [];
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
+  // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
     public apiService: ApiService,
@@ -51,21 +47,37 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<CollaboratorBasicStrategyListComponent>,
+    public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
-    public currencyPipe: CurrencyPipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
-
-  async loadCache() {
-  }
+  runningState = {
+    ...AppModule.approvedState,
+    nextState: 'RUNNING',
+    outlilne: true,
+    status: 'danger',
+    label: 'Đang chạy',
+    nextStates: [
+      { ...AppModule.notJustApprodedState, status: 'warning' },
+    ],
+  };
 
   async init() {
-    await this.loadCache();
-    return super.init().then(rs => {
+    return super.init().then(async state => {
       // Add page choosed
       this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
@@ -101,247 +113,226 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
           },
         });
       });
-      return rs;
-    });
-  }
 
-  editing = {};
-  rows = [];
+      await this.cms.waitForLanguageLoaded();
 
-  runningState = {
-    ...AppModule.approvedState,
-    nextState: 'RUNNING',
-    outlilne: true,
-    status: 'danger',
-    label: 'Đang chạy',
-    nextStates: [
-      { ...AppModule.notJustApprodedState, status: 'warning' },
-    ],
-  };
+      const processingMap = {
+        ...AppModule.processMaps.common,
+        "APPROVED": {
+          ...AppModule.approvedState,
+          nextState: 'RUNNING',
+          status: 'success',
+          nextStates: [
+            { ...AppModule.unrecordedState, status: 'warning' },
+            { ...this.runningState, status: 'success' },
+          ],
+        },
+        "RUNNING": {
+          ...this.runningState,
+          nextState: 'COMPLETE',
+          nextStates: [
+            { ...AppModule.completeState, status: 'basic' },
+            { ...AppModule.unrecordedState, status: 'warning' },
+          ],
+        },
+      };
 
-  processMap = {
-    ...AppModule.processMaps.common,
-    "APPROVED": {
-      ...AppModule.approvedState,
-      nextState: 'RUNNING',
-      status: 'success',
-      nextStates: [
-        { ...AppModule.unrecordedState, status: 'warning' },
-        { ...this.runningState, status: 'success' },
-      ],
-    },
-    "RUNNING": {
-      ...this.runningState,
-      nextState: 'COMPLETE',
-      nextStates: [
-        { ...AppModule.completeState, status: 'basic' },
-        { ...AppModule.unrecordedState, status: 'warning' },
-      ],
-    },
-  };
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      mode: 'external',
-      selectMode: 'multi',
-      actions: {
-        position: 'right',
-      },
-      add: this.configAddButton(),
-      edit: this.configEditButton(),
-      delete: this.configDeleteButton(),
-      pager: this.configPaging(),
-      columns: {
-        Code: {
-          title: 'Code',
-          type: 'string',
-          width: '10%',
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Code',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
+          headerCheckboxSelection: true,
         },
-        Title: {
-          title: 'Tên',
-          type: 'string',
-          width: '40%'
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Page',
+          field: 'Page',
+          // pinned: 'left',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          cellRenderer: AgTextCellRenderer,
         },
-        Page: {
-          title: 'Trang',
-          type: 'string',
-          width: '20%',
-          valuePrepareFunction: (cell, row) => {
-            return row.Page || row.PageName;
-          }
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Mã',
+          field: 'Code',
+          width: 140,
+          filter: 'agTextColumnFilter',
+          // pinned: 'left',
         },
-        // DateOfStart: {
-        //   title: 'Ngày bắt đầu',
-        //   type: 'datetime',
-        //   width: '10%',
-        // },
-        // DateOfEnd: {
-        //   title: 'Ngày kết thúc',
-        //   type: 'datetime',
-        //   width: '10%',
-        // },
-        DateRange: {
-          title: 'Phạm vi',
-          type: 'string',
-          width: '20%',
-          valuePrepareFunction: (cell, row) => {
-            return `${this.cms.datePipe.transform(row.DateOfStart, 'short')} - ${this.cms.datePipe.transform(row.DateOfEnd, 'short')}`;
-          }
-        },
-        State: {
-          title: this.cms.translateText('Common.state'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'success';
-            instance.outline = true;
-            instance.title = this.cms.translateText('Common.unknown');
-            instance.label = this.cms.translateText('Common.unknown');
-            instance.valueChange.subscribe(value => {
-              const processMap = this.processMap[value || ''];
-              instance.label = this.cms.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.title = 'Chuyển sang ' + this.cms.translateText(processMap.nextStates.find(f => f.state == processMap.nextState)?.label);
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: CollaboratorBasicStrategyModel) => {
-              if (instance.rowData.State == 'NOTJUSTAPPROVED' || instance.rowData.State == 'UNRECORDED') {
-                this.cms.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
-                  {
-                    label: 'Đóng',
-                    status: 'basic',
-                    outline: true,
-                    action: () => true
-                  },
-                  {
-                    label: 'Duyệt chiến dịch',
-                    status: 'success',
-                    outline: true,
-                    action: () => {
-                      this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                        this.refresh();
-                        this.cms.toastService.show(instance.rowData.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                      });
-                    }
-                  }
-                ]);
-              } else if (instance.rowData.State == 'APPROVED') {
-                this.cms.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '"', [
-                  {
-                    label: 'Đóng',
-                    status: 'basic',
-                    outline: true,
-                    action: () => true
-                  },
-                  {
-                    label: 'Khởi chạy',
-                    status: 'primary',
-                    outline: true,
-                    action: () => {
-                      this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                        this.refresh();
-                        this.cms.toastService.show(instance.rowData.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                      });
-                    }
-                  },
-                  {
-                    label: 'Hủy chiến dịch',
-                    status: 'danger',
-                    outline: true,
-                    action: () => {
-                      this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                        this.refresh();
-                        this.cms.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                      });
-                    }
-                  },
-                ]);
-              } else if (instance.rowData.State == 'RUNNING') {
-                this.cms.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + instance.rowData.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
-                  {
-                    label: 'Đóng',
-                    status: 'basic',
-                    outline: true,
-                    action: () => true
-                  },
-                  {
-                    label: 'Hoàn tất',
-                    status: 'primary',
-                    outline: true,
-                    action: () => {
-                      this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                        this.refresh();
-                        this.cms.toastService.show(instance.rowData.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                      });
-                    }
-                  },
-                  {
-                    label: 'Hủy chiến dịch',
-                    status: 'danger',
-                    outline: true,
-                    action: () => {
-                      this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: instance.rowData.Code }]).then(rs => {
-                        this.refresh();
-                        this.cms.toastService.show(instance.rowData.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                      });
-                    }
-                  },
-                ]);
-              } else {
-                this.cms.toastService.show(instance.rowData.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
-              }
-            });
+        {
+          headerName: 'Bắt đầu',
+          field: 'DateOfStart',
+          width: 150,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+          cellRendererParams: {
+            format: 'shortDate'
           },
         },
-      },
+        {
+          headerName: 'Bắt đầu',
+          field: 'DateOfStart',
+          width: 150,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+          cellRendererParams: {
+            format: 'shortDate'
+          },
+        },
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Tên',
+          field: 'Title',
+          // pinned: 'left',
+          width: 900,
+          filter: 'agTextColumnFilter',
+        },
+        {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            const stateId = this.cms.getObjectId(data.State);
+            if (stateId == 'NOTJUSTAPPROVED' || stateId == 'UNRECORDED') {
+              this.cms.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Duyệt chiến dịch',
+                  status: 'success',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: data.Code }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                    });
+                  }
+                }
+              ]);
+            } else if (stateId == 'APPROVED') {
+              this.cms.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Khởi chạy',
+                  status: 'primary',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: data.Code }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                    });
+                  }
+                },
+                {
+                  label: 'Hủy chiến dịch',
+                  status: 'danger',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                    });
+                  }
+                },
+              ]);
+            } else if (stateId == 'RUNNING') {
+              this.cms.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + data.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Hoàn tất',
+                  status: 'primary',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: data.Code }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                    });
+                  }
+                },
+                {
+                  label: 'Hủy chiến dịch',
+                  status: 'danger',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
+                    });
+                  }
+                },
+              ]);
+            } else {
+              this.cms.toastService.show(data.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
+            }
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          width: 155,
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, (data) => {
+            this.deleteConfirm([data.Code]);
+          }, false, [
+          ]),
+          headerName: 'Sửa/Xóa',
+        },
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
-
-  initDataSource() {
-    const source = super.initDataSource();
-
-    // Set DataSource: prepareData
-    source.prepareData = (data: CollaboratorBasicStrategyModel[]) => {
-      // data.map((product: CollaboratorBasicStrategyModel) => {
-      //   if (product.WarehouseUnit && product.WarehouseUnit.Name) {
-      //     product.WarehouseUnit.text = product.WarehouseUnit.Name;
-      //   }
-      //   return product;
-      // });
-      return data;
-    };
-
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['sort_Id'] = 'desc';
-      if (this.collaboratorService.currentpage$.value) {
-        params['page'] = this.collaboratorService.currentpage$.value;
-      }
-      return params;
-    };
-
-    return source;
+  
+  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['page'] = this.collaboratorService?.currentpage$?.value;
+    return params;
   }
 
-  /** Api delete funciton */
-  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
-    const params = { id: ids, page: this.collaboratorService.currentpage$?.value };
-    return super.executeDelete(params, success, error, complete);
-  }
-
-  getList(callback: (list: CollaboratorBasicStrategyModel[]) => void) {
-    super.getList((rs) => {
-      if (callback) callback(rs);
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: ContactModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(ContactFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: ContactModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
+        },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
+        },
+      },
     });
+    return false;
+  }
+
+  onGridReady(params) {
+    super.onGridReady(params);
   }
 
   onChangePage(page: PageModel) {
@@ -350,5 +341,4 @@ export class CollaboratorBasicStrategyListComponent extends ServerDataManagerLis
       this.refresh();
     });
   }
-
 }

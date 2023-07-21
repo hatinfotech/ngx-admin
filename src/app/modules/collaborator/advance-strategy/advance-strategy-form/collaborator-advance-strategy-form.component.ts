@@ -263,7 +263,7 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
                   onDialogSave(newData) {
                     console.log(newData);
                     let currentNode: IRowNode = $this.productGridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                    currentNode && currentNode.setData(newData[0]);
+                    currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
                     $this.updatePublisherProducts();
                   },
                 }
@@ -552,7 +552,7 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
       size: 'medium',
       disabled: () => !$this.productExtendData?.publisher,
       click: (event) => {
-        const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
+        const selectedNodes: IRowNode[] = $this.productGridApi.getSelectedNodes();
         $this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
 
         return true;
@@ -576,12 +576,12 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
             // gridHeight: '90vh',
             onDialogChoose(chooseItems) {
               console.log(chooseItems);
-              const newRowNodeTrans = component.gridApi.applyTransaction({
+              const newRowNodeTrans = $this.productGridApi.applyTransaction({
                 add: chooseItems.map(m => ({
-                  id: m.Product,
-                  text: m.ProductName,
-                  Product: m.Product,
-                  ProductName: m.ProductName,
+                  id: m.Code,
+                  text: m.Name,
+                  Product: m.Code,
+                  ProductName: m.Name,
                   Sku: m.Sku,
                   Unit: m.Unit,
                   Pictures: m.Pictures,
@@ -608,7 +608,7 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
       size: 'medium',
       disabled: () => !$this.productExtendData?.publisher,
       click: (event) => {
-        const selectedNodes: IRowNode[] = $this.gridApi.getSelectedNodes();
+        const selectedNodes: IRowNode[] = $this.productGridApi.getSelectedNodes();
 
         // Setting for product
         if (selectedNodes && selectedNodes.length > 0) {
@@ -618,8 +618,8 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
               onDialogSave(newData) {
                 console.log(newData);
                 for (const itemData of newData) {
-                  let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
-                  currentNode.setData(itemData);
+                  let currentNode: IRowNode = $this.productGridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
+                  currentNode.setData({ ...currentNode.data, ...itemData });
                 }
 
                 $this.updatePublisherProducts();

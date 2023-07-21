@@ -1,39 +1,35 @@
 import { CollaboratorService } from '../../collaborator.service';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
+import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
+import { ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
+import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorAdvanceStrategyFormComponent } from '../advance-strategy-form/collaborator-advance-strategy-form.component';
+import { CollaboratorRebuyStrategyFormComponent } from '../rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { filter, take } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { CollaboratorAdvanceStrategyModel } from '../../../../models/collaborator.model';
-import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
-import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
-import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
-import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
-import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
-import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
-import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
-import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
-import { ContactModel } from '../../../../models/contact.model';
-import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { CollaboratorRebuyStrategyModel } from '../../../../models/collaborator.model';
 
 @Component({
-  selector: 'ngx-collaborator-advance-strategy-list',
-  templateUrl: './collaborator-advance-strategy-list.component.html',
-  styleUrls: ['./collaborator-advance-strategy-list.component.scss'],
+  selector: 'ngx-collaborator-rebuy-strategy-list',
+  templateUrl: './collaborator-rebuy-strategy-list.component.html',
+  styleUrls: ['./collaborator-rebuy-strategy-list.component.scss'],
   providers: [CurrencyPipe, DatePipe],
 })
-export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerListComponent<CollaboratorAdvanceStrategyModel, CollaboratorAdvanceStrategyFormComponent> implements OnInit {
+export class CollaboratorRebuyStrategyListComponent extends AgGridDataManagerListComponent<CollaboratorBasicStrategyModel, CollaboratorBasicStrategyFormComponent> implements OnInit {
 
-  componentName: string = 'CollaboratorAdvanceStrategyListComponent';
-  formPath = '';
-  apiPath = '/collaborator/advance-strategies';
+  componentName: string = 'CollaboratorBasicStrategyListComponent';
+  formPath = '/collaborator/product/form';
+  apiPath = '/collaborator/basic-strategies';
   idKey: string | string[] = ['Code'];
-  formDialog = CollaboratorAdvanceStrategyFormComponent;
+  formDialog = CollaboratorBasicStrategyFormComponent;
   currentPage: PageModel;
 
   // AG-Grid config
@@ -48,7 +44,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public themeService: NbThemeService,
-    public ref: NbDialogRef<CollaboratorAdvanceStrategyListComponent>,
+    public ref: NbDialogRef<CollaboratorBasicStrategyListComponent>,
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
@@ -203,7 +199,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             const stateId = this.cms.getObjectId(data.State);
             if (stateId == 'NOTJUSTAPPROVED' || stateId == 'UNRECORDED') {
-              this.cms.showDialog('Phê duyệt chiến dịch chiết khấu nâng cao', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu nâng cao "' + data.Title + '"', [
+              this.cms.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
                 {
                   label: 'Đóng',
                   status: 'basic',
@@ -217,13 +213,13 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
                   action: () => {
                     this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: data.Code }]).then(rs => {
                       this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã phê duyệt chiến dịch chiết khấu nâng cao !', { status: 'success' });
+                      this.cms.toastService.show(data.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
                     });
                   }
                 }
               ]);
             } else if (stateId == 'APPROVED') {
-              this.cms.showDialog('Khởi chạy chiến dịch chiết khấu nâng cao', 'Bạn có muốn khởi chạy chiến dịch chiết khấu nâng cao "' + data.Title + '"', [
+              this.cms.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
                 {
                   label: 'Đóng',
                   status: 'basic',
@@ -237,7 +233,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
                   action: () => {
                     this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: data.Code }]).then(rs => {
                       this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã khởi chạy chiến dịch chiết khấu nâng cao !', { status: 'success' });
+                      this.cms.toastService.show(data.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                     });
                   }
                 },
@@ -248,13 +244,13 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
                   action: () => {
                     this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
                       this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu nâng cao !', { status: 'success' });
+                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                     });
                   }
                 },
               ]);
             } else if (stateId == 'RUNNING') {
-              this.cms.showDialog('Dừng chiến dịch chiết khấu nâng cao', 'Bạn có muốn dừng chiến dịch chiết khấu nâng cao "' + data.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
+              this.cms.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + data.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
                 {
                   label: 'Đóng',
                   status: 'basic',
@@ -268,7 +264,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
                   action: () => {
                     this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: data.Code }]).then(rs => {
                       this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hoàn tất chiến dịch chiết khấu nâng cao !', { status: 'success' });
+                      this.cms.toastService.show(data.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
                     });
                   }
                 },
@@ -279,7 +275,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
                   action: () => {
                     this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
                       this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu nâng cao !', { status: 'success' });
+                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
                     });
                   }
                 },
@@ -308,7 +304,7 @@ export class CollaboratorAdvanceStrategyListComponent extends AgGridDataManagerL
   ngOnInit() {
     super.ngOnInit();
   }
-  
+
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
     params['page'] = this.collaboratorService?.currentpage$?.value;
     return params;

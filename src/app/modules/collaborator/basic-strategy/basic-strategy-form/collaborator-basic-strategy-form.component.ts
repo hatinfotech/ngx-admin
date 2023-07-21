@@ -357,10 +357,10 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
               console.log(chooseItems);
               const newRowNodeTrans = $this.gridApi.applyTransaction({
                 add: chooseItems.map(m => ({
-                  id: m.Product,
-                  text: m.ProductName,
-                  Product: m.Product,
-                  ProductName: m.ProductName,
+                  id: m.Code,
+                  text: m.Name,
+                  Product: m.Code,
+                  ProductName: m.Name,
                   Sku: m.Sku,
                   Unit: m.Unit,
                   Pictures: m.Pictures,

@@ -1,0 +1,15 @@
+<div class="dialog-wrap {{inputMode}}">
+  <nb-card class="small-header smart-table dialog-list">
+    <nb-card-header>
+      <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Product.title' | translate: {action: '', definition: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    </nb-card-header>
+
+    <nb-card-body>
+      <div class="ng2-smart-table-wrap">
+        <!-- <input type="file" #uploadBtn ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" multiple style="display: none;"> -->
+        <ng2-smart-table #smartTable *ngIf="settings" [attr.select]="hasSelect" #table [settings]="settings" [source]="source" (delete)="delete($event)" (edit)="onEditAction($event)" (create)="onSerialAction($event)" (userRowSelect)="onUserRowSelect($event)" (rowSelect)="onRowSelect($event)">
+        </ng2-smart-table>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>

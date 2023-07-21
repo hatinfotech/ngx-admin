@@ -7,7 +7,7 @@ import { ICellRendererParams } from "@ag-grid-community/core";
 @Component({
     selector: 'ag-number-cell-renderer',
     template: `
-      <span>{{params.value | number:'1.0-0'}}</span>
+      <span>{{params.value | number:'1.0-0'}}{{params?.symbol || ''}}</span>
     `,
     providers: [DecimalPipe]
 })
