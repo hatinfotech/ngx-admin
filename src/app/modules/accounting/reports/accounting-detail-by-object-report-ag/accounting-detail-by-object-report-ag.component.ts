@@ -22,6 +22,8 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { agMakeAccCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/acc-currency.define';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { AccountingAccountDetailsReportPrintComponent } from '../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
+import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
+import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report-ag',
@@ -119,33 +121,38 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
       // this.actionButtonList = this.actionButtonList.filter(f => f.name !== 'choose');
       this.actionButtonList = this.actionButtonList.filter(f => ['delete', 'edit', 'add', 'choose'].indexOf(f.name) < 0);
 
-      if (this.reportComponent) {
-        const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
-        summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo';
-        summaryReportBtn.icon = 'printer';
-        summaryReportBtn.status = 'info';
-        summaryReportBtn.disabled = () => false;
-        summaryReportBtn.click = () => {
-          this.cms.openDialog(this.reportComponent, {
-            context: {
-              showLoadinng: true,
-              // title: 'Xem trước',
-              accounts: this.accounts,
-              objects: [this.object],
-              mode: 'print',
-              id: ['all']
-            },
-          });
-        };
-      } else {
-        this.actionButtonList = this.actionButtonList.filter(f => ['preview'].indexOf(f.name) < 0);
-      }
+      // if (this.reportComponent) {
+      //   const summaryReportBtn = this.actionButtonList.find(f => f.name == 'preview');
+      //   summaryReportBtn.label = summaryReportBtn.title = 'In báo cáo chứng từ';
+      //   summaryReportBtn.icon = 'printer';
+      //   summaryReportBtn.status = 'info';
+      //   summaryReportBtn.disabled = () => false;
+      //   summaryReportBtn.click = () => {
+      //     let query = {};
+      //     const filterModel = this.gridApi.getFilterModel();
+      //     const filterQuery = this.parseFilterToApiParams(filterModel);
+      //     query = this.prepareApiParams(filterQuery);
+      //     this.cms.openDialog(AccountingReceivablesFromCustomersVoucherssReportPrintComponent, {
+      //       context: {
+      //         showLoadinng: true,
+      //         // title: 'Xem trước',
+      //         // accounts: this.accounts,
+      //         objects: [this.object],
+      //         mode: 'print',
+      //         id: ['all'],
+      //         query: query,
+      //       },
+      //     });
+      //   };
+      // } else {
+      this.actionButtonList = this.actionButtonList.filter(f => ['preview'].indexOf(f.name) < 0);
+      // }
 
       this.actionButtonList.unshift({
         type: 'button',
-        name: 'printReport',
+        name: 'printReportByVoucher',
         status: 'primary',
-        label: 'In báo cáo',
+        label: 'In báo cáo chứng từ',
         title: 'In báo cáo',
         size: 'medium',
         icon: 'printer',
@@ -157,14 +164,44 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           let query = {};
           const filterQuery = this.parseFilterToApiParams(filterModel);
           query = this.prepareApiParams(filterQuery);
-          this.cms.openDialog(AccountingAccountDetailsReportPrintComponent, {
+          this.cms.openDialog(AccountingReceivablesFromCustomersVoucherssReportPrintComponent, {
             context: {
               showLoadinng: true,
               // title: 'Xem trước',
-              accounts: this.accounts,
+              // accounts: this.accounts,
               mode: 'print',
               id: ['all'],
-              query: query
+              query: query,
+              objects: [this.object],
+            },
+          });
+        }
+      });
+      this.actionButtonList.unshift({
+        type: 'button',
+        name: 'printReportByDetail',
+        status: 'primary',
+        label: 'In báo cáo Chi tiết',
+        title: 'In báo cáo',
+        size: 'medium',
+        icon: 'printer',
+        // disabled: () => {
+        //   return this.selectedIds.length == 0;
+        // },
+        click: () => {
+          const filterModel = this.gridApi.getFilterModel();
+          let query = {};
+          const filterQuery = this.parseFilterToApiParams(filterModel);
+          query = this.prepareApiParams(filterQuery);
+          this.cms.openDialog(AccountingReceivablesFromCustomersDetailsReportPrintComponent, {
+            context: {
+              showLoadinng: true,
+              // title: 'Xem trước',
+              // accounts: this.accounts,
+              mode: 'print',
+              id: ['all'],
+              query: query,
+              objects: [this.object],
             },
           });
         }
@@ -275,6 +312,9 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           field: 'Thread',
           width: 180,
           filter: 'agTextColumnFilter',
+          filterParams: {
+            type: 'equals'
+          },
           autoHeight: true,
           cellRenderer: AgTextCellRenderer,
         },

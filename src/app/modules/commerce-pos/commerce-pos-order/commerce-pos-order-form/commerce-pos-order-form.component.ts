@@ -392,7 +392,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
         this.preview([option.form?.value], 'form');
       },
     });
-    
+
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -572,7 +572,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
 
   makeNewFormGroup(data?: CommercePosOrderModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: { disabled: true, value: '' },
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -604,11 +604,12 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
       _total: [''],
       RelativeVouchers: [''],
       RequireInvoice: [false],
-      PaymentMethod: [{id: 'CASH', text: 'Tiền mặt'}],
+      PaymentMethod: [{ id: 'CASH', text: 'Tiền mặt' }],
       ReceiptBankAccount: [],
       CashTransferAmount: [],
       CashAmount: [],
       CashBack: [],
+      Thread: [],
       Details: this.formBuilder.array([]),
     });
     if (data) {

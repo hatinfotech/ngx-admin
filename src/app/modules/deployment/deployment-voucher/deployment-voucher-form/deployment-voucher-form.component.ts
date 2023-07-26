@@ -668,7 +668,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
   makeNewFormGroup(data?: DeploymentVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: { disabled: true, value: '' },
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -690,6 +690,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       DeliveryAddress: [''],
       MapUrl: [''],
       PriceTable: [''],
+      Thread: [''],
       IsObjectRevenue: [false],
       // PriceReportVoucher: [''],
       PriceReport: [''],

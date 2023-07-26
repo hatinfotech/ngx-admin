@@ -29,6 +29,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
   @Input() objects: string[];
+  @Input() query: any = {};
 
   constructor(
     public cms: CommonService,

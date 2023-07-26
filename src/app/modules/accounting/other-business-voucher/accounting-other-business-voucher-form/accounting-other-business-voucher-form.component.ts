@@ -328,7 +328,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
 
   makeNewFormGroup(data?: OtherBusinessVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {disabled: true, value: ''},
       Description: ['', Validators.required],
       // RelatedUserName: [''],
       DateOfImplement: [''],
@@ -340,6 +340,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       ObjectTaxCode: [''],
       // Currency: ['VND', Validators.required],
       DateOfVoucher: [this.cms.lastVoucherDate, Validators.required],
+      Thread: [''],
       RelativeVouchers: [''],
       Details: this.formBuilder.array([]),
       _total: [''],

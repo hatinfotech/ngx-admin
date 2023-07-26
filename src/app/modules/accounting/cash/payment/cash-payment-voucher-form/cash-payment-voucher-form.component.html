@@ -26,9 +26,18 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-2">
-                                <ngx-form-group [formGroup]="formItem" name="Code" label="Common.code" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{formItem.get('Code').placeholder || ('Common.code' | translate | headtitlecase)}}">
-                                </ngx-form-group>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <ngx-form-group [formGroup]="formItem" name="Thread" label="Luồng (theo dự án/công trình)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                            <input type="text" nbInput fullWidth formControlName="Thread" placeholder="{{'Thread' | translate | headtitlecase}}">
+                                        </ngx-form-group>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <ngx-form-group [formGroup]="formItem" name="Code" label="ID" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                            <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'ID' | translate | headtitlecase}}">
+                                        </ngx-form-group>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-2">
                                 <ngx-form-group [formGroup]="formItem" name="ObjectTaxCode" label="Common.Object.taxCode" [array]="array" [index]="i" [allowCopy]="false" [required]="false">

@@ -2,11 +2,14 @@ import { take, filter } from 'rxjs/operators';
 import { NbAuthService } from '@nebular/auth';
 import { ApiService } from './../../services/api.service';
 import { BehaviorSubject } from 'rxjs';
-import { ProductGroupModel, ProductCategoryModel, ProductUnitModel, ProductPropertyModel, ProductPropertyValueModel, ProductBrandModel, ProductKeywordModel } from './../../models/product.model';
+import { ProductGroupModel, ProductCategoryModel, ProductUnitModel, ProductPropertyModel, ProductPropertyValueModel, ProductBrandModel, ProductKeywordModel, ProductSearchIndexModel, ProductModel } from './../../models/product.model';
 import { Injectable } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { CommonService } from '../../services/common.service';
+import { _ } from 'ag-grid-community';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminProductService {
 
@@ -19,12 +22,57 @@ export class AdminProductService {
   brandList$ = new BehaviorSubject<ProductBrandModel[]>(null);
   keywordList$ = new BehaviorSubject<ProductKeywordModel[]>(null);
 
+
+  updateCacheProcessing = null;
   constructor(
     public authService: NbAuthService,
     public apiService: ApiService,
+    public cms: CommonService,
   ) {
-    this.authService.isAuthenticated().pipe(filter(f => f === true), take(1)).toPromise().then(status => {
+    this.authService.isAuthenticated().pipe(filter(f => f === true), take(1)).toPromise().then(async status => {
       this.updateAllCache();
+    });
+    this.authService.isAuthenticated().subscribe(async status => {
+      if (!status) {
+        clearInterval(this.updateCacheProcessing);
+        return;
+      }
+      const loginId = await this.cms.loginInfo$.pipe(filter(f => !!f), take(1)).toPromise().then(loginInfo => loginInfo?.user?.Code);
+      this.apiService.getPromise<any>('/admin-product/product-search-indexs', { cacheCheckPonit: true }).then(rs => rs.data).then(serverProductSearchIndexCheckPoint => {
+        console.log(serverProductSearchIndexCheckPoint);
+        localStorage.setItem(loginId + '_ADMIN_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
+      });
+      while (true) {
+        try {
+          await this.updateGoodsInfo();
+          break;
+        } catch (err) {
+          console.error(err);
+          this.cms.showToast('Chưa thể tải thông tin sản phẩm, thử lại trong 3s', 'Tải thông tin sản phẩm thất bại', { status: 'danger' });
+          await new Promise(resolve => setTimeout(() => resolve(true), 3000));
+        }
+      }
+
+      if (!this.updateCacheProcessing) {
+        this.updateCacheProcessing = setInterval(() => {
+          console.log('Listen new master price table update...');
+          this.apiService.getPromise<any>('/admin-product/product-search-indexs', { cacheCheckPonit: true }).then(rs => rs.data).then(serverProductSearchIndexCheckPoint => {
+            console.log(serverProductSearchIndexCheckPoint);
+            const productSearchCacheCheckPoint = localStorage.getItem(loginId + '_ADMIN_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT');
+            if (serverProductSearchIndexCheckPoint && serverProductSearchIndexCheckPoint != productSearchCacheCheckPoint) {
+              this.cms.showToast('Có bảng giá mới, vui lòng chờ trong giây lát !', 'Có bảng giá mới !', { ...this.toastDefaultConfig, status: 'primary' });
+              return this.updateGoodsInfo().then(status => {
+                this.cms.showToast('Hệ thống đã cập nhật bảng giá mới, mời bạn tiếp tục bán hàng !', 'Đã cập nhật bảng giá mới !', { ...this.toastDefaultConfig, status: 'success' });
+                localStorage.setItem(loginId + '_ADMIN_PRODUCT_SEARCH_INDEX_CACHE_CHECK_POINT', serverProductSearchIndexCheckPoint);
+                return status;
+              });
+            }
+            return false;
+          }).catch(err => {
+            console.log(err);
+          });
+        }, 20000);
+      }
     });
   }
 
@@ -151,4 +199,143 @@ export class AdminProductService {
       return rs;
     });
   }
+
+  /** Load product search index */
+  productSearchIndexsGroupByIdUnitAndContainer: ProductModel[] = [];
+  productSearchIndexsGroupByIdAndUnit: ProductModel[] = [];
+  productSearchIndexsGroupById: ProductModel[] = [];
+  productMap: any = {};
+  unitMap: any = {};
+  productUnitMap: any = {};
+  findOrderMap: any = {};
+  status: string;
+  progressStatus: string;
+  progress: number;
+  progressLabel: string;
+  updateGoodsInfoProcessing = false;
+  skuBaseUnitMap: any = {};
+  toastDefaultConfig = {};
+  async updateGoodsInfo() {
+    await this.cms.waitFor(300, 1000, async () => !!this.cms?.currencyPipe?.transform);
+    this.status = 'Đang tải bảng giá...';
+    if (this.updateGoodsInfoProcessing) {
+      console.warn('Other processing in progress...');
+      return false;
+    }
+    this.updateGoodsInfoProcessing = true;
+    // while (true) {
+    try {
+      // Get goods list
+      this.productSearchIndexsGroupByIdUnitAndContainer = [];
+      this.productMap = {};
+      this.unitMap = {};
+      this.findOrderMap = {};
+      let offset = 0;
+      this.progressStatus = 'danger';
+      this.progress = 0;
+      // while (true) {
+      this.progressStatus = 'success';
+      this.progress = 0;
+      this.progressLabel = 'Đang tải thông tin sản phẩm...';
+      const rs = await this.apiService.getProgress<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true }, (loaded, total) => {
+        // this.progress = parseInt(loaded / total * 100 as any);
+        // this.progressLabel = 'Đang tải thông tin sản phẩm...' + this.progress + '%';
+      }).then(rs => {
+        // this.progress = 0;
+
+        const productSearchIndexsGroupByIdUnitAndContainer: ProductModel[] = [];
+        const productSearchIndexsGroupByIdAndUnit: ProductModel[] = [];
+        const productSearchIndexsGroupById: ProductModel[] = [];
+        for (const productSearchIndex of rs) {
+          // const price = this.masterPriceTable[`${productSearchIndex.Code}-${this.cms.getObjectId(productSearchIndex.Unit)}`]?.Price || null;
+          productSearchIndex['WarehouseUnit'] = { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel };
+          let goods = productSearchIndex;
+          goods['id'] = `${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`;
+          goods['text'] = productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')';
+          goods['Sku'] = productSearchIndex.Sku?.toUpperCase();
+          goods['Container'] = {
+            id: productSearchIndex.Container,
+            text: productSearchIndex.ContainerName,
+            FindOrder: productSearchIndex.ContainerFindOrder,
+            Shelf: productSearchIndex.ContainerShelf,
+            ShelfName: productSearchIndex.ContainerShelfName,
+            Warehouse: productSearchIndex.Warehouse,
+            WarehouseName: productSearchIndex.WarehouseName,
+          };
+          goods['BaseUnit'] = { id: productSearchIndex.BaseUnit, text: productSearchIndex.BaseUnitLabel };
+          goods['Unit'] = {
+            id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel,
+            Sequence: productSearchIndex.UnitSeq,
+            IsExpirationGoods: !!productSearchIndex.IsExpirationGoods,
+            IsAutoAdjustInventory: !!productSearchIndex.IsAutoAdjustInventory,
+            IsManageByAccessNumber: !!productSearchIndex.IsManageByAccessNumber,
+            IsDefaultSales: !!productSearchIndex.IsDefaultSales,
+            IsDefaultPurchase: !!productSearchIndex.IsDefaultPurchase,
+            ConversionRatio: !!productSearchIndex.ConversionRatio,
+            UnitNo: !!productSearchIndex.UnitNo,
+            Price: productSearchIndex.Price,
+          };
+          goods['Units'] = [];
+          goods['Price'] = productSearchIndex.Price;
+          goods['PriceOfBaseUnitText'] = productSearchIndex.Price && productSearchIndex.BaseUnit != productSearchIndex.Unit && (' (' + (this.cms.currencyPipe.transform(productSearchIndex.Price / productSearchIndex.ConversionRatio, 'VND') + '/' + productSearchIndex.BaseUnitLabel) + ')') || '';
+          goods['Inventory'] = null;
+          goods['Keyword'] = (productSearchIndex.Sku + ' ' + productSearchIndex.Name + ' (' + productSearchIndex.UnitLabel + ')').toLowerCase();
+
+          productSearchIndexsGroupByIdUnitAndContainer.push(goods);
+          // this.productSearchIndex[`${productSearchIndex.Code}-${productSearchIndex.Unit}-${productSearchIndex.Container}`] = productSearchIndex;
+
+          if (!this.productMap[productSearchIndex.Code]) {
+            this.productMap[productSearchIndex.Code] = goods;
+            productSearchIndexsGroupById.push(goods);
+          }
+          if (!this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit]) {
+            this.productUnitMap[productSearchIndex.Code + '-' + productSearchIndex.Unit] = goods;
+            productSearchIndexsGroupByIdAndUnit.push(goods);
+          }
+
+          // Add unit to unit list
+          if (this.productMap[productSearchIndex.Code]) {
+            if (!this.productMap[productSearchIndex.Code].Units) {
+              this.productMap[productSearchIndex.Code].Units = [];
+            }
+            if (this.productMap[productSearchIndex.Code].Units.findIndex(f => f.id == this.cms.getObjectId(goods.Unit)) < 0) {
+              this.productMap[productSearchIndex.Code].Units.push(goods.Unit);
+            }
+          }
+
+          if (!this.unitMap[productSearchIndex.UnitSeq]) {
+            this.unitMap[productSearchIndex.UnitSeq] = { id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel, Sequence: productSearchIndex.UnitSeq };
+          }
+          if (!this.findOrderMap[productSearchIndex.ContainerFindOrder]) {
+            this.findOrderMap[productSearchIndex.ContainerFindOrder] = goods;
+          }
+          if (productSearchIndex.BaseUnit == productSearchIndex.Unit) {
+            if (!this.skuBaseUnitMap[(productSearchIndex.Sku || '').toUpperCase()]) {
+              this.skuBaseUnitMap[(productSearchIndex.Sku || '').toUpperCase()] = goods;
+            }
+          }
+        }
+
+        this.productSearchIndexsGroupByIdUnitAndContainer = productSearchIndexsGroupByIdUnitAndContainer;
+        this.productSearchIndexsGroupByIdAndUnit = productSearchIndexsGroupByIdAndUnit;
+        this.productSearchIndexsGroupById = productSearchIndexsGroupById;
+
+        // offset += 100;
+        return rs;
+      });
+      this.progress = 0;
+      this.updateGoodsInfoProcessing = false;
+      return true;
+    } catch (err) {
+      this.updateGoodsInfoProcessing = false;
+      this.progress = 0;
+      console.error(err);
+      console.log('retry...');
+      this.status = 'Lỗi tải bảng giá, đang thử lại...';
+      this.cms.showToast('Bảng giá mới chưa được cập nhật, refersh trình duyệt để tải lại', 'Cập nhật bảng giá không thành công !', { ...this.toastDefaultConfig, status: 'danger' });
+      return false;
+    }
+    // }
+  }
+  /** End Load product search index */
 }

@@ -511,6 +511,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       Created: [null],
       Details: this.formBuilder.array([]),
       Returns: [],
+      Thread: [],
       RelativeVouchers: [data?.Returns ? [{ id: data.Returns, text: data.Returns, type: 'COMMERCEPOSRETURN' }] : null],
       DebitFunds: [],
       // FinalReceipt: [],
@@ -590,6 +591,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         ReceiptBankAccount: [],
         CashTransferAmount: [],
         CashAmount: [],
+        Thread: [],
       });
       if (order.Details) {
         const details = (this.getDetails(newForm) as FormArray).controls;
@@ -622,7 +624,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         ReceiptBankAccount: [],
         CashTransferAmount: [],
         CashAmount: [],
-        RelativeVouchers: [[]]
+        RelativeVouchers: [[]],
+        Thread: [],
       });
     }
     newForm['voucherType'] = 'COMMERCEPOSRETURN';
@@ -3670,6 +3673,52 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         }
       });
     }
+  }
+
+  setThread(orderForm: FormGroup) {
+    this.cms.openDialog(DialogFormComponent, {
+      context: {
+        title: 'Gán luồng (theo dự án/công trình...)',
+        width: '500px',
+        onInit: async (form, dialog) => {
+          return true;
+        },
+        controls: [
+          {
+            name: 'Thread',
+            label: 'Luồng',
+            placeholder: 'Sử dụng để báo cáo theo dự án/công trình...',
+            type: 'text',
+            focus: true,
+            initValue: orderForm.value['Thread'],
+          },
+        ],
+        actions: [
+          {
+            label: 'Trở về',
+            icon: 'back',
+            status: 'basic',
+            action: async () => { return true; },
+          },
+          {
+            label: 'Gán',
+            icon: 'npm-outline',
+            status: 'success',
+            keyShortcut: 'Enter',
+            action: async (form: FormGroup) => {
+
+              let thread: string[] = form.get('Thread').value.trim();
+
+              if (thread) {
+                orderForm.get('Thread').setValue(thread);
+                this.cms.showToast('Đơn hàng đã được gán vào luồng `' + thread + '`', 'Đã gán luồng cho đơn hàng', { ...this.toastDefaultConfig, status: 'success', duration: 5000 });
+              }
+              return true;
+            },
+          },
+        ],
+      },
+    });
   }
 
   openBarcodeProcessHistory() {

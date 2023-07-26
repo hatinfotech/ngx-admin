@@ -646,7 +646,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   makeNewFormGroup(data?: SalesVoucherModel): FormGroup {
 
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {disabled: true, value: ''},
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -674,6 +674,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
+      Thread: [''],
       DateOfSale: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],

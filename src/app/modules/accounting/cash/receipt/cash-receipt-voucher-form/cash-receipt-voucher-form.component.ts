@@ -358,7 +358,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewFormGroup(data?: CashVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {disabled: true, value: ''},
       Description: ['', Validators.required],
       RelatedUserName: [''],
       DateOfImplement: [''],

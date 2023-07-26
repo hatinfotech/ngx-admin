@@ -523,7 +523,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
 
   makeNewFormGroup(data?: SalesReturnsVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {disabled: true, value: ''},
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -551,6 +551,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
+      Thread: [''],
       DateOfReturn: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],

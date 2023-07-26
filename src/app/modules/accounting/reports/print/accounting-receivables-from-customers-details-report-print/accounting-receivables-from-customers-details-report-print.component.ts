@@ -30,6 +30,7 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
   processMapList: ProcessMap[] = [];
   // formDialog = CashPaymentVoucherFormComponent;
   @Input() objects: string[];
+  @Input() query: any = {};
   showIncreaseAmount = false;
   constructor(
     public cms: CommonService,
@@ -177,6 +178,7 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
         fromDate: fromDate.toISOString(),
         toDate: toDate.toISOString(),
         limit: 'nolimit',
+        ...this.query,
       }).then(async data => {
         const objectInfo = data.find(f => f.Voucher != 'OPN');
 

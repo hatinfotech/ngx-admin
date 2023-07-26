@@ -636,7 +636,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
 
   makeNewFormGroup(data?: CommercePosReturnModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {disabled: true, value: ''},
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -667,6 +667,7 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
       DateOfReturn: [null, Validators.required],
       _total: [''],
       RelativeVouchers: [''],
+      Thread: [''],
       RequireInvoice: [false],
       Details: this.formBuilder.array([]),
     });

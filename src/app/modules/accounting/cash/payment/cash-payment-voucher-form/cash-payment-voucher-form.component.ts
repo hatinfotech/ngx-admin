@@ -48,7 +48,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   bankAccountList: AccBankAccountModel[] = [];
 
   customIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent:FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.cms.translateText('Accounting.Business.label'), status: 'success', action: (formGroupCompoent: FormGroupComponent, detailFormGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(AccBusinessFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -271,7 +271,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   accountCreditList: AccountModel[] = [];
 
   objectControlIcons: CustomIcon[] = [{
-    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
+    icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(ContactFormComponent, {
         context: {
           inputMode: 'dialog',
@@ -326,7 +326,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.accountList = await this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit', sort_Code: 'asc' }).then(rs => rs.map(account => {
       account['id'] = account.Code;
       account['text'] = account.Code + ' - ' + account.Name;
-      if(account.NumOfChildren > 0) {
+      if (account.NumOfChildren > 0) {
         account.disabled = true;
       }
       return account;
@@ -378,7 +378,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewFormGroup(data?: CashVoucherModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: { disabled: true, value: '' },
       Description: ['', Validators.required],
       RelatedUserName: [''],
       DateOfImplement: [''],
@@ -392,6 +392,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       DateOfVoucher: [null, Validators.required],
       RelativeVouchers: [''],
       BankAccount: [''],
+      Thread: [''],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -667,7 +668,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
             //   }
             // }
           }
-          
+
           setTimeout(() => {
             this.onProcessed();
           }, 1000);

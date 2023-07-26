@@ -58,9 +58,9 @@
                                             <div style="flex: 1;">
                                                 <div style="font-weight: bold;">{{item.text}}</div>
                                                 <div style="margin-top: 0.5rem;">SKU: {{item.Sku}}</div>
-                                                <div>Vị trí:  {{item.Container?.WarehouseName}}/{{item.Container?.ShelfName}}/{{item.Container?.FindOrder || item.Container?.ContainerFindOrder}}, Tồn kho: {{ item.Inventory === null && 'đang kiểm tra...' || (item.Inventory | number)}}</div>
+                                                <div>Vị trí: {{item.Container?.WarehouseName}}/{{item.Container?.ShelfName}}/{{item.Container?.FindOrder || item.Container?.ContainerFindOrder}}, Tồn kho: {{ item.Inventory === null && 'đang kiểm tra...' || (item.Inventory | number)}}</div>
                                                 <!-- <div>ĐVT: {{(item.Unit || item.WarehouseUnit) | objecttext}}</div> -->
-                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span> 
+                                                <div style="font-weight: bold; font-size: 2rem; line-height: 2rem;">Giá: <span style="color: var(--danger);">{{item.Price | currency:'VND'}}</span><span style="color: var(--ck-color-base)">/</span><span style="color: var(--orange)">{{(item.Unit || item.WarehouseUnit) | objecttext}}</span>
                                                     <!-- <span style="font-size: 1.2rem; line-height: 1.2rem;color: var(---ck-color-base)">{{item.PriceOfBaseUnitText}}</span> -->
                                                 </div>
                                             </div>
@@ -145,7 +145,7 @@
                             <div class="row">
                                 <div class="col-xxxl-12">
                                     <div class="pos-info">
-                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': (orderForm['voucherType'] == 'COMMERCEPOSRETURN' || orderForm.value['State'] == 'UNRECORDED'),'text-color-success':(orderForm['voucherType'] == 'COMMERCEPOSORDER' && orderForm.value['State'] != 'UNRECORDED')}">Mã đơn:<br>{{orderForm.value?.Code}}</div>
+                                        <div *ngIf="orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" [ngClass]="{'text-color-danger': (orderForm['voucherType'] == 'COMMERCEPOSRETURN' || orderForm.value['State'] == 'UNRECORDED'),'text-color-success':(orderForm['voucherType'] == 'COMMERCEPOSORDER' && orderForm.value['State'] != 'UNRECORDED')}">Mã đơn:<br>{{orderForm.value?.Code}}{{orderForm.value['Thread'] ? (' ('+orderForm.value['Thread']+')') : ''}}</div>
                                         <div *ngIf="!orderForm.value?.Code" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-warning">Đang khởi tạo...</div>
                                         <div *ngIf="orderForm.value?.DateOfSale || orderForm.value?.DateOfReturn" style="white-space: nowrap; font-size: 0.9rem;" class="text-color-primary">{{(orderForm.value?.DateOfSale || orderForm.value?.DateOfReturn) | date:'short'}}</div>
                                     </div>
@@ -226,6 +226,12 @@
                                     <button nbButton fullWidth size="medium" status="info" class="pos-business-button" (click)="openBarcodeProcessHistory()">
                                         <nb-icon icon="clock-outline"></nb-icon>
                                         <div class="button-label">Lịch sử quét</div>
+                                    </button>
+                                </div>
+                                <div class="col-xxxl-4">
+                                    <button nbButton fullWidth size="medium" status="info" class="pos-business-button" (click)="setThread(orderForm)">
+                                        <nb-icon icon="layers-outline"></nb-icon>
+                                        <div class="button-label">Luồng</div>
                                     </button>
                                 </div>
                                 <div class="col-xxxl-4">
@@ -425,52 +431,52 @@
                                         <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--warning); margin-bottom: 0.5rem; margin-top: 0.6rem;">
                                             <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
                                             <div style="color: var(--warning)">{{((orderForm.cashBack < 0 ? -orderForm.cashBack : orderForm.cashBack) || 0) | currency:'VND'}}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED' && orderForm.cashBack < 0">
-                                        <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--warning); margin-bottom: 0.5rem; margin-top: 0.6rem;">
-                                            <nb-badge text="Công nợ" status="warning" position="top left" style="left: 5px;"></nb-badge>
-                                            <div style="color: var(--warning)">{{((orderForm.cashBack < 0 ? -orderForm.cashBack : orderForm.cashBack) || 0) | currency:'VND'}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12" style="margin-bottom: 0.5rem;" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED' && orderForm.cashBack >= 0">
-                                        <div class="pos-contact-field" style="padding-top: 10px; border-color: var(--warning);">
-                                            <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
-                                            <nb-badge text="x" status="danger" position="top right" style="right: 5px; cursor: pointer" nbTooltip="Ứng trước tiền hàng" (click)="removeCashBack(orderForm)"></nb-badge>
-                                            <input id="CashBack" style="color: var(--warning) !important; padding: 0.5rem;" formControlName="CashBack" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="warning" fieldSize="large" fullWidth placeholder="Thối lại/Công nợ/Tạm ứng trước tiền hàng" nbTooltip="Thối lại/Công nợ/Tạm ứng trước tiền hàng" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED'">
-                                        <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--info); margin-bottom: 0.5rem; margin-top: 0.6rem;">
-                                            <nb-badge text="Khách ứng trước" status="info" position="top left" style="left: 5px;"></nb-badge>
-                                            <div style="color: var(--info)">{{ (((orderForm.value?.CashAmount + orderForm.value?.CashTransferAmount) - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) - orderForm.value?.CashBack) > 0 ? ((orderForm.value?.CashAmount + orderForm.value?.CashTransferAmount) - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) - orderForm.value?.CashBack) : 0) | currency:'VND'}}</div>
-                                        </div>
-                                    </div>
-                                        <!-- <div class="col-md-12" *ngIf="(orderForm.value?.PaymentMethod?.id !== 'DEBT')">
+                                        <div class="col-md-12" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED' && orderForm.cashBack < 0">
+                                            <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--warning); margin-bottom: 0.5rem; margin-top: 0.6rem;">
+                                                <nb-badge text="Công nợ" status="warning" position="top left" style="left: 5px;"></nb-badge>
+                                                <div style="color: var(--warning)">{{((orderForm.cashBack < 0 ? -orderForm.cashBack : orderForm.cashBack) || 0) | currency:'VND'}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" style="margin-bottom: 0.5rem;" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED' && orderForm.cashBack >= 0">
+                                                <div class="pos-contact-field" style="padding-top: 10px; border-color: var(--warning);">
+                                                    <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
+                                                    <nb-badge text="x" status="danger" position="top right" style="right: 5px; cursor: pointer" nbTooltip="Ứng trước tiền hàng" (click)="removeCashBack(orderForm)"></nb-badge>
+                                                    <input id="CashBack" style="color: var(--warning) !important; padding: 0.5rem;" formControlName="CashBack" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="warning" fieldSize="large" fullWidth placeholder="Thối lại/Công nợ/Tạm ứng trước tiền hàng" nbTooltip="Thối lại/Công nợ/Tạm ứng trước tiền hàng" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12" *ngIf="orderForm.value?.PaymentMethod?.id === 'MIXED'">
+                                                <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--info); margin-bottom: 0.5rem; margin-top: 0.6rem;">
+                                                    <nb-badge text="Khách ứng trước" status="info" position="top left" style="left: 5px;"></nb-badge>
+                                                    <div style="color: var(--info)">{{ (((orderForm.value?.CashAmount + orderForm.value?.CashTransferAmount) - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) - orderForm.value?.CashBack) > 0 ? ((orderForm.value?.CashAmount + orderForm.value?.CashTransferAmount) - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal) - orderForm.value?.CashBack) : 0) | currency:'VND'}}</div>
+                                                </div>
+                                            </div>
+                                            <!-- <div class="col-md-12" *ngIf="(orderForm.value?.PaymentMethod?.id !== 'DEBT')">
                                             <div class="pos-total-payment" style="text-align: right; padding-top: 0.5rem; padding-bottom: 0.5rem; border-color: var(--warning); margin-bottom: 0.5rem; margin-top: 0.6rem;">
                                                 <nb-badge text="Thối lại" status="warning" position="top left" style="left: 5px;"></nb-badge>
                                                 <div style="color: var(--warning)">{{orderForm.value?.CashReceipt - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds)) > 0 ? (orderForm.value?.CashReceipt - (orderForm.value?.Amount - orderForm.value?.DecreaseForTotal - (orderForm['returnsObj'] && orderForm['returnsObj'].IsDebt ? 0 : orderForm.value?.DebitFunds)) | currency:'VND') : '--'}}</div>
                                             </div>
                                         </div> -->
-                                    <div class="col-xxxl-8">
-                                        <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm, {printType: 'RETAILINVOICE'})">
-                                            <div>
-                                                <nb-icon icon="flash-outline"></nb-icon>
-                                                <span style="font-weight: bold; font-size: 1rem">F9</span>
+                                            <div class="col-xxxl-8">
+                                                <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State == 'APPROVED'" status="success" class="pos-business-button" (click)="payment(orderForm, {printType: 'RETAILINVOICE'})">
+                                                    <div>
+                                                        <nb-icon icon="flash-outline"></nb-icon>
+                                                        <span style="font-weight: bold; font-size: 1rem">F9</span>
+                                                    </div>
+                                                    <div class="button-label">{{(orderForm.value?.PaymentMethod?.id === 'DEBT' ? 'Ghi nợ' : 'Thanh toán')}}</div>
+                                                </button>
                                             </div>
-                                            <div class="button-label">{{(orderForm.value?.PaymentMethod?.id === 'DEBT' ? 'Ghi nợ' : 'Thanh toán')}}</div>
-                                        </button>
-                                    </div>
-                                    <div class="col-xxxl-4">
-                                        <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State != 'APPROVED'" status="danger" class="pos-business-button" (click)="destroyOrder($event)">
-                                            <div>
-                                                <nb-icon icon="close-outline"></nb-icon>
-                                                <span style="font-weight: bold; font-size: 1rem">F4</span>
+                                            <div class="col-xxxl-4">
+                                                <button nbButton fullWidth size="medium" [disabled]="orderForm['isProcessing'] || orderForm.value?.State != 'APPROVED'" status="danger" class="pos-business-button" (click)="destroyOrder($event)">
+                                                    <div>
+                                                        <nb-icon icon="close-outline"></nb-icon>
+                                                        <span style="font-weight: bold; font-size: 1rem">F4</span>
+                                                    </div>
+                                                    <div class="button-label">Hủy phiếu</div>
+                                                </button>
                                             </div>
-                                            <div class="button-label">Hủy phiếu</div>
-                                        </button>
-                                    </div>
-                                </div>
+                                        </div>
                             </ng-container>
                             <ng-container *ngIf="orderForm['voucherType'] == 'COMMERCEPOSRETURN'">
                                 <div class="row">
