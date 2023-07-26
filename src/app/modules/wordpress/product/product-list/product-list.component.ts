@@ -127,7 +127,7 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
           ...agMakeTagsColDef(this.cms, (tag) => {
           }),
           headerName: 'ĐVT',
-          field: 'Units',
+          field: 'Unit',
           width: 130,
           valueGetter: (params: { data: ProductModel }) => {
             const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
