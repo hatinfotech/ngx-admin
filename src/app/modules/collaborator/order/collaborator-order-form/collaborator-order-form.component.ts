@@ -25,11 +25,13 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
   templateUrl: './collaborator-order-form.component.html',
-  styleUrls: ['./collaborator-order-form.component.scss']
+  styleUrls: ['./collaborator-order-form.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class CollaboratorOrderFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
@@ -45,6 +47,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public collaboratorService: CollaboratorService,
     public adminProductService: AdminProductService,
     public mobileAppService: MobileAppService,
+    public currencyPipe: CurrencyPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -151,11 +154,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   select2Options = {};
   makeSelect2OptionForAddonProfiles(formItem: FormGroup, formDetail: FormGroup, detailIndex: number): Select2Option {
-    if (!this.select2Options['AddonProfiles']) {
-      this.select2Options['AddonProfiles'] = {};
-    }
-    if (!this.select2Options['AddonProfiles'][detailIndex]) {
-      this.select2Options['AddonProfiles'][detailIndex] = {
+    if (!formDetail['_addonProfilesSelect2Option']) {
+      formDetail['_addonProfilesSelect2Option'] = {
         placeholder: 'Add-on Profiles...',
         allowClear: true,
         width: '100%',
@@ -199,7 +199,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         },
       };
     }
-    return this.select2Options['AddonProfiles'][detailIndex];
+    return formDetail['_addonProfilesSelect2Option'];
   }
 
   objectControlIcons: CustomIcon[] = [{
@@ -370,26 +370,88 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     return super.getRequestId(callback);
   }
 
-  select2OptionForProduct = {
-    ...this.cms.makeSelect2AjaxOption('/collaborator/page-products', {
-      includeIdText: true,
-      includeCategories: true,
-      includeGroups: true,
-      includeProduct: true,
-      includeUnit: true,
-      includeUnitPrices: true,
-      productOfPage: true,
-      page: this.collaboratorService.currentpage$?.value
-    }, {
-      placeholder: 'Chọn hàng hóa/dịch vụ...',
-      prepareReaultItem: (item) => {
-        item.thumbnail = item?.FeaturePicture?.Thumbnail;
-        item.id = item.Product;
-        return item;
-      },
-      limit: 10,
-    }),
+  select2OptionForProduct: Select2Option = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
     withThumbnail: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      data: function (params) {
+        return {
+          ...params,
+          offset: params['offset'] || 0,
+          limit: params['limit'] || 10
+        };
+      },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        // console.log(settings);
+        const params = settings.data;
+        const offset = settings.data['offset'];
+        const limit = settings.data['limit'];
+        // const params = settings.data;
+        const results = !params['term'] ? this.adminProductService.productSearchIndexsGroupById : this.adminProductService.productSearchIndexsGroupById.filter(f => this.cms.smartFilter(f.SearchText, params['term']));
+        success({ data: results.slice(offset, offset + limit), total: results.length });  
+        // this.apiService.getObservable('/admin-product/products', { select: "id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'], offset, limit }).pipe(
+        //   map((res) => {
+        //     const total = +res.headers.get('x-total-count');
+        //     let data = res.body;
+        //     return { data, total };
+        //   }),
+        // ).toPromise().then(rs => {
+        //   success(rs);
+        // }).catch(err => {
+        //   console.error(err);
+        //   failure();
+        // });
+        return null;
+      },
+      delay: 300,
+      processResults: (rs: { data: any[], total: number }, params: any) => {
+        const data = rs.data;
+        const total = rs.total;
+        params.limit = params.limit || 10;
+        params.offset = params.offset || 0;
+        params.offset = params.offset += params.limit;
+        return {
+          results: data.map(item => {
+            item.id = item.Code;
+            item.text = `${item.Sku} - ${item.Name} (${item.Code})`;
+            item.thumbnail = item?.FeaturePicture?.Thumbnail;
+            return item;
+          }),
+          pagination: {
+            more: params.offset < total
+          }
+        };
+      },
+    },
+    // ...this.cms.makeSelect2AjaxOption('/collaborator/products', {
+    //   includeIdText: true,
+    //   includeCategories: true,
+    //   includeGroups: true,
+    //   includeProduct: true,
+    //   includeUnit: true,
+    //   includeUnits: true,
+    //   includeUnitPrices: true,
+    //   // productOfPage: true,
+    //   includePrice: true,
+    //   page: this.collaboratorService.currentpage$?.value
+    // }, {
+    //   placeholder: 'Chọn hàng hóa/dịch vụ...',
+    //   prepareReaultItem: (item) => {
+    //     item.thumbnail = item?.FeaturePicture?.Thumbnail;
+    //     item.id = item.Code;
+    //     item.text = `${item.Sku} - ${item.Name} (${item.Code})`;
+    //     return item;
+    //   },
+    //   limit: 10,
+    // }),
   };
 
   select2OptionForUnit = {
@@ -764,16 +826,18 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         const details = this.getDetails(newForm);
         details.clear();
 
-        const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => `${this.cms.getObjectId(this.collaboratorService.currentpage$.value)}-${this.cms.getObjectId(m.Product)}`);
-        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/collaborator/page-products', {
+        const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+        const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/collaborator/products', {
           id: productIds,
           includeIdText: true,
           includeProduct: true,
           includeUnit: true,
+          includeUnits: true,
           includeUnitPrices: true,
-          productOfPage: true,
+          // productOfPage: true,
+          includePrice: true,
         }).then(rs => rs.reduce((prev, next, i) => {
-          prev[this.cms.getObjectId(next)] = next;
+          prev[next.Code] = next;
           return prev;
         }, {}));
 
@@ -785,7 +849,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         for (const detailData of itemFormData.Details) {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
-          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(this.collaboratorService.currentpage$.value) + '-' + this.cms.getObjectId(detailData.Product)].Units?.map(m => {
+          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].Units?.map(m => {
             // m.Price = unitPriceMap[this.cms.getObjectId(detailData.Product) + '-' + this.cms.getObjectId(m)];
             return m;
           });
@@ -848,6 +912,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       Note: [''],
       SubNote: [''],
       Reported: [''],
+      Thread: [''],
       RequireInvoice: [false],
       RelativeVouchers: [''],
       State: [],
@@ -949,6 +1014,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     } else {
       newForm['unitList'] = this.adminProductService.unitList$.value;
     }
+    newForm.valueChanges.subscribe(value => {
+      console.log(value);
+    });
     return newForm;
   }
   getDetails(parentFormGroup: FormGroup) {
@@ -1159,7 +1227,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     // }).then(rs => rs.reduce((result, current, index) => { result[current.Product + '-' + current.Unit] = current.Price; return result; }, {}));
     if (productId) {
       const descriptionControl = detail.get('Description');
-      descriptionControl.setValue(selectedData['ProductName']);
+      descriptionControl.setValue(selectedData['Name']);
       detail.get('Image').setValue(selectedData.Pictures || (selectedData.FeaturePicture ? [selectedData.FeaturePicture] : []));
       if (selectedData.Units && selectedData?.Units.length > 0) {
         // selectedData.Units.map(m => { m.Price = unitPriceMap[productId + '-' + this.cms.getObjectId(m)]; return m; })

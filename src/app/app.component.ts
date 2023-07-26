@@ -15,6 +15,8 @@ import { filter, take } from 'rxjs/operators';
 import { Title } from '@angular/platform-browser';
 import { NbMenuInternalService } from '@nebular/theme/components/menu/menu.service';
 import { Router } from '@angular/router';
+import { CurrencyPipe } from '@angular/common';
+import { AdminProductService } from './modules/admin-product/admin-product.service';
 
 @Component({
   selector: 'ngx-app',
@@ -25,6 +27,7 @@ import { Router } from '@angular/router';
   </ngx-one-column-layout>
   `,
   styleUrls: ['./app.component.scss'],
+  providers: [CurrencyPipe]
 })
 export class AppComponent implements OnInit {
   menu: NbMenuItem[] = [
@@ -42,12 +45,14 @@ export class AppComponent implements OnInit {
     public cms: CommonService,
     public authService: NbAuthService,
     public translate: TranslateService,
+    public currencyPipe: CurrencyPipe,
     public notificatinoSerivce: NotificationService,
     // public menuInternalService: NbMenuInternalService,
     // public menuService: NbMenuService,
     private titleService: Title,
     public router: Router,
   ) {
+    this.cms.currencyPipe = currencyPipe;
     iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('far', { packClass: 'far', iconClassPrefix: 'far ' });
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });

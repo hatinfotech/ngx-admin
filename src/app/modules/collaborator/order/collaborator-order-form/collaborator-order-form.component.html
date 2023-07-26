@@ -26,9 +26,18 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" disabled name="Code" label="ID" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="Code" placeholder="ID">
-                                                </ngx-form-group>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="Thread" label="Luồng (theo dự án/công trình)" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="Thread" placeholder="{{'Thread' | translate | headtitlecase}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="Code" label="ID" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'ID' | translate | headtitlecase}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
@@ -314,7 +323,7 @@
                                                     </div> -->
                                                     <div class="col-lg-4 col-md-4 col-sm-12 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
                                                         <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="AddonProfiles" label="Add-on Profile" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="true" [touchedValidate]="false">
-                                                            <ngx-select2 [data]="accountingBusinessList" formControlName="AddonProfiles" [select2Option]="makeSelect2OptionForAddonProfiles(formItem, detail, ic)"></ngx-select2>
+                                                            <ngx-select2 formControlName="AddonProfiles" [select2Option]="makeSelect2OptionForAddonProfiles(formItem, detail, ic)"></ngx-select2>
                                                         </ngx-form-group>
                                                     </div>
                                                     <div class="col-lg-8 col-md-8 col-sm-12 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">

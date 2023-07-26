@@ -10,12 +10,12 @@ import { ICellRendererParams } from "@ag-grid-community/core";
             <span>{{params.value | objectstext}}</span>
         </ng-container>
         <ng-template #elseContainer>
-            <button *ngIf="params.colaseButton" nbButton ghost [outline]="params.colaseButton.outline" [status]="params.colaseButton.status || 'basic'" (click)="params.colaseButton.action(params) && false" [size]="params.colaseButton.size || 'small'">
-                <ng-container *ngIf="params.colaseButton.title; else elseBlock">    
-                    <nb-icon *ngIf="params.colaseButton.icon" pack="eva" [icon]="params.colaseButton.icon" [nbTooltip]="params.colaseButton.title"></nb-icon><ng-container *ngIf="item.label">{{params.colaseButton.label || '' | translate | headtitlecase}}</ng-container>
+            <button *ngIf="params.coalesceButton" nbButton ghost [outline]="params.coalesceButton.outline" [disabled]="params.coalesceButton?.disabled(params.node.data, params)" [status]="params.coalesceButton.status || 'basic'" (click)="params.coalesceButton.action(params) && false" [size]="params.coalesceButton.size || 'small'">
+                <ng-container *ngIf="params.coalesceButton.title; else elseBlock">    
+                    <nb-icon *ngIf="params.coalesceButton.icon" pack="eva" [icon]="params.coalesceButton.icon" [nbTooltip]="params.coalesceButton.title"></nb-icon><ng-container *ngIf="item.label">{{params.coalesceButton.label || '' | translate | headtitlecase}}</ng-container>
                 </ng-container>
                 <ng-template #elseBlock>   
-                    <nb-icon *ngIf="params.colaseButton.icon" pack="eva" [icon]="params.colaseButton.icon"></nb-icon><ng-container *ngIf="params.colaseButton.label">{{params.colaseButton.label || '' | translate | headtitlecase}}</ng-container>
+                    <nb-icon *ngIf="params.coalesceButton.icon" pack="eva" [icon]="params.coalesceButton.icon"></nb-icon><ng-container *ngIf="params.coalesceButton.label">{{params.coalesceButton.label || '' | translate | headtitlecase}}</ng-container>
                 </ng-template>
             </button>
         </ng-template>

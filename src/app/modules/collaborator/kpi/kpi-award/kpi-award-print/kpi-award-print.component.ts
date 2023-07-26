@@ -1,0 +1,440 @@
+import { DatePipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NbDialogRef } from '@nebular/theme';
+import { takeUntil } from 'rxjs/operators';
+import { Model } from '../../../../../models/model';
+import { environment } from '../../../../../../environments/environment.prod';
+import { AppModule } from '../../../../../app.module';
+import { SmartTableTagsComponent, SmartTableCurrencyComponent, SmartTableButtonComponent } from '../../../../../lib/custom-element/smart-table/smart-table.component';
+import { DataManagerPrintComponent } from '../../../../../lib/data-manager/data-manager-print.component';
+import { CashVoucherDetailModel } from '../../../../../models/accounting.model';
+import { ProcessMap } from '../../../../../models/process-map.model';
+import { ApiService } from '../../../../../services/api.service';
+import { CommonService } from '../../../../../services/common.service';
+import { DynamicListDialogComponent } from '../../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
+
+@Component({
+  selector: 'ngx-collaborator-kpi-award-print',
+  templateUrl: './kpi-award-print.component.html',
+  styleUrls: ['./kpi-award-print.component.scss']
+})
+export class CollaboratorKpiAwardPrintComponent extends DataManagerPrintComponent<Model> implements OnInit {
+
+  /** Component name */
+  componentName = 'CollaboratorKpiAwardPrintComponent';
+  title: string = 'Xem trước phiếu thưởng';
+  apiPath = '/collaborator/award-vouchers';
+  env = environment;
+  processMapList: ProcessMap[] = [];
+
+  constructor(
+    public cms: CommonService,
+    public router: Router,
+    public apiService: ApiService,
+    public ref: NbDialogRef<CollaboratorKpiAwardPrintComponent>,
+    private datePipe: DatePipe,
+  ) {
+    super(cms, router, apiService, ref);
+  }
+
+  ngOnInit() {
+    this.restrict();
+    super.ngOnInit();
+  }
+
+  async init() {
+    const result = await super.init();
+    // this.title = `PhieuThu_${this.identifier}` + (this.data.DateOfImplement ? ('_' + this.datePipe.transform(this.data.DateOfImplement, 'short')) : '');
+
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   data['Title'] = this.renderTitle(data);
+    //   for (const detail of data.Details) {
+    //     data['Total'] += parseFloat(detail['Amount'] as any);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.awardVoucher[data.State || ''];
+    // }
+    this.summaryCalculate(this.data);
+
+    return result;
+  }
+
+  renderTitle(data: Model) {
+    return `Phieu_Thuong_${this.getIdentified(data).join('-')}` + (data.DateOfImplement ? ('_' + this.datePipe.transform(data.DateOfImplement, 'short')) : '');
+  }
+
+  close() {
+    this.ref.close();
+  }
+
+  renderValue(value: any) {
+    if (value && value['text']) {
+      return value['text'];
+    }
+    return value;
+  }
+
+  toMoney(detail: CashVoucherDetailModel) {
+    let toMoney = parseInt(detail['Amount'] as any);
+    // const tax = detail['Tax'] as any;
+    // if (tax) {
+    //   toMoney += toMoney * tax.Tax / 100;
+    // }
+    return toMoney;
+  }
+
+  getTotal(data: Model) {
+    let total = 0;
+    const details = data.Details;
+    for (let i = 0; i < details.length; i++) {
+      total += this.toMoney(details[i]);
+    }
+    return total;
+  }
+
+  saveAndClose(data: Model) {
+    if (this.onSaveAndClose) {
+      this.onSaveAndClose(data);
+    }
+    this.close();
+    return false;
+  }
+
+  exportExcel(type: string) {
+    this.close();
+    return false;
+  }
+
+  get identifier() {
+    // return this.data.Code;
+    return '';
+  }
+
+  approvedConfirm(data: Model) {
+    const params = { id: [data.Code] };
+    const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+      {
+        label: this.cms.translateText('Common.cancel'),
+        status: 'primary',
+        action: () => {
+
+        },
+      },
+      {
+        label: this.cms.translateText(data.State == 'APPROVED' ? 'Common.complete' : 'Common.approve'),
+        status: 'danger',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<Model[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+            this.loading = false;
+            this.onChange && this.onChange(data);
+            this.onClose && this.onClose(data);
+            this.close();
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.cms.translateText(processMap?.responseTitle), {
+              status: 'success',
+            });
+          }).catch(err => {
+            this.loading = false;
+          });
+        },
+      },
+    ]);
+  }
+
+  // stateActionConfirm(data: Model, nextState: ProcessMap) {
+  //   const params = { id: [data.Code] };
+  //   const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
+  //   params['changeState'] = nextState.state;
+
+  //   this.cms.showDiaplog(this.cms.translateText(nextState.confirmText), this.cms.translateText(nextState.confirmText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), [
+  //     {
+  //       label: this.cms.translateText('Common.cancel'),
+  //       status: 'primary',
+  //       action: () => {
+
+  //       },
+  //     },
+  //     {
+  //       label: this.cms.translateText(nextState.label),
+  //       status: nextState.status,
+  //       action: () => {
+  //         this.loading = true;
+  //         this.apiService.putPromise<Model[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+  //           this.loading = false;
+  //           this.onChange && this.onChange(data);
+  //           this.onClose && this.onClose(data);
+  //           this.close();
+  //           this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Description + '`' }), this.cms.translateText(processMap?.responseTitle), {
+  //             status: 'success',
+  //           });
+  //         }).catch(err => {
+  //           this.loading = false;
+  //         });
+  //       },
+  //     },
+  //   ]);
+  // }
+
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<Model[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true }).then(data => {
+      this.summaryCalculate(data);
+      return data;
+    });
+  }
+
+  previewCommissionVouchers(detail: any) {
+    this.cms.openDialog(DynamicListDialogComponent, {
+      context: {
+        inputMode: 'dialog',
+        title: 'Chi tiết tiền thưởng từ doanh số trực tiếp: ' + detail.ProductName,
+        apiPath: '/collaborator/award-voucher-detail-commissions',
+        idKey: ['AwardVoucher', 'DetailNo', 'No'],
+        params: { eq_AwardVoucher: detail.AwardVoucher, eq_DetailNo: detail.No },
+        // actionButtonList: [],
+        listSettings: {
+          // pager: {
+          //   display: true,
+          //   perPage: 10,
+          // },
+          actions: false,
+          columns: {
+            No: {
+              title: 'No.',
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Voucher: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.voucher'), 'head-title'),
+              type: 'custom',
+              renderComponent: SmartTableTagsComponent,
+              onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                instance.click.subscribe((voucher: string) => this.cms.previewVoucher('CLBRTCOMMISSION', voucher));
+              },
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+              valuePrepareFunction: (cell: string, row: any) => {
+                return [{ id: cell, text: cell }] as any;
+              },
+            },
+            Product: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.product'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Description: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
+              type: 'string',
+              width: '40%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            UnitLabel: {
+              title: this.cms.textTransform(this.cms.translate.instant('Product.unit'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Quantity: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.quantity'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Price: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.price'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+            },
+            ToMoney: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+              // valuePrepareFunction: (cell: string, row: CollaboratorKpiAwardVoucherDetailOrderModel) => {
+              //   return `${row.Quantity * row.Price}`;
+              // },
+            },
+            Preview: {
+              title: this.cms.translateText('Common.show'),
+              type: 'custom',
+              width: '5%',
+              class: 'align-right',
+              renderComponent: SmartTableButtonComponent,
+              onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+                instance.iconPack = 'eva';
+                instance.icon = 'external-link-outline';
+                instance.display = true;
+                instance.status = 'primary';
+                instance.style = 'text-align: right';
+                instance.class = 'align-right';
+                instance.title = this.cms.translateText('Common.preview');
+                instance.valueChange.subscribe(value => {
+                  // instance.icon = value ? 'unlock' : 'lock';
+                  // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+                  // instance.disabled = value !== 'REQUEST';
+                });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+                  this.cms.previewVoucher('CLBRTCOMMISSION', rowData.Voucher);
+                });
+              },
+            }
+          }
+        }
+      },
+    });
+    return false;
+  }
+
+  previewExtCommissionVouchers(detail: any) {
+    this.cms.openDialog(DynamicListDialogComponent, {
+      context: {
+        inputMode: 'dialog',
+        title: 'Chi tiết tiền thưởng từ doanh số của học trò: ' + detail.ProductName,
+        apiPath: '/collaborator/award-voucher-detail-ext-commissions',
+        idKey: ['AwardVoucher', 'DetailNo', 'No'],
+        params: { eq_AwardVoucher: detail.AwardVoucher, eq_DetailNo: detail.No },
+        // actionButtonList: [],
+        listSettings: {
+          // pager: {
+          //   display: true,
+          //   perPage: 10,
+          // },
+          actions: false,
+          columns: {
+            No: {
+              title: 'No.',
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Voucher: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.voucher'), 'head-title'),
+              type: 'custom',
+              renderComponent: SmartTableTagsComponent,
+              onComponentInitFunction: (instance: SmartTableTagsComponent) => {
+                instance.click.subscribe((voucher: string) => this.cms.previewVoucher('CLBRTCOMMISSION', voucher));
+              },
+              width: '10%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+              valuePrepareFunction: (cell: string, row: any) => {
+                return [{ id: cell, text: cell }] as any;
+              },
+            },
+            Product: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.product'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Description: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
+              type: 'string',
+              width: '40%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            UnitLabel: {
+              title: this.cms.textTransform(this.cms.translate.instant('Product.unit'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Quantity: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.quantity'), 'head-title'),
+              type: 'string',
+              width: '5%',
+              filterFunction: (value: string, query: string) => this.cms.smartFilter(value, query),
+            },
+            Price: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.price'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+            },
+            ToMoney: {
+              title: this.cms.textTransform(this.cms.translate.instant('Common.numOfMoney'), 'head-title'),
+              type: 'custom',
+              class: 'align-right',
+              width: '10%',
+              position: 'right',
+              renderComponent: SmartTableCurrencyComponent,
+              onComponentInitFunction: (instance: SmartTableCurrencyComponent) => {
+                // instance.format$.next('medium');
+                instance.style = 'text-align: right';
+              },
+              // valuePrepareFunction: (cell: string, row: CollaboratorKpiAwardVoucherDetailOrderModel) => {
+              //   return `${row.Quantity * row.Price}`;
+              // },
+            },
+            Preview: {
+              title: this.cms.translateText('Common.show'),
+              type: 'custom',
+              width: '5%',
+              class: 'align-right',
+              renderComponent: SmartTableButtonComponent,
+              onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+                instance.iconPack = 'eva';
+                instance.icon = 'external-link-outline';
+                instance.display = true;
+                instance.status = 'primary';
+                instance.style = 'text-align: right';
+                instance.class = 'align-right';
+                instance.title = this.cms.translateText('Common.preview');
+                instance.valueChange.subscribe(value => {
+                  // instance.icon = value ? 'unlock' : 'lock';
+                  // instance.status = value === 'REQUEST' ? 'warning' : 'success';
+                  // instance.disabled = value !== 'REQUEST';
+                });
+                instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: any) => {
+                  this.cms.previewVoucher('CLBRTCOMMISSION', rowData.Voucher);
+                });
+              },
+            }
+          }
+        }
+      },
+    });
+    return false;
+  }
+
+  getItemDescription(item: Model) {
+    return item?.Description;
+  }
+
+  summaryCalculate(data: Model[]) {
+    // for (const i in data) {
+    //   const item = data[i];
+    //   item['Total'] = 0;
+    //   item['Title'] = this.renderTitle(item);
+    //   for (const detail of item.Details) {
+    //     item['Total'] += detail['Amount'] = parseFloat(detail['Amount'] as any);
+    //   }
+    //   this.processMapList[i] = AppModule.processMaps.awardVoucher[item.State || ''];
+    // }
+    return data;
+  }
+
+}

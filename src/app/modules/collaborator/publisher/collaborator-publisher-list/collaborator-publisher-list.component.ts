@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, ComponentFactoryResolver, OnInit } from "@angular/core";
 import { CollaboratorPublisherFormComponent } from "../collaborator-publisher-form/collaborator-publisher-form.component";
 import { AgGridDataManagerListComponent } from "../../../../lib/data-manager/ag-grid-data-manger-list.component";
 import { ContactModel } from "../../../../models/contact.model";
@@ -214,13 +214,17 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
             }
           },
           cellRendererParams: {
-            colaseButton: {
+            coalesceButton: {
               label: 'Gán quản lý',
               // icon: '',
               status: 'primary',
               outline: true,
+              disabled: (data, params) => !params?.node?.data?.Contact,
               action: (params => {
-                if (params.node?.data?.Id && params?.node?.data?.Publisher) {
+                if (!params.node?.data?.Id || !params?.node?.data?.Contact) {
+                  this.cms
+                  console.log(params);
+                } else {
                   this.cms.openDialog(DialogFormComponent, {
                     context: {
                       title: 'Gán quản lý',
@@ -266,7 +270,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
                             const pageId = this.cms.getObjectId(this.collaboratorService.currentpage$.value);
 
                             if (manager && pageId) {
-                              this.apiService.putPromise(this.apiPath, { assignPublisherManager: true }, [{ Id: params.node.data.Id, Page: pageId, Publisher: this.cms.getObjectId(params.node.data.Publisher), Manager: manager }]).then(rs => {
+                              this.apiService.putPromise(this.apiPath, { assignPublisherManager: true }, [{ Id: params.node.data.Id, Page: pageId, Contact: this.cms.getObjectId(params.node.data.Contact), Manager: manager }]).then(rs => {
                                 this.cms.showToast('Đã gán người quản lý cho CTV', 'Gán quản lý thành công', { status: 'success' });
                                 this.refreshItems([params.node.data.Id]);
                               });

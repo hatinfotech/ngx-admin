@@ -1,40 +1,40 @@
+import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { filter, take } from 'rxjs/operators';
-import { AppModule } from '../../../../app.module';
-import { CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
-import { ApiService } from '../../../../services/api.service';
-import { CommonService } from '../../../../services/common.service';
-import { CollaboratorAwardFormComponent } from '../collaborator-award-form/collaborator-award-form.component';
+import { AppModule } from '../../../../../app.module';
+import { AgDateCellRenderer } from '../../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeCurrencyColDef } from '../../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { agMakeSelectionColDef } from '../../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeStateColDef } from '../../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeTagsColDef } from '../../../../../lib/custom-element/ag-list/column-define/tags.define';
+import { agMakeTextColDef } from '../../../../../lib/custom-element/ag-list/column-define/text.define';
+import { AgGridDataManagerListComponent } from '../../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { ContactModel } from '../../../../../models/contact.model';
+import { PageModel } from '../../../../../models/page.model';
+import { ApiService } from '../../../../../services/api.service';
+import { CommonService } from '../../../../../services/common.service';
+import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
+import { CollaboratorService } from '../../../collaborator.service';
+import { CollaboratorKpiAwardFormComponent } from '../kpi-award-form/kpi-award-form.component';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
-import { DatePipe } from '@angular/common';
-import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
-import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
-import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
-import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
-import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
-import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
-import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
-import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
-import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
-import { ContactModel } from '../../../../models/contact.model';
-import { PageModel } from '../../../../models/page.model';
-import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { CollaboratorService } from '../../collaborator.service';
+import { Model } from '../../../../../models/model';
 
 @Component({
-  selector: 'ngx-collaborator-award-list',
-  templateUrl: './collaborator-award-list.component.html',
-  styleUrls: ['./collaborator-award-list.component.scss']
+  selector: 'ngx-collaborator-kpi-award-list',
+  templateUrl: './kpi-award-list.component.html',
+  styleUrls: ['./kpi-award-list.component.scss']
 })
-export class CollaboratorAwardListComponent extends AgGridDataManagerListComponent<CollaboratorAwardVoucherModel, CollaboratorAwardFormComponent> implements OnInit {
+export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComponent<Model, CollaboratorKpiAwardFormComponent> implements OnInit {
 
-  componentName: string = 'CollaboratorAwardListComponent';
+  componentName: string = 'CollaboratorKpiAwardListComponent';
   formPath = '/collaborator/award-voucher/form';
   apiPath = '/collaborator/award-vouchers';
   idKey = 'Code';
-  formDialog = CollaboratorAwardFormComponent;
+  formDialog = CollaboratorKpiAwardFormComponent;
 
   // AG-Grid config
   public rowHeight: number = 50;
@@ -48,7 +48,7 @@ export class CollaboratorAwardListComponent extends AgGridDataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public themeService: NbThemeService,
-    public ref: NbDialogRef<CollaboratorAwardListComponent>,
+    public ref: NbDialogRef<CollaboratorKpiAwardListComponent>,
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
@@ -67,41 +67,6 @@ export class CollaboratorAwardListComponent extends AgGridDataManagerListCompone
 
   async init() {
     return super.init().then(async state => {
-      // Add page choosed
-      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
-        this.actionButtonList.unshift({
-          type: 'select2',
-          name: 'pbxdomain',
-          status: 'success',
-          label: 'Select page',
-          icon: 'plus',
-          title: this.cms.textTransform(this.cms.translate.instant('Collaborator.Page.title', { action: this.cms.translateText('Common.choose'), definition: '' }), 'head-title'),
-          size: 'medium',
-          select2: {
-            data: pageList, option: {
-              placeholder: 'Chọn trang...',
-              allowClear: true,
-              width: '100%',
-              dropdownAutoWidth: true,
-              minimumInputLength: 0,
-              keyMap: {
-                id: 'id',
-                text: 'text',
-              },
-            }
-          },
-          value: this.collaboratorService.currentpage$.value,
-          change: (value: any, option: any) => {
-            this.onChangePage(value);
-          },
-          disabled: () => {
-            return false;
-          },
-          click: () => {
-            return false;
-          },
-        });
-      });
 
       await this.cms.waitForLanguageLoaded();
 

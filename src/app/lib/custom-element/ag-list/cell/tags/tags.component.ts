@@ -19,8 +19,8 @@ export interface AgComponetTagModel {
     template: `
     <div>
         <!-- <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap" [ngStyle]="{'background-color': tag?.status == 'primary' ? '#3366ff' : (tag?.status == 'danger' ? '#ff708d' : (tag?.status == 'warning' ? '#b86e00' : false))}" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}"><nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}</a> -->
-        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap bg-color-{{tag.status}}-default" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}">
-            <nb-icon *ngIf="tag.icon" icon="{{tag.icon}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}
+        <a  (click)="tagClickedHandler(tag)" *ngFor="let tag of tags" class="tag nowrap text-color-{{tag.status}}-default" [ngClass]="{'nowrap': nowrap}" nbTooltip="{{tag.toolTip}}">
+            <nb-icon icon="{{tag.icon || 'pricetags-outline'}}" pack="{{tag.iconPack || 'eva'}}"></nb-icon> {{tag.label}}
         </a>
         <!-- <ngx-tag *ngFor="let tag of tags" [status]="tag?.status" [icon]="tag.icon" [iconPack]="tag.iconPack" [label]="tag.label" [nowrap]="nowrap" [toolTip]="tag.toolTip"></ngx-tag> -->
     </div>

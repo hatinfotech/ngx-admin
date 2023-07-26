@@ -108,6 +108,19 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
             }
           },
         },
+        {
+          name: 'edit',
+          status: 'warning',
+          // label: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
+          icon: 'edit',
+          title: this.cms.textTransform(this.cms.translate.instant('Common.edit'), 'head-title'),
+          size: 'medium',
+          disabled: () => false,
+          hidden: () => false,
+          click: (event?: any, option?: ActionControlListOption) => {
+            this.edit(this.data[option?.index]);
+          },
+        },
         ...this.actionButtonList,
       ];
 

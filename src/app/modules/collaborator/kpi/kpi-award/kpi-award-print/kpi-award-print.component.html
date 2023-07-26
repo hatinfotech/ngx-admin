@@ -1,0 +1,111 @@
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+    <nb-card *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+        <nb-card-header>
+            <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Collaborator.Award.title' | translate:{definition: '', action: cms.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body class="print-body" #printContent>
+            <div id="print-area">
+                <ngx-print-header></ngx-print-header>
+                <div>
+                    <div class="print-title">{{ 'Collaborator.Award.title' | translate:{action: '', definition: ''} | uppercase }}
+                    </div>
+                    <div class="under-title">{{ data.Code }} - {{ data.AwardTo | date:'short' }}</div>
+                </div>
+                <div>
+                    <div class="under-line"><span class="text-label">{{'Common.description' | translate | headtitlecase}}</span>: {{renderValue(data.Description)}}</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">{{'Collaborator.Publisher.label' | translate | headtitlecase}}</span>: {{renderValue(data.Publisher)}}</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">{{'Common.name' | translate | headtitlecase}}</span>: {{renderValue(data.PublisherName)}}</div>
+                    <div><span class="text-label"><i><u>Chú thích</u></i></span></div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DVT</span>: Đơn vị tính cơ bản</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">SL</span>: Số lượng bán được</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DS</span>: Danh số bán được</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TLT</span>: Tỷ lệ thưởng</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TT</span>: Tiền thưởng</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">DSHT</span>: Doanh số học trò</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TLTTC</span>: Tỷ lệ thưởng tăng cường</div>
+                    <div class="under-line" style="width: 50%; float: left;"><span class="text-label">TTTC</span>: Tiền thưởng tăng cường</div>
+                    <div style="clear: both;"></div>
+                </div>
+                <br>
+                <div>
+                    <div>
+                        <table style="width: 100%;" class="print-voucher-detail-table with-border">
+                            <tr class="print-voucher-detail-header">
+                                <th class="text-align-left" style="vertical-align: middle; text-align: center;">{{'Common.noNumber' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'DVT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'SL' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'DS' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TLT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'SL/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TLT/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TT/DSHT' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TLTTC' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'TTTC' | translate | headtitlecase}}</th>
+                                <th class="text-align-right">{{'Tổng thưởng' | translate | headtitlecase}}</th>
+                            </tr>
+                            <ng-container *ngFor="let detail of data.Details; let i = index">
+                                <tr>
+                                    <td rowspan="2" style="vertical-align: middle; text-align: center;" class="text-align-left">{{i + 1}}</td>
+                                    <td colspan="12"><a href="#" (click)="previewCommissionVouchers(detail)">{{renderValue(detail.Product)}}: {{renderValue(detail.ProductName)}}</a></td>
+                                </tr>
+                                <tr class="print-voucher-detail-line">
+                                    <!-- <td class="text-align-left"> </td> -->
+                                    <td>{{detail.UnitLabel}}</td>
+                                    <td class="text-align-right">{{detail.SumOfQuantity}}</td>
+                                    <td class="text-align-right">{{detail.SumOfNetRevenue | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.Level1AwardRatio}}%</td>
+                                    <td class="text-align-right">{{detail.Level1AwardAmount | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.ExtSumOfQuantity}}</td>
+                                    <td class="text-align-right">{{detail.ExtSumOfNetRevenue | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.Level2ExtAwardRatio}}%</td>
+                                    <td class="text-align-right">{{detail.Level2ExtAwardAmount | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.ExtendTermRatio}}%</td>
+                                    <td class="text-align-right">{{detail.ExtendTermAmount | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail.TotalAwardAmount | currency:'VND'}}</td>
+                                </tr>
+                            </ng-container>
+                            <tr style="font-weight: bold;">
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td> </td>
+                                <td colspan="2" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                                <td class="text-align-right">{{data.Amount | currency:'VND'}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap">
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.treasurer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                    <div style="text-align: center; flex: 0 0 50%;">
+                        <br> {{'Common.payer' | translate | headtitlecase}}
+                        <br><br><br>
+                    </div>
+                </div>
+            </div>
+        </nb-card-body>
+        <nb-card-footer>
+            <div class="buttons-row">
+                <button nbButton hero status="warning" (click)="prepareCopy(data);">
+                    <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+                </button>
+                <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+                <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.label | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
+                <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+                    <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+                </button>
+            </div>
+        </nb-card-footer>
+    </nb-card>
+</div>

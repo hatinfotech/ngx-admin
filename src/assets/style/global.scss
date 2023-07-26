@@ -14,7 +14,7 @@
 
 /*
 Mini erp
-Global style
+GLOBAl STYLES
 */
 $statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
 
@@ -26,6 +26,9 @@ $statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
 
     .bg-color-#{$status}-default {
       background-color: nb-theme(color-#{$status}-default);
+    }
+    .text-color-#{$status}-default {
+      color: nb-theme(color-#{$status}-default);
     }
 
     // .text-color-#{$status} {
@@ -266,12 +269,12 @@ body .logo-container {
   margin-bottom: 2px;
   // font-size: 12px;
 
-  background-color: #6b6b6b40;
-  border-radius: 3px;
+  // background-color: #6b6b6b40;
+  // border-radius: 3px;
   // color: #ffffff;
   color: #8f9bb3;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
 .tag nb-icon {
@@ -297,7 +300,8 @@ a.tag {
   font-size: 11px;
 
   &:hover {
-    background-color: #807f7f85 !important;
+    // background-color: #807f7f85 !important;
+    text-decoration: underline !important;
   }
 }
 

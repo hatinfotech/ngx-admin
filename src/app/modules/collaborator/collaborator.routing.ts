@@ -26,6 +26,11 @@ import { CollaboratorRebuyStrategyListComponent } from "./rebuy-strategy/rebuy-s
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
 import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
 import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
+import { CollaboratorKpiIndicatorListComponent } from "./kpi/kpi-indicator/kpi-indicator-list/kpi-indicator-list.component";
+import { CollaboratorKpiGroupListComponent } from "./kpi/kpi-group/kpi-group-list/kpi-group-list.component";
+import { CollaboratorEmployeeGroupListComponent } from "./kpi/employee-group/employee-group-list/employee-group-list.component";
+import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-strategy-list/kpi-strategy-list.component";
+import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -318,6 +323,48 @@ export const collaboratorRoutes: Routes = [
         path: 'collaborator/strategy-compile-rule/list',
         canActivate: [AuthGuardService],
         component: CollaboratorStrategyCompileRuleListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+
+      //KPI
+      {
+        path: 'collaborator/kpi/indicators',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiIndicatorListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/group/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiGroupListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/employee-group/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorEmployeeGroupListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/strategy/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiStrategyListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/award/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiAwardListComponent,
         data: {
           reuse: true,
         },

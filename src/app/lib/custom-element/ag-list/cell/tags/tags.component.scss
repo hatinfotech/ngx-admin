@@ -27,7 +27,7 @@
 //     //   background-color: nb-theme(color-basic-default);
 //     // }
 //   }
-  
+
 // }
 
 a.tag {
@@ -35,4 +35,37 @@ a.tag {
   cursor: pointer;
   color: while !important;
   font-weight: normal;
+  margin: initial;
+  padding: initial;
+  margin-right: 0.5rem;
 }
+
+@import "../../../../../@theme/styles/themes";
+
+$statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
+@include nb-install-component() {
+  @each $status in $statusList {
+    .text-color-#{$status}-default {
+      color: nb-theme(color-#{$status}-default);
+    }
+  }
+}
+
+// @include nb-install() {
+//   @each $status in $statusList {
+//     // :root {
+//     //   --color-#{$status}-default: nb-theme(color-#{$status}-default);
+//     // }
+
+//     // .bg-color-#{$status}-default {
+//     //   background-color: nb-theme(color-#{$status}-default);
+//     // }
+//     .text-color-#{$status}-default {
+//       color: nb-theme(color-#{$status}-default);
+//     }
+
+//     // .text-color-#{$status} {
+//     //   color: nb-theme(text-danger-#{$status});
+//     // }
+//   }
+// }

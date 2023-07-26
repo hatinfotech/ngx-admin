@@ -30,6 +30,16 @@ import { CollaboratorCommissionPrintComponent } from "./commission/collaborator-
 import { CollaboratorEducationArticleFormComponent } from "./education-article/education-article-form/collaborator-education-article-form.component";
 import { CollaboratorEducationArticleListComponent } from "./education-article/education-article-list/collaborator-education-article-list.component";
 import { CollaboratorEducationArticlePrintComponent } from "./education-article/education-article-print/collaborator-education-article-print.component";
+import { CollaboratorEmployeeGroupFormComponent } from "./kpi/employee-group/employee-group-form/employee-group-form.component";
+import { CollaboratorEmployeeGroupListComponent } from "./kpi/employee-group/employee-group-list/employee-group-list.component";
+import { CollaboratorKpiAwardFormComponent } from "./kpi/kpi-award/kpi-award-form/kpi-award-form.component";
+import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
+import { CollaboratorKpiAwardPrintComponent } from "./kpi/kpi-award/kpi-award-print/kpi-award-print.component";
+import { CollaboratorKpiGroupFormComponent } from "./kpi/kpi-group/kpi-group-form/kpi-group-form.component";
+import { CollaboratorKpiGroupListComponent } from "./kpi/kpi-group/kpi-group-list/kpi-group-list.component";
+import { CollaboratorKpiIndicatorListComponent } from "./kpi/kpi-indicator/kpi-indicator-list/kpi-indicator-list.component";
+import { CollaboratorKpiStrategyFormComponent } from "./kpi/kpi-strategy/kpi-strategy-form/kpi-strategy-form.component";
+import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-strategy-list/kpi-strategy-list.component";
 import { CollaboratorPublisherFormComponent } from "./publisher/collaborator-publisher-form/collaborator-publisher-form.component";
 import { CollaboratorRebuyStrategyProductFormComponent } from "./rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component";
 import { CollaboratorRebuyStrategyPublisherFormComponent } from "./rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component";
@@ -76,4 +86,14 @@ export const collaboratorComponents = [
     CollaboratorCommissionIncurredFormComponent,
     CollaboratorCommissionIncurredPrintComponent,
     CollaboratorStrategyCompileRuleListComponent,
+    CollaboratorKpiIndicatorListComponent,
+    CollaboratorKpiGroupListComponent,
+    CollaboratorKpiGroupFormComponent,
+    CollaboratorKpiStrategyListComponent,
+    CollaboratorKpiStrategyFormComponent,
+    CollaboratorEmployeeGroupListComponent,
+    CollaboratorEmployeeGroupFormComponent,
+    CollaboratorKpiAwardListComponent,
+    CollaboratorKpiAwardFormComponent,
+    CollaboratorKpiAwardPrintComponent,
 ];

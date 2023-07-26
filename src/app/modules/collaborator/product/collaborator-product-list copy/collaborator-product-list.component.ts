@@ -170,6 +170,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
           params['includeUnitPrices'] = true;
           params['includeCommissionRatio'] = true;
           params['productOfPage'] = true;
+          params['includePrice'] = true;
           params['sort_Id'] = 'desc';
           if (this.collaboratorService.currentpage$.value) {
             params['page'] = this.collaboratorService.currentpage$.value;
@@ -467,6 +468,7 @@ export class CollaboratorProductListComponent extends ServerDataManagerListCompo
       params['includeUnitPrices'] = true;
       params['includeCommissionRatio'] = true;
       params['productOfPage'] = true;
+      params['includePrice'] = true;
       params['sort_Id'] = 'desc';
       if (this.collaboratorService.currentpage$.value) {
         params['page'] = this.collaboratorService.currentpage$.value;

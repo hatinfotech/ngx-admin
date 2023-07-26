@@ -386,6 +386,7 @@ export class CollaboratorCommissionIncurredFormComponent extends DataManagerForm
       includeUnit: true,
       includeUnitPrices: true,
       productOfPage: true,
+      includePrice: true,
       page: this.collaboratorService.currentpage$?.value
     }, {
       placeholder: 'Chọn hàng hóa/dịch vụ...',
@@ -779,6 +780,7 @@ export class CollaboratorCommissionIncurredFormComponent extends DataManagerForm
           includeUnit: true,
           includeUnitPrices: true,
           productOfPage: true,
+          includePrice: true,
         }).then(rs => rs.reduce((prev, next, i) => {
           prev[this.cms.getObjectId(next)] = next;
           return prev;
