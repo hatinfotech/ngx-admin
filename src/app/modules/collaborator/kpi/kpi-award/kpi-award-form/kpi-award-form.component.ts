@@ -27,8 +27,8 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
   // Base variables
   componentName = 'CollaboratorKpiAwardFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/commission-voucher/form';
-  apiPath = '/collaborator/commission-vouchers';
+  baseFormUrl = '/collaborator/kpi-award/form';
+  apiPath = '/collaborator/kpi-awards';
 
   // variables
   locale = this.cms.getCurrentLoaleDataset();

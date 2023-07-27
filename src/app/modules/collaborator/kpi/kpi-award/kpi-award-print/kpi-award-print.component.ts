@@ -24,7 +24,7 @@ export class CollaboratorKpiAwardPrintComponent extends DataManagerPrintComponen
   /** Component name */
   componentName = 'CollaboratorKpiAwardPrintComponent';
   title: string = 'Xem trước phiếu thưởng';
-  apiPath = '/collaborator/award-vouchers';
+  apiPath = '/collaborator/kpi-awards';
   env = environment;
   processMapList: ProcessMap[] = [];
 

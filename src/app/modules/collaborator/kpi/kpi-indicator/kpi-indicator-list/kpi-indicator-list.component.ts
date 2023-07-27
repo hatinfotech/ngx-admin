@@ -33,8 +33,8 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
   
 
   componentName: string = 'CommercePosOrderListComponent';
-  formPath = '/collaborator/page/order/form';
-  apiPath = '/collaborator/commissions-incurred';
+  formPath = '/collaborator/kpi-indicator/form';
+  apiPath = '/collaborator/kpi-indicators';
   idKey = ['Code'];
   // formDialog = CollaboratorKpiIndicatorFormComponent;
   // printDialog = CollaboratorKpiIndicatorPrintComponent;

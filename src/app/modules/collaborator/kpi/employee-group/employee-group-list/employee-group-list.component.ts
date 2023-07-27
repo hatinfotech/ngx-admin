@@ -31,8 +31,8 @@ import { Model } from '../../../../../models/model';
 export class CollaboratorEmployeeGroupListComponent extends AgGridDataManagerListComponent<Model, CollaboratorEmployeeGroupFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorEmployeeGroupListComponent';
-  formPath = '/collaborator/product/form';
-  apiPath = '/collaborator/basic-strategies';
+  formPath = '/collaborator/employee-group/form';
+  apiPath = '/collaborator/employee-groups';
   idKey: string | string[] = ['Code'];
   formDialog = CollaboratorEmployeeGroupFormComponent;
   currentPage: PageModel;

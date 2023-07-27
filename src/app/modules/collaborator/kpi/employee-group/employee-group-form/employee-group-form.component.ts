@@ -31,8 +31,8 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
 
   componentName: string = 'CollaboratorEmployeeGroupFormComponent';
   idKey = ['Code'];
-  apiPath = '/collaborator/basic-strategies';
-  baseFormUrl = '/collaborator/basic-strategy/form';
+  apiPath = '/collaborator/employee-groups';
+  baseFormUrl = '/collaborator/employee-group/form';
   themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
   unitList: ProductUnitModel[] = [];
 

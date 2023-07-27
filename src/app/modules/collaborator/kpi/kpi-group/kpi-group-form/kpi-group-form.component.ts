@@ -31,8 +31,8 @@ export class CollaboratorKpiGroupFormComponent extends DataManagerFormComponent<
 
   componentName: string = 'CollaboratorKpiGroupFormComponent';
   idKey = ['Code'];
-  apiPath = '/collaborator/basic-strategies';
-  baseFormUrl = '/collaborator/basic-strategy/form';
+  apiPath = '/collaborator/kpi-groups';
+  baseFormUrl = '/collaborator/kpi-group/form';
   themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
   unitList: ProductUnitModel[] = [];
 

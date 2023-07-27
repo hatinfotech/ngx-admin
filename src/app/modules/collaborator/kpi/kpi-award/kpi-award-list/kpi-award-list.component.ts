@@ -31,8 +31,8 @@ import { Model } from '../../../../../models/model';
 export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComponent<Model, CollaboratorKpiAwardFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorKpiAwardListComponent';
-  formPath = '/collaborator/award-voucher/form';
-  apiPath = '/collaborator/award-vouchers';
+  formPath = '/collaborator/kpi-award/form';
+  apiPath = '/collaborator/kpi-awards';
   idKey = 'Code';
   formDialog = CollaboratorKpiAwardFormComponent;
 

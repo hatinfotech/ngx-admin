@@ -31,8 +31,8 @@ import { CollaboratorKpiStrategyFormComponent } from '../kpi-strategy-form/kpi-s
 export class CollaboratorKpiStrategyListComponent extends AgGridDataManagerListComponent<Model, CollaboratorKpiStrategyFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorKpiGroupListComponent';
-  formPath = '/collaborator/product/form';
-  apiPath = '/collaborator/basic-strategies';
+  formPath = '/collaborator/kpi-strategy/form';
+  apiPath = '/collaborator/kpi-strategies';
   idKey: string | string[] = ['Code'];
   formDialog = CollaboratorKpiStrategyFormComponent;
   currentPage: PageModel;

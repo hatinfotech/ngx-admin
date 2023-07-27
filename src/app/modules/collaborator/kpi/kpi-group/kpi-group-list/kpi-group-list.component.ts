@@ -32,7 +32,7 @@ export class CollaboratorKpiGroupListComponent extends AgGridDataManagerListComp
 
   componentName: string = 'CollaboratorKpiGroupListComponent';
   formPath = '/collaborator/product/form';
-  apiPath = '/collaborator/basic-strategies';
+  apiPath = '/collaborator/kpi-groups';
   idKey: string | string[] = ['Code'];
   formDialog = CollaboratorKpiGroupFormComponent;
   currentPage: PageModel;
