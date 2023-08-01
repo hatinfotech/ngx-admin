@@ -4,7 +4,7 @@ import { AgGridDataManagerListComponent } from "../../../../../lib/data-manager/
 import { DatePipe } from "@angular/common";
 import { Router } from "@angular/router";
 import { NbDialogService, NbToastrService, NbThemeService, NbDialogRef } from "@nebular/theme";
-import { take, filter } from "rxjs/operators";
+import { take, filter, takeUntil } from "rxjs/operators";
 import { AppModule } from "../../../../../app.module";
 import { AgDateCellRenderer } from "../../../../../lib/custom-element/ag-list/cell/date.component";
 import { AgTextCellRenderer } from "../../../../../lib/custom-element/ag-list/cell/text.component";
@@ -22,6 +22,9 @@ import { MobileAppService } from "../../../../mobile-app/mobile-app.service";
 import { CollaboratorService } from "../../../collaborator.service";
 import { Model } from "../../../../../models/model";
 import { CollaboratorPageFormComponent } from "../../../page/collaborator-page-form/collaborator-page-form.component";
+import { agMakeNumberColDef } from "../../../../../lib/custom-element/ag-list/column-define/number.define";
+import { Select2Option } from "../../../../../lib/custom-element/select2/select2.component";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 declare const $: any;
 @Component({
@@ -30,12 +33,12 @@ declare const $: any;
   styleUrls: ['./kpi-indicator-list.component.scss']
 })
 export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerListComponent<Model, CollaboratorPageFormComponent> implements OnInit {
-  
+
 
   componentName: string = 'CommercePosOrderListComponent';
   formPath = '/collaborator/kpi-indicator/form';
   apiPath = '/collaborator/kpi-indicators';
-  idKey = ['Code'];
+  idKey = ['Employee'];
   // formDialog = CollaboratorKpiIndicatorFormComponent;
   // printDialog = CollaboratorKpiIndicatorPrintComponent;
 
@@ -51,6 +54,8 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
     MIXED: { id: 'MIXED', text: 'Hỗn hợp' },
   };
 
+  filterFormGroup: FormGroup;
+
   constructor(
     public apiService: ApiService,
     public router: Router,
@@ -62,6 +67,7 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
     public datePipe: DatePipe,
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
+    public formBuilder: FormBuilder,
   ) {
     super(apiService, router, cms, dialogService, toastService, themeService, ref);
 
@@ -74,127 +80,73 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
     this.maxBlocksInCache = 5;
     this.paginationPageSize = 100;
     this.cacheBlockSize = 100;
+
+    const today = new Date();
+    this.filterFormGroup = this.formBuilder.group({
+      Month: [(today.getMonth() + 1) + '/' + today.getFullYear()],
+      DateRange: [[this.cms.getBeginOfMonth(today), this.cms.getEndOfMonth(today)]],
+    });
+    const month = this.filterFormGroup.get('Month');
+    const dateRange = this.filterFormGroup.get('DateRange');
+    month.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      const today = new Date();
+      const [month, year] = this.cms.getObjectId(value).split('/');
+      today.setFullYear(year);
+      today.setMonth(month - 1);
+      dateRange.setValue([this.cms.getBeginOfMonth(today), this.cms.getEndOfMonth(today)]);
+    });
   }
+
+  select2OptionForMonth: Select2Option = {
+    ...this.cms.select2OptionForTemplate,
+    data: Array.from(Array(12).keys()).reduce((result, curr, index) => {
+      const monthYear = (parseInt(result.today.getMonth() as any) + 1) + '/' + result.today.getFullYear();
+      result.months.push({ id: monthYear, text: 'Tháng ' + monthYear });
+      result.today.setMonth(result.today.getMonth() - 1);
+      return result;
+    }, { today: new Date(), months: [] }).months,
+  };
 
   async init() {
     return super.init().then(async state => {
-      this.actionButtonList.unshift({
-        type: 'button',
-        name: 'exportPdf',
-        status: 'primary',
-        label: 'Download PDF',
-        title: 'Xuất danh sách đơn hiện tại ra PDF',
-        size: 'medium',
-        icon: 'download-outline',
-        // disabled: () => {
-        //   return this.selectedIds.length == 0;
-        // },
-        click: () => {
-          let query = {
-            type: 'pdf',
-            ...this.parseFilterToApiParams(this.gridApi.getFilterModel())
-          };
-          window.open(this.apiService.buildApiUrl(this.apiPath, this.prepareApiParams(query)), '__blank');
-        }
-      });
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'writetobook',
-      //   status: 'primary',
-      //   label: 'Duyệt',
-      //   title: 'Duyệt các phiếu đã chọn',
-      //   size: 'medium',
-      //   icon: 'checkmark-square-outline',
-      //   disabled: () => {
-      //     return this.selectedIds.length == 0;
-      //   },
-      //   click: () => {
-      //     this.cms.showDialog('Đơn hàng POS', 'Bạn có chắc muốn bỏ ghi các đơn hàng đã chọn ?', [
-      //       {
-      //         label: 'Trở về',
-      //         status: 'basic',
-      //         action: () => {
-      //         }
-      //       },
-      //       {
-      //         label: 'Duyệt',
-      //         status: 'primary',
-      //         focus: true,
-      //         action: () => {
-      //           this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, this.selectedIds.map(id => ({ Code: id }))).then(rs => {
-      //             this.cms.toastService.show('Duyệt thành công !', 'Đơn hàng POS', { status: 'success' });
-      //             this.refresh();
-      //           });
-      //         }
-      //       },
-      //     ]);
-      //   }
-      // });
-      // this.actionButtonList.unshift({
-      //   type: 'button',
-      //   name: 'writetobook',
-      //   status: 'danger',
-      //   label: 'Ghi sổ lại',
-      //   title: 'Ghi sổ lại',
-      //   size: 'medium',
-      //   icon: 'npm-outline',
-      //   disabled: () => false,
-      //   click: () => {
-      //     this.cms.openDialog(DialogFormComponent, {
-      //       context: {
-      //         title: 'ID phiếu cần ghi sổ lại',
-      //         width: '600px',
-      //         onInit: async (form, dialog) => {
-      //           return true;
+
+      // Add page choosed
+      const today = new Date();
+      // this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      //   this.actionButtonList.unshift({
+      //     type: 'select2',
+      //     name: 'month',
+      //     status: 'primary',
+      //     label: 'Chọn tháng',
+      //     icon: 'plus',
+      //     title: 'Chọn tháng cần lấy dữ liệu',
+      //     size: 'medium',
+      //     select2: {
+      //       data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(m => ({ id: m, text: 'Tháng ' + m + (today.getMonth() == m ? ' (hiện tại)' : '') })),
+      //       option: {
+      //         placeholder: 'Chọn tháng...',
+      //         allowClear: true,
+      //         width: '100%',
+      //         dropdownAutoWidth: true,
+      //         minimumInputLength: 0,
+      //         keyMap: {
+      //           id: 'id',
+      //           text: 'text',
       //         },
-      //         controls: [
-      //           {
-      //             name: 'Ids',
-      //             label: 'Link hình',
-      //             placeholder: 'Mỗi ID trên 1 dòng',
-      //             type: 'textarea',
-      //             initValue: this.selectedIds.join('\n'),
-      //           },
-      //         ],
-      //         actions: [
-      //           {
-      //             label: 'Trở về',
-      //             icon: 'back',
-      //             status: 'basic',
-      //             action: async () => { return true; },
-      //           },
-      //           {
-      //             label: 'Ghi sổ lại',
-      //             icon: 'npm-outline',
-      //             status: 'danger',
-      //             action: async (form: FormGroup) => {
-
-      //               let ids: string[] = form.get('Ids').value.trim()?.split('\n');
-
-      //               if (ids && ids.length > 0) {
-      //                 let toastRef = this.cms.showToast('Các đơn hàng đang được ghi sổ lại', 'Đang ghi sổ lại', { status: 'info', duration: 60000 });
-      //                 try {
-      //                   ids = [...new Set(ids)];
-      //                   this.loading = true;
-      //                   await this.apiService.putPromise(this.apiPath, { reChangeState: 'UNRECORDED,APPROVED' }, ids.map(id => ({ Code: id.trim() })));
-      //                   toastRef.close();
-      //                   toastRef = this.cms.showToast('Các đơn hàng đã được ghi sổ lại', 'Hoàn tất ghi sổ lại', { status: 'success', duration: 10000 });
-      //                   this.loading = false;
-      //                 } catch (err) {
-      //                   console.error(err);
-      //                   this.loading = false;
-      //                   toastRef.close();
-      //                   toastRef = this.cms.showToast('Các đơn hàng chưa đượ ghi sổ lại do có lỗi xảy ra trong quá trình thực thi', 'Lỗi ghi sổ lại', { status: 'danger', duration: 30000 });
-      //                 }
-      //               }
-
-      //               return true;
-      //             },
-      //           },
-      //         ],
-      //       },
-      //     });
-      //   }
+      //       }
+      //     },
+      //     value: this.collaboratorService.currentpage$.value,
+      //     change: (value: any, option: any) => {
+      //       this.onChangePage(value);
+      //     },
+      //     disabled: () => {
+      //       return false;
+      //     },
+      //     click: () => {
+      //       // this.gotoForm();
+      //       return false;
+      //     },
+      //   });
       // });
 
       const processingMap = AppModule.processMaps['collaboratoCommissionIncurred'];
@@ -205,21 +157,60 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
           headerName: 'Stt',
           field: 'Id',
           width: 100,
-          valueGetter: 'node.data.Id',
+          valueGetter: 'node.data.Manager',
           // sortingOrder: ['desc', 'asc'],
           initialSort: 'desc',
         },
-        {
-          headerName: 'ID',
-          field: 'Code',
-          width: 140,
-          filter: 'agTextColumnFilter',
-          pinned: 'left',
-        },
+        // {
+        //   headerName: 'ID',
+        //   field: 'Manager',
+        //   width: 140,
+        //   filter: 'agTextColumnFilter',
+        //   pinned: 'left',
+        // },
+        // {
+        //   ...agMakeTextColDef(this.cms),
+        //   headerName: 'Chu kỳ',
+        //   field: 'Cycle',
+        //   width: 180,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       placeholder: 'Chọn...',
+        //       allowClear: true,
+        //       width: '100%',
+        //       dropdownAutoWidth: true,
+        //       minimumInputLength: 0,
+        //       withThumbnail: false,
+        //       multiple: true,
+        //       keyMap: {
+        //         id: 'id',
+        //         text: 'text',
+        //       },
+        //       data: [
+        //         { id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)' },
+        //         { id: 'DAYOFWEEK', text: 'Phân tích theo tuần (các ngày trong tuần)' },
+        //         { id: 'DAY', text: 'Phân tích theo tháng (30 ngày gần nhất)' },
+        //         { id: 'MONTH', text: 'Phân tích theo năm (các tháng trong năm)' },
+        //       ],
+        //     }
+        //   },
+        // },
+        // {
+        //   headerName: 'Khoản thời gian',
+        //   field: 'DateRange',
+        //   width: 180,
+        //   filter: 'agDateColumnFilter',
+        //   filterParams: {
+        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+        //   },
+        //   cellRenderer: AgDateCellRenderer,
+        // },
         {
           ...agMakeTextColDef(this.cms),
-          headerName: 'Khách hàng',
-          field: 'Object',
+          headerName: 'NV CS CTV',
+          field: 'Manager',
+          valueGetter: 'node.data.ManagerName',
           // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
@@ -239,136 +230,201 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
           },
         },
         {
-          headerName: 'Ngày bán hàng',
-          field: 'DateOfOrder',
-          width: 180,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-        },
-        {
-          ...agMakeTextColDef(this.cms),
-          headerName: 'Tiêu đề',
-          field: 'Title',
-          width: 300,
-        },
-        {
-          headerName: 'Thực thi',
-          field: 'JobHandler',
-          width: 160,
-          autoHeight: true,
-          cellStyle: {
-            lineHeight: '0.9rem',
-            fontSize: '0.7rem'
-          },
-          cellRenderer: (params) => {
-            if (params.node?.data?.JobHandler) {
-              return `CV: ${params.node?.data?.JobHandler.JobName}<br>NV: ${this.cms.getObjectText(params.node?.data?.JobHandler)}<br>TG ${this.datePipe.transform(params.node?.data?.JobHandler?.JobAccepted, 'short')}`;
-            }
-            return this.cms.getObjectText(params.node?.data?.JobHandler);
-          },
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true }, {
-                placeholder: 'Chọn nhân viên đang thự thi...', limit: 10, prepareReaultItem: (item) => {
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Tổng tiền',
-          field: 'Total',
-          pinned: 'right',
-          width: 150,
-        },
-        {
-          ...agMakeTagsColDef(this.cms, (tag) => {
-            this.cms.previewVoucher(tag.type, tag.id);
-          }),
-          headerName: 'Chứng từ liên quan',
-          field: 'RelativeVouchers',
-          width: 300,
-        },
-        {
-          headerName: 'Ngày tạo',
-          field: 'Created',
-          width: 180,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-        },
-        {
-          headerName: 'Người tạo',
-          field: 'Creator',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'];
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'CTV Bán Hàng',
-          field: 'Publisher',
-          width: 150,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Số tiền',
-          field: 'Amount',
+          headerName: 'Danh thu',
+          field: 'Revenue',
           // pinned: 'right',
           width: 150,
         },
         {
-          ...agMakeStateColDef(this.cms, processingMap, (data) => {
-            // this.preview([data]);
-            if (this.cms.getObjectId(data.State) == 'PROCESSING') {
-              this.openForm([data.Code]);
-            } else {
-              this.preview([data]);
-            }
-          }),
-          headerName: 'Trạng thái',
-          field: 'State',
-          width: 155,
+          ...agMakeNumberColDef(this.cms),
+          headerName: 'Số đơn hàng phát sinh',
+          field: 'NumOfOrders',
+          // pinned: 'right',
+          width: 150,
         },
+        {
+          ...agMakeNumberColDef(this.cms),
+          headerName: 'Tổng số CTV',
+          field: 'NumOfPublishers',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          headerName: 'CTV mới',
+          field: 'NumOfNewPublishers',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          headerName: 'CTV phát sinh đơn hàng',
+          field: 'NumOfGenerateOrderPublishers',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          cellRendererParams: {
+            symbol: '%'
+          },
+          headerName: 'Tỷ lệ chốt đơn',
+          field: 'AprrovedOrderRatio',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          cellRendererParams: {
+            symbol: '%'
+          },
+          headerName: 'Tỷ lệ hoàn tất',
+          field: 'CompletedOrderRatio',
+          // pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          cellRendererParams: {
+            symbol: '%'
+          },
+          headerName: 'Tỷ lệ hủy đơn',
+          field: 'UnrecordedOrderRatio',
+          // pinned: 'right',
+          width: 150,
+        },
+        // {
+        //   headerName: 'Ngày bán hàng',
+        //   field: 'DateOfOrder',
+        //   width: 180,
+        //   filter: 'agDateColumnFilter',
+        //   filterParams: {
+        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+        //   },
+        //   cellRenderer: AgDateCellRenderer,
+        // },
+        // {
+        //   ...agMakeTextColDef(this.cms),
+        //   headerName: 'Tiêu đề',
+        //   field: 'Title',
+        //   width: 300,
+        // },
+        // {
+        //   headerName: 'Thực thi',
+        //   field: 'JobHandler',
+        //   width: 160,
+        //   autoHeight: true,
+        //   cellStyle: {
+        //     lineHeight: '0.9rem',
+        //     fontSize: '0.7rem'
+        //   },
+        //   cellRenderer: (params) => {
+        //     if (params.node?.data?.JobHandler) {
+        //       return `CV: ${params.node?.data?.JobHandler.JobName}<br>NV: ${this.cms.getObjectText(params.node?.data?.JobHandler)}<br>TG ${this.datePipe.transform(params.node?.data?.JobHandler?.JobAccepted, 'short')}`;
+        //     }
+        //     return this.cms.getObjectText(params.node?.data?.JobHandler);
+        //   },
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true }, {
+        //         placeholder: 'Chọn nhân viên đang thự thi...', limit: 10, prepareReaultItem: (item) => {
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
+        // {
+        //   ...agMakeCurrencyColDef(this.cms),
+        //   headerName: 'Tổng tiền',
+        //   field: 'Total',
+        //   // pinned: 'right',
+        //   width: 150,
+        // },
+        // {
+        //   ...agMakeTagsColDef(this.cms, (tag) => {
+        //     this.cms.previewVoucher(tag.type, tag.id);
+        //   }),
+        //   headerName: 'Chứng từ liên quan',
+        //   field: 'RelativeVouchers',
+        //   width: 300,
+        // },
+        // {
+        //   headerName: 'Ngày tạo',
+        //   field: 'Created',
+        //   width: 180,
+        //   filter: 'agDateColumnFilter',
+        //   filterParams: {
+        //     inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+        //   },
+        //   cellRenderer: AgDateCellRenderer,
+        // },
+        // {
+        //   headerName: 'Người tạo',
+        //   field: 'Creator',
+        //   // pinned: 'left',
+        //   width: 200,
+        //   cellRenderer: AgTextCellRenderer,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+        //         placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'];
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
+        // {
+        //   headerName: 'CTV Bán Hàng',
+        //   field: 'Publisher',
+        //   width: 150,
+        //   cellRenderer: AgTextCellRenderer,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+        //         placeholder: 'Chọn CTV Bán Hàng...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
+        // {
+        //   ...agMakeCurrencyColDef(this.cms),
+        //   headerName: 'Số tiền',
+        //   field: 'Amount',
+        //   // pinned: 'right',
+        //   width: 150,
+        // },
+        // {
+        //   ...agMakeStateColDef(this.cms, processingMap, (data) => {
+        //     // this.preview([data]);
+        //     if (this.cms.getObjectId(data.State) == 'PROCESSING') {
+        //       this.openForm([data.Code]);
+        //     } else {
+        //       this.preview([data]);
+        //     }
+        //   }),
+        //   headerName: 'Trạng thái',
+        //   field: 'State',
+        //   width: 155,
+        // },
         {
           ...agMakeCommandColDef(this, this.cms, true, true, true),
           headerName: 'Lệnh',
@@ -388,12 +444,19 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
   // }
 
   prepareApiParams(params: any, getRowParams?: IGetRowsParams) {
-    params['includeObject'] = true;
-    params['includeCreator'] = true;
-    params['includePublisher'] = true;
-    params['includeRelativeVouchers'] = true;
-    params['sort_Id'] = 'desc';
+    // params['includeObject'] = true;
+    // params['includeCreator'] = true;
+    // params['includePublisher'] = true;
+    // params['includeRelativeVouchers'] = true;
+    // params['sort_Id'] = 'desc';
+    params['cycle'] = 'MONTH';
     params['page'] = this.collaboratorService?.currentpage$?.value || null;
+
+
+    const filterData = this.filterFormGroup.getRawValue();
+    params['from'] = this.cms.getBeginOfDate(filterData['DateRange'][0]).toISOString();
+    params['to'] = this.cms.getEndOfDate(filterData['DateRange'][1]).toISOString();
+
     return params;
   }
 
@@ -421,6 +484,9 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
   onGridReady(params) {
     super.onGridReady(params);
     // const $(this.agGrid['_nativeElement']).offset().top;
+    this.filterFormGroup.get('DateRange').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(filterData => {
+      this.refresh();
+    });
   }
 
   // async preview(data: CollaboratorKpiIndicatorModel[], source?: string) {
@@ -453,12 +519,12 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
   //   return false;
   // }
 
-  onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
-    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
-      this.refresh();
-    });
-  }
+  // onChangePage(page: PageModel) {
+  //   this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+  //   this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+  //     this.refresh();
+  //   });
+  // }
 
   openFormDialplog(ids?: string[], onDialogSave?: (newData: Model[]) => void, onDialogClose?: () => void): void {
     throw new Error("Method not implemented.");

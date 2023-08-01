@@ -295,7 +295,7 @@ import { MktMemberCardListComponent } from './modules/marketing/member-card/memb
 import { MktMemberCardFormComponent } from './modules/marketing/member-card/member-card-form/member-card-form.component';
 import { MktMemberCardPrintComponent } from './modules/marketing/member-card/member-card-print/member-card-print.component';
 import { collaboratorComponents } from './modules/collaborator/collaborator.module';
-// import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
+import { MentionModule } from 'angular-mentions';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -657,6 +657,7 @@ export class DynamicLocaleId extends String {
     NbListModule,
     NbAccordionModule,
     NbUserModule,
+    MentionModule,
     NbSelectModule,
     NbActionsModule,
     NbRadioModule,

@@ -79,7 +79,6 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
   async init() {
     return super.init().then(async state => {
 
-
       // Add page choosed
       this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
         this.actionButtonList.unshift({

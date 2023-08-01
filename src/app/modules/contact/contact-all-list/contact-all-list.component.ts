@@ -284,7 +284,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
   //   return 123;
   // }
 
-  prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+  @Input() prepareApiParams(params: any, getRowParams: IGetRowsParams) {
     params['includeGroups'] = true;
     params['eq_IsDeleted'] = false;
     return params;

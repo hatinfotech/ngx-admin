@@ -1,38 +1,16 @@
 <nb-card class="small-header ag-grid-card" [ngClass]="{'dialog': isDialog}" [nbSpinner]="loading">
   <nb-card-header>
-    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : (('Các chỉ số theo dõi' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase))) + ' ('+((infiniteInitialRowCount || 0) | number: '1.0-0')+')'" [controls]="actionButtonList"></ngx-card-header>
+    <ngx-card-header [size]="size" [icon]="favicon" [title]="(title ? title : (('Các chỉ số theo tháng của từng nhân viên chăm sóc CTV' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase))) + ' ('+((infiniteInitialRowCount || 0) | number: '1.0-0')+')'" [controls]="actionButtonList">
+      <ng-container id="start" [formGroup]="filterFormGroup">
+        <ngx-select2 formControlName="Month" class="action-list-item select2" [status]="'primary'" [select2Option]="select2OptionForMonth"></ngx-select2>
+        <input formControlName="DateRange" class="action-list-item" type="text" size="medium" status="primary" [owlDateTime]="dateRange" [owlDateTimeTrigger]="dateRange" [selectMode]="'range'" nbInput placeholder="{{'Khoản thời gian' | translate | headtitlecase}}">
+        <owl-date-time #dateRange [pickerType]="'calendar'"></owl-date-time>
+      </ng-container>
+    </ngx-card-header>
   </nb-card-header>
 
   <nb-card-body>
-      <ag-grid-angular #agGrid style="width: 100%;" [ngStyle]="{'height': gridHeight}" id="myGrid" class="{{themeName}}"
-        [modules]="modules" 
-        [columnDefs]="columnDefs" 
-        [debug]="true" 
-        [enableCellTextSelection]="enableCellTextSelection"
-        [ensureDomOrder]="ensureDomOrder"
-        [rowMultiSelectWithClick]="rowMultiSelectWithClick" 
-        [suppressRowClickSelection]="suppressRowClickSelection"
-        [defaultColDef]="defaultColDef" 
-        [rowSelection]="rowSelection"
-        [rowModelType]="rowModelType" 
-        [paginationPageSize]="paginationPageSize" 
-        [cacheOverflowSize]="cacheOverflowSize"
-        [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests"
-        [infiniteInitialRowCount]="infiniteInitialRowCount" 
-        [maxBlocksInCache]="maxBlocksInCache" 
-        [cacheBlockSize]="cacheBlockSize"
-        [getRowNodeId]="getRowNodeId" 
-        [components]="components" 
-        [rowData]="rowData" 
-        (gridReady)="onGridReady($event)" 
-        (selectionChanged)="onSelectionChanged($event)"
-        [multiSortKey]="multiSortKey" 
-        [rowDragManaged]="rowDragManaged" 
-        [getRowHeight]="getRowHeight" 
-        [rowHeight]="rowHeight"
-        (columnResized)="onColumnResized()" 
-        (rowSelected)="onRowSelected()" 
-        [pagination]="pagination">
-      </ag-grid-angular>
+    <ag-grid-angular #agGrid style="width: 100%;" [ngStyle]="{'height': gridHeight}" id="myGrid" class="{{themeName}}" [modules]="modules" [columnDefs]="columnDefs" [debug]="true" [enableCellTextSelection]="enableCellTextSelection" [ensureDomOrder]="ensureDomOrder" [rowMultiSelectWithClick]="rowMultiSelectWithClick" [suppressRowClickSelection]="suppressRowClickSelection" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection" [rowModelType]="rowModelType" [paginationPageSize]="paginationPageSize" [cacheOverflowSize]="cacheOverflowSize" [maxConcurrentDatasourceRequests]="maxConcurrentDatasourceRequests" [infiniteInitialRowCount]="infiniteInitialRowCount" [maxBlocksInCache]="maxBlocksInCache" [cacheBlockSize]="cacheBlockSize" [getRowNodeId]="getRowNodeId" [components]="components" [rowData]="rowData" (gridReady)="onGridReady($event)" (selectionChanged)="onSelectionChanged($event)" [multiSortKey]="multiSortKey" [rowDragManaged]="rowDragManaged" [getRowHeight]="getRowHeight" [rowHeight]="rowHeight" (columnResized)="onColumnResized()" (rowSelected)="onRowSelected()" [pagination]="pagination">
+    </ag-grid-angular>
   </nb-card-body>
 </nb-card>

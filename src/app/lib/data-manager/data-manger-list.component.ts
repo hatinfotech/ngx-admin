@@ -3,7 +3,7 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { CommonService } from '../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef, NbDialogConfig } from '@nebular/theme';
-import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
+import { DialogActionButton, ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
 import { OnInit, Input, AfterViewInit, Type, ViewChild, Component, Output, EventEmitter } from '@angular/core';
 import { BaseComponent } from '../base-component';
 import { ReuseComponent } from '../reuse-component';
@@ -15,6 +15,7 @@ import { ActionControl } from '../custom-element/action-control-list/action-cont
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
 import { DataManagerPrintComponent } from './data-manager-print.component';
+import { ProcessMap } from '../../models/process-map.model';
 
 export class SmartTableSetting {
   mode?: string;
@@ -84,6 +85,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   /** Resource id key */
   abstract idKey: string | string[];
+  textKey: string;
 
   protected refreshPendding = false;
   @Input() onDialogChoose?: (chooseItems: M[]) => void;
@@ -888,5 +890,58 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   async refreshItems(ids: string[]): Promise<M[]> {
     return [];
+  }
+
+  stateActionConfirm(item: M, processingMap: { [key: string]: ProcessMap }) {
+    const params = { id: this.makeId(item) };
+    // const processMap = AppModule.processMaps.awardVoucher[data.State || ''];
+    
+    const buttons: DialogActionButton[] = [
+      {
+        label: this.cms.translateText('Common.goback', null, 'head-title'),
+        icon: 'arrow-ios-back-outline',
+        status: 'basic',
+        outline: true,
+        action: () => true,
+      }
+    ];
+    const nextStates = processingMap[this.cms.getObjectId(item['State'])].nextStates;
+    for (const nextState of nextStates) {
+      params['changeState'] = nextState.state;
+      const putData: any = {};
+      if (Array.isArray(this.idKey)) {
+        for (const key of this.idKey) {
+          putData[key] = item[key];
+        }
+      } else {
+        putData[this.idKey] = item[this.idKey];
+      }
+      buttons.push({
+        label: this.cms.translateText(nextState.label),
+        rightIcon: nextState.icon  || 'arrow-ios-forward-outline',
+        status: nextState.status,
+        outline: nextState.outline,
+        // disabled: false
+        // focus: false,
+        // keyShortcut: '',
+        action: () => {
+          this.loading = true;
+          this.apiService.putPromise<M[]>(this.apiPath, params, [putData]).then(async rs => {
+            this.loading = false;
+            this.refreshItems([this.makeId(item)]);
+            this.cms.toastService.show(this.cms.translateText(nextState?.responseText, { object: (this.textKey ? item[this.textKey] : '') }), this.cms.translateText(nextState?.responseTitle), {
+              status: 'success',
+            });
+          }).catch(err => {
+            this.loading = false;
+          });
+          return true;
+        }
+      });
+    }
+
+    this.cms.showDialog('Chuyển trạng thái', 'Bạn muốn chuyển trạng thái của "' + (this.textKey ? item[this.textKey] : '') + '" sang trạng thái nào ?', buttons);
+
+    // this.cms.showDialog(this.cms.translateText(nextState.confirmText), nextState.confirmText + ': ' + (this.textKey ? item[this.textKey] : ''), buttons);
   }
 }

@@ -46,6 +46,7 @@
               "src/app/@theme/styles/styles.scss",
               "node_modules/select2/dist/css/select2.min.css",
               "node_modules/ng-pick-datetime/assets/style/picker.min.css",
+              "src/vendor/jquery-mentions-input/jquery.mentionsInput.css",
               "src/assets/style/global.scss"
             ],
             "scripts": [
@@ -71,7 +72,10 @@
               "node_modules/datejs/src/core/parser.js",
               "node_modules/datejs/src/core/extras.js",
               "node_modules/datejs/src/core/time_period.js",
-              "node_modules/datejs/src/core/time_span.js"
+              "node_modules/datejs/src/core/time_span.js",
+              "src/assets/underscore/underscore-min.js",
+              "src/vendor/jquery-mentions-input/lib/jquery.elastic.js",
+              "src/assets/jquery-mentions-input/jquery.mentionsInput.js"
             ],
             "allowedCommonJsDependencies": [
               "angular2-chartjs",

@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CollaboratorKpiGroupFormComponent } from './kpi-strategy-form.component';
+import { CollaboratorKpiStrategyFormComponent } from './kpi-strategy-form.component';
 
 
-describe('CollaboratorKpiGroupFormComponent', () => {
-  let component: CollaboratorKpiGroupFormComponent;
-  let fixture: ComponentFixture<CollaboratorKpiGroupFormComponent>;
+describe('CollaboratorKpiStrategyFormComponent', () => {
+  let component: CollaboratorKpiStrategyFormComponent;
+  let fixture: ComponentFixture<CollaboratorKpiStrategyFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CollaboratorKpiGroupFormComponent ]
+      declarations: [ CollaboratorKpiStrategyFormComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CollaboratorKpiGroupFormComponent);
+    fixture = TestBed.createComponent(CollaboratorKpiStrategyFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

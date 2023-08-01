@@ -86,6 +86,8 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   protected silent = false;
   protected autosave = false;
 
+  protected patchedDataAfterSave = true;
+  protected cleanedDataBeforeSave = false;
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -400,10 +402,38 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     return item[this.idKey];
   }
 
-  /** After main form create event */
+  /** After main form item create event */
+  onItemAfterCreateSubmit(formItemData: M, index: number) {
+    this.onItemAfterSaveSubmit(formItemData, index, 'create');
+    return true;
+  }
+
+  /** After main form update event */
+  onItemAfterUpdateSubmit(formItemData: M, index: number) {
+    this.onItemAfterSaveSubmit(formItemData, index, 'update');
+    return true;
+  }
+
+  onItemAfterSaveSubmit(formItemData: M, index: number, method: string) {
+    return true;
+  }
+
+  /** After main form item create event */
   onAfterCreateSubmit(newFormData: M[]) {
     this.id = newFormData.map(item => this.makeId(item));
-    this.formLoad(newFormData);
+    if (this.patchedDataAfterSave) {
+      this.formLoad(newFormData);
+    } else {
+      const idKeys = Array.isArray(this.idKey) ? this.idKey : [this.idKey];
+      for (const idKey of idKeys) {
+        for (const i in newFormData) {
+          const formItem = this.array.controls[i];
+          if (formItem) {
+            formItem.get(idKey).setValue(newFormData[i][idKey]);
+          }
+        }
+      }
+    }
     if (this.mode === 'page') {
       this.cms.location.go(this.generateUrlByIds(this.id));
     }
@@ -422,11 +452,17 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     if (this.mode === 'dialog' && this.onDialogSave) {
       this.onDialogSave(newFormData);
     }
+
+    for (const i in newFormData) {
+      this.onItemAfterCreateSubmit(newFormData[i], parseInt(i));
+    }
   }
 
   /** Affter main form update event */
   onAfterUpdateSubmit(newFormData: M[]) {
-    this.formLoad(newFormData);
+    if (this.patchedDataAfterSave) {
+      this.formLoad(newFormData);
+    }
     if (!this.silent) {
       this.toastrService.show('success', 'Dữ liệu đã được cập nhật', {
         status: 'success',
@@ -445,6 +481,10 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
 
     if (this.mode === 'dialog' && this.onDialogSave) {
       this.onDialogSave(newFormData);
+    }
+
+    for (const i in newFormData) {
+      this.onItemAfterUpdateSubmit(newFormData[i], parseInt(i));
     }
   }
 
@@ -560,7 +600,15 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   }
 
   getRawFormData() {
-    return this.form.getRawValue();
+    const rawData = this.form.getRawValue();
+    if (this.cleanedDataBeforeSave) {
+      for (const item of rawData.array) {
+        for (const prop in item) {
+          item[prop] = this.cms.getObjectId(item[prop]);
+        }
+      }
+    }
+    return rawData;
   }
 
   /** Form submit event */

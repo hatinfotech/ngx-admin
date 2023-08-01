@@ -259,7 +259,8 @@ export class CollaboratorDashboardComponent extends BaseComponent {
     // const currentDate = new Date();
     const today = new Date();
     this.formItem = this.formBuilder.group({
-      DateReport: [{id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)'}, Validators.required],
+      // DateReport: [{ id: 'HOUR', text: 'Phân tích theo ngày (các giờ trong ngày)' }, Validators.required],
+      DateReport: [{ id: 'DAY', text: 'Phân tích theo tháng (30 ngày gần nhất)' }, Validators.required],
       DateRange: [[this.cms.getBeginOfDate(today), this.cms.getEndOfDate(today)]],
       Publishers: [[]],
       ProductGroup: { value: '', disabled: true },
@@ -703,7 +704,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
       lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
       lineData['numOfOrderLine4Data'] = statisticsData[3].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
       // lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = statistic.NumOfVouchers; statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+      lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = parseInt(statistic.NumOfVouchers); statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
       lineData['numOfOrderLine6Data'] = statisticsData[5].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
 
       timeline = [...new Set([
@@ -812,10 +813,20 @@ export class CollaboratorDashboardComponent extends BaseComponent {
           labels: labels,
           datasets: [
             {
+              type: 'line',
+              label: 'KPI',
+              data: mergeData.map(point => 10),
+              borderDash: [5, 5],
+              borderColor: NbColorHelper.tint(NbColorHelper.mix(this.colors.danger, this.colors.primary, 66), 0),
+              // backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
+              pointRadius: pointRadius,
+              pointHoverRadius: 10,
+            },
+            {
               label: 'Hoàn tất',
               data: mergeData.map(point => point.Line5['NumOfOrders']),
               borderColor: this.colors.success,
-              backgroundColor: NbColorHelper.shade(this.colors.success, 0),
+              backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
               pointRadius: pointRadius,
               pointHoverRadius: 10,
             },
@@ -844,7 +855,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
               pointHoverRadius: 10,
             },
             {
-              label: 'Đơn mới',
+              label: 'Chưa xử lý',
               data: mergeData.map(point => point.Line1['NumOfOrders']),
               borderColor: this.colors.warning,
               backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
@@ -930,6 +941,16 @@ export class CollaboratorDashboardComponent extends BaseComponent {
           labels: labels,
           datasets: [
             {
+              type: 'line',
+              label: 'KPI',
+              data: mergeData.map(point => 4000000),
+              borderDash: [5, 5],
+              borderColor: NbColorHelper.tint(NbColorHelper.mix(this.colors.danger, this.colors.primary, 66), 0),
+              // backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
+              pointRadius: pointRadius,
+              pointHoverRadius: 10,
+            },
+            {
               label: 'Hoàn tất',
               data: mergeData.map(point => point.Line5['Revenue']),
               borderColor: this.colors.success,
@@ -962,6 +983,7 @@ export class CollaboratorDashboardComponent extends BaseComponent {
               pointHoverRadius: 10,
             },
             {
+              // type: 'line',
               label: 'Đơn mới',
               data: mergeData.map(point => point.Line1['Revenue']),
               borderColor: this.colors.warning,

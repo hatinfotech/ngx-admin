@@ -1,0 +1,41 @@
+<div *ngFor="let data of this.data; let i=index" id="print-area" style="width: 100%;">
+    <table style="width: 100%; border: 1px solid #ccc;" class="print-voucher-detail-table">
+        <tr class="">
+            <th colspan="3">{{'KPI' | translate | headtitlecase}} : {{data.Name}}</th>
+        </tr>
+        <tr class="">
+            <th colspan="3">{{'Chỉ số phân bổ vượt cấp' | translate | headtitlecase}} : {{data.LevelDistributedIndicator | objecttext}}</th>
+        </tr>
+        <tr class="print-voucher-detail-header">
+            <th>{{'Chỉ số' | translate | headtitlecase}}</th>
+            <th class="text-align-right">{{'Giá trị phân bổ' | translate | headtitlecase}}</th>
+            <th class="text-align-right">{{'Tỷ lệ thưởng vượt KPI' | translate | headtitlecase}}</th>
+        </tr>
+        <ng-container *ngFor="let detail of data.Details; let i = index">
+            <tr class="print-voucher-detail-line" style="font-weight: bold;">
+                <td>[{{detail.Type | objecttext}}] {{detail.Description}}</td>
+                <td class="text-align-right">{{detail.LevelDistributedValue | number:'1.0-0'}}</td>
+                <td class="text-align-right">{{detail.AwardRatio | number:'1.0-0'}}%</td>
+            </tr>
+            <tr class="print-voucher-detail-line" *ngFor="let condition of detail.Conditions; let c = index">
+                <td colspan="3"> + [{{condition.Weight}}%] {{condition.Indicator | objecttext}} {{condition.Condition?.symbol}} {{condition.Kpi | number:'1.0-0'}}{{condition.Indicator?.unit}}</td>
+            </tr>
+        </ng-container>
+    </table>
+    <div class="under-line" style="font-weight: bold;">Danh sách sản phẩm áp dụng</div>
+    <table style="width: 100%; border: 1px solid #ccc;" class="print-voucher-detail-table">
+        <tr class="print-voucher-detail-header">
+            <th>{{'Stt' | translate | headtitlecase}}</th>
+            <th>{{'Sản phẩm' | translate | headtitlecase}}</th>
+            <th>{{'Đơn vị tính' | translate | headtitlecase}}</th>
+        </tr>
+        <ng-container *ngFor="let product of data.Products; let p = index">
+            <tr class="print-voucher-detail-line">
+                <td>{{p+1}}</td>
+                <td>{{product.ProductName}}</td>
+                <td>{{product.Unit | objecttext}}</td>
+            </tr>
+        </ng-container>
+    </table>
+
+</div>

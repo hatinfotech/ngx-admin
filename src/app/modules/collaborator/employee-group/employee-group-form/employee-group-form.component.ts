@@ -1,22 +1,24 @@
+import { ContactListComponent } from './../../../contact/contact/contact-list/contact-list.component';
 import { CurrencyPipe } from "@angular/common";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from "@nebular/theme";
-import { AgTextCellRenderer } from "../../../../../lib/custom-element/ag-list/cell/text.component";
-import { agMakeCommandColDef } from "../../../../../lib/custom-element/ag-list/column-define/command.define";
-import { agMakeImageColDef } from "../../../../../lib/custom-element/ag-list/column-define/image.define";
-import { agMakeSelectionColDef } from "../../../../../lib/custom-element/ag-list/column-define/selection.define";
-import { DataManagerFormComponent } from "../../../../../lib/data-manager/data-manager-form.component";
-import { ProductUnitModel, ProductModel } from "../../../../../models/product.model";
-import { ApiService } from "../../../../../services/api.service";
-import { CommonService } from "../../../../../services/common.service";
-import { AgDynamicListComponent } from "../../../../general/ag-dymanic-list/ag-dymanic-list.component";
-import { CollaboratorService } from "../../../collaborator.service";
-import { CollaboratorProductListComponent } from "../../../product/collaborator-product-list/collaborator-product-list.component";
-import { Model } from "../../../../../models/model";
+import { AgTextCellRenderer } from "../../../../lib/custom-element/ag-list/cell/text.component";
+import { agMakeCommandColDef } from "../../../../lib/custom-element/ag-list/column-define/command.define";
+import { agMakeImageColDef } from "../../../../lib/custom-element/ag-list/column-define/image.define";
+import { agMakeSelectionColDef } from "../../../../lib/custom-element/ag-list/column-define/selection.define";
+import { DataManagerFormComponent } from "../../../../lib/data-manager/data-manager-form.component";
+import { ProductUnitModel, ProductModel } from "../../../../models/product.model";
+import { ApiService } from "../../../../services/api.service";
+import { CommonService } from "../../../../services/common.service";
+import { AgDynamicListComponent } from "../../../general/ag-dymanic-list/ag-dymanic-list.component";
+import { CollaboratorService } from "../../collaborator.service";
+import { CollaboratorProductListComponent } from "../../product/collaborator-product-list/collaborator-product-list.component";
+import { Model } from "../../../../models/model";
 import { ColDef, ColumnApi, GridApi, IRowNode } from "@ag-grid-community/core";
+import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
 
 @Component({
   selector: 'ngx-collaborator-employee-group-form',
@@ -59,78 +61,38 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
         ...agMakeSelectionColDef(this.cms),
         headerName: 'STT',
         field: 'Id',
-        valueGetter: 'node.data.Product',
+        valueGetter: 'node.data.Employee',
       },
       {
         ...agMakeImageColDef(this.cms),
         headerName: 'Hình',
-        field: 'FeaturePicture',
+        field: 'Avatar',
         width: 100,
       },
       {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 100,
+        headerName: 'ID',
+        field: 'Employee',
+        width: 180,
         filter: 'agTextColumnFilter',
         cellRenderer: AgTextCellRenderer,
         pinned: 'left',
       },
       {
-        headerName: 'Tên sản phẩm',
-        field: 'ProductName',
-        width: 400,
+        headerName: 'Tên nhân viên',
+        field: 'EmployeeName',
+        width: 900,
         filter: 'agTextColumnFilter',
         cellRenderer: AgTextCellRenderer,
         // pinned: 'left',
       },
       {
-        headerName: 'ĐVT',
-        field: 'Unit',
+        headerName: 'Vai trò',
+        field: 'Role',
         width: 110,
         filter: 'agTextColumnFilter',
         cellRenderer: AgTextCellRenderer,
-        // pinned: 'right',
+        pinned: 'right',
       },
-      {
-        headerName: 'CKCB',
-        field: 'Level1CommissionRatio',
-        width: 1024,
-        filter: 'agTextColumnFilter',
-        cellRenderer: AgTextCellRenderer,
-        // pinned: 'right',
-      },
-      // {
-      //   headerName: 'Thưởng tuần',
-      //   field: 'Level1WeeklyAwardRatio',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: AgTextCellRenderer,
-      //   // pinned: 'right',
-      // },
-      // {
-      //   headerName: 'Thưởng tháng',
-      //   field: 'Level1MonthlyAwardRatio',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: AgTextCellRenderer,
-      //   // pinned: 'right',
-      // },
-      // {
-      //   headerName: 'Thưởng quý',
-      //   field: 'Level1QuarterlyAwardRatio',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: AgTextCellRenderer,
-      //   // pinned: 'right',
-      // },
-      // {
-      //   headerName: 'Thưởng năm',
-      //   field: 'Level1YearlyAwardRatio',
-      //   width: 150,
-      //   filter: 'agTextColumnFilter',
-      //   cellRenderer: AgTextCellRenderer,
-      //   // pinned: 'right',
-      // },
       {
         ...agMakeCommandColDef(null, this.cms, false, (params) => {
           this.gridApi.applyTransaction({ remove: [params] });
@@ -180,10 +142,10 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
 
   loadList(callback?: (list: Model[]) => void) {
     if (this.gridApi) {
-      let products: Model[] = (this.array.controls[0].get('Products').value || []).map((detail: Model) => {
+      let details: Model[] = (this.array.controls[0].get('Employees').value || []).map((detail: Model) => {
         return detail;
       });
-      this.gridApi.setRowData(products);
+      this.gridApi.setRowData(details);
     }
   }
   select2OptionForPage = {
@@ -227,7 +189,7 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
 
   /** Execute api get */
   executeGet(params: any, success: (resources: ProductModel[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeProducts'] = true;
+    params['includeEmployees'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -249,10 +211,9 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
     const currentDate = new Date();
     const newForm = this.formBuilder.group({
       Code: { value: '', disabled: true },
-      Title: ['', Validators.required],
-      Page: [this.collaboratorService.currentpage$.value, Validators.required],
-      DateRange: [[Date.today(), Date.today().next().month()], Validators.required],
-      Products: [[]],
+      Name: ['', Validators.required],
+      Description: [''],
+      Employees: [[]],
     });
     if (data) {
       data.DateRange = [data.DateOfStart, data.DateOfEnd];
@@ -294,20 +255,20 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
     const data = super.getRawFormData();
     for (const item of data.array) {
       // Extract date range
-      if (item.DateRange) {
-        item.DateOfStart = item.DateRange[0];
-        item.DateOfEnd = item.DateRange[1];
-      }
+      // if (item.DateRange) {
+      //   item.DateOfStart = item.DateRange[0];
+      //   item.DateOfEnd = item.DateRange[1];
+      // }
 
       // Get details data from ag-grid
-      item.Products = [];
+      item.Employees = [];
       this.gridApi.forEachNode((rowNode, index) => {
         console.log(rowNode, index);
         const rawDetail = {};
         for (const prop in rowNode.data) {
           rawDetail[prop] = this.cms.getObjectId(rowNode.data[prop]);
         }
-        item.Products.push(rawDetail);
+        item.Employees.push(rawDetail);
       });
     }
     return data;
@@ -325,7 +286,7 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
     actionButtonList.unshift({
       type: 'button',
       name: 'delete',
-      title: 'Gở sản phẩm',
+      title: 'Gở nhân viên',
       status: 'danger',
       label: 'Gở',
       iconPack: 'eva',
@@ -341,29 +302,30 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
     actionButtonList.unshift({
       type: 'button',
       name: 'add',
-      title: 'Thêm sản phẩm',
+      title: 'Thêm nhân viên',
       status: 'success',
-      label: 'Thêm sản phẩm',
+      label: 'Thêm',
       iconPack: 'eva',
       icon: 'plus-square-outline',
       size: 'medium',
       click: (event) => {
         // const selectedNodes: IRowNode[] = this.gridApi.getSelectedNodes();
 
-        this.cms.openDialog(CollaboratorProductListComponent, {
+        this.cms.openDialog(ContactAllListComponent, {
           context: {
+            // rowMultiSelectWithClick: false,
+            prepareApiParams: (params, getRowParams) => {
+              params['includeGroups'] = true;
+              params['eq_IsDeleted'] = false;
+              params['eq_Groups'] = '[PUBLISHERSUPPORTER]';
+              return params;
+            },
             onDialogChoose(chooseItems) {
               console.log(chooseItems);
               const newRowNodeTrans = $this.gridApi.applyTransaction({
                 add: chooseItems.map(m => ({
-                  id: m.Code,
-                  text: m.Name,
-                  Product: m.Code,
-                  ProductName: m.Name,
-                  Sku: m.Sku,
-                  Unit: m.Unit,
-                  Pictures: m.Pictures,
-                  FeaturePicture: m.FeaturePicture,
+                  Employee: m.Code,
+                  EmployeeName: m.Name,
                 }))
               });
               console.log('New Row Node Trans: ', newRowNodeTrans);
@@ -375,37 +337,37 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
       }
     });
 
-    actionButtonList.unshift({
-      type: 'button',
-      name: 'settings',
-      title: 'Cấu hình',
-      status: 'primary',
-      label: 'Cài đặt',
-      iconPack: 'eva',
-      icon: 'settings-2-outline',
-      size: 'medium',
-      click: (event) => {
-        const selectedNodes: IRowNode[] = $this.gridApi.getSelectedNodes();
+    // actionButtonList.unshift({
+    //   type: 'button',
+    //   name: 'settings',
+    //   title: 'Cấu hình',
+    //   status: 'primary',
+    //   label: 'Cài đặt',
+    //   iconPack: 'eva',
+    //   icon: 'settings-2-outline',
+    //   size: 'medium',
+    //   click: (event) => {
+    //     const selectedNodes: IRowNode[] = $this.gridApi.getSelectedNodes();
 
-        // Setting for product
-        if (selectedNodes && selectedNodes.length > 0) {
-          // this.cms.openDialog(CollaboratorEmployeeGroupProductFormComponent, {
-          //   context: {
-          //     data: selectedNodes.map(m => m.data),
-          //     onDialogSave(newData) {
-          //       console.log(newData);
-          //       for (const itemData of newData) {
-          //         let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
-          //         currentNode.setData(itemData);
-          //       }
-          //     },
-          //   }
-          // });
-        }
+    //     // Setting for product
+    //     if (selectedNodes && selectedNodes.length > 0) {
+    //       // this.cms.openDialog(CollaboratorEmployeeGroupProductFormComponent, {
+    //       //   context: {
+    //       //     data: selectedNodes.map(m => m.data),
+    //       //     onDialogSave(newData) {
+    //       //       console.log(newData);
+    //       //       for (const itemData of newData) {
+    //       //         let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(itemData.Product) + '-' + $this.cms.getObjectId(itemData.Unit));
+    //       //         currentNode.setData(itemData);
+    //       //       }
+    //       //     },
+    //       //   }
+    //       // });
+    //     }
 
-        return true;
-      }
-    });
+    //     return true;
+    //   }
+    // });
 
     component.actionButtonList = actionButtonList;
   }

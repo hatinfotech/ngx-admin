@@ -1,3 +1,22 @@
 select2 b {
   top: 70%;
 }
+
+// @import "../../../@theme/styles/themes";
+// $statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
+
+// @include nb-install() {
+
+//   // @each $status in $statusList {
+//   select2 {
+//     &.status-primary {
+//       border-color: #fff !important;
+
+//       .select2-selection {
+//         border-color: #fff !important;
+//       }
+//     }
+//   }
+
+//   // }
+// }

@@ -12,6 +12,7 @@ import { Icon } from '../../../lib/custom-element/card-header/card-header.compon
 export interface DialogActionButton {
   label: string;
   icon?: string;
+  rightIcon?: string;
   status?: string;
   outline?: boolean;
   disabled?: boolean;

@@ -106,6 +106,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   isDisabled: boolean;
   @Input('data') data: any[];
   @Input('value') value: string | string[];
+  @Input('status') status: string = '';
   // @Input('disabled') disabled: string | string[];
   _select2Option: Select2Options;
   @Input('select2Option') set select2Option(option: Select2Options) {
@@ -148,7 +149,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
   //   this._select2Option = option;
   // }
   @Output() selectChange = new EventEmitter<Object>();
-  @Input() status?: string;
+  // @Input() status?: string;
   @ViewChild('controls') controls: ElementRef;
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -70,11 +70,16 @@ export class AppComponent implements OnInit {
     });
 
     // translate.use('vi');
-
+    let isAllowLoadMenu = true;
     this.authService.onAuthenticationChange().subscribe(state => {
       if (state) {
-        this.loadMenu();
+        if (isAllowLoadMenu) {
+          this.loadMenu().then(() => {
+            isAllowLoadMenu = false;
+          });
+        }
       } else {
+        isAllowLoadMenu = true;
         this.menu = [
           {
             title: 'Loading...',

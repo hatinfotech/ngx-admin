@@ -237,7 +237,7 @@ export class AdminProductService {
       this.progressStatus = 'success';
       this.progress = 0;
       this.progressLabel = 'Đang tải thông tin sản phẩm...';
-      const rs = await this.apiService.getProgress<ProductSearchIndexModel[]>('/commerce-pos/product-search-indexs', { fromCache: true }, (loaded, total) => {
+      const rs = await this.apiService.getProgress<ProductSearchIndexModel[]>('/admin-product/product-search-indexs', { fromCache: true }, (loaded, total) => {
         // this.progress = parseInt(loaded / total * 100 as any);
         // this.progressLabel = 'Đang tải thông tin sản phẩm...' + this.progress + '%';
       }).then(rs => {

@@ -64,7 +64,7 @@ export const agMakeCommandColDef = <F, M>(
   const config: ColDef = {
     headerName: 'Sửa/Xóa',
     field: 'Command',
-    width: width,
+    maxWidth: width,
     filter: false,
     sortable: false,
     pinned: 'right',

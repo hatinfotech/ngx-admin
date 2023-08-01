@@ -28,9 +28,10 @@ import { CollaboratorCommissionIncurredListComponent } from "./commission-incurr
 import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
 import { CollaboratorKpiIndicatorListComponent } from "./kpi/kpi-indicator/kpi-indicator-list/kpi-indicator-list.component";
 import { CollaboratorKpiGroupListComponent } from "./kpi/kpi-group/kpi-group-list/kpi-group-list.component";
-import { CollaboratorEmployeeGroupListComponent } from "./kpi/employee-group/employee-group-list/employee-group-list.component";
+import { CollaboratorEmployeeGroupListComponent } from "./employee-group/employee-group-list/employee-group-list.component";
 import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-strategy-list/kpi-strategy-list.component";
 import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
+import { CollaboratorKpiDistributedContractListComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-list/kpi-distributed-contract-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -365,6 +366,14 @@ export const collaboratorRoutes: Routes = [
         path: 'collaborator/kpi/award/list',
         canActivate: [AuthGuardService],
         component: CollaboratorKpiAwardListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/distributed-contract/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiDistributedContractListComponent,
         data: {
           reuse: true,
         },

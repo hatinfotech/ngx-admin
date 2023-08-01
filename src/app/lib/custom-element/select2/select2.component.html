@@ -5,6 +5,7 @@
 </select> -->
 <!-- <input type="hidden" [value]="fieldValue"> -->
 <select2 *ngIf="_select2Option" #controls [disabled]="isDisabled" [ngClass]="{'disabled': isDisabled}"
+  class="status-{{status}}"
   [value]="value"
   [data]="data"
   [options]="_select2Option"

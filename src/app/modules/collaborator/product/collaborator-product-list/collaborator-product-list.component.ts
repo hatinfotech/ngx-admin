@@ -412,6 +412,7 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
     params['includeCommissionRatio'] = true;
     params['productOfPage'] = true;
     params['includePrice'] = true;
+    params['onlyBusinessProducts'] = true;
 
     params['page'] = this.collaboratorService?.currentpage$?.value;
     return params;

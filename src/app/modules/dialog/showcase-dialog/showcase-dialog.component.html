@@ -17,7 +17,12 @@
       <span *ngIf="footerContent" [innerHTML]="footerContent"></span>
       <div class="buttons-row">
         <button *ngFor="let item of actions" nbButton hero [status]="item?.status" [outline]="item?.outline" [disabled]="item?.disabled" (click)="onButtonClick(item);" [ngClass]="{'is-focus': item.focus}">
-          <nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}
+          <ng-container *ngIf="item?.rightIcon; else elseIcon">
+            {{ item.label }}<nb-icon *ngIf="item?.rightIcon" [pack]="'eva'" [icon]="item.rightIcon"></nb-icon>
+          </ng-container>
+          <ng-template #elseIcon>
+            <nb-icon *ngIf="item?.icon" [pack]="'eva'" [icon]="item.icon"></nb-icon>{{ item.label }}
+          </ng-template>          
         </button>
       </div>
     </nb-card-footer>

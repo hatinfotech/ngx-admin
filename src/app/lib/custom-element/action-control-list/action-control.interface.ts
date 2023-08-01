@@ -8,6 +8,7 @@ export interface ActionControl {
   label?: string;
   iconPack?: string;
   icon?: string;
+  rightIcon?: string;
   title: string;
   size: string;
   select2?: { data?: any[], option?: Select2Option };

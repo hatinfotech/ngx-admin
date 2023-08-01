@@ -1,0 +1,14 @@
+.tagged_text {
+    background-color: transparent !important;
+    border: none;
+    width: 100%;
+}
+
+@import "../../../../app/@theme/styles/themes";
+@include nb-install-component() {
+
+
+    .mentions {
+        padding: 0.4375rem 1rem;
+    }
+}

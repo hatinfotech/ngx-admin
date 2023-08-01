@@ -1,6 +1,6 @@
 <div class="action-list" #actionList [ngClass]="{'action-list-nowrap': nowrap}">
   <div class="buttons-row">
-    <!-- <ng-content select="ngx-action-control-begin"></ng-content> -->
+    <ng-content select="#start"></ng-content>
     <ng-template ngFor let-control [ngForOf]="list" let-i="index">
       <button type="button" class="action-list-item"
         *ngIf="(!control.type || control.type == 'button') && (!control.hidden || !control.hidden(option))" nbButton
@@ -21,6 +21,6 @@
         (selectChange)="control?.change($event, option)" [disabled]="control.disabled && control.disabled()">
       </ngx-select2>
     </ng-template>
-    <!-- <ng-content select="ngx-action-control-end"></ng-content> -->
+    <ng-content select="#end"></ng-content>
   </div>
 </div>

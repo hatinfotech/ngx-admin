@@ -6,7 +6,7 @@ import { AgSelect2Filter } from "../filter/select2.component.filter";
 export const agMakeStateColDef = (
   cms: CommonService,
   processingMap: any,
-  click: (data: any) => void,
+  click?: (data: any) => void,
 ): ColDef => {
 
   return {
@@ -17,7 +17,7 @@ export const agMakeStateColDef = (
     type: 'rightAligned',
     cellClass: ['ag-cell-items-center', 'ag-cell-justify-end'],
     cellRenderer: AgButtonCellRenderer,
-    cellStyle: { 'text-overflow': 'initial', 'border': 'none'  },
+    cellStyle: { 'text-overflow': 'initial', 'border': 'none' },
     cellRendererParams: {
       label: '...',
       onInit: (params: any, component: AgButtonCellRenderer) => {
@@ -34,7 +34,9 @@ export const agMakeStateColDef = (
         params.label = params.value;
       },
       click: (params: any) => {
-        click(params.node.data);
+        if (click) {
+          click(params.node.data);
+        }
       }
     },
     filter: AgSelect2Filter,

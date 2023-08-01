@@ -276,6 +276,11 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     this.initDataSource();
   }
 
+  isFristFetchData = true;
+  onAfterFetchData(): boolean {
+    return true;
+  }
+
   initDataSource() {
     if (this.rowModelType === 'infinite') {
       this.dataSource = {
@@ -308,6 +313,8 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
             }
             getRowParams.successCallback(list, lastRow);
             this.gridApi.resetRowHeights();
+            this.onAfterFetchData();
+            this.isFristFetchData = false;
           });
 
         },
@@ -315,11 +322,25 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     }
   }
 
+  isFirstBlockLoaded = true;
+  onFirstBlockLoaded() {
+
+    return true;
+  }
+
   onGridReady(params) {
     this.gridParams = params;
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-
+    this.gridApi.addEventListener('modelUpdated', (event) => {
+      console.log(event);
+      this.cms.takeUntil(this.componentName + '_row_loaded', 1000, () => {
+        if (this.isFirstBlockLoaded) {
+          this.onFirstBlockLoaded();
+          this.isFirstBlockLoaded = false;
+        }
+      });
+    });
     this.loadList();
 
   }

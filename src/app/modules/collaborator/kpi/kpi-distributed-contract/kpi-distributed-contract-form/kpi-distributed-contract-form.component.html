@@ -1,0 +1,205 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Phiếu phân bổ KPI' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="ObjectName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="ObjectName" placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-md-3">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="ID" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'ID' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="ObjectAddress" label="Common.address" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="ObjectAddress" placeholder="{{formItem.get('ObjectAddress').placeholder || ('Common.address' | translate | headtitlecase)}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="ObjectEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{formItem.get('ObjectEmail').placeholder || ('Common.email' | translate | headtitlecase)}}">
+                </ngx-form-group>
+              </div>
+
+
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Title" label="Tiêu đề" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Tiêu đề' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Cycle" label="Chu kỳ" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                  <ngx-select2 formControlName="Cycle" [select2Option]="select2OptionForCycle"></ngx-select2>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="DateOfStart" label="Ngày bắt đầu" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                    <input type="text" [owlDateTime]="DateOfStart" [owlDateTimeTrigger]="DateOfStart" nbInput fullWidth formControlName="DateOfStart" placeholder="{{'Ngày bắt đầu' | translate | headtitlecase}}">
+                    <owl-date-time #DateOfStart></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="DateOfEnd" label="Ngày kết thúc" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                    <input type="text" [owlDateTime]="DateOfEnd" [owlDateTimeTrigger]="DateOfEnd" nbInput fullWidth formControlName="DateOfEnd" placeholder="{{'Ngày kết thúc' | translate | headtitlecase}}">
+                    <owl-date-time #DateOfEnd></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <!-- <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="ID" [array]="array" [index]="i" [allowCopy]="true" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'ID' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div> -->
+              <!-- <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Title" label="Mô tả" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Mô tả' | translate | headtitlecase}}">
+                </ngx-form-group>
+              </div> -->
+              <!-- <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="LevelDistributedIndicator" label="Chỉ số phân bổ vượt cấp" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <ngx-select2 formControlName="LevelDistributedIndicator" [select2Option]="select2OptionForIndicator" [status]="'success'" nbTooltip="Chỉ số sẽ được lấy giá trị phân bổ cho từng nhóm KPI bên dưới"></ngx-select2>
+                </ngx-form-group>
+              </div> -->
+              <!-- <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Formular" label="Công thức" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <textarea type="text" nbInput fullWidth formControlName="Formular" class="scrollable-container" style="max-height: 10rem;" [mentionConfig]="mentionConfig" placeholder="{{'Công thức' | translate | headtitlecase}}"></textarea>
+                </ngx-form-group>
+              </div> -->
+            </div>
+
+            <hr>
+            <label class="label">{{'KPI được áp dụng' | translate | headtitlecase}}</label>
+            <div class="row fit-row form-detail-header">
+              <div class="fit-fist-col label column">Stt</div>
+              <div class="row fit-content-column">
+                <div class="col-sm-10 label column">{{'KPI' | translate | headtitlecase}}</div>
+                <div class="col-sm-2 label column align-right">{{'Trọng số (%)' | translate | headtitlecase}}</div>
+              </div>
+              <div class="fit-last-col column">
+                <button class="fit-control-button" nbButton [outline]="false" status="success" (click)="addDetailFormGroup(formItem) && false" size="medium" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                </button>
+              </div>
+            </div>
+            <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+              <div class="form-detail-item" *ngFor="let detail of formItem.controls.Details.controls; let ir=index" [formGroup]="detail">
+                <div class="row fit-row">
+                  <div class="fit-fist-col label">
+                    <div class="form-group">
+                      <!-- <label class="label"><nb-icon pack="eva" icon="move-outline" style="font-size: 0.8rem"></nb-icon> Stt</label> -->
+                      <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ir + 1 }}" nbTooltip="Kéo thả để di chuyển">
+                    </div>
+                  </div>
+                  <div class="row fit-content-column">
+                    <div class="col-sm-12">
+                      <div class="row">
+                        <div class="col-sm-10">
+                          <ngx-form-group [formGroup]="detail" name="Strategy" label="KPI" [array]="formItem.controls.Details" [index]="ir" [allowCopy]="false" [required]="true" [hideLabel]="true">
+                            <ngx-select2 formControlName="Strategy" [select2Option]="select2OptionForStrategy"></ngx-select2>
+                          </ngx-form-group>
+                        </div>
+                        <!-- <div class="col-sm-6">
+                            <ngx-form-group [formGroup]="detail" name="Description" label="Mô tả" [array]="formItem.controls.Details" [index]="ir" [allowCopy]="false" [required]="true" [hideLabel]="false" [touchedValidate]="false">
+                              <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
+                            </ngx-form-group>
+                          </div>
+                          <div class="col-sm-2">
+                            <ngx-form-group [formGroup]="detail" name="LevelDistributedValue" label="Giá trị phân bổ" [array]="formItem.controls.Details" [index]="ir" [allowCopy]="false" [required]="false" [hideLabel]="false" [touchedValidate]="false" [align]="'right'">
+                              <input type="text" nbInput fullWidth formControlName="LevelDistributedValue" placeholder="Giá trị phân bổ" nbTooltip="Để trống nếu lấy phần còn lại" class="align-right" [inputMask]="towDigitsInputMask" [status]="'success'">
+                            </ngx-form-group>
+                          </div>
+                          <div class="col-sm-2">
+                            <ngx-form-group [formGroup]="detail" name="AwardRatio" label="% Thưởng theo doanh số" [array]="formItem.controls.Details" [index]="ir" [allowCopy]="false" [required]="true" [hideLabel]="false" [touchedValidate]="false" [align]="'right'">
+                              <input type="text" nbInput fullWidth formControlName="AwardRatio" placeholder="% Thưởng theo doanh số" class="align-right" [inputMask]="towDigitsInputMask">
+                            </ngx-form-group>
+                          </div> -->
+                          <div class="col-sm-2">
+                            <ngx-form-group [formGroup]="detail" name="Weight" label="Trọng số (%)" [array]="formItem.controls.Details" [index]="ir" [allowCopy]="false" [required]="true" [hideLabel]="true" [touchedValidate]="false" [align]="'right'">
+                              <input type="text" nbInput fullWidth formControlName="Weight" placeholder="Trọng số (%)" class="align-right" [inputMask]="towDigitsInputMask">
+                            </ngx-form-group>
+                          </div>
+                          <div class="col-sm-12">
+                            <div *ngIf="detail.value.Strategy | objectid" style="margin-bottom: 0.5rem;">
+                              <ngx-collaborator-kpi-strategy-info [id]="detail.value.Strategy | objectid"></ngx-collaborator-kpi-strategy-info>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col">
+                    <div class="form-group" style="text-align: right;">
+                      <!-- <label class="label">Gở</label> -->
+                      <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeDetail(formItem, ir) && false">
+                        <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+
+
+              </div>
+              <div class="form-group" style="text-align: right;">
+                <button class="fit-control-button" nbButton [outline]="false" status="success" (click)="addDetailFormGroup(formItem) && false" size="medium" hero>
+                  <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm KPI
+                </button>
+              </div>
+              <!-- <div class="form-detail-item">
+                <div class="row fit-row form-detail-footer">
+                  <div class="fit-fist-col label">
+
+                  </div>
+                  <div class="row fit-content-column">
+                    <div class="col-sm-12">
+                      <div class="row">
+                        <div class="col-sm-4">
+
+                        </div>
+                        <div class="col-sm-6" style="text-align: right; font-weight: bold;"></div>
+                        <div class="col-sm-2" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
+
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col">
+                    <div class="form-group" style="text-align: right;">
+                      <button class="fit-control-button" nbButton [outline]="false" status="success" (click)="addDetailFormGroup(formItem)" size="medium" hero>
+                        <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>Thêm KPI Level
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup() && false" hero style="float: left;">Thêm cái nữa</button>
+            <button nbButton status="primary" [disabled]="!form.valid" style="float: right;" hero (click)="saveAndClose() && false">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+    </div>
+  </div>
+</form>

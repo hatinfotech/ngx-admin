@@ -3,38 +3,28 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Chiến dịch chiết khấu cơ bản' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Nhóm KPI' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
 
             <div class="row">
               <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="Title" label="Tên chiến dịch" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                  <input type="text" nbInput fullWidth formControlName="Title" placeholder="Tên chiến dịch">
+                <ngx-form-group [formGroup]="formItem" name="Code" label="ID nhóm" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Code" placeholder="ID nhóm">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
-                  <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+              <div class="col-sm-9">
+                <ngx-form-group [formGroup]="formItem" name="Name" label="Tên nhóm" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="Name" placeholder="Tên nhóm">
                 </ngx-form-group>
               </div>
-              <div class="col-sm-3">
-                <ngx-form-group [formGroup]="formItem" name="DateRange" label="Phạm vị áp dụng" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
-                  <input type="text" [owlDateTime]="DateRange" [owlDateTimeTrigger]="DateRange" [selectMode]="'range'" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.dateRange' | translate | headtitlecase}}">
-                  <owl-date-time #DateRange></owl-date-time>
+              <div class="col-sm-12">
+                <ngx-form-group [formGroup]="formItem" name="Description" label="Mô tả" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                  <input type="text" nbInput fullWidth formControlName="Description" placeholder="Mô tả">
                 </ngx-form-group>
-              </div>
-              <div class="col-sm-3">
-                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
-                  <label class="label"><span class="valid">ID</span><span class="invalid">ID (*)</span></label>
-                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Auto...">
-                </div>
               </div>
             </div>
-
-            <ngx-ag-dynamic-list #details [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Product','Unit']" (onReady)="onGridReady($event)" [onInit]="onGridInit" style="display: block; height: 500px"></ngx-ag-dynamic-list>
-
           </div>
         </nb-card-body>
         <nb-card-footer>

@@ -116,147 +116,19 @@ export class CollaboratorKpiGroupListComponent extends AgGridDataManagerListComp
         },
         {
           ...agMakeTextColDef(this.cms),
-          headerName: 'Page',
-          field: 'Page',
-          // pinned: 'left',
-          width: 150,
-          filter: 'agTextColumnFilter',
-          cellRenderer: AgTextCellRenderer,
-        },
-        {
-          ...agMakeTextColDef(this.cms),
-          headerName: 'Mã',
+          headerName: 'ID',
           field: 'Code',
-          width: 140,
+          width: 180,
           filter: 'agTextColumnFilter',
           // pinned: 'left',
-        },
-        {
-          headerName: 'Bắt đầu',
-          field: 'DateOfStart',
-          width: 150,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-          cellRendererParams: {
-            format: 'shortDate'
-          },
-        },
-        {
-          headerName: 'Bắt đầu',
-          field: 'DateOfStart',
-          width: 150,
-          filter: 'agDateColumnFilter',
-          filterParams: {
-            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
-          },
-          cellRenderer: AgDateCellRenderer,
-          cellRendererParams: {
-            format: 'shortDate'
-          },
         },
         {
           ...agMakeTextColDef(this.cms),
           headerName: 'Tên',
-          field: 'Title',
+          field: 'Name',
           // pinned: 'left',
-          width: 900,
+          width: 1024,
           filter: 'agTextColumnFilter',
-        },
-        {
-          ...agMakeStateColDef(this.cms, processingMap, (data) => {
-            const stateId = this.cms.getObjectId(data.State);
-            if (stateId == 'NOTJUSTAPPROVED' || stateId == 'UNRECORDED') {
-              this.cms.showDialog('Phê duyệt chiến dịch chiết khấu cơ bản', 'Bạn có muốn phê duyệt cho chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
-                {
-                  label: 'Đóng',
-                  status: 'basic',
-                  outline: true,
-                  action: () => true
-                },
-                {
-                  label: 'Duyệt chiến dịch',
-                  status: 'success',
-                  outline: true,
-                  action: () => {
-                    this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Code: data.Code }]).then(rs => {
-                      this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã phê duyệt chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                    });
-                  }
-                }
-              ]);
-            } else if (stateId == 'APPROVED') {
-              this.cms.showDialog('Khởi chạy chiến dịch chiết khấu cơ bản', 'Bạn có muốn khởi chạy chiến dịch chiết khấu cơ bản "' + data.Title + '"', [
-                {
-                  label: 'Đóng',
-                  status: 'basic',
-                  outline: true,
-                  action: () => true
-                },
-                {
-                  label: 'Khởi chạy',
-                  status: 'primary',
-                  outline: true,
-                  action: () => {
-                    this.apiService.putPromise(this.apiPath, { changeState: 'RUNNING' }, [{ Code: data.Code }]).then(rs => {
-                      this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã khởi chạy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                    });
-                  }
-                },
-                {
-                  label: 'Hủy chiến dịch',
-                  status: 'danger',
-                  outline: true,
-                  action: () => {
-                    this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
-                      this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                    });
-                  }
-                },
-              ]);
-            } else if (stateId == 'RUNNING') {
-              this.cms.showDialog('Dừng chiến dịch chiết khấu cơ bản', 'Bạn có muốn dừng chiến dịch chiết khấu cơ bản "' + data.Title + '", sau khi chiến dịch hoàn tất sẽ không thể thay đổi trạng thái được nữa !', [
-                {
-                  label: 'Đóng',
-                  status: 'basic',
-                  outline: true,
-                  action: () => true
-                },
-                {
-                  label: 'Hoàn tất',
-                  status: 'primary',
-                  outline: true,
-                  action: () => {
-                    this.apiService.putPromise(this.apiPath, { changeState: 'COMPLETE' }, [{ Code: data.Code }]).then(rs => {
-                      this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hoàn tất chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                    });
-                  }
-                },
-                {
-                  label: 'Hủy chiến dịch',
-                  status: 'danger',
-                  outline: true,
-                  action: () => {
-                    this.apiService.putPromise(this.apiPath, { changeState: 'UNRECORDED' }, [{ Code: data.Code }]).then(rs => {
-                      this.refresh();
-                      this.cms.toastService.show(data.Title, 'Đã hủy chiến dịch chiết khấu cơ bản !', { status: 'success' });
-                    });
-                  }
-                },
-              ]);
-            } else {
-              this.cms.toastService.show(data.Title, 'Không thể thay đổi trạng thái của chiến dịch đã hoàn tất !', { status: 'warning' });
-            }
-          }),
-          headerName: 'Trạng thái',
-          field: 'State',
-          width: 155,
         },
         {
           ...agMakeCommandColDef(this, this.cms, true, (data) => {

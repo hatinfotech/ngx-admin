@@ -27,13 +27,26 @@ $statusList: 'success', 'info', 'warning', 'danger', 'primary', 'basic';
     .bg-color-#{$status}-default {
       background-color: nb-theme(color-#{$status}-default);
     }
+
     .text-color-#{$status}-default {
       color: nb-theme(color-#{$status}-default);
     }
 
-    // .text-color-#{$status} {
-    //   color: nb-theme(text-danger-#{$status});
+    /** angular mentions */
+    .mention-menu {
+      color: nb-theme(text-basic-color) !important;
+      background-color: nb-theme(background-basic-color-2) !important;
+    }
+
+    // .mention-item {
+    //   color: nb-theme(text-basic-color);
     // }
+
+    // .mention-active>a {
+    //   color: nb-theme(color-danger-active) !important;
+    //   background-color: #337ab7;
+    // }
+    /** End angular mentions */
   }
 }
 
@@ -374,6 +387,7 @@ ngx-header ngx-action-control-list {
 
 /* End Layout */
 
+/** Select2 */
 .select2-container--default {
   .select2-selection--multiple {
     .select2-selection__choice__remove {
@@ -1032,6 +1046,20 @@ ngx-header ngx-action-control-list {
   }
 }
 
+@include nb-install() {
+
+  @each $status in $statusList {
+    select2 {
+      &.status-#{$status} {
+        .select2-selection {
+          // border-color: nb-theme(color-#{$status}-600) !important;
+          border-color: nb-theme(color-#{$status}-default-border) !important;
+        }
+      }
+    }
+  }
+}
+
 /* End select2*/
 
 .input-group>select2.form-control {
@@ -1608,15 +1636,16 @@ body .form-group[state="warning"] textarea:focus {
   .fit-control-button {
     width: 50px;
     margin-bottom: 3px;
-    height: 30px;
+    height: 2rem;
   }
 }
 
 .form-detail-header {
   .column {
-    line-height: 30px;
+    line-height: 2rem;
     // border-bottom: 1px solid #7978786b;
     margin-bottom: 3px;
+    text-decoration: underline;
   }
 }
 
@@ -2293,21 +2322,28 @@ body [nbButton].appearance-hero.size-medium {
 //   }
 // }
 
-.dashed-radius-border {
-  border: #8c8c8c21 1px dashed;
-  border-radius: 0.4rem;
-  margin-bottom: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+@include nb-install() {
+  .dashed-radius-border {
+    border: nb-theme(color-basic-transparent-focus-border) 1px dashed;
+    background-color: nb-theme(background-basic-color-1);
+    border-radius: 0.4rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    overflow: hidden;
+  }
+
+  .solid-radius-border {
+    border: nb-theme(color-basic-transparent-focus-border) 1px solid;
+    background-color: nb-theme(background-basic-color-1);
+    background-color: inherit;
+    border-radius: 0.4rem;
+    margin-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
 }
 
-.solid-radius-border {
-  border: #101426 1px solid;
-  border-radius: 0.4rem;
-  margin-bottom: 0.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
 
 nb-action {
   cursor: pointer;

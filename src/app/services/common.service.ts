@@ -1347,7 +1347,7 @@ export class CommonService {
     },
   };
 
-  select2OptionForTemplate = {
+  select2OptionForTemplate: Select2Option = {
     placeholder: 'Chọn...',
     allowClear: true,
     width: '100%',
@@ -1358,12 +1358,15 @@ export class CommonService {
       id: 'id',
       text: 'text',
     },
+  };
+  select2AjaxOptionForTemplate: Select2Option = {
+    ...this.select2OptionForTemplate,
     ajax: {
       data: function (params) {
         return {
           ...params,
-          offset: params.offset || 0,
-          limit: params.limit || 10
+          offset: params['offset'] || 0,
+          limit: params['limit'] || 10
         };
       },
       transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
@@ -1384,6 +1387,7 @@ export class CommonService {
           console.error(err);
           failure();
         });
+        return null;
       },
       delay: 300,
       processResults: (rs: { data: any[], total: number }, params: any) => {
@@ -1412,8 +1416,8 @@ export class CommonService {
       includeIdText: true,
     }
     return {
-      ...this.select2OptionForTemplate,
-      placeholder: option?.placeholder || this.select2OptionForTemplate?.placeholder || null,
+      ...this.select2AjaxOptionForTemplate,
+      placeholder: option?.placeholder || this.select2AjaxOptionForTemplate?.placeholder || null,
       ajax: {
         delay: 300,
         data: function (params: Select2QueryOptions & AnyProps) {

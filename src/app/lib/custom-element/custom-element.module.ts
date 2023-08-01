@@ -46,7 +46,7 @@ import { AgNumberCellInput } from './ag-list/cell/input/number.component';
 import { AgNumberCellRenderer } from './ag-list/cell/number.component';
 import { AgCurrencyCellInput } from './ag-list/cell/input/curency.component';
 import { TagComponent } from './my-components/tag/tag.component';
-// import { AngularImageViewerModule } from '@hreimer/angular-image-viewer';
+// import { MentionModule } from 'angular-mentions';
 
 @NgModule({
   declarations: [
@@ -122,6 +122,7 @@ import { TagComponent } from './my-components/tag/tag.component';
     ReactiveFormsModule,
     OwlDateTimeModule,
     OwlNativeDateTimeModule,
+    // MentionModule,
     TranslateModule,
     CurrencyMaskModule,
     NgxUploaderModule,
