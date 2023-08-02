@@ -745,7 +745,7 @@
         "Menu": {
             "userExtensions": "Số nội bộ (sip)",
             "procedure": "quy trình",
-            "dashboard": "dashboard"
+            "dashboard": "quan sát tổng thể"
         },
         "Param": {
             "options": "các tùy chọn tham số",
@@ -1034,6 +1034,13 @@
         "multiPrintConfirm?": "bạn muốn in tất cả hay chỉ in phiếu hiện tại thôi ?"
     },
     "Menu": {
+        "dashboard": "Quan sát tổng thể",
+        "Collaborator": {
+            "Kpi": {
+                "dashboard": "Quan sát KPI",
+                "kpiGroup": "Nhóm KPI"
+            }
+        },
         "System": {
             "parameters": "Tham số",
             "configBoard": "bảng cấu hình",
