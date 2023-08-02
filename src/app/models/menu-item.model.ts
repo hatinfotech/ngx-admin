@@ -14,6 +14,8 @@ export class MenuItemModel {
   Resources?: { Id: number, Module: string, Resource: string }[];
   Permissions?: PermissionModel[];
 
+  ParentTitle?: string;
+
   constructor() { }
 
 }

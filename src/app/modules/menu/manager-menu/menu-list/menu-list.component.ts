@@ -90,4 +90,15 @@ export class MenuListComponent extends DataManagerListComponent<MenuItemModel> i
     super.ngOnInit();
   }
 
+  /** Get data from api and push to list */
+  loadList(callback?: (list: MenuItemModel[]) => void) {
+    super.loadList((list) => {
+      callback(list.map(item => {
+        item.Title = this.cms.translateText(item.Title, null, 'title');
+        item.ParentTitle = this.cms.translateText(item.ParentTitle, null, 'title');
+        return item;
+      }));
+    });
+  }
+
 }
