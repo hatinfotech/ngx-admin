@@ -241,7 +241,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
                           focus: true,
                           initValue: '',
                           option: {
-                            ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, sort_SearchRank: 'desc' }, {
+                            ...this.cms.makeSelect2AjaxOption('/collaborator/publisher-supporters', { includeIdText: true }, {
                               placeholder: 'Chọn quản lý...', limit: 10, prepareReaultItem: (item) => {
                                 item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'];
                                 return item;

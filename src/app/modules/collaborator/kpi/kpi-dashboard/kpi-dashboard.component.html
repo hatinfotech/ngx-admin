@@ -1,0 +1,343 @@
+<div class="page-deskboard" [nbSpinner]="loading">
+
+  <div class="row">
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-info" (click)="this.cms.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="android-cart" pack="ion"></nb-icon>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h6">Doanh thu</div>
+          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}</div>
+          <div class="status paragraph-2">Giảm danh thu: {{summaryReport?.DecreaseRevenues | currency:'VND'}}<br />Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-primary" (click)="this.cms.router.navigate(['accounting/report/summary'])">
+            <!-- <i [ngClass]="'nb-lightbulb'"></i> -->
+            <nb-icon icon="ios-pie" pack="ion"></nb-icon>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h6">KPI</div>
+          <div class="status paragraph-2">Tạm tính: {{summaryReport?.TmpCommission | currency:'VND'}}</div>
+          <div class="status paragraph-2">Đã chốt: {{summaryReport?.Commission | currency:'VND'}}</div>
+          <div class="status paragraph-2">Thưởng: {{summaryReport?.Award | currency:'VND'}}</div>
+          <!-- <div class="status paragraph-2">Tổng quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div> -->
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-warning" (click)="this.cms.router.navigate(['accounting/report/cash-flow'])">
+            <nb-icon icon="cube" pack="ion"></nb-icon>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h6">Chỉ số</div>
+          <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br />Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div>
+        </div>
+      </nb-card>
+    </div>
+    <div class="col-xxxl-3 col-md-3 col-sm-6">
+      <nb-card class="status-card">
+        <div class="icon-container">
+          <div class="icon status-success" (click)="this.cms.router.navigate(['accounting/report/profit-report'])">
+            <nb-icon icon="arrow-graph-up-right" pack="ion"></nb-icon>
+          </div>
+        </div>
+
+        <div class="details">
+          <div class="title h6">Nhân lực</div>
+          <div class="status paragraph-2">Quản lý: {{summaryReport?.NumOfManagers | number:'1.0-0'}}</div>
+          <div class="status paragraph-2">QL CTV: {{summaryReport?.NumOfSales | number:'1.0-0'}}</div>
+          <div class="status paragraph-2">CTV: {{summaryReport?.NumOfPublishers | number:'1.0-0'}}</div>
+        </div>
+        <!-- <div class="details">
+          <div class="title h6">Lãi/lỗ</div>
+          <div class="status paragraph-2">{{summaryReport?.Profit | currency:'VND'}}</div>
+        </div> -->
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-3">
+      <nb-card>
+        <nb-card-body style="padding: 0.6rem; padding-bottom: 0;">
+          <div class="row">
+            <div class="col-sm-12">
+              <ngx-form-group [formGroup]="formItem" name="DateReport" label="Common.dateReport" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="true">
+                <ngx-select2 formControlName="DateReport" [select2Option]="select2DateReportOption" [data]="dateReportList" (selectChange)="onDateReportChange($event)"></ngx-select2>
+              </ngx-form-group>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+    <div class="col-md-9">
+      <nb-card>
+        <nb-card-body style="padding: 0.6rem; padding-bottom: 0;">
+          <div class="row">
+            <div class="col-sm-4">
+              <ngx-form-group [formGroup]="formItem" name="DateRange" label="Common.date" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="true">
+                <input type="text" [owlDateTime]="DateRange" [selectMode]="'range'" [owlDateTimeTrigger]="DateRange" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.date' | translate | headtitlecase}}">
+                <owl-date-time #DateRange [pickerType]="'calendar'"></owl-date-time>
+              </ngx-form-group>
+            </div>
+            <div class="col-sm-4">
+              <ngx-form-group [formGroup]="formItem" name="PublisherSupporters" label="CTV" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
+                <ngx-select2 formControlName="PublisherSupporters" [select2Option]="select2OptionForPublihsers" (selectChange)="onChangePage($event)"></ngx-select2>
+              </ngx-form-group>
+            </div>
+            <div class="col-sm-4">
+              <div style="display: flex;">
+                <div style="flex: 1;">
+                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
+                    <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
+                  </ngx-form-group>
+                </div>
+                <div style="margin-left: 1rem;">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <div class="form-group">
+                        <button nbButton fullWidth status="success" (click)="refresh()">{{'Common.refresh' | translate | headtitlecase}}</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
+      <nb-card size="giant" class="same-height-chart top-card" style="height: calc(100vh - var(--summary-components-height));
+      padding-bottom: 0;">
+        <nb-card-header>
+          <div class="form-group">
+            <ngx-select2 [formControl]="topListChoose" [select2Option]="select2OptionForTopTab" (selectChange)="onChangePage($event)"></ngx-select2>
+          </div>
+        </nb-card-header>
+        <nb-card-body class="top" style="padding: 0;">
+
+          <div>
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of publisherSupporterList" (click)="onPublisherSupporterClickClick({id: c.Code, text: c.Name})">
+                <nb-user [picture]="c.Avatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.Created) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+          <!-- <div *ngIf="(topListChoose.value | objectid) == 'TOPONLINEPUBLISHERS'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topOnlinePublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOnline) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPORDEREDPUBLISHERS'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topOrderedPublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPNOTORDEREDPUBLISHERS'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topNotOtderedPublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.LastOrderDate) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPASSIGNEDPUBLISHERS'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topAssignedPublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.Assigned) | date:'short' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPPRODUCTSBYREVENUE'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topGoodsList">
+                <nb-user style="flex: 9;" [picture]="c.ProductFeaturePicture?.Thumbnail" [name]="c.Description" [title]="'SL: ' + c.TailCreditQuantity + ' ' + c.ProductUnitLabel" size="large"></nb-user>
+                <span style="flex: 1;" class="caption">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div>
+
+          <div *ngIf="(topListChoose.value | objectid) == 'TOPPUBLISHERSBYREVENUE'">
+            <nb-list>
+              <nb-list-item class="contact" *ngFor="let c of topEmployeeList" (click)="onPublisherClickClick({id: c.Employee, text: c.EmployeeName})">
+                <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.EmployeeName" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+                <span class="caption" style="flex: 1;">{{ (c.GenerateCredit - c.GenerateDebit) | currency:'VND' }}</span>
+              </nb-list-item>
+            </nb-list>
+          </div> -->
+
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
+      <nb-card class="size-giant chart small-header" style="height: calc(100vh - var(--summary-components-height));
+      padding-bottom: 0;">
+        <nb-tabset fullWidth>
+          <nb-tab tabTitle="Đơn hàng">
+            <nb-flip-card [showToggleButton]="true" [flipped]="flipped">
+              <nb-card-front>
+                <nb-card class="size-giant chart small-header" style="height: calc(100vh - var(--summary-components-height) - var(--tabset-height)); border: none;">
+                  <nb-card-body class="commission-statistics-wrapper">
+                    <div class="row">
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                        <chart *ngIf="charts['revenue']" [type]="charts['revenue'].type" [data]="charts['revenue'].data" [options]="charts['revenue'].options"></chart>
+                      </div>
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                        <chart *ngIf="charts['revenuePrevious']" [type]="charts['revenuePrevious'].type" [data]="charts['revenuePrevious'].data" [options]="charts['revenuePrevious'].options"></chart>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </nb-card>
+              </nb-card-front>
+              <nb-card-back>
+                <nb-card class="size-giant chart small-header" style="height: calc(100vh - var(--summary-components-height) - var(--tabset-height)); border: none;">
+                  <nb-card-body class="commission-statistics-wrapper">
+                    <div class="row">
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                        <chart *ngIf="charts['order']" [type]="charts['order'].type" [data]="charts['order'].data" [options]="charts['order'].options"></chart>
+                      </div>
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                        <chart *ngIf="charts['orderPrevious']" [type]="charts['orderPrevious'].type" [data]="charts['orderPrevious'].data" [options]="charts['orderPrevious'].options"></chart>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </nb-card>
+              </nb-card-back>
+            </nb-flip-card>
+          </nb-tab>
+          <nb-tab tabTitle="CTV Bán Hàng">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart *ngIf="charts['publisher']" [type]="charts['publisher'].type" [data]="charts['publisher'].data" [options]="charts['publisher'].options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Dòng tiền thuần">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="debtCompareStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Lưu chuyển tiền tệ">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="cashFlowStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+          <nb-tab tabTitle="Lãi/lỗ">
+            <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
+              <nb-card-body class="commission-statistics-wrapper">
+                <chart type="line" [data]="profitStatisticsData" [options]="options"></chart>
+              </nb-card-body>
+            </nb-card>
+          </nb-tab>
+        </nb-tabset>
+      </nb-card>
+    </div>
+  </div>
+
+  <!--Clone-->
+  <div class="row" *ngIf="false">
+    <div class="col-xxxl-3 col-xxl-3 col-lg-3 col-md-12">
+      <nb-card class="size-giant chart small-header" style="height: calc(100vh / 2 - var(--header-nav-height))">
+        <nb-card-header>
+          Top CTV vừa online
+        </nb-card-header>
+        <nb-card-body style="padding: 0;">
+          <nb-list>
+            <nb-list-item class="contact" *ngFor="let c of topOnlinePublishers" (click)="onPublisherClickClick({id: c.Contact, text: c.Name})">
+              <nb-user [picture]="c.EmployeeAvatar?.Thumbnail" [name]="c.Name" [title]="'Sao: * * * * *'" size="large" style="flex: 8"></nb-user>
+              <span class="caption" style="flex: 1;">{{ (c.LastOnline) | date:'short' }}</span>
+            </nb-list-item>
+          </nb-list>
+        </nb-card-body>
+        <!-- <div class="top" class="scrollable-container" style="height: 100%">
+
+          <div>
+          </div>
+
+        </div> -->
+      </nb-card>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-9 col-lg-9 col-md-12">
+      <nb-card class="size-giant chart small-header" style="height: calc(100vh / 2 - var(--header-nav-height))">
+        <nb-card-header>
+          Hoạt động CTV Bán hàng
+        </nb-card-header>
+        <nb-card-body class="commission-statistics-wrapper">
+          <chart *ngIf="charts['publisher']" [type]="charts['publisher'].type" [data]="charts['publisher'].data" [options]="charts['publisher'].options"></chart>
+        </nb-card-body>
+      </nb-card>
+    </div>
+  </div>
+
+  <!-- <div class="row">
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-temperature></ngx-temperature>
+    </div>
+
+    <div class="col-xxxl-9 col-xxl-8 col-lg-7 col-md-6">
+      <ngx-electricity></ngx-electricity>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xxxl-9 col-xl-12">
+      <ngx-rooms></ngx-rooms>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-7 col-md-6">
+      <ngx-contacts></ngx-contacts>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-lg-5 col-md-6">
+      <ngx-solar [chartValue]="solarValue"></ngx-solar>
+
+      <ngx-kitten></ngx-kitten>
+    </div>
+
+    <div class="col-xxxl-3 col-xxl-4 col-md-5">
+      <ngx-traffic></ngx-traffic>
+      <ngx-weather></ngx-weather>
+    </div>
+
+    <div class="col-xxxl-6 col-xxl-12 col-md-7">
+      <ngx-security-cameras></ngx-security-cameras>
+    </div>
+  </div> -->
+</div>

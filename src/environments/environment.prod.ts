@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.9.4.2',
+  version: '6.9.5.1',
+  // 6.9.5.1:   collaborator dev v3: 
   // 6.9.4.1:   hotupdate: add Thread field and write voucher with thread
   // 6.9.3.7:   collaborator dev v3: fix assign manager for publisher
   // 6.9.3.7:   collaborator dev v3: fix main menu and list reset function

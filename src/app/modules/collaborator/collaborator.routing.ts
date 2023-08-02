@@ -32,6 +32,7 @@ import { CollaboratorEmployeeGroupListComponent } from "./employee-group/employe
 import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-strategy-list/kpi-strategy-list.component";
 import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
 import { CollaboratorKpiDistributedContractListComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-list/kpi-distributed-contract-list.component";
+import { CollaboratorKpiDashboardComponent } from "./kpi/kpi-dashboard/kpi-dashboard.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -374,6 +375,14 @@ export const collaboratorRoutes: Routes = [
         path: 'collaborator/kpi/distributed-contract/list',
         canActivate: [AuthGuardService],
         component: CollaboratorKpiDistributedContractListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/kpi/dashboard',
+        canActivate: [AuthGuardService],
+        component: CollaboratorKpiDashboardComponent,
         data: {
           reuse: true,
         },

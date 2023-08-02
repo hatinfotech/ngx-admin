@@ -35,6 +35,7 @@ import { CollaboratorEmployeeGroupListComponent } from "./employee-group/employe
 import { CollaboratorKpiAwardFormComponent } from "./kpi/kpi-award/kpi-award-form/kpi-award-form.component";
 import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
 import { CollaboratorKpiAwardPrintComponent } from "./kpi/kpi-award/kpi-award-print/kpi-award-print.component";
+import { CollaboratorKpiDashboardComponent } from "./kpi/kpi-dashboard/kpi-dashboard.component";
 import { CollaboratorKpiDistributedContractFormComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-form/kpi-distributed-contract-form.component";
 import { CollaboratorKpiDistributedContractListComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-list/kpi-distributed-contract-list.component";
 import { CollaboratorKpiDistributedContractPrintComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-print/kpi-distributed-print.component";
@@ -107,4 +108,5 @@ export const collaboratorComponents = [
     CollaboratorKpiDistributedContractListComponent,
     CollaboratorKpiDistributedContractFormComponent,
     CollaboratorKpiDistributedContractPrintComponent,
+    CollaboratorKpiDashboardComponent,
 ];
