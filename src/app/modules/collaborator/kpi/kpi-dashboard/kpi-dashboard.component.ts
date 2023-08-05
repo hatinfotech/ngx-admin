@@ -1,3 +1,4 @@
+import { Select2AjaxOptions } from './../../../../../vendor/ng2select2/lib/ng2-select2.interface';
 import { AccMasterBookModel } from '../../../../models/accounting.model';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ProductGroupModel } from '../../../../models/product.model';
@@ -265,7 +266,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
       DateReport: [{ id: 'MONTH', text: 'Phân tích theo năm (các tháng trong năm)' }, Validators.required],
       DateRange: [[this.cms.getBeginOfDate(today), this.cms.getEndOfDate(today)]],
       PublisherSupporters: [[]],
-      ProductGroup: { value: '', disabled: true },
+      Strategy: [],
     });
     // this.formItem.get('DateReport').valueChanges.subscribe(value => {
     //   console.log(value);
@@ -424,6 +425,11 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
       text: 'text',
     },
   };
+  select2Strategy: Select2Option = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/kpi-strategies', {}, {
+      placeholder: 'Chọn nhóm KPI...', limit: 10, prepareReaultItem: (item) => ({ id: item.Code, text: item.Name }),
+    }),
+  };
 
   private alive = true;
 
@@ -548,6 +554,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
     // let employees = this.formItem.get('Employees')?.value?.map(m => this.cms.getObjectId(m)) || [];
     // let objects = this.formItem.get('Objects')?.value?.map(m => this.cms.getObjectId(m)) || [];
     let publisherSupportsFilter = this.formItem.get('PublisherSupporters')?.value?.map(m => this.cms.getObjectId(m)) || [];
+    let strategy = this.cms.getObjectId(this.formItem.get('Strategy')?.value) || null;
 
     // let publishersFilter = this.formItem.get('PublisherSupporters')?.value?.map(m => this.cms.getObjectId(m)) || [];
 
@@ -690,32 +697,45 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
       pointRadius = 2;
     }
 
+    let strategyQuery = {
+      forKpi: true,
+    };
+    if (strategy) {
+      strategyQuery['eq_Strategy'] = strategy;
+    }
+
     // Current
     promiseAll.push(new Promise(async (resolve, reject) => {
       let labels: any[], timeline: any[], mergeData: any[];
       let lineData = {};
 
+
       /** Load data */
+      // let statisticsData = await Promise.all([
+      //   this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'COMPLETED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
+      //   this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      //   this.apiService.getPromise<any[]>('/collaborator/kpi-distributed-contracts/statistics', { reportBy: reportType, fromDate: fromDateStr, toDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Object: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+      // ]);
       let statisticsData = await Promise.all([
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'COMPLETED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/kpi-distributed-contracts/statistics', { reportBy: reportType, fromDate: fromDateStr, toDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Object: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStr, le_DateOfOrder: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStr, le_VoucherDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/kpi-distributed-contracts/statistics', { reportBy: reportType, fromDate: fromDateStr, toDate: toDateStr, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Object: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
       ]);
 
       /** Prepare data */
       lineData['numOfOrderLine1Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine2Data'] = statisticsData[1].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine3Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine4Data'] = statisticsData[3].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      lineData['numOfOrderLine2Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      lineData['numOfOrderLine3Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      lineData['numOfOrderLine4Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
       // lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine5Data'] = statisticsData[4].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = parseInt(statistic.NumOfVouchers); statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
-      lineData['numOfOrderLine6Data'] = statisticsData[5].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
-      lineData['numOfOrderLine7Data'] = statisticsData[6].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.RevenueKpi; return statistic; });
+      lineData['numOfOrderLine5Data'] = statisticsData[1].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.NumOfOrders = parseInt(statistic.NumOfVouchers); statistic.Revenue = statistic.SumOfCredit - statistic.SumOfDebit; return statistic; });
+      lineData['numOfOrderLine6Data'] = statisticsData[0].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.NumOfOrders; return statistic; });
+      lineData['numOfOrderLine7Data'] = statisticsData[2].map(statistic => { statistic.Label = this.makeStaticLabel(statistic, reportType); statistic.Timeline = this.makeTimeline(statistic, reportType); statistic.Value = statistic.RevenueKpi; return statistic; });
 
       timeline = [...new Set([
         ...lineData['numOfOrderLine1Data'].map(item => item['Timeline']),
@@ -747,152 +767,153 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
         );
         return {
           Label: t,
-          Line1: point1 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line2: point2 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line3: point3 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line4: point4 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line5: point5 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line6: point6 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
-          Line7: point7 || { Value: 0, NumOfOrders: 0, Revenue: 0, RevenueKpi: 0 },
+          Line1: point1 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line2: point2 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line3: point3 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line4: point4 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line5: point5 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line6: point6 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          Line7: point7 || { Value: 0, NumOfOrders: 0, Revenue: 0 },
+          // Line7: null,
         };
       });
 
       // Chart 1
-      this.charts['order'] = {
-        type: 'bar',
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          legend: {
-            position: 'bottom',
-            labels: {
-              fontColor: this.chartjs.textColor,
-            },
-          },
-          hover: {
-            mode: 'index',
-          },
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Chu kỳ hiện tại',
-                },
-                gridLines: {
-                  display: true,
-                  color: this.chartjs.axisLineColor,
-                },
-                ticks: {
-                  fontColor: this.chartjs.textColor
-                },
-                stacked: true,
-              },
-            ],
-            yAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Đơn hàng',
-                },
-                gridLines: {
-                  display: true,
-                  color: this.chartjs.axisLineColor,
-                },
-                ticks: {
-                  fontColor: this.chartjs.textColor,
-                  callback: (value, index, values) => {
-                    return this.decimalPipe.transform(value || 0, '1.0-0');
-                  }
-                },
-                stacked: true,
-              },
-            ],
-          },
-          tooltips: {
-            callbacks: {
-              label: (tooltipItem, data) => {
-                if (data?.datasets) {
-                  let sum = data.datasets.reduce((previous, dataset, index) => { return dataset.part ? (previous + parseInt(dataset.data[tooltipItem.index])) : previous; }, 0);
-                  return this.decimalPipe.transform(tooltipItem.yLabel, '1.0-0') + '/' + this.decimalPipe.transform(sum, '1.0-0') + ' đơn ' + data?.datasets[tooltipItem?.datasetIndex]?.label;
-                }
-                return '';
-              }
-            }
-          }
-        },
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              type: 'line',
-              label: 'KPI Doanh số',
-              data: mergeData.map(point => point.Line7['RevenueKpi']),
-              borderDash: [5, 5],
-              borderColor: this.colors.success,
-              backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Hoàn tất',
-              data: mergeData.map(point => point.Line5['NumOfOrders']),
-              borderColor: this.colors.success,
-              backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Đã triển khai',
-              data: mergeData.map(point => point.Line4['NumOfOrders']),
-              borderColor: NbColorHelper.mix(this.colors.danger, this.colors.warning, 66),
-              backgroundColor: NbColorHelper.shade(NbColorHelper.mix(this.colors.danger, this.colors.warning, 66), 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Đã chốt',
-              data: mergeData.map(point => point.Line3['NumOfOrders']),
-              borderColor: this.colors.primary,
-              backgroundColor: NbColorHelper.shade(this.colors.primary, 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Đang xử lý',
-              data: mergeData.map(point => point.Line2['NumOfOrders']),
-              borderColor: this.colors.info,
-              backgroundColor: NbColorHelper.shade(this.colors.info, 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Chưa xử lý',
-              data: mergeData.map(point => point.Line1['NumOfOrders']),
-              borderColor: this.colors.warning,
-              backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-            {
-              part: true,
-              label: 'Đơn bị hủy',
-              data: mergeData.map(point => point.Line6['NumOfOrders']),
-              borderColor: this.colors.danger,
-              backgroundColor: NbColorHelper.shade(this.colors.danger, 0),
-              pointRadius: pointRadius,
-              pointHoverRadius: 10,
-            },
-          ],
-        }
-      };
+      // this.charts['order'] = {
+      //   type: 'bar',
+      //   options: {
+      //     responsive: true,
+      //     maintainAspectRatio: false,
+      //     legend: {
+      //       position: 'bottom',
+      //       labels: {
+      //         fontColor: this.chartjs.textColor,
+      //       },
+      //     },
+      //     hover: {
+      //       mode: 'index',
+      //     },
+      //     scales: {
+      //       xAxes: [
+      //         {
+      //           display: true,
+      //           scaleLabel: {
+      //             display: true,
+      //             labelString: 'Chu kỳ hiện tại',
+      //           },
+      //           gridLines: {
+      //             display: true,
+      //             color: this.chartjs.axisLineColor,
+      //           },
+      //           ticks: {
+      //             fontColor: this.chartjs.textColor
+      //           },
+      //           stacked: true,
+      //         },
+      //       ],
+      //       yAxes: [
+      //         {
+      //           display: true,
+      //           scaleLabel: {
+      //             display: true,
+      //             labelString: 'Đơn hàng',
+      //           },
+      //           gridLines: {
+      //             display: true,
+      //             color: this.chartjs.axisLineColor,
+      //           },
+      //           ticks: {
+      //             fontColor: this.chartjs.textColor,
+      //             callback: (value, index, values) => {
+      //               return this.decimalPipe.transform(value || 0, '1.0-0');
+      //             }
+      //           },
+      //           stacked: true,
+      //         },
+      //       ],
+      //     },
+      //     tooltips: {
+      //       callbacks: {
+      //         label: (tooltipItem, data) => {
+      //           if (data?.datasets) {
+      //             let sum = data.datasets.reduce((previous, dataset, index) => { return dataset.part ? (previous + parseInt(dataset.data[tooltipItem.index])) : previous; }, 0);
+      //             return this.decimalPipe.transform(tooltipItem.yLabel, '1.0-0') + '/' + this.decimalPipe.transform(sum, '1.0-0') + ' đơn ' + data?.datasets[tooltipItem?.datasetIndex]?.label;
+      //           }
+      //           return '';
+      //         }
+      //       }
+      //     }
+      //   },
+      //   data: {
+      //     labels: labels,
+      //     datasets: [
+      //       {
+      //         type: 'line',
+      //         label: 'KPI Doanh số',
+      //         data: mergeData.filter(f => f.Line7['RevenueKpi']).map(point => point.Line7['RevenueKpi']),
+      //         borderDash: [5, 5],
+      //         borderColor: this.colors.success,
+      //         backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Hoàn tất',
+      //         data: mergeData.map(point => point.Line5['NumOfOrders']),
+      //         borderColor: this.colors.success,
+      //         backgroundColor: NbColorHelper.hexToRgbA(this.colors.success, 1),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Đã triển khai',
+      //         data: mergeData.map(point => point.Line4['NumOfOrders']),
+      //         borderColor: NbColorHelper.mix(this.colors.danger, this.colors.warning, 66),
+      //         backgroundColor: NbColorHelper.shade(NbColorHelper.mix(this.colors.danger, this.colors.warning, 66), 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Đã chốt',
+      //         data: mergeData.map(point => point.Line3['NumOfOrders']),
+      //         borderColor: this.colors.primary,
+      //         backgroundColor: NbColorHelper.shade(this.colors.primary, 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Đang xử lý',
+      //         data: mergeData.map(point => point.Line2['NumOfOrders']),
+      //         borderColor: this.colors.info,
+      //         backgroundColor: NbColorHelper.shade(this.colors.info, 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Chưa xử lý',
+      //         data: mergeData.map(point => point.Line1['NumOfOrders']),
+      //         borderColor: this.colors.warning,
+      //         backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //       {
+      //         part: true,
+      //         label: 'Đơn bị hủy',
+      //         data: mergeData.map(point => point.Line6['NumOfOrders']),
+      //         borderColor: this.colors.danger,
+      //         backgroundColor: NbColorHelper.shade(this.colors.danger, 0),
+      //         pointRadius: pointRadius,
+      //         pointHoverRadius: 10,
+      //       },
+      //     ],
+      //   }
+      // };
 
       // Chart 2
       this.charts['revenue'] = {
@@ -963,7 +984,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
             {
               type: 'line',
               label: 'KPI Doanh số',
-              data: mergeData.map(point => point.Line7['RevenueKpi']),
+              data: mergeData.map(point => point?.Line7 && point?.Line7['RevenueKpi'] || null),
               borderDash: [5, 5],
               borderColor: NbColorHelper.tint(NbColorHelper.mix(this.colors.danger, this.colors.primary, 66), 0),
               // backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
@@ -982,7 +1003,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
             {
               part: true,
               label: 'Đã triển khai',
-              data: mergeData.map(point => point.Line4['Revenue']),
+              data: mergeData.map(point => point.Line4['RevenueOfDeployedOrders']),
               borderColor: NbColorHelper.mix(this.colors.danger, this.colors.warning, 66),
               backgroundColor: NbColorHelper.shade(NbColorHelper.mix(this.colors.danger, this.colors.warning, 66), 0),
               pointRadius: pointRadius,
@@ -991,7 +1012,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
             {
               part: true,
               label: 'Đã chốt',
-              data: mergeData.map(point => point.Line3['Revenue']),
+              data: mergeData.map(point => point.Line3['RevenueOfApprovedOrders']),
               borderColor: this.colors.primary,
               backgroundColor: NbColorHelper.shade(this.colors.primary, 0),
               pointRadius: pointRadius,
@@ -1000,7 +1021,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
             {
               part: true,
               label: 'Đang xử lý',
-              data: mergeData.map(point => point.Line2['Revenue']),
+              data: mergeData.map(point => point.Line2['RevenueOfProcessingOrders']),
               borderColor: this.colors.info,
               backgroundColor: NbColorHelper.shade(this.colors.info, 0),
               pointRadius: pointRadius,
@@ -1010,7 +1031,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
               part: true,
               // type: 'line',
               label: 'Đơn mới',
-              data: mergeData.map(point => point.Line1['Revenue']),
+              data: mergeData.map(point => point.Line1['RevRevenueOfNotJustApprovedOrdersenue']),
               borderColor: this.colors.warning,
               backgroundColor: NbColorHelper.shade(this.colors.warning, 0),
               pointRadius: pointRadius,
@@ -1019,7 +1040,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
             {
               part: true,
               label: 'Đơn bị hủy',
-              data: mergeData.map(point => point.Line6['Revenue']),
+              data: mergeData.map(point => point.Line6['RevenueOfUnrecordedOrders']),
               borderColor: this.colors.danger,
               backgroundColor: NbColorHelper.shade(this.colors.danger, 0),
               pointRadius: pointRadius,
@@ -1032,19 +1053,19 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
     }));
 
     // Previous chart
-    promiseAll.push(new Promise(async (resolve, reject) => {
+    false && promiseAll.push(new Promise(async (resolve, reject) => {
       let labels: any[], timeline: any[], mergeData: any[];
       let lineData = {};
 
       /** Load data */
       let statisticsData = await Promise.all([
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'NOTJUSTAPPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'PROCESSING', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'APPROVED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'DEPLOYED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
         // this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'COMPLETED', statisticsRevenue: true, branch: pages, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit' }),
-        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStrPrevious, le_VoucherDate: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
-        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}) }),
+        this.apiService.getPromise<any[]>('/collaborator/statistics', { eq_Account: "[511,515,521,711]", statisticsRevenue: true, reportBy: reportType, ge_VoucherDate: fromDateStrPrevious, le_VoucherDate: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
+        this.apiService.getPromise<any[]>('/collaborator/orders/statistics', { state: 'UNRECORDED', statisticsRevenue: true, reportBy: reportType, ge_DateOfOrder: fromDateStrPrevious, le_DateOfOrder: toDateStrPrevious, limit: 'nolimit', ...(publisherSupportsFilter && publisherSupportsFilter.length > 0 && { eq_Manager: '[' + publisherSupportsFilter.join(',') + ']' } || {}), ...strategyQuery }),
       ]);
 
       /** Prepare data */

@@ -31,6 +31,8 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
   @Input() objects: string[];
   @Input() query: any = {};
 
+  note: string = '';
+
   constructor(
     public cms: CommonService,
     public router: Router,
@@ -60,6 +62,11 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     //   }
     //   this.processMapList[i] = AppModule.processMaps.cashVoucher[data.State || ''];
     // }
+
+    if(this.query && (this.query['eq_Thread'] || this.query['filter_Thread'])) {
+      this.note = `[Công trình/Dự án: ${this.query['eq_Thread'] || this.query['filter_Thread']}]`;
+    }
+
     this.summaryCalculate(this.data);
 
     return result;

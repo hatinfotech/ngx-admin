@@ -1,40 +1,36 @@
-import { takeUntil } from 'rxjs/operators';
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { IGetRowsParams } from 'ag-grid-community';
-import { CurrencyMaskConfig } from 'ng2-currency-mask';
-import { ActionControlListOption } from '../../../../../lib/custom-element/action-control-list/action-control.interface';
-import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
-import { AccountModel, BusinessModel } from '../../../../../models/accounting.model';
-import { ContactModel } from '../../../../../models/contact.model';
-import { ApiService } from '../../../../../services/api.service';
-import { CommonService } from '../../../../../services/common.service';
-import { CollaboartorAwardDetailComponent } from '../../../award/collaborator-award-form/collaboartor-award-detail/collaboartor-award-detail.component';
-import { CollaboratorService } from '../../../collaborator.service';
-import { Model } from '../../../../../models/model';
-import { CollaboratorKpiAwardPrintComponent } from '../kpi-award-print/kpi-award-print.component';
+import { CurrencyPipe } from "@angular/common";
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NbToastrService, NbDialogService, NbDialogRef } from "@nebular/theme";
+import { DataManagerFormComponent } from "../../../../../lib/data-manager/data-manager-form.component";
+import { ApiService } from "../../../../../services/api.service";
+import { CommonService } from "../../../../../services/common.service";
+import { Model } from "../../../../../models/model";
+import { CashVoucherModel } from "../../../../../models/accounting.model";
+import { PurchaseVoucherModel, PurchaseOrderVoucherModel } from "../../../../../models/purchase.model";
+import { TaxModel } from "../../../../../models/tax.model";
+import { ReferenceChoosingDialogComponent } from "../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component";
+import { PurchaseVoucherListComponent } from "../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component";
+import { Select2Option } from "../../../../../lib/custom-element/select2/select2.component";
+import { ContactModel } from "../../../../../models/contact.model";
 
 @Component({
   selector: 'ngx-collaborator-kpi-award-form',
   templateUrl: './kpi-award-form.component.html',
-  styleUrls: ['./kpi-award-form.component.scss']
+  styleUrls: ['./kpi-award-form.component.scss'],
+  providers: [
+    CurrencyPipe
+  ]
 })
 export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<Model> implements OnInit {
 
   // Base variables
   componentName = 'CollaboratorKpiAwardFormComponent';
   idKey = 'Code';
-  baseFormUrl = '/collaborator/kpi-award/form';
   apiPath = '/collaborator/kpi-awards';
-
-  // variables
-  locale = this.cms.getCurrentLoaleDataset();
-  curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
-  accountList: AccountModel[] = [];
-  accountingBusinessList: BusinessModel[] = [];
+  baseFormUrl = '/collaborator/kpi-award/form';
 
   constructor(
     public activeRoute: ActivatedRoute,
@@ -45,29 +41,18 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
     public dialogService: NbDialogService,
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorKpiAwardFormComponent>,
-    public collaboratorService: CollaboratorService,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
-
-    /** Append print button to head card */
-    this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
-      name: 'print',
-      status: 'primary',
-      label: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      icon: 'printer',
-      title: this.cms.textTransform(this.cms.translate.instant('Common.print'), 'head-title'),
-      size: 'medium',
-      disabled: () => this.isProcessing,
-      hidden: () => false,
-      click: (event: any, option: ActionControlListOption) => {
-        this.preview(option.form);
-      },
-    });
   }
 
-  select2OptionForPage = {
-    placeholder: 'Chọn trang...',
-    allowClear: false,
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
+
+  select2OptionForIndicator = {
+    placeholder: 'Chỉ số...',
+    allowClear: true,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
@@ -75,85 +60,87 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
       id: 'id',
       text: 'text',
     },
+    data: [
+      { id: 'REVENUE', text: 'Doanh thu trên mỗi nhân viên chăm sóc CTV' },
+      { id: 'OVERREVENUE', text: 'Doanh thu vuot cap trên mỗi nhân viên chăm sóc CTV' },
+      { id: 'NUMOFORDER', text: 'Số đơn hoàn tất trên mỗi nhân viên chăm sóc CTV' },
+      { id: 'ORDERAPPROVEDRATIO', text: 'Tỷ lệ chốt đơn trên mỗi nhân viên chăm sóc CTV' },
+    ]
   };
 
-  commissionColumnDefs = [
-    {
-      headerName: '#',
-      width: 120,
-      valueGetter: 'node.data.Product',
-      cellRenderer: 'loadingCellRenderer',
-      sortable: false,
-      // pinned: 'left',
-      checkboxSelection: true,
+  select2OptionForCondition = {
+    placeholder: 'Điều kiện...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
     },
-    {
-      headerName: 'Sản phẩm',
-      field: 'Description',
-      width: 300,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-    {
-      headerName: 'ĐVT',
-      field: 'ProductUnit',
-      width: 120,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-    {
-      headerName: 'SL bán',
-      field: 'TailCreditQuantity',
-      width: 100,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-    {
-      headerName: 'Doanh số (đ)',
-      field: 'TailAmount',
-      width: 150,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-    {
-      headerName: 'Tỷ lệ thưởng LV1 (%)',
-      field: 'Level1WeeklyAwardRatio',
-      width: 150,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-    {
-      headerName: 'Thưởng LV1 (đ)',
-      field: 'Level1WeeklyAwardAmount',
-      width: 150,
-      sortable: false,
-      filter: 'agTextColumnFilter',
-      // pinned: 'left',
-    },
-  ]
-
-  commissionData = {
-    rowCount: null,
-    getRows: async (getRowParams: IGetRowsParams) => {
-      this.apiService.getPromise<{ id: number, text: string }[]>('/collaborator/statistics', { tempAwardReport: true, limit: 'nolimit', offset: getRowParams.startRow, page: this.cms.getObjectId(this.array.controls[0].get('Page').value), publisher: this.cms.getObjectId(this.array.controls[0].get('Publisher').value), moment: this.array.controls[0].get('CommissionTo').value }).then((rs) => {
-        let lastRow = -1;
-        if (rs.length < 40) {
-          lastRow = getRowParams.startRow + rs.length;
-        }
-        getRowParams.successCallback(rs, lastRow);
-        return rs;
-      });
-    },
+    data: [
+      { id: 'GE', text: 'Lớn hơn/bằng (>=)' },
+      { id: 'GT', text: 'Lớn hơn (>)' },
+      { id: 'LE', text: 'Nhỏ hơn/bằng (<=)' },
+      { id: 'LT', text: 'Nhỏ hơn (<)' },
+      { id: 'EQ', text: 'Bằng (=)' },
+    ]
+  };
+  select2OptionForStrategy = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/kpi-strategies', { eq_State: 'APPROVED' }, {
+      placeholder: 'Chọn nhóm KPI...', limit: 10, prepareReaultItem: (item) => {
+        item['id'] = item.Code;
+        item['text'] = item.Name;
+        return item;
+      }
+    }),
+  };
+  select2OptionForContact = {
+    ...this.cms.makeSelect2AjaxOption('/contact/contacts', { eq_Groups: '[PUBLISHERSUPPORTER]' }, {
+      placeholder: 'Chọn nhân viên chăm sóc CTV...', limit: 10, prepareReaultItem: (item) => {
+        item['id'] = item.Code;
+        item['text'] = item.Name;
+        return item;
+      }
+    }),
   };
 
-  onGridChange(event, data) {
+  select2OptionForCycle = {
+    placeholder: 'Chu kỳ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    multiple: false,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    data: [
+      { id: 'MONTH', text: 'Tháng' },
+      { id: 'YEAR', text: 'Năm' },
+      { id: 'WEEK', text: 'Tuần' },
+      { id: 'DAY', text: 'Ngày' },
+      { id: 'HOUR', text: 'Giờ' },
+    ]
+  };
 
-  }
+  select2OptionForEmployeeGroups: Select2Option = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/employee-groups', {}, {
+      placeholder: 'Chọn nhóm nhân viên...', limit: 10, prepareReaultItem: (item) => ({ id: item.Code, text: item.Name }),
+    }),
+    // multiple: true,
+  };
+
+  mentionConfig = {
+    items: [
+      'doanhThu',
+      'soLuongDon',
+      'tyLeChotDon',
+    ],
+    triggerChar: '$',
+  };
 
   ngOnInit() {
     this.restrict();
@@ -162,6 +149,18 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
 
   async formLoad(formData: Model[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: Model) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
+
+      // Detail form groups
+      if (itemFormData?.Details) {
+        const details = this.getDetails(newForm);
+        details.clear();
+        for (const detailData of itemFormData.Details) {
+          const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
+          details.push(newDetailFormGroup);
+          const detailIndex = details.length - 1;
+          this.onAddDetailFormGroup(newForm, detailIndex, newDetailFormGroup);
+        };
+      }
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -173,77 +172,80 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
 
   async init() {
     return super.init().then(rs => {
+      if (this.isDuplicate) {
+        // Clear id
+        this.id = [];
+        this.array.controls.forEach((formItem, index) => {
+          formItem.get('Code').setValue('');
+          formItem.get('Description').setValue('Copy of: ' + formItem.get('Description').value);
+          this.getDetails(formItem as FormGroup).controls.forEach(conditonFormGroup => {
+            // Clear id
+          });
+        });
+      }
       return rs;
     });
   }
 
   /** Get form data by id from api */
-  getFormData(callback: (data: Model[]) => void) {
-    this.apiService.get<Model[]>(this.apiPath, { id: this.id, multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
+  getFormData(callback: (data: CashVoucherModel[]) => void) {
+    this.apiService.get<CashVoucherModel[]>(this.apiPath, { id: this.id, eq_Type: 'PAYMENT', multi: true, includeDetails: true, includeContact: true, includeRelativeVouchers: true },
       data => callback(data),
     ), (e: HttpErrorResponse) => {
       this.onError(e);
     };
   }
 
-  makeNewFormGroup(data?: Model): FormGroup {
-    const loggedUser = this.cms?.loginInfo$?.value?.user;
-
+  makeNewFormGroup(data?: CashVoucherModel): FormGroup {
+    const today = new Date();
+    const nextMonth = today.clone();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
     const newForm = this.formBuilder.group({
-      Code: [''],
-      Page: [this.collaboratorService.currentpage$.value, Validators.required],
-      Publisher: [''],
-      PublisherName: [''],
-      PublisherPhone: [''],
-      PublisherEmail: [''],
-      PublisherAddress: [''],
-      PublisherIdentifiedNumber: [''],
-      PublisherBankName: [''],
-      PublisherBankAccount: [''],
-      // Cycle: [],
-      Amount: { value: '', disabled: true },
-      CommissionTo: [new Date(), Validators.required],
-      Description: [`Kết chuyển chiết khấu đến ngày ${new Date().toLocaleDateString()}`, Validators.required],
-
-      CommissionStatictis: [[]],
+      Code: { disabled: true, value: '' },
+      Title: ['', Validators.required],
+      Object: ['', Validators.required],
+      ObjectName: [''],
+      ObjectPhone: [''],
+      ObjectEmail: [''],
+      ObjectAddress: [''],
+      // Description: [''],
+      // LevelDistributedIndicator: [''],
+      Cycle: [this.select2OptionForCycle.data.find(f => f.id = 'MONTH'), Validators.required],
+      // DateOfStart: [today],
+      DateOfEnd: [today],
+      // DateOfEnd: [nextMonth],
+      // Formular: [''],
+      Details: [[]],
     });
     if (data) {
-      this.prepareRestrictedData(newForm, data);
       newForm.patchValue(data);
+    } else {
+      // const newDetailFormItem = this.addDetailFormGroup(newForm);
     }
-
     return newForm;
   }
 
-  onConditionFieldsChange(newForm: FormGroup) {
-    const awardRange = newForm.get('CommissionTo').value;
-    console.log(awardRange);
-    const publisherEle = newForm.get('Publisher');
-    const publisher = this.cms.getObjectId(publisherEle.value);
-    const publisherName = newForm.get('PublisherName').value;
-    newForm.get('Description').setValue(`Kết chuyển chiết khấu đến ngày ${newForm.get('CommissionTo')?.value?.toLocaleDateString()}`);
-    if (!this.isProcessing && publisher) {
-      setTimeout(() => {
-        // newForm['listInstance'] && newForm['listInstance'].refresh();
-        this.refreshAllTab(newForm);
-      }, 500);
+  onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('ObjectName').setValue(selectedData.Name);
+          if (selectedData['Phone']) formGroup.get('ObjectPhone').setValue(selectedData['Phone']);
+          if (selectedData['Email']) formGroup.get('ObjectEmail').setValue(selectedData['Email']);
+          if (selectedData['Address']) formGroup.get('ObjectAddress').setValue(selectedData['Address']);
+
+          this.loadPreview(formGroup);
+        }
+      }
     }
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: Model): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: CashVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
-    setTimeout(() => {
-      newForm.get('CommissionTo').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(awardRange => {
-        // console.log(awardRange);
-        this.onConditionFieldsChange(newForm);
-      });
-      newForm.get('Publisher').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
-        this.onConditionFieldsChange(newForm);
-      });
-      newForm.get('Page').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(publisher => {
-        this.onConditionFieldsChange(newForm);
-      });
-    }, 3000);
   }
   onRemoveFormGroup(index: number): void {
   }
@@ -260,88 +262,227 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: Model[]) => void, error?: (e: HttpErrorResponse) => void) {
-    params['includeContact'] = true;
+  executeGet(params: any, success: (resources: CashVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     return super.executeGet(params, success, error);
   }
 
-  // Orverride
-  getRawFormData() {
-    const data = super.getRawFormData();
-    return data;
-  }
-
-  onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-
-    if (!this.isProcessing) {
-      if (selectedData && !selectedData['doNotAutoFill']) {
-
-        if (selectedData.Code) {
-          const data = {
-            ObjectName: selectedData.Name,
-            ObjectPhone: selectedData.Phone,
-            ObjectEmail: selectedData.Email,
-            ObjectAddress: selectedData.Address,
-            ObjectTaxCode: selectedData.TaxCode,
-          };
-
-          this.prepareRestrictedData(formGroup, data);
-          formGroup.patchValue(data);
-        } else {
-          formGroup.patchValue({
-            ObjectName: selectedData['text'],
-          });
-        }
-      }
-    }
-
-    setTimeout(() => {
-      this.refreshAllTab(formGroup);
-    }, 500);
-  }
-
-  onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
-
-  }
-
-  toMoney(formItem: FormGroup) {
-    this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
-      // Call culate total
-      const details = formItem.get('Details') as FormArray;
-      let total = 0;
-      for (const detail of details.controls) {
-        total += parseInt(detail.get('Amount').value || 0);
-
-      }
-      formItem.get('_total').setValue(total);
+  /** Details form behavior */
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: any): FormGroup {
+    const newForm = this.formBuilder.group({
+      SystemUuid: [''],
+      Strategy: [''],
+      DistributedContract: [''],
+      DateOfStart: [''],
+      DateOfEnd: [''],
+      LevelDistributedIndicator: [''],
+      AwardType: [''],
+      AwardLevel: [''],
+      LevelDistributedValue: [''],
+      AwardRatio: [''],
+      AwardAmount: [''],
+      // LevelDistributedValue: [],
     });
+
+    if (data) {
+      // data.Name = '$' + this.cms.getObjectId(data.Indicator)
+      newForm.patchValue(data);
+    }
+    return newForm;
+  }
+
+  getDetails(formGroup: FormGroup) {
+    return formGroup.get('Details') as FormArray;
+  }
+
+  addDetailFormGroup(formGroup: FormGroup, data?: any) {
+    const newFormGroup = this.makeNewDetailFormGroup(formGroup, data);
+    const details = this.getDetails(formGroup);
+    details.push(newFormGroup);
+    this.onAddDetailFormGroup(formGroup, details.length - 1, newFormGroup);
+    return newFormGroup;
+  }
+
+  onAddDetailFormGroup(parentFormGroup: FormGroup, index: number, newFormGroup: FormGroup) {
+  }
+
+  removeDetail(formGroup: FormGroup, index: number) {
+    this.getDetails(formGroup).removeAt(index);
+    this.onRemoveDetailFormGroup(formGroup, index);
     return false;
   }
 
-  async preview(formItem: FormGroup) {
-    const data: Model = formItem.value;
-    this.cms.openDialog(CollaboratorKpiAwardPrintComponent, {
+  onRemoveDetailFormGroup(formGroup: FormGroup, index: number) {
+  }
+  /** End Details form behavior */
+
+  openRelativeVoucherChoosedDialogx(formGroup: FormGroup) {
+    this.cms.openDialog(PurchaseVoucherListComponent, {
       context: {
-        title: 'Xem trước',
-        data: [data],
-        idKey: ['Code'],
-        onSaveAndClose: (rs: Model) => {
-          this.saveAndClose();
+        inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: PurchaseVoucherModel[]) => {
+          console.log(chooseItems);
+          this.onProcessing();
+          for (let i = 0; i < chooseItems.length; i++) {
+            this.addRelativeVoucher(chooseItems[0], 'PURCHASE', formGroup);
+          }
+
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
         },
-        onSaveAndPrint: (rs: Model) => {
-          this.save();
+        onDialogClose: () => {
         },
-      },
-    });
+      }
+    })
     return false;
   }
 
-  onAccBusinessChange(detail: FormGroup, business: BusinessModel, index: number) {
-    if (!this.isProcessing) {
-      detail.get('DebitAccount').setValue(business.DebitAccount);
-      detail.get('CreditAccount').setValue(business.CreditAccount);
-      detail.get('Description').setValue(business.Description);
+  openRelativeVoucherChoosedDialog(formGroup: FormGroup) {
+    this.cms.openDialog(ReferenceChoosingDialogComponent, {
+      context: {
+        components: {
+          'PURCHASEORDER': { title: 'Đơn đặt mua hàng' },
+          'PURCHASE': { title: 'Phiếu mua hàng' },
+        },
+        // inputMode: 'dialog',
+        onDialogChoose: async (chooseItems: any[], type?: string) => {
+          console.log(chooseItems);
+          const relationVoucher = formGroup.get('RelativeVouchers');
+          const relationVoucherValue: any[] = (relationVoucher.value || []);
+          const insertList = [];
+          this.onProcessing();
+          if (type === 'PURCHASEORDER') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const voucher = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/order-vouchers/' + chooseItems[i].Code, { includeContact: true, includeRelativeVouchers: true, includeIdText: true }).then(rs => rs[0]);
+
+                // Check purchase order state
+                if (['APPROVED'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.showToast(this.cms.translateText('Phiếu đặt mua hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.showToast(this.cms.translateText('Nhà cung cấp trong phiếu đặt mua hàng không giống với phiếu chi'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
+                }
+                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASEORDER' });
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+          }
+          if (type === 'PURCHASE') {
+            const details = this.getDetails(formGroup);
+            for (let i = 0; i < chooseItems.length; i++) {
+              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
+              if (index < 0) {
+                // get purchase order
+                const voucher = await this.apiService.getPromise<PurchaseOrderVoucherModel[]>('/purchase/vouchers/' + chooseItems[i].Code, { includeContact: true, includeRelativeVouchers: true, includeIdText: true }).then(rs => rs[0]);
+
+                // Check purchase order state
+                if (['APPROVED'].indexOf(this.cms.getObjectId(voucher.State)) < 0) {
+                  this.cms.showToast(this.cms.translateText('Phiếu mua hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                  continue;
+                }
+
+                if (this.cms.getObjectId(formGroup.get('Object').value)) {
+                  if (this.cms.getObjectId(voucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+                    this.cms.showToast(this.cms.translateText('Nhà cung cấp trong phiếu mua hàng không giống với phiếu chi'), this.cms.translateText('Common.warning'), { status: 'warning' });
+                    continue;
+                  }
+                } else {
+                  delete voucher.Id;
+                  formGroup.patchValue({ ...voucher, Code: null, Id: null, Details: [] });
+                }
+                insertList.push({ id: chooseItems[i].Code, text: chooseItems[i].Title, type: 'PURCHASE' });
+
+              }
+            }
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+          }
+          setTimeout(() => {
+            this.onProcessed();
+          }, 1000);
+        },
+      }
+    })
+    return false;
+  }
+
+
+  async addRelativeVoucher(relativeVoucher: any, relativeVoucherType: string, formGroup?: FormGroup) {
+    if (!formGroup) {
+      formGroup = this.array.controls[0] as FormGroup;
     }
+    const insertList = [];
+    const relativeVouchers = formGroup.get('RelativeVouchers');
+    const relationVoucherValue: any[] = (relativeVouchers.value || []);
+    if (relationVoucherValue.some(s => s.id == relativeVoucher.Code)) {
+      this.cms.toastService.show('Chứng từ liên quan đã được thêm vào trước đó', 'Thông báo', { status: 'warning' });
+      return;
+    }
+    const index = Array.isArray(relationVoucherValue) ? relationVoucherValue.findIndex(f => f?.id === relativeVoucher?.Code) : -1;
+    if (index < 0) {
+      const details = this.getDetails(formGroup);
+      // get purchase order
+      let purchaseVoucher;
+      switch (relativeVoucherType) {
+        case 'PURCHASE':
+          purchaseVoucher = await this.apiService.getPromise<PurchaseVoucherModel[]>('/purchase/vouchers/' + relativeVoucher.Code, { includeContact: true, includeObject: true, includeDetails: true }).then(rs => rs[0]);
+          break;
+        default:
+          return false;
+      }
+
+      if (this.cms.getObjectId(purchaseVoucher.State) != 'APPROVED') {
+        this.cms.toastService.show(this.cms.translateText('Phiếu mua hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+        return false;
+      }
+      if (this.cms.getObjectId(formGroup.get('Object').value)) {
+        if (this.cms.getObjectId(this.cms.getObjectId(purchaseVoucher.Object), 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+          this.cms.toastService.show(this.cms.translateText('Liên hệ trong phiếu thanh toán không giống với phiếu mua hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
+          return false;
+        }
+      } else {
+        delete purchaseVoucher.Id;
+        delete purchaseVoucher.Code;
+        formGroup.patchValue({ ...purchaseVoucher, Id: null, Details: [] });
+        formGroup.get('Description').patchValue('Chi tiền cho ' + purchaseVoucher.Title);
+        details.clear();
+      }
+
+      // Insert order details into voucher details
+      if (purchaseVoucher?.Details) {
+        let totalMoney = 0;
+        const taxList = await this.apiService.getPromise<TaxModel[]>('/accounting/taxes', { select: 'id=>Code,text=>Name,Tax=>Tax' })
+        for (const voucherDetail of purchaseVoucher.Details) {
+          if (voucherDetail.Type !== 'CATEGORY') {
+            const tax = this.cms.getObjectId(voucherDetail.Tax) ? taxList.find(f => f.id == this.cms.getObjectId(voucherDetail.Tax))['Tax'] : null;
+            totalMoney += voucherDetail.Price * voucherDetail.Quantity + (tax ? ((voucherDetail.Price * tax / 100) * voucherDetail.Quantity) : 0);
+          }
+        }
+        const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, {
+          AccountingBusiness: 'PAYMENTSUPPPLIER',
+          Description: purchaseVoucher.Title,
+          DebitAccount: '331',
+          CreditAccount: '1111',
+          Amount: totalMoney,
+        });
+        details.push(newDtailFormGroup);
+      }
+    }
+    insertList.push(relativeVoucher);
+    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+    return relativeVoucher;
   }
 
   openRelativeVoucher(relativeVocher: any) {
@@ -355,28 +496,52 @@ export class CollaboratorKpiAwardFormComponent extends DataManagerFormComponent<
     return false;
   }
 
-  onListInit(listInstance: CollaboartorAwardDetailComponent, formGroup: FormGroup, tab: string) {
-    console.log(listInstance);
-    if (!formGroup['listInstance']) {
-      formGroup['listInstance'] = {};
+  /** 
+   * Load statistics for object and preview
+   */
+  async loadPreview(formItem: FormGroup) {
+    this.loading = true;
+    this.apiService.getPromise<any[]>(this.apiPath + '/preview', {
+      object: this.cms.getObjectId(formItem.get('Object').value),
+      toDate: new Date(formItem.get('DateOfEnd').value).toISOString(),
+    }).then(rs => {
+      this.loading = false;
+      formItem.get('Details').setValue(rs);
+    }).catch(err => {
+      this.loading = false;
+      return Promise.reject(err);
+    });
+  }
+
+
+  /** Hight performance config */
+  patchedDataAfterSave = false;
+  cleanedDataBeforeSave = true;
+  /**
+   * Override: Clean data for detail form items
+   */
+  getRawFormData() {
+    const rawData = super.getRawFormData();
+    for (const rawItem of rawData.array) {
+      //   for (const rawDetail of rawItem['Details']) {
+      //     for (const prop in rawDetail) {
+      //       rawDetail[prop] = this.cms.getObjectId(rawDetail[prop]);
+      //     }
+      //   }
+      rawItem['AwardContent'] = rawItem['Details'];
+      delete(rawItem['Details']);
     }
-    formGroup['listInstance'][tab] = listInstance;
+    return rawData;
   }
-
-  updateTotalCommission(totalAawrd: number, formGroup: FormGroup, tab: string) {
-    formGroup.get('Amount').setValue(totalAawrd);
+  /** Override: Auto update SystemUuid for detail form item */
+  onItemAfterSaveSubmit(formItemData: Model, index: number, method: string) {
+    const result = super.onItemAfterSaveSubmit(formItemData, index, method);
+    // if (result && formItemData.Details) {
+    //   for (const d in formItemData.Details) {
+    //     (this.array.controls[index].get('Details')['controls'][d] as FormGroup).get('SystemUuid').setValue(formItemData.Details[d]['SystemUuid']);
+    //   }
+    // }
+    return result;
   }
-
-  refreshAllTab(formGroup: FormGroup) {
-    if (formGroup['listInstance']) {
-      for (const tabName in formGroup['listInstance']) {
-        formGroup['listInstance'][tabName].refresh();
-      }
-    }
-  }
-
-  isShowDetail(formGroup: FormGroup) {
-    return formGroup.get('Page').value && formGroup.get('Publisher').value && formGroup.get('CommissionTo').value;
-  }
-
+  /** End Hight performance config */
 }

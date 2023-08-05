@@ -1,0 +1,33 @@
+nb-card {
+    max-width: initial !important;
+    width: 75% !important;
+}
+
+.sorting-handle,
+.condition-sorting-handle {
+    cursor: move;
+}
+
+.dashed-radius-border {
+    margin: -0.5rem;
+    padding: 0.5rem;
+    // margin-top: 1rem; 
+    margin-bottom: 1.5rem;
+}
+@import '../../../../../@theme/styles/themes';
+@include nb-install-component() {
+    form {
+        ::ng-deep {
+            ngx-collaborator-kpi-strategy-info {
+                #print-area {
+                    border: 1px solid nb-theme(color-basic-transparent-focus-border) !important;
+                    .print-voucher-detail-table {
+                        th,td {
+                            border-bottom: 1px solid nb-theme(color-basic-transparent-focus-border) !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

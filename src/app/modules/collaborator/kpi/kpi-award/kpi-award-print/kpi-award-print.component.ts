@@ -23,7 +23,7 @@ export class CollaboratorKpiAwardPrintComponent extends DataManagerPrintComponen
 
   /** Component name */
   componentName = 'CollaboratorKpiAwardPrintComponent';
-  title: string = 'Xem trước phiếu thưởng';
+  title: string = 'Phiếu chốt KPI';
   apiPath = '/collaborator/kpi-awards';
   env = environment;
   processMapList: ProcessMap[] = [];
@@ -437,4 +437,9 @@ export class CollaboratorKpiAwardPrintComponent extends DataManagerPrintComponen
     return data;
   }
 
+  prepareData(dataList: Model[]) {
+    for (const data of dataList)
+      data['Details'] = data['AwardContent'];
+    return dataList;
+  }
 }

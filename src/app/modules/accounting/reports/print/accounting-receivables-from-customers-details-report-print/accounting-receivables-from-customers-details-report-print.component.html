@@ -66,8 +66,8 @@
                                 <td *ngIf="showIncreaseAmount" class="text-align-right" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td colspan="2" class="text-align-lèt">Ghi chú: </td>
-                                <td colspan="5" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ' }}: </td>
+                                <td colspan="5" class="text-align-lèt">Ghi chú: {{note}}</td>
+                                <td colspan="2" class="text-align-right">{{data['Total'] < 0 ? 'Ứng trước' : 'Công nợ' }}: </td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
                                 <td *ngIf="showIncreaseAmount" class="text-align-right"></td>
                             </tr>

@@ -44,15 +44,15 @@ export class CollaboratorKpiStrategyListComponent extends AgGridDataManagerListC
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   public static indicatorList = [
-    { id: 'doanhThu', text: 'Doanh thu trên mỗi nhân viên chăm sóc CTV', unit: 'đ' },
-    { id: 'doanhThuVuotCap', text: 'Doanh thu vuot cap trên mỗi nhân viên chăm sóc CTV', unit: 'đ' },
-    { id: 'soLuongDon', text: 'Số đơn hoàn tất trên mỗi nhân viên chăm sóc CTV', unit: 'đơn' },
-    { id: 'tyLeChotDon', text: 'Tỷ lệ chốt đơn trên mỗi nhân viên chăm sóc CTV', unit: '%' },
+    { id: 'REVENUE', text: 'Doanh thu trên mỗi nhân viên chăm sóc CTV', unit: '₫' },
+    { id: 'OVERREVENUE', text: 'Doanh thu vuot cap trên mỗi nhân viên chăm sóc CTV', unit: '₫' },
+    { id: 'NUMOFORDER', text: 'Số đơn hoàn tất trên mỗi nhân viên chăm sóc CTV', unit: 'đơn' },
+    { id: 'ORDERAPPROVEDRATIO', text: 'Tỷ lệ chốt đơn trên mỗi nhân viên chăm sóc CTV', unit: '%' },
   ];
 
   public static conditionList = [
     { id: 'GE', text: 'Lớn hơn/bằng (>=)', symbol: '>=', },
-    { id: 'GT', text: 'Lớn hơn (>)' , symbol: '>'},
+    { id: 'GT', text: 'Lớn hơn (>)', symbol: '>' },
     { id: 'LE', text: 'Nhỏ hơn/bằng (<=)', symbol: '<=' },
     { id: 'LT', text: 'Nhỏ hơn (<)', symbol: '<' },
     { id: 'EQ', text: 'Bằng (=)', symbol: '=' },

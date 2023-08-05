@@ -73,8 +73,16 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
     CollaboratorKpiDistributedContractListComponent.processingMap = {
       "APPROVED": {
         ...AppModule.approvedState,
-        nextState: 'NOTJUSTAPPROVED',
+        nextState: 'COMPLETED',
         status: 'success',
+        nextStates: [
+          AppModule.completeState
+        ],
+      },
+      "COMPLETED": {
+        ...AppModule.completeState,
+        nextState: 'NOTJUSTAPPROVED',
+        status: 'basic',
         nextStates: [
           AppModule.notJustApprodedState
         ],
@@ -105,23 +113,23 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
 
       await this.cms.waitForLanguageLoaded();
 
-      const processingMap = {
-        "APPROVED": {
-          ...AppModule.approvedState,
-          nextState: 'NOTJUSTAPPROVED',
-          status: 'success',
-          nextStates: [
-            AppModule.notJustApprodedState
-          ],
-        },
-        "NOTJUSTAPPROVED": {
-          ...AppModule.notJustApprodedState,
-          nextState: 'APPROVED',
-          nextStates: [
-            AppModule.approvedState
-          ],
-        },
-      };
+      // const processingMap = {
+      //   "APPROVED": {
+      //     ...AppModule.approvedState,
+      //     nextState: 'NOTJUSTAPPROVED',
+      //     status: 'success',
+      //     nextStates: [
+      //       AppModule.notJustApprodedState
+      //     ],
+      //   },
+      //   "NOTJUSTAPPROVED": {
+      //     ...AppModule.notJustApprodedState,
+      //     nextState: 'APPROVED',
+      //     nextStates: [
+      //       AppModule.approvedState
+      //     ],
+      //   },
+      // };
 
       this.columnDefs = this.configSetting([
         {
@@ -193,9 +201,9 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
                 text: 'text',
               },
               data: [
-                {id: 'MONTH', text: 'Tháng'},
-                {id: 'QUATER', text: 'Quý'},
-                {id: 'YEAR', text: 'Năm'},
+                { id: 'MONTH', text: 'Tháng' },
+                { id: 'QUATER', text: 'Quý' },
+                { id: 'YEAR', text: 'Năm' },
               ],
             }
           },
@@ -221,7 +229,7 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
           cellRenderer: AgDateCellRenderer,
         },
         {
-          ...agMakeStateColDef(this.cms, processingMap, item => {
+          ...agMakeStateColDef(this.cms, CollaboratorKpiDistributedContractListComponent.processingMap, item => {
             this.preview([item]);
           }),
           headerName: 'Trạng thái',

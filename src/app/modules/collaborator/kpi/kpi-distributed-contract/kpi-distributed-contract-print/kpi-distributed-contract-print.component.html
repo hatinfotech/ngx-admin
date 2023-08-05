@@ -9,7 +9,7 @@
                 <div>
                     <div class="print-title">{{ 'Phiếu phân bổ KPI' | translate:{action: '', definition: ''} | uppercase }}
                     </div>
-                    <div class="under-title">{{ data.Code }} - {{ data.DateOfApproved | date:'short' }} - {{data.StateLabel | translate}}</div>
+                    <div class="under-title">{{ data.Code }}<ng-containerng *ngIf="(data.State | objectid) == 'APPROVED'"> - {{('State.'+(data.State | objectid)) | translate | lowercase}} vào {{ data.Approved | date:'short' }}</ng-containerng></div>
                 </div>
                 <div>
                     <div style="display: flex;">
@@ -34,14 +34,9 @@
                                 {{ data.Cycle}}
                             </div>
                         </div>
-                        <div style="flex: 1;">
-                            <div class="under-line text-align-right">{{'Ngày bắt đầu' | translate | headtitlecase}} :
-                                {{ data.DateOfStart | date:'short' }}
-                            </div>
-                        </div>
-                        <div style="flex: 1">
-                            <div class="under-line text-align-right">{{'Ngày kết thúc' | translate | headtitlecase}} :
-                                {{ data.DateOfEnd | date:'short' }}
+                        <div>
+                            <div class="under-line text-align-right">{{'Thời gian áp dụng' | translate | headtitlecase}} :
+                                [{{ data.DateOfStart | date:'shortDate' }} - {{ data.DateOfEnd | date:'shortDate' }}]
                             </div>
                         </div>
                     </div>
@@ -73,7 +68,7 @@
                                     <td colspan="2">
                                         <div *ngIf="detail.Strategy | objectid" style="margin-bottom: 0.5rem;">
                                             <ngx-collaborator-kpi-strategy-info [id]="detail.Strategy | objectid"></ngx-collaborator-kpi-strategy-info>
-                                          </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </ng-container>

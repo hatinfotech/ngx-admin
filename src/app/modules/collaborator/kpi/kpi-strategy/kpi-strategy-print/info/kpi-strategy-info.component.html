@@ -1,7 +1,7 @@
 <div *ngFor="let data of this.data; let i=index" id="print-area" style="width: 100%;">
     <table style="width: 100%; border: 1px solid #ccc;" class="print-voucher-detail-table">
         <tr class="">
-            <th colspan="3">{{'KPI' | translate | headtitlecase}} : {{data.Name}}</th>
+            <th colspan="3">{{'Tên nhóm' | translate | headtitlecase}} : {{data.Name}}</th>
         </tr>
         <tr class="">
             <th colspan="3">{{'Chỉ số phân bổ vượt cấp' | translate | headtitlecase}} : {{data.LevelDistributedIndicator | objecttext}}</th>
@@ -26,12 +26,14 @@
     <table style="width: 100%; border: 1px solid #ccc;" class="print-voucher-detail-table">
         <tr class="print-voucher-detail-header">
             <th>{{'Stt' | translate | headtitlecase}}</th>
+            <th>{{'ID' | translate | headtitlecase}}</th>
             <th>{{'Sản phẩm' | translate | headtitlecase}}</th>
             <th>{{'Đơn vị tính' | translate | headtitlecase}}</th>
         </tr>
         <ng-container *ngFor="let product of data.Products; let p = index">
             <tr class="print-voucher-detail-line">
                 <td>{{p+1}}</td>
+                <td>{{product.Product | objectid}}</td>
                 <td>{{product.ProductName}}</td>
                 <td>{{product.Unit | objecttext}}</td>
             </tr>

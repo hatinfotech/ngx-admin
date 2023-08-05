@@ -1053,5 +1053,18 @@
             "masterPriceTable": "bảng giá chính",
             "priceTablePrint": "bảng in giá"
         }
+    },
+    "State": {
+        "APPROVED": "đã duyệt",
+        "NOTJUSTAPPROVED": "chưa duyệt",
+        "COMPLETED": "đã hoàn tất",
+        "UNRECORDED": "đã hủy",
+        "PROCESSING": "đang xử lý",
+        "PROCESSED": "đã xử lý",
+        "DEPLOY": "triển khai",
+        "DEPLOYING": "đang triển khai",
+        "DEPLOYED": "đã triển khai",
+        "DELIVERY": "vận chuyển",
+        "DELIVERED": "đã vận chuyển"
     }
 }

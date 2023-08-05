@@ -1,0 +1,73 @@
+<div *ngFor="let data of this.data; let i=index" id="print-area" style="width: 100%;">
+    <!--Details = Contracts-->
+    <div class="detail contact" *ngFor="let detail of data.Details">
+        <!--Contract details-->
+        <div class="contact border-areax" style="margin-bottom: 1rem;">
+            <div class="contract-header" style="font-weight: bold; font-size: 1.5rem; line-height: 1.5rem; padding: 0.2rem;">* Theo hợp đồng: {{detail.Contract | objectid}}: {{detail.Contract | objecttext}}</div>
+            <div class="cycles" *ngFor="let cycle of detail.Cycles" style="margin-left: 1rem;">
+                <div class="cycle-header" style="font-weight: bold; font-size: 1rem; line-height: 1rem; padding: 0.2rem; text-decoration: underline;">- KPI Tháng {{cycle.Index}}</div>
+                <div class="contract-detail" *ngFor="let contractDetail of cycle.Details" style="margin-left: 1rem;">
+                    <div><span style="font-weight: bold; text-decoration: underline;">+ {{'Nhóm KPI' | translate | headtitlecase}} </span>: {{contractDetail.Strategy.Name}}</div>
+                    <div>{{'Chỉ số phân bổ vượt cấp' | translate | headtitlecase}} : {{contractDetail.Strategy.LevelDistributedIndicator | objecttext}}</div>
+                    <table style="border: 1px solid #ccc; margin-left: 1rem;" class="print-voucher-detail-table">
+                        <!-- <tr class="">
+                            <th colspan="7">{{'Nhóm KPI' | translate | headtitlecase}} : {{contractDetail.Strategy.Name}}</th>
+                        </tr>
+                        <tr class="">
+                            <th colspan="7">{{'Chỉ số phân bổ vượt cấp' | translate | headtitlecase}} : {{contractDetail.Strategy.LevelDistributedIndicator | objecttext}}</th>
+                        </tr> -->
+                        <tr class="print-voucher-detail-header">
+                            <th class="text-align-left">{{'Chỉ số' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Giá trị phân bổ' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Kết quả/KPI' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Tỷ lệ thưởng vượt KPI' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Kết quả' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Tỷ lệ đạt được' | translate | headtitlecase}}</th>
+                            <th class="text-align-right">{{'Lương/Thưởng' | translate | headtitlecase}}</th>
+                        </tr>
+                        <ng-container *ngFor="let strategyDetail of contractDetail.Strategy.Details; let i = index">
+                            <tr class="print-voucher-detail-line" style="font-weight: bold;">
+                                <td>[{{strategyDetail.Type | objecttext}}] {{strategyDetail.Description}}</td>
+                                <td class="text-align-right">
+                                    <div>
+                                        <span class="nowrap">{{(strategyDetail.LevelDistributedIndicatorValue || 0) | number:'1.0-0'}} {{contractDetail.Strategy.LevelDistributedIndicator?.unit}}</span>
+                                        <hr style="margin: 0">
+                                        <span class="nowrap">{{strategyDetail.LevelDistributedValue | number:'1.0-0'}} {{contractDetail.Strategy.LevelDistributedIndicator?.unit}}</span>
+                                    </div>
+                                    <!-- {{(strategyDetail.DetailDistributedRevenue || 0) | number:'1.0-0'}}/{{strategyDetail.LevelDistributedValue | number:'1.0-0'}} {{contractDetail.Strategy.LevelDistributedIndicator?.unit}}</td> -->
+                                <td class="text-align-right"></td>
+                                <td class="text-align-right nowrap">{{strategyDetail.AwardRatio | number:'1.0-2'}}%</td>
+                                <td class="text-align-right nowrap text-color-{{strategyDetail.Result && 'success' || 'danger'}}">{{strategyDetail.Result && 'Đạt' || 'Không đạt'}}</td>
+                                <td class="text-align-right nowrap">{{strategyDetail.PercentOfResult | number:'1.0-2'}}%</td>
+                                <td class="text-align-right nowrap text-color-primary">{{(strategyDetail.AwardAmount || 0) | currency:'VND'}}</td>
+                            </tr>
+                            <tr class="print-voucher-detail-line" *ngFor="let condition of strategyDetail.Conditions; let c = index">
+                                <td> + [{{condition.Weight}}%] {{condition.Indicator | objecttext}}</td>
+                                <td></td>
+                                <td class="text-align-right">
+                                    <div>
+                                        <span class="nowrap">{{condition.IndicatorValue | number:'1.0-2'}} {{condition.Indicator?.unit}}</span>
+                                        <hr style="margin: 0">
+                                        <span class="nowrap">{{condition.Kpi | number:'1.0-2'}} {{condition.Indicator?.unit}}</span>
+                                    </div>
+                                    <!-- <span style="text-decoration: underline;">{{condition.IndicatorValue | number:'1.0-2'}}</span><br>{{condition.Kpi | number:'1.0-2'}} {{condition.Indicator?.unit}} -->
+                                </td>
+                                <td></td>
+                                <td class="text-align-right nowrap text-color-{{condition.Result && 'success' || 'danger'}}">{{condition.Result && 'Đạt' || 'Không đạt'}}</td>
+                                <td class="text-align-right nowrap">{{condition.PercentOfResult | number:'1.0-2'}}%</td>
+                                <td></td>
+                            </tr>
+                        </ng-container>
+                        <tr style="font-weight: bold;">
+                            <td colspan="6" class="text-align-right text-color-primary" style="border-bottom: none;">Lương + Thưởng: </td>
+                            <td class="text-align-right text-color-primary" style="border-bottom: none;">{{contractDetail.Strategy.SumOfAwardAmount | currency:'VND'}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <div class="text-align-right text-color-primary" style="font-weight: bold; font-size: 1rem; padding: 0.2rem;">Tổng lương + thưởng : {{detail.SumOfAwardAmount | currency:'VND'}}</div>
+        </div>
+
+    </div>
+</div>

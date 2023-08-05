@@ -3,7 +3,7 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup" [nbSpinner]="loading">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Chiến lược KPI' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Nhóm KPI' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
@@ -60,7 +60,7 @@
                   <div class="row fit-row">
                     <div class="fit-fist-col label">
                       <div class="form-group">
-                        <label class="label"><nb-icon pack="eva" icon="move-outline" style="font-size: 0.8rem"></nb-icon> Stt</label>
+                        <label class="label"><nb-icon pack="eva" icon="move-outline" style="font-size: 0.8rem"></nb-icon> Level</label>
                         <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ir + 1 }}" nbTooltip="Kéo thả để di chuyển">
                       </div>
                     </div>

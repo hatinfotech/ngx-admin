@@ -46,14 +46,7 @@
                                 <td class="text-align-right" style="font-weight: bold;" [innerHtml]="renderCurrency(detail.TailAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
+                                <td colspan="8">Ghi chú: {{note}}</td>
                                 <td class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                                 <td class="text-align-right" [innerHtml]="renderCurrency(data['Total'])"></td>
                             </tr>

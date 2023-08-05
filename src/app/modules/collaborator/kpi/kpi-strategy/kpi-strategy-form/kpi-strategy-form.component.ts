@@ -126,9 +126,9 @@ export class CollaboratorKpiStrategyFormComponent extends DataManagerFormCompone
 
   mentionConfig = {
     items: [
-      'doanhThu',
-      'soLuongDon',
-      'tyLeChotDon',
+      'REVENUE',
+      'NUMOFORDER',
+      'ORDERAPPROVEDRATIO',
     ],
     triggerChar: '$',
   };

@@ -89,7 +89,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
   };
   select2OptionForStrategy = {
     ...this.cms.makeSelect2AjaxOption('/collaborator/kpi-strategies', { eq_State: 'APPROVED' }, {
-      placeholder: 'Chọn KPI...', limit: 10, prepareReaultItem: (item) => {
+      placeholder: 'Chọn nhóm KPI...', limit: 10, prepareReaultItem: (item) => {
         item['id'] = item.Code;
         item['text'] = item.Name;
         return item;

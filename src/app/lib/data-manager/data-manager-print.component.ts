@@ -143,9 +143,14 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
           this.close();
         }
       }
+      this.data = this.prepareData(this.data);
       this.onAfterInit && this.onAfterInit(this);
       return rs;
     });
+  }
+
+  prepareData(data) {
+    return data;
   }
 
   // abstract close(): void;
@@ -476,7 +481,7 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
 
   async refresh() {
     if (this.id) {
-      this.data = await this.getFormData(this.id);
+      this.data = this.prepareData(await this.getFormData(this.id));
     }
     return true;
   }

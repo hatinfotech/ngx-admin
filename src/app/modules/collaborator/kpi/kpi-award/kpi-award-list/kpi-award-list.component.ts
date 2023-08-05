@@ -22,6 +22,7 @@ import { CollaboratorService } from '../../../collaborator.service';
 import { CollaboratorKpiAwardFormComponent } from '../kpi-award-form/kpi-award-form.component';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { Model } from '../../../../../models/model';
+import { CollaboratorKpiAwardPrintComponent } from '../kpi-award-print/kpi-award-print.component';
 
 @Component({
   selector: 'ngx-collaborator-kpi-award-list',
@@ -33,8 +34,9 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
   componentName: string = 'CollaboratorKpiAwardListComponent';
   formPath = '/collaborator/kpi-award/form';
   apiPath = '/collaborator/kpi-awards';
-  idKey = 'Code';
+  idKey = ['Code'];
   formDialog = CollaboratorKpiAwardFormComponent;
+  printDialog = CollaboratorKpiAwardPrintComponent;
 
   // AG-Grid config
   public rowHeight: number = 50;
@@ -74,7 +76,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
-          headerName: 'ID',
+          headerName: 'Stt',
           field: 'Id',
           width: 100,
           valueGetter: 'node.data.Code',
@@ -84,8 +86,17 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
         },
         {
           ...agMakeTextColDef(this.cms),
+          headerName: 'ID',
+          field: 'Code',
+          // pinned: 'left',
+          width: 150,
+          filter: 'agTextColumnFilter',
+          cellRenderer: AgTextCellRenderer,
+        },
+        {
+          ...agMakeTextColDef(this.cms),
           headerName: this.cms.textTransform(this.cms.translate.instant('Common.Object.title'), 'head-title'),
-          field: 'PublisherName',
+          field: 'ObjectName',
           // pinned: 'left',
           width: 150,
           filter: 'agTextColumnFilter',
@@ -94,7 +105,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
         {
           ...agMakeTextColDef(this.cms),
           headerName: this.cms.textTransform(this.cms.translate.instant('Common.description'), 'head-title'),
-          field: 'Description',
+          field: 'Title',
           // pinned: 'left',
           width: 250,
           filter: 'agTextColumnFilter',
@@ -118,7 +129,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
         },
         {
           headerName: this.cms.textTransform(this.cms.translate.instant('Common.fromDate'), 'head-title'),
-          field: 'AwardFrom',
+          field: 'DateOfStart',
           width: 150,
           filter: 'agDateColumnFilter',
           filterParams: {
@@ -131,7 +142,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
         },
         {
           headerName: this.cms.textTransform(this.cms.translate.instant('Common.toDate'), 'head-title'),
-          field: 'AwardTo',
+          field: 'DateOfEnd',
           width: 150,
           filter: 'agDateColumnFilter',
           filterParams: {
@@ -152,11 +163,11 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             // this.preview([data]);
-            if (this.cms.getObjectId(data.State) == 'PROCESSING') {
-              this.openForm([data.Code]);
-            } else {
-              this.preview([data]);
-            }
+            // if (this.cms.getObjectId(data.State) == 'PROCESSING') {
+            //   this.openForm([data.Code]);
+            // } else {
+            this.preview([data]); 
+            // }
           }),
           headerName: 'Trạng thái',
           field: 'State',

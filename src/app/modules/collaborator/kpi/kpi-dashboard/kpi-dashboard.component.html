@@ -100,13 +100,13 @@
               </ngx-form-group>
             </div>
             <div class="col-sm-4">
-              <div style="display: flex;">
-                <div style="flex: 1;">
-                  <ngx-form-group [formGroup]="formItem" name="ProductGroup" label="AdminProduct.Group.lablel" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
-                    <ngx-select2 formControlName="ProductGroup" [select2Option]="select2ProductGroup" [data]="groupList"></ngx-select2>
-                  </ngx-form-group>
+              <div style="width: 100%">
+                <div style="float: left; height: 100%; width: 70%">
+                    <ngx-form-group [formGroup]="formItem" name="Strategy" label="Nhóm KPI" [hideLabel]="true" [index]="0" [allowCopy]="false" [required]="false">
+                      <ngx-select2 formControlName="Strategy" [select2Option]="select2Strategy"></ngx-select2>
+                    </ngx-form-group>
                 </div>
-                <div style="margin-left: 1rem;">
+                <div style="padding-left: 1rem;float: left; height: 100%; width: 30%;">
                   <div class="row">
                     <div class="col-sm-12">
                       <div class="form-group">
@@ -211,12 +211,12 @@
                 <nb-card class="size-giant chart small-header" style="height: calc(100vh - var(--summary-components-height) - var(--tabset-height)); border: none;">
                   <nb-card-body class="commission-statistics-wrapper">
                     <div class="row">
-                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem))">
                         <chart *ngIf="charts['revenue']" [type]="charts['revenue'].type" [data]="charts['revenue'].data" [options]="charts['revenue'].options"></chart>
                       </div>
-                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                      <!-- <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
                         <chart *ngIf="charts['revenuePrevious']" [type]="charts['revenuePrevious'].type" [data]="charts['revenuePrevious'].data" [options]="charts['revenuePrevious'].options"></chart>
-                      </div>
+                      </div> -->
                     </div>
                   </nb-card-body>
                 </nb-card>
@@ -225,12 +225,12 @@
                 <nb-card class="size-giant chart small-header" style="height: calc(100vh - var(--summary-components-height) - var(--tabset-height)); border: none;">
                   <nb-card-body class="commission-statistics-wrapper">
                     <div class="row">
-                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem))">
                         <chart *ngIf="charts['order']" [type]="charts['order'].type" [data]="charts['order'].data" [options]="charts['order'].options"></chart>
                       </div>
-                      <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
+                      <!-- <div class="col-md-12" style="height: calc((100vh - var(--summary-components-height) - var(--tabset-height) - 2rem) / 2)">
                         <chart *ngIf="charts['orderPrevious']" [type]="charts['orderPrevious'].type" [data]="charts['orderPrevious'].data" [options]="charts['orderPrevious'].options"></chart>
-                      </div>
+                      </div> -->
                     </div>
                   </nb-card-body>
                 </nb-card>
