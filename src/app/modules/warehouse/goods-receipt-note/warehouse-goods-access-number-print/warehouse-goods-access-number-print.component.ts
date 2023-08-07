@@ -45,6 +45,8 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     }
     #print-area {
       page-break-after: initial;
+      padding: 0;
+      margin: 0;
     }
   }
   .blabel {
@@ -56,25 +58,33 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     color: #000;
     font-weight: normal;
     overflow: hidden;
-    padding: 1mm;
+    padding: 0.5mm;
   }
   .blabel .info {
     clear: both;
     overflow: hidden;
-    line-height: 2.2mm;
-    font-size: 2.2mm !important;
+    line-height: 2mm;
+    font-size: 2mm !important;
     font-weight: normal;
-    max-height: 6.7mm;
+    max-height: 4mm;
     margin-top: 0.4mm;
     margin-bottom: 0.4mm;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+    white-space: initial;
   }
   .blabel .probox-link {
     clear: both;
     overflow: hidden;
-    line-height: 2.2mm;
-    font-size: 2.2mm !important;
+    line-height: 1.8mm;
+    font-size: 2mm !important;
     font-weight: normal;
-    max-height: 6.7mm;
+    max-height: 4mm;
     margin-top: 0.4mm;
     margin-bottom: 0.4mm;
     word-break: break-all;
@@ -124,11 +134,14 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   /** reset */
   .blabel {
     border: none;
-    width: inherit;
-    height: 25mm;
+    height: 27mm;
     width: 46mm;
-    margin: 2mm;
+    
     padding: 0mm;
+    margin-top: 1mm;
+    margin-bottom: 1mm;
+    margin-left: 2mm;
+    margin-right: 2mm;
   }
   .print-choosed {
     display: none;
