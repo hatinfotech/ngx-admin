@@ -74,13 +74,24 @@
                         </table>
                     </div>
                 </div>
-                <div style="font-style: italic;">
+                <!-- <div style="font-style: italic;">
                     <span *ngIf="showIncreaseAmount">
                         - Cột <b>«Biến động»</b> thể hiện số tiền nợ tính đến dòng hiện tại, số tiền trong ngoặc (...) thể hiện đã thanh toán số tiền nhiều hơn số nợ.<br>
                         - Cột <b>«Số tiền»</b> thể hiện số tiền trên mỗi dòng, số tiền trong ngoặc (...) thể hiện giao dịch thanh toán công nợ, trả hàng hoặc các khoản giảm trừ công nợ khác.<br>
                     </span>
                     <span *ngIf="data.ObjectNote">
                         - {{data.ObjectNote}}.
+                    </span>
+                </div> -->
+                <div style="font-style: italic;">
+                    <b>* Thuyết minh</b>: <br>
+                    - Tổng giá trị các đơn hàng: {{renderCurrency(data.TotalDebit)}}<br>
+                    - Tổng giá trị hàng trả lại: {{renderCurrency(data.TotalReturn)}}<br>
+                    - Tổng đã thu: {{renderCurrency(data.TotalCredit)}}<br>
+                    - Tổng doanh thu thực tế = Bán hàng - Trả hàng: {{renderCurrency(data.TotalDebit - data.TotalReturn)}}<br>
+                    - Công nợ còn lại = Bán hàng - Trả hàng - Số đã thu: <span style="font-weight: bold;" [innerHTML]="renderCurrency(data.Total)"></span><br>`
+                    <span *ngIf="data.ObjectNote">
+                        <b>* Ghi chú</b>: {{data.ObjectNote}}.
                     </span>
                 </div>
                 <div style="display: flex; flex-wrap: wrap">

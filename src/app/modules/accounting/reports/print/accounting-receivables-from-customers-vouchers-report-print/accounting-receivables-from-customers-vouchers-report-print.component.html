@@ -64,11 +64,15 @@
                                 <td class="text-align-right nowrap" [innerHtml]="renderCurrency(detail.IncrementAmount)"></td>
                             </tr>
                             <tr style="font-weight: bold;">
-                                <td colspan="4" class="text-align-right">Tổng cộng: </td>
+                                <td colspan="3" class="text-align-left">Ghi chú: </td>
+                                <td class="text-align-right">Tổng cộng: </td>
                                 <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalDebit)"></td>
                                 <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalReturn)"></td>
                                 <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.TotalCredit)"></td>
                                 <td class="text-align-right nowrap" [innerHtml]="renderCurrency(data.Total)"></td>
+                            </tr>
+                            <tr *ngIf="note">
+                                <td colspan="8" class="text-align-left">{{note}}</td>
                             </tr>
                         </table>
                     </div>
@@ -78,8 +82,8 @@
                     - Tổng giá trị các đơn hàng: {{renderCurrency(data.TotalDebit)}}<br>
                     - Tổng giá trị hàng trả lại: {{renderCurrency(data.TotalReturn)}}<br>
                     - Tổng đã thu: {{renderCurrency(data.TotalCredit)}}<br>
-                    - Tổng doanh thu (công nợ) thực tế (Bán hàng - Trả hàng): {{renderCurrency(data.TotalDebit - data.TotalReturn)}}<br>
-                    - Công nợ còn lại = Bán hàng - Trả hàng - Số đã thu: {{renderCurrency(data.Total)}}<br>
+                    - Tổng doanh thu = Bán hàng - Trả hàng: {{renderCurrency(data.TotalDebit - data.TotalReturn)}}<br>
+                    - Công nợ còn lại = Bán hàng - Trả hàng - Số đã thu: <span style="font-weight: bold;" [innerHTML]="renderCurrency(data.Total)"></span><br>`
                     <span *ngIf="data.ObjectNote">
                         <b>* Ghi chú</b>: {{data.ObjectNote}}.
                     </span>

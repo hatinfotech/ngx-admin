@@ -56,7 +56,7 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
     const result = await super.init().then(rs => {
 
       if (this.query && (this.query['eq_Thread'] || this.query['filter_Thread'])) {
-        this.note = `[Công trình/Dự án: ${this.query['eq_Thread'] || this.query['filter_Thread']}]`;
+        this.note = `Công trình/Dự án  ${this.query['eq_Thread'] || this.query['filter_Thread']}`;
       }
 
       this.actionButtonList.unshift({
@@ -240,11 +240,11 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
         if (detail['Voucher'] == 'OPN') {
           detail['GenerateDebit'] = detail['HeadAmount'];
         }
-        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
+        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || (detail['HeadDebit'] - detail['HeadCredit']) as any);
         if (detail.VoucherType == 'RECEIPT') {
-          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || (detail['HeadCredit'] - detail['HeadDebit']) as any);
         } else if (detail.VoucherType == 'COMMERCEPOSRETURN') {
-          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || (detail['HeadCredit'] - detail['HeadDebit']) as any);
         }
       }
       item['Total'] = item.Details[item.Details.length - 1]?.IncrementAmount;

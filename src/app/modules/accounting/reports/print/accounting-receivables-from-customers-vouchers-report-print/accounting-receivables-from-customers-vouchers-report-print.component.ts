@@ -32,6 +32,8 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
   @Input() objects: string[];
   @Input() query: any = {};
 
+  note: string = '';
+
   constructor(
     public cms: CommonService,
     public router: Router,
@@ -61,6 +63,10 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
     //   }
     //   this.processMapList[i] = AppModule.processMaps.cashVoucher[data.State || ''];
     // }
+
+    if (this.query && (this.query['eq_Thread'] || this.query['filter_Thread'])) {
+      this.note = `Công trình/Dự án  ${this.query['eq_Thread'] || this.query['filter_Thread']}`;
+    }
     this.summaryCalculate(this.data);
 
     return result;
@@ -201,11 +207,11 @@ export class AccountingReceivablesFromCustomersVoucherssReportPrintComponent ext
       item['TotalReturn'] = 0;
       // item['Title'] = this.renderTitle(item);
       for (const detail of item.Details) {
-        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || detail['HeadDebit'] as any);
+        item['TotalDebit'] += parseFloat(detail['GenerateDebit'] || (detail['HeadDebit'] - detail['HeadCredit']) as any);
         if (detail.VoucherType == 'RECEIPT') {
-          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
-        } else if(detail.VoucherType == 'COMMERCEPOSRETURN') {
-          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || detail['HeadCredit'] as any);
+          item['TotalCredit'] += parseFloat(detail['GenerateCredit'] || (detail['HeadCredit'] - detail['HeadDebit']) as any);
+        } else if (detail.VoucherType == 'COMMERCEPOSRETURN') {
+          item['TotalReturn'] += parseFloat(detail['GenerateCredit'] || (detail['HeadCredit'] - detail['HeadDebit']) as any);
         }
         // item['Total'] += parseFloat(detail['GenerateDebit'] as any) - parseFloat(detail['GenerateCredit'] as any);
       }
