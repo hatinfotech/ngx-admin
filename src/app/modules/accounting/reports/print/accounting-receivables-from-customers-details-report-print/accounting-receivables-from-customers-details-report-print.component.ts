@@ -178,7 +178,8 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
         // reportDetailByAccountAndObject: true,
         includeRowHeader: true,
         eq_Accounts: '131',
-        eq_Object: object,
+        // eq_Object: object,
+        ...(object ? { eq_Object: object } : {}),
         groupBy: 'Voucher,WriteNo',
         includeIncrementAmount: true,
         includeObjectInfo: true,
@@ -196,11 +197,11 @@ export class AccountingReceivablesFromCustomersDetailsReportPrintComponent exten
           ToDate: toDate,
           ReportDate: new Date(),
           'Object': object,
-          ObjectName: objectInfo['ObjectName'],
-          ObjectPhone: objectInfo['ObjectPhone'],
-          ObjectEmail: objectInfo['ObjectEmail'],
-          ObjectAddress: objectInfo['ObjectAddress'],
-          ObjectNote: contact.Note,
+          ObjectName: objectInfo && objectInfo['ObjectName'] || '',
+          ObjectPhone: objectInfo && objectInfo['ObjectPhone'] || '',
+          ObjectEmail: objectInfo && objectInfo['ObjectEmail'] || '',
+          ObjectAddress: objectInfo && objectInfo['ObjectAddress'] || '',
+          ObjectNote: contact?.Note || '',
           Details: data
         };
         return item;

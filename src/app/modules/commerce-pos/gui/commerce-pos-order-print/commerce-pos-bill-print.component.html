@@ -68,15 +68,15 @@
                             </tr>
                             <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED'">
                                 <td style="text-align: right; font-weight: bold;">Tiền mặt:</td>
-                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashAmount | currency:'VND'}}</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.CashAmount | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.CashTransferAmount">
                                 <td style="text-align: right; font-weight: bold;">Chuyển khoản:</td>
-                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashTransferAmount | currency:'VND'}}</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.CashTransferAmount | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.CashBack">
                                 <td style="text-align: right; font-weight: bold;">Thối lại:</td>
-                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">-{{order.CashBack | currency:'VND'}}</td>
+                                <td colspan="2" style="text-align: right; font-weight: bold; white-space: nowrap;">{{order.CashBack | currency:'VND'}}</td>
                             </tr>
                             <tr *ngIf="(order.PaymentMethod | objectid) === 'MIXED' && order.Debit > 0">
                                 <td style="text-align: left; font-weight: bold;">Công nợ: </td>

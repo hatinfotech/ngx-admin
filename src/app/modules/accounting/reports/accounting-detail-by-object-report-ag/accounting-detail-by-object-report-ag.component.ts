@@ -172,7 +172,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
               mode: 'print',
               id: ['all'],
               query: query,
-              objects: [this.object],
+              objects: [this.object || null],
             },
           });
         }
@@ -201,7 +201,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
               mode: 'print',
               id: ['all'],
               query: query,
-              objects: [this.object],
+              objects: [this.object || null],
             },
           });
         }

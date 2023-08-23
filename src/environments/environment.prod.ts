@@ -6,7 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.9.5.8',
+  version: '6.9.5.10',
   // 6.9.5.8:   accounting: fix debt report: sum of revenue not matched
   // 6.9.5.3:   collaborator dev v3: kpi: award voucher demo: statistics and load preview data to form
   // 6.9.5.1:   collaborator dev v3: kpi: statistics strategy and distrbuted contract
