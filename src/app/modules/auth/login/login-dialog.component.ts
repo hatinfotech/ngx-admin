@@ -41,63 +41,63 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   ) {
     super(service, options, cd, router);
     LoginDialogComponent.instances.push(this);
-    this.cms.getMainSocket().then(mainSocket => {
-      mainSocket.socketServerId$.subscribe(async socketServerId => {
-        if (socketServerId) {
-          try {
-            const qr = new QRCode();
-            qr.setTypeNumber(3);
-            qr.setErrorCorrectLevel(ErrorCorrectLevel.M);
-            qr.addData('SCAN2LOGIN|' + socketServerId); // Alphabet and Number
-            qr.make();
-            this.qrCodeImgData = qr.toDataURL(20, 0);
-            await new Promise(resolve => setTimeout(() => resolve(true), 1000));
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      });
+    // this.cms.getMainSocket().then(mainSocket => {
+    //   mainSocket.socketServerId$.subscribe(async socketServerId => {
+    //     if (socketServerId) {
+    //       try {
+    //         const qr = new QRCode();
+    //         qr.setTypeNumber(3);
+    //         qr.setErrorCorrectLevel(ErrorCorrectLevel.M);
+    //         qr.addData('SCAN2LOGIN|' + socketServerId); // Alphabet and Number
+    //         qr.make();
+    //         this.qrCodeImgData = qr.toDataURL(20, 0);
+    //         await new Promise(resolve => setTimeout(() => resolve(true), 1000));
+    //       } catch (err) {
+    //         console.error(err);
+    //       }
+    //     }
+    //   });
 
-      // console.log('main socket service id : ' + mainSocket.socketServerId$.getValue());
-      mainSocket.on<{ secondLoginToken: string }>('login-by-other-device').subscribe((request) => {
-        // Set token to local store
-        console.log(request);
-        // const redirect = result.getRedirect();
-        const secondLoginToken = request.data && request.data.secondLoginToken;
-        if (secondLoginToken) {
+    //   // console.log('main socket service id : ' + mainSocket.socketServerId$.getValue());
+    //   mainSocket.on<{ secondLoginToken: string }>('login-by-other-device').subscribe((request) => {
+    //     // Set token to local store
+    //     console.log(request);
+    //     // const redirect = result.getRedirect();
+    //     const secondLoginToken = request.data && request.data.secondLoginToken;
+    //     if (secondLoginToken) {
 
 
-          this.user.secondLoginToken = secondLoginToken;
-          this.login();
+    //       this.user.secondLoginToken = secondLoginToken;
+    //       this.login();
 
-          // localStorage.setItem('auth_app_token', JSON.stringify({
-          //   name: "nb:auth:oauth2:jwt:token",
-          //   ownerStrategyName: "email",
-          //   createdAt: Date.now(),
-          //   value: '{"access_token":"' + accessToken + '","refresh_token":"' + refreshToken + '"}',
-          // }));
-          // localStorage.setItem('api_access_token', accessToken);
-          // localStorage.setItem('api_refresh_token', refreshToken);
-          // this.apiService.refreshToken(() => {
-          //   console.log('refresh token success');
-          //   // if (this.onSuccess) {
-          //   //   setTimeout(() => {
-          //   //     this.onSuccess(null);
-          //   //   }, this.redirectDelay);
-          //   // }
-          //   // setTimeout(() => {
-          //   //   this.close();
-          //   // }, this.redirectDelay);
-          //   window.location.href = '/probox-one';
-          // });
+    //       // localStorage.setItem('auth_app_token', JSON.stringify({
+    //       //   name: "nb:auth:oauth2:jwt:token",
+    //       //   ownerStrategyName: "email",
+    //       //   createdAt: Date.now(),
+    //       //   value: '{"access_token":"' + accessToken + '","refresh_token":"' + refreshToken + '"}',
+    //       // }));
+    //       // localStorage.setItem('api_access_token', accessToken);
+    //       // localStorage.setItem('api_refresh_token', refreshToken);
+    //       // this.apiService.refreshToken(() => {
+    //       //   console.log('refresh token success');
+    //       //   // if (this.onSuccess) {
+    //       //   //   setTimeout(() => {
+    //       //   //     this.onSuccess(null);
+    //       //   //   }, this.redirectDelay);
+    //       //   // }
+    //       //   // setTimeout(() => {
+    //       //   //   this.close();
+    //       //   // }, this.redirectDelay);
+    //       //   window.location.href = '/probox-one';
+    //       // });
 
-          // reply response
-          request.callback(true);
-        } else {
-          request.callback(false);
-        }
-      });
-    });
+    //       // reply response
+    //       request.callback(true);
+    //     } else {
+    //       request.callback(false);
+    //     }
+    //   });
+    // });
   }
 
   ngOnInit() {
