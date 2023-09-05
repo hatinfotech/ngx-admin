@@ -296,6 +296,7 @@ import { MktMemberCardFormComponent } from './modules/marketing/member-card/memb
 import { MktMemberCardPrintComponent } from './modules/marketing/member-card/member-card-print/member-card-print.component';
 import { collaboratorComponents } from './modules/collaborator/collaborator.module';
 import { MentionModule } from 'angular-mentions';
+import { saleComponents } from './modules/sales/sales.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -325,34 +326,7 @@ export class DynamicLocaleId extends String {
     ReferenceChoosingDialogComponent,
 
     // Sales components
-    SalesPriceReportListComponent,
-    SalesPriceReportFormComponent,
-    SalesPriceReportPrintComponent,
-    SalesVoucherListComponent,
-    SalesVoucherFormComponent,
-    SalesVoucherPrintComponent,
-    SalesReturnsVoucherListComponent,
-    SalesReturnsVoucherFormComponent,
-    SalesReturnsVoucherPrintComponent,
-    SalesProductListComponent,
-    SalesProductQrCodePrintComponent,
-    PriceTableListComponent,
-    PriceTableFormComponent,
-    PriceTablePrintComponent,
-    PriceTablePrintAsListComponent,
-    SimpleSalesVoucherFormComponent,
-    MasterPriceTableListComponent,
-    MasterPriceTableFormComponent,
-    MasterPriceTablePrintComponent,
-    SalesProductDemoTemPrintComponent,
-    SalesDashboardComponent,
-    SaleProductListComponent,
-    SaleProductFormComponent,
-    MasterPriceTableUpdateNoteListComponent,
-    MasterPriceTableUpdateNoteFormComponent,
-    MasterPriceTableUpdateNotePrintComponent,
-    MasterPriceTableQueueComponent,
-    SalesMasterPriceTableComponent,
+    ...saleComponents,
 
     // Purchase components
     PurchasePriceTableListComponent,

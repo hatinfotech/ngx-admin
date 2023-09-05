@@ -22,6 +22,15 @@
                 "title": "{{action}} phiếu báo giá"
             }
         },
+        "B2bQuotation": {
+            "title": "{{definition}}{{action}} phiếu báo giá B2B",
+            "List": {
+                "Title": ""
+            },
+            "Form": {
+                "title": "{{action}} phiếu báo giá B2B"
+            }
+        },
         "SalesVoucher": {
             "title": "{{action}}{{definition}} phiếu bán hàng",
             "List": {
@@ -483,7 +492,8 @@
         "toMoney": "thành tiền",
         "dearCustomer": "Kính gửi quý khách hàng",
         "dearSupplier": "Gửi nhà cung cấp",
-        "total": "tổng cộng"
+        "total": "tổng cộng",
+        "discount": "chiết khấu"
     },
     "Form": {
         "requireLabel": "{{field}} là bắt buộc"

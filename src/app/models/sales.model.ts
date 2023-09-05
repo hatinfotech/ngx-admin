@@ -267,6 +267,8 @@ export interface SalesProductModel {
   Product?: string;
   OriginalName?: string;
   OriginSku?: string;
+  Price?: number;
+  DiscountPercent?: number;
   Customer?: string;
   CustomerName?: string;
   Name?: string;
@@ -318,4 +320,63 @@ export interface MasterPriceTableQueueModel extends Model {
   RelativeVoucher?: string;
   CurrentPrice?: number;
   RelativeDetail?: string;
+}
+
+export interface SalesB2bQuotationModel {
+  Id?: string & number;
+  SequenceNumber?: string;
+  Code?: string;
+  StoreId?: string;
+  CustomerId?: string;
+  Object?: string | ContactModel | any;
+  ObjectName?: string;
+  ObjectAddress?: string;
+  ObjectPhone?: string;
+  Branch?: string;
+  Recipient?: string;
+  Note?: string;
+  IsIncludeVat?: string;
+  Reported?: string;
+  Created?: string;
+  CreatorId?: string;
+  StaffCreatorId?: string;
+  Creator?: string;
+  Approved?: string;
+  IsApprove?: string;
+  FileName?: string;
+  AttachImageId?: string;
+  Tax?: string;
+  State?: string;
+  Approver?: string;
+  ApproverUser?: string;
+  DeliveryLatitude?: string;
+  DeliveryLongitude?: string;
+  DirectReceiverName?: string;
+  DeliveryAddress?: string;
+  PaymentStep?: string;
+  Title?: string;
+  ObjectEmail?: string;
+  ObjectTaxCode?: string;
+  ObjectBankCode?: string;
+  ObjectBankName?: string;
+
+  Details?: SalesB2bQuotationDetailModel[];
+
+}
+
+export class SalesB2bQuotationDetailModel {
+  Id?: string & number;
+  Voucher?: string;
+  No?: number;
+  Type?: string;
+  Product?: any;
+  Description: string;
+  Quantity: number;
+  Price: number;
+  DistcountPercent: number;
+  Unit: string & UnitModel;
+  Tax?: string & TaxModel;
+  Image?: string;
+  Reason?: string;
+  Business?: IdTextModel[];
 }

@@ -905,7 +905,7 @@ export class CommonService {
 
   getPercentMaskConfig(): CurrencyMaskConfig {
     const locale = this.getCurrentLoaleDataset();
-    return { prefix: '', suffix: '%', thousands: locale[13][1], decimal: locale[13][0], precision: 0, align: 'right', allowNegative: false };
+    return { prefix: '', suffix: '%', thousands: locale[13][1], decimal: locale[13][0], precision: 2, align: 'right', allowNegative: false };
   }
 
   getTaxMaskConfig(): CurrencyMaskConfig {
