@@ -1,6 +1,10 @@
 import { SalesB2bQuotationFormComponent } from "./b2b-quotation/b2b-quotation-form/sales-b2b-quotation-form.component";
 import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-list/sales-b2b-quotation-list.component";
 import { SalesB2bQuotationPrintComponent } from "./b2b-quotation/b2b-quotation-print/sales-b2b-quotation-print.component";
+import { DiscountTableUpdateNoteFormComponent } from "./discount-table-update-note/discount-table-update-note-form/discount-table-update-note-form.component";
+import { DiscountTableUpdateNoteListComponent } from "./discount-table-update-note/discount-table-update-note-list/discount-table-update-note-list.component";
+import { DiscountTableUpdateNotePrintComponent } from "./discount-table-update-note/discount-table-update-note-print/discount-table-update-note-print.component";
+import { SalesDiscountTableComponent } from "./discount-table/discount-table/discount-table.component";
 import { MasterPriceTableQueueComponent } from "./master-price-table-queue/master-price-table-queue.component";
 import { MasterPriceTableUpdateNoteFormComponent } from "./master-price-table-update-note/master-price-table-update-note-form/master-price-table-update-note-form.component";
 import { MasterPriceTableUpdateNoteListComponent } from "./master-price-table-update-note/master-price-table-update-note-list/master-price-table-update-note-list.component";
@@ -62,4 +66,8 @@ export const saleComponents = [
     SalesB2bQuotationListComponent,
     SalesB2bQuotationFormComponent,
     SalesB2bQuotationPrintComponent,
+    SalesDiscountTableComponent,
+    DiscountTableUpdateNoteListComponent,
+    DiscountTableUpdateNoteFormComponent,
+    DiscountTableUpdateNotePrintComponent,
 ];

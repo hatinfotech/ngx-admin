@@ -23,7 +23,7 @@ import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/f
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 import { BusinessModel } from '../../../../models/accounting.model';
 
@@ -38,7 +38,7 @@ function MyCustomUploadAdapterPlugin(editor) {
   selector: 'ngx-b2b-quotation-form',
   templateUrl: './sales-b2b-quotation-form.component.html',
   styleUrls: ['./sales-b2b-quotation-form.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe, DecimalPipe]
 })
 export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<SalesB2bQuotationModel> implements OnInit {
 
@@ -99,6 +99,7 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
     public ref: NbDialogRef<SalesB2bQuotationFormComponent>,
     public adminProductService: AdminProductService,
     public datePipe?: DatePipe,
+    public decimalPipe?: DecimalPipe,
   ) {
     super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
@@ -707,30 +708,22 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
       const salesProduct = await this.apiService.getPromise<SalesProductModel[]>('/sales/sales-products/', { eq_Product: this.cms.getObjectId(value), eq_Customer: this.cms.getObjectId(parentFormGroup.get('Object').value), sort_LastUpdate: 'desc' }).then(rs => rs[0]);
 
       if (salesProduct) {
-        // for (const productObjectReference of purchaseProduct) {
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCT') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('CustomerProductName').value) {
           newChildFormGroup.get('CustomerProductName').setValue(salesProduct.Name);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTTAX') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('ProductTaxName').value) {
           newChildFormGroup.get('ProductTaxName').setValue(salesProduct.TaxName);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTSKU') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('CustomerSku').value) {
           newChildFormGroup.get('CustomerSku').setValue(salesProduct.Sku);
         }
-        // }
-        // if (productObjectReference.Type == 'SUPPLIERPRODUCTAXVALUE') {
         if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('Tax').value) {
           newChildFormGroup.get('Tax').setValue(salesProduct.TaxValue);
         }
-        if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('DiscountPercent').value) {
-          newChildFormGroup.get('DiscountPercent').setValue(salesProduct.DiscountPercent);
-        }
+        // if (!newChildFormGroup['IsImport'] || !newChildFormGroup.get('DiscountPercent').value) {
+        //   newChildFormGroup.get('DiscountPercent').setValue(salesProduct.DiscountPercent);
         // }
+
       }
       // }
     });
@@ -935,6 +928,7 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
       const priceTableId = this.cms.getObjectId(formItem.get('PriceTable').value);
       if (priceTableId && unitId) {
         if (this.cms.getObjectId(detail.get('Type').value) !== 'CATEGORY') {
+          // Fetch price EU
           this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
             priceTable: priceTableId,
             product: this.cms.getObjectId(detail.get('Product').value),
@@ -952,6 +946,29 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
                 detail.get('Price').setValue(choosed.Price);
                 this.toMoney(formItem, detail);
               }
+            }
+          });
+
+          // Fecth discount 
+          this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/discount-tables/getProductPriceByUnits', {
+            discountTable: 'default',
+            product: this.cms.getObjectId(detail.get('Product').value),
+            includeUnit: true,
+            customerGroups: formItem.get('Object').value?.Groups?.map(m => this.cms.getObjectId(m)).join(','),
+          }).then(rs => {
+            console.log(rs);
+            if (rs && rs.length > 0) {
+              // const unitList = detail['unitList'];
+              // if (detail['UnitList'] && detail['UnitList'].length > 0) {
+              // detail['UnitList'] = detail['UnitList'].map(item => {
+              //   item.Price = rs.find(f => f.UnitCode == item.id)?.Price;
+              //   return item;
+              // });
+              // const choosed = detail['UnitList'].find(f => f.id == this.cms.getObjectId(selectedData));
+              detail.get('DiscountPercent').setValue(rs[0].DiscountPercent);
+              detail['__discountInfo'] = `Chiết khấu ` + this.decimalPipe.transform(rs[0].DiscountPercent, '1.0-2') + `% cho nhóm khách hàng ${rs[0].CustomerGroupName}`;
+              this.toMoney(formItem, detail);
+              // }
             }
           });
         }

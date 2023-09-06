@@ -380,3 +380,63 @@ export class SalesB2bQuotationDetailModel {
   Reason?: string;
   Business?: IdTextModel[];
 }
+export class SalesDiscountTableModel extends Model {
+  Id?: string & number;
+  Code?: string;
+  Type?: string;
+  Title?: string;
+  Description?: string;
+  Approved?: string | boolean;
+  DateOfApproved?: String & Date;
+  DateOfCreated?: String & Date;
+  Creator?: String & UserModel;
+  Tax?: String & TaxModel;
+  Discount?: string;
+
+  Details?: SalesDiscountTableDetailModel[];
+}
+
+export class SalesDiscountTableDetailModel extends Model {
+  [key: string]: any;
+  Id?: string | number;
+  No?: string | number;
+  DiscountTable?: String & SalesMasterPriceTableModel;
+  Product?: String | ProductModel;
+  Unit?: String | UnitModel;
+  Description?: string;
+  Tax?: String | TaxModel;
+  Price?: number;
+  OldDiscountPercent?: number;
+  DiscountPercent?: number;
+  DiscountPrice?: number;
+  ConversionRatio?: number;
+  Currency?: string;
+  Discount?: string | number;
+}
+
+export interface DiscountTableUpdateNoteModel extends Model {
+  Id?: string & number;
+  Code?: string;
+  Title?: string;
+  Note?: string;
+  Created?: string;
+  Approved?: string;
+  Approver?: string;
+  State?: string;
+  Creator?: string;
+
+  Details?: DiscountTableUpdateNoteDetailModel[];
+}
+
+export interface DiscountTableUpdateNoteDetailModel extends Model {
+  Id?: any;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: number;
+  Product?: string & ProductModel;
+  ProductName?: string;
+  Description?: string;
+  Price?: string & number;
+  Image?: string;
+  Unit?: string & UnitModel;
+}

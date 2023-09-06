@@ -114,22 +114,6 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       id: 'id',
       text: 'text',
     },
-    // ajax: {
-    //   url: params => {
-    //     return this.apiService.buildApiUrl('/contact/groups', { filter_Name: params['term'] });
-    //   },
-    //   delay: 300,
-    //   processResults: (data: any, params: any) => {
-    //     console.info(data, params);
-    //     return {
-    //       results: data.map(item => {
-    //         item['id'] = item['Code'];
-    //         item['text'] = item['Name'];
-    //         return item;
-    //       }),
-    //     };
-    //   },
-    // },
   };
 
   typeList: ContactDetailTypeModel[];

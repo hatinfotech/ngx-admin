@@ -12,28 +12,25 @@ import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
-import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { WpSiteModel } from '../../../../models/wordpress.model';
-import { AgCurrencyCellInput } from '../../../../lib/custom-element/ag-list/cell/input/curency.component';
-import { MasterPriceTableFormComponent } from '../master-price-table-form/master-price-table-form.component';
-import { SalesMasterPriceTableModel } from '../../../../models/sales.model';
 import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
-import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
-import { MasterPriceTableUpdateNoteFormComponent } from '../../master-price-table-update-note/master-price-table-update-note-form/master-price-table-update-note-form.component';
+import { SalesDiscountTableModel } from '../../../../models/sales.model';
+import { DiscountTableUpdateNoteFormComponent } from '../../discount-table-update-note/discount-table-update-note-form/discount-table-update-note-form.component';
+import { agMakeNumberColDef } from '../../../../lib/custom-element/ag-list/column-define/number.define';
 
 @Component({
-  selector: 'ngx-master-price-table',
-  templateUrl: './master-price-table.component.html',
-  styleUrls: ['./master-price-table.component.scss']
+  selector: 'ngx-discount-table',
+  templateUrl: './discount-table.component.html',
+  styleUrls: ['./discount-table.component.scss']
 })
-export class SalesMasterPriceTableComponent extends AgGridDataManagerListComponent<ProductModel, MasterPriceTableFormComponent> implements OnInit {
+export class SalesDiscountTableComponent extends AgGridDataManagerListComponent<SalesDiscountTableModel, DiscountTableUpdateNoteFormComponent> implements OnInit {
 
-  componentName: string = 'SalesMasterPriceTableComponent';
+  componentName: string = 'SalesDiscountTableComponent';
   formPath = '';
-  apiPath = '/sales/master-price-table-details';
-  idKey = ['Code', 'Unit'];
+  apiPath = '/sales/discount-table-details';
+  idKey = ['Code', 'Unit', 'CustomerGroup'];
   // formDialog = WordpressProductFormComponent;
 
   // AG-Grid config
@@ -45,8 +42,8 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
   siteList: WpSiteModel[];
   refCategoriesLoading = false;
 
-  masterPriceTable: SalesMasterPriceTableModel;
-  masterPriceTableList: SalesMasterPriceTableModel[] = [];
+  discountTable: SalesDiscountTableModel;
+  discountTableList: SalesDiscountTableModel[] = [];
 
   constructor(
     public apiService: ApiService,
@@ -55,7 +52,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
     public themeService: NbThemeService,
-    public ref: NbDialogRef<SalesMasterPriceTableComponent>,
+    public ref: NbDialogRef<SalesDiscountTableComponent>,
     public datePipe: DatePipe,
   ) {
     super(apiService, router, cms, dialogService, toastService, themeService, ref);
@@ -75,9 +72,9 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
     return super.init().then(async state => {
 
       // const processingMap = AppModule.processMaps['purchaseOrder'];
-      this.masterPriceTableList = await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { includeIdText: true });
-      if (this.masterPriceTableList.length > 0) {
-        this.masterPriceTable = this.masterPriceTableList[0];
+      this.discountTableList = await this.apiService.getPromise<SalesDiscountTableModel[]>('/sales/discount-tables', { includeIdText: true });
+      if (this.discountTableList.length > 0) {
+        this.discountTable = this.discountTableList[0];
       }
       await this.cms.waitForLanguageLoaded();
 
@@ -219,10 +216,54 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
           cellRenderer: AgDateCellRenderer,
         },
         {
+          headerName: 'Nhóm khách hàng',
+          field: 'CustomerGroup',
+          pinned: 'right',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/contact/groups', { includeIdText: true, sort_Name: 'asc' }, {
+                placeholder: 'Chọn nhóm khách hàng...', limit: 10, prepareReaultItem: (item) => {
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
           ...agMakeCurrencyColDef(this.cms),
           headerName: 'Giá EU',
           field: 'Price',
           pinned: 'right',
+          width: 150,
+        },
+        {
+          ...agMakeNumberColDef(this.cms),
+          headerName: 'CK',
+          field: 'c',
+          pinned: 'right',
+          valueGetter: params => params?.node?.data?.DiscountPercent || 0,
+          cellRendererParams: {
+            symbol: '%',
+            format: '1.0-2',
+          },
+          width: 100,
+        },
+        {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Giá CK',
+          field: 'DiscountPrice',
+          pinned: 'right',
+          valueGetter: params => {
+            const price = parseFloat(params?.node?.data?.Price);
+            const discountPercent = parseFloat(params?.node?.data?.DiscountPercent || 0);
+            return price - price * discountPercent / 100;
+          },
           width: 150,
         },
         // {
@@ -258,10 +299,10 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
               action: async (params) => {
                 this.cms.openDialog(AgDynamicListComponent, {
                   context: {
-                    title: 'Lịch sử cập nhật giá',
+                    title: 'Lịch sử cập nhật chiết khấu',
                     width: '90%',
                     height: '95vh',
-                    apiPath: '/sales/master-price-table-entries',
+                    apiPath: '/sales/discount-table-entries',
                     idKey: ['Id'],
                     // getRowNodeId: (item) => {
                     //   return item.Product + '-' + item.Unit;
@@ -269,9 +310,10 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                     // rowMultiSelectWithClick: true,
                     // suppressRowClickSelection: false,
                     prepareApiParams: (exParams, getRowParams) => {
-                      exParams['eq_MasterPriceTable'] = this.cms.getObjectId(this.masterPriceTable);
+                      exParams['eq_DiscountTable'] = this.cms.getObjectId(this.discountTable);
                       exParams['eq_Product'] = params.node.data.Code;
                       exParams['eq_Unit'] = this.cms.getObjectId(params.node.data.Unit);
+                      exParams['eq_CustomerGroup'] = this.cms.getObjectId(params.node.data.CustomerGroup);
                       exParams['includeUnit'] = true;
                       exParams['includeProduct'] = true;
                       exParams['includeRequestBy'] = true;
@@ -449,7 +491,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
           return this.selectedIds.length == 0;
         },
         click: () => {
-          this.cms.openDialog(MasterPriceTableUpdateNoteFormComponent, {
+          this.cms.openDialog(DiscountTableUpdateNoteFormComponent, {
             context: {
               data: [
                 {
@@ -466,7 +508,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
               ],
               onDialogSave: (newData) => {
                 if (newData[0].State === 'APPROVED') {
-                  this.apiService.putPromise<any>('/sales/master-price-tables/' + this.cms.getObjectId(this.masterPriceTable), { rebuildCache: true }, [{ Code: this.cms.getObjectId(this.masterPriceTable) }]).then(rs => {
+                  this.apiService.putPromise<any>('/sales/discount-tables/' + this.cms.getObjectId(this.discountTable), { rebuildCache: true }, [{ Code: this.cms.getObjectId(this.discountTable) }]).then(rs => {
                     this.cms.showToast('Đã cập nhật cache bảng giá !', 'Cập nhật cache bảng giá thành công', { status: 'success' });
                     this.refresh();
                   });
@@ -485,9 +527,9 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
         title: 'Bảng giá sử dụng bộ nhớ cache để tăng tốc độ truy vấn, nếu có sai lệch về giá bạn hãy cập nhật lại cache !',
         size: 'medium',
         icon: 'sync-outline',
-        disabled: () => !this.masterPriceTable,
+        disabled: () => !this.discountTable,
         click: () => {
-          this.cms.showDialog('Cập nhật cache bảng giá', 'Bạn có muốn cập nhật cache cho bảng giá ' + this.cms.getObjectText(this.masterPriceTable) + '?\n Bảng giá sử dụng bộ nhớ cache để tăng tốc độ truy vấn, nếu có sai lệch về giá bạn hãy cập nhật lại cache !', [
+          this.cms.showDialog('Cập nhật cache bảng giá', 'Bạn có muốn cập nhật cache cho bảng giá ' + this.cms.getObjectText(this.discountTable) + '?\n Bảng giá sử dụng bộ nhớ cache để tăng tốc độ truy vấn, nếu có sai lệch về giá bạn hãy cập nhật lại cache !', [
             {
               label: 'Trở về',
               status: 'basic',
@@ -499,7 +541,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
               label: 'Cập nhật',
               status: 'primary',
               action: () => {
-                this.apiService.putPromise<any>('/sales/master-price-tables/' + this.cms.getObjectId(this.masterPriceTable), { rebuildCache: true }, [{ Code: this.cms.getObjectId(this.masterPriceTable) }]).then(rs => {
+                this.apiService.putPromise<any>('/sales/discount-tables/' + this.cms.getObjectId(this.discountTable), { rebuildCache: true }, [{ Code: this.cms.getObjectId(this.discountTable) }]).then(rs => {
                   this.cms.showToast('Đã cập nhật cache bảng giá !', 'Cập nhật cache bảng giá thành công', { status: 'success' });
                   this.refresh();
                 });
@@ -528,10 +570,10 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
               id: 'id',
               text: 'text',
             },
-            data: this.masterPriceTableList,
+            data: this.discountTableList,
           }
         },
-        value: this.masterPriceTable,
+        value: this.discountTable,
         change: async (value: any, option: any) => {
           this.refresh();
 
@@ -558,7 +600,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
-    params['masterPriceTable'] = this.masterPriceTable ? this.cms.getObjectId(this.masterPriceTable) : '-1';
+    params['masterPriceTable'] = this.discountTable ? this.cms.getObjectId(this.discountTable) : '-1';
     params['includeCategories'] = true;
     params['includeGroups'] = true;
     params['includeUnit'] = true;
