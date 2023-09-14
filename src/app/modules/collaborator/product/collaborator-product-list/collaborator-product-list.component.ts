@@ -223,28 +223,29 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
           ...agMakeTagsColDef(this.cms, (tag) => {
           }),
           headerName: 'ĐVT',
-          field: 'Units',
+          field: 'Unit',
           width: 200,
           valueGetter: (params: { data: ProductModel }) => {
-            const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
-            const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
-            return params.data?.Units?.map(unit => {
-              let text = '';
-              if (baseUnitId == unit?.id) {
-                text = unit.text;
-              } else {
-                text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
-              }
-              unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
-              if (unit.IsManageByAccessNumber) {
-                unit.status = 'danger';
-              }
-              if (!unit.IsAutoAdjustInventory) {
-                unit.status = 'warning';
-              }
-              unit.label = `${unit.text} (${unit.ConversionRatio})`;
-              return unit;
-            });
+            // const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
+            // const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
+            // return params.data?.Units?.map(unit => {
+            //   let text = '';
+            //   if (baseUnitId == unit?.id) {
+            //     text = unit.text;
+            //   } else {
+            //     text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
+            //   }
+            //   unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
+            //   if (unit.IsManageByAccessNumber) {
+            //     unit.status = 'danger';
+            //   }
+            //   if (!unit.IsAutoAdjustInventory) {
+            //     unit.status = 'warning';
+            //   }
+            //   unit.label = `${unit.text} (${unit.ConversionRatio})`;
+            //   return unit;
+            // });
+            return params.data?.Unit ? [params.data?.Unit] : null;
           },
           filter: AgSelect2Filter,
           filterParams: {

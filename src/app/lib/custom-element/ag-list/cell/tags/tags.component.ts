@@ -50,6 +50,7 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
 
     labelAsText(tag: AgComponetTagModel) {
         if (tag.label) return tag.label;
+        // if (tag.text) return tag.text;
         let voucherType = this.cms.voucherTypeMap[tag.type];
         let type = '';
         if (!voucherType) {
