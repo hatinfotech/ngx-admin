@@ -878,7 +878,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'PURCHASEORDER') {
@@ -1011,7 +1011,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type, typeMap: this.cms.voucherTypeMap[m?.type || type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'GOODSDELIVERY') {
@@ -1095,7 +1095,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           setTimeout(() => {

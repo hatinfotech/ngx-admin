@@ -1402,7 +1402,7 @@ export class CollaboratorCommissionIncurredFormComponent extends DataManagerForm
                 }
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.cms.voucherTypeMap[m.type] }))]);
           }
           setTimeout(() => {
             this.onProcessed();

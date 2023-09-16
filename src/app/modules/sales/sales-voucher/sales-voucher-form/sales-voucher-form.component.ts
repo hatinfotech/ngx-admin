@@ -2,7 +2,7 @@ import { ProductUnitModel } from './../../../../models/product.model';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from './../../../../models/chat-room.model';
 import { ChatRoom } from './../../../../lib/nam-chat/chat-room';
-import { SalesMasterPriceTableModel, SalesPriceReportModel } from './../../../../models/sales.model';
+import { SalesB2bQuotationDetailModel, SalesMasterPriceTableModel, SalesPriceReportModel } from './../../../../models/sales.model';
 import { PriceReportModel } from './../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -646,7 +646,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
   makeNewFormGroup(data?: SalesVoucherModel): FormGroup {
 
     const newForm = this.formBuilder.group({
-      Code: {disabled: true, value: ''},
+      Code: { disabled: true, value: '' },
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -760,6 +760,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
         return null;
       }],
       Description: ['', Validators.required],
+      RelateDetail: [''],
       Quantity: [1, (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -1252,7 +1253,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     this.cms.openDialog(ReferenceChoosingDialogComponent, {
       context: {
         components: {
-          'PRICEREPORT': { title: 'Phiếu báo giá' },
+          'PRICEQUOTATION': { title: 'Phiếu báo giá' },
           'GOODSDELIVERY': { title: 'Phiếu xuất kho' },
         },
         onDialogChoose: async (chooseItems: any[], type?: string) => {
@@ -1263,56 +1264,94 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
           this.onProcessing();
           if (type === 'GOODSDELIVERY') {
             const details = this.getDetails(formGroup);
-            for (let i = 0; i < chooseItems.length; i++) {
-              const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
-              if (index < 0) {
-                // get purchase order
-                const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItems[i].Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
 
-                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
-                  this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                  continue;
-                }
-                if (this.cms.getObjectId(formGroup.get('Object').value)) {
-                  if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
-                    this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
-                    continue;
-                  }
-                } else {
-                  delete refVoucher.Id;
-                  // delete refVoucher.Code;
-                  formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Object: { id: this.cms.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
-                  details.clear();
-                }
-                insertList.push(chooseItems[i]);
-
-                // Insert order details into voucher details
-                if (refVoucher?.Details) {
-                  details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
-                  for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type !== 'CATEGORY') {
-                      // delete voucherDetail.Id;
-                      // delete voucherDetail.Voucher;
-                      // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
-                      newDtailFormGroup.get('Business').disable();
-                      details.push(newDtailFormGroup);
-                    }
+            // Begin
+            const priceQuotations = [];
+            for (const chooseItem of chooseItems) {
+              insertList.push({ id: chooseItem.Code, text: chooseItem.Title, type: type });
+              if (chooseItem.RelativeVouchers && chooseItem.RelativeVouchers.length > 0) {
+                for (const relativeVoucher of chooseItem.RelativeVouchers) {
+                  if (relativeVoucher.type == 'PRICEQUOTATION') {
+                    priceQuotations.push({ Code: relativeVoucher.id, Title: relativeVoucher.text });
                   }
                 }
-
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
-            this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
+            chooseItems = priceQuotations;
+            type = 'PRICEQUOTATION';
+
+            // End
+            // for (let i = 0; i < chooseItems.length; i++) {
+            //   const chooseItem = chooseItems[i];
+            //   const index = relationVoucherValue.findIndex(f => f?.id === chooseItem?.Code);
+            //   if (index < 0) {
+            //     // get purchase order
+            //     const refVoucher = await this.apiService.getPromise<WarehouseGoodsDeliveryNoteModel[]>('/warehouse/goods-delivery-notes/' + chooseItem.Code, { includeContact: true, includeDetails: true }).then(rs => rs[0]);
+
+            //     if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+            //       this.cms.toastService.show(this.cms.translateText('Phiếu xuất kho chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
+            //       continue;
+            //     }
+            //     if (this.cms.getObjectId(formGroup.get('Object').value)) {
+            //       if (this.cms.getObjectId(refVoucher.Object, 'Code') != this.cms.getObjectId(formGroup.get('Object').value)) {
+            //         this.cms.toastService.show(this.cms.translateText('Khách hàng trong phiếu mua hàng không giống với phiếu bán hàng'), this.cms.translateText('Common.warning'), { status: 'warning' });
+            //         continue;
+            //       }
+            //     } else {
+            //       delete refVoucher.Id;
+            //       // delete refVoucher.Code;
+            //       formGroup.patchValue({ ...refVoucher, Code: null, Id: null, Object: { id: this.cms.getObjectId(refVoucher.Object), text: refVoucher.ObjectName }, Details: [] });
+            //       details.clear();
+            //     }
+            //     insertList.push(chooseItem);
+
+            //     // Insert order details into voucher details
+            //     if (refVoucher?.Details) {
+            //       details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Phiếu xuất kho: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
+
+            //       // Load price from relative voucher
+            //       const quotationDetailIds = [];
+            //       for (const voucherDetail of refVoucher.Details) {
+            //         if (this.cms.getObjectId(voucherDetail.Type) == 'PRODUCT' && voucherDetail.RelateDetail) {
+
+            //           const relativeVoucherParts = voucherDetail.RelateDetail.split('/');
+            //           if (relativeVoucherParts[0] == 'PRICEQUOTATION') {
+            //             quotationDetailIds.push(relativeVoucherParts[2]);
+            //           }
+
+            //         }
+            //       }
+            //       let quotationDetails: { [key: string]: SalesB2bQuotationDetailModel } = null;
+            //       if (quotationDetailIds.length > 0) {
+            //         const quotationDetailsTmp = await this.apiService.getPromise<SalesB2bQuotationDetailModel[]>('/sales/price-quotation-details', { eq_SystemUuid: '[' + quotationDetailIds.join(',') + ']' });
+            //         quotationDetails = quotationDetailsTmp.reduce((result, current, index) => { result['PRICEQUOTATION/' + current['Voucher'] + '/' + current['SystemUuid']] = current; return result; }, {});
+            //       }
+
+            //       for (const voucherDetail of refVoucher.Details) {
+            //         if (voucherDetail.Type !== 'CATEGORY') {
+            //           // delete voucherDetail.Id;
+            //           // delete voucherDetail.Voucher;
+            //           // delete voucherDetail.No;
+            //           voucherDetail['Price'] = quotationDetails[voucherDetail.RelateDetail]?.Price;
+            //           const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'NETREVENUE') } as any);
+            //           newDtailFormGroup.get('Business').disable();
+            //           details.push(newDtailFormGroup);
+            //         }
+            //       }
+            //     }
+
+            //   }
+            // }
+            // relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
-          if (type === 'PRICEREPORT') {
+          if (type === 'PRICEREPORT' || type === 'PRICEQUOTATION') {
             const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesPriceReportModel[]>('/sales/price-quotations/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true, includeProductPrice: true, includeRelativeVouchers: true }).then(rs => rs[0]);
 
                 if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
                   this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
@@ -1348,13 +1387,15 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
                 // Insert order details into voucher details
                 if (refVoucher?.Details) {
+                  const availableBusiness = ['NETREVENUE', 'NETREVENUESERVICE', 'NETREVENUESERVICE', 'NETREVENUEBYCASH', 'NETREVENUESERVICEBYCASH', 'NETREVENUEFINACE', 'NETREVENUEBYCASHINBANK', 'NETREVENUESERVICEBYCASHINBANK'];
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Id: null, Description: 'Báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type !== 'CATEGORY') {
+                    if (voucherDetail.Type !== 'CATEGORY' && voucherDetail.Business.some(s => availableBusiness.some(s2 => s2 == this.cms.getObjectId(s)))) {
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null } as any);
+                      voucherDetail.Business = voucherDetail.Business.filter(f => availableBusiness.some(s => s == this.cms.getObjectId(f)));
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, RelateDetail: `${type}/${refVoucher.Code}/${voucherDetail.SystemUuid}` } as any);
                       // newDtailFormGroup.get('Business').disable();
                       newDtailFormGroup.get('Unit')['UnitList'] = voucherDetail.Product?.Units;
                       details.push(newDtailFormGroup);
@@ -1366,7 +1407,7 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any, typeMap: this.cms.voucherTypeMap[m?.type || type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
 

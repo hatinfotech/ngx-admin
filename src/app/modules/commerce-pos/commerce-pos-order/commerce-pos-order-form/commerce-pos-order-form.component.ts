@@ -1114,7 +1114,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
           }
           if (type === 'PRICEREPORT') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1166,7 +1166,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any, typeMap: this.cms.voucherTypeMap[m?.type || type] }))]);
           }
 
           setTimeout(() => {

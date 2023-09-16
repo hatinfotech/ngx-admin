@@ -2011,7 +2011,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
           }
           if (type === 'GOODSDELIVERY') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -2055,7 +2055,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
           }
           setTimeout(() => {
             this.onProcessed();

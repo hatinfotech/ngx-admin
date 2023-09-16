@@ -637,7 +637,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 details.push(newDtailFormGroup);
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Description, type: 'CLBRTCOMMISSION' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Description, type: 'CLBRTCOMMISSION', typeMap: this.cms.voucherTypeMap['CLBRTCOMMISSION'] }))]);
           }
           if (type === 'CLBRTAWARD') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -681,7 +681,7 @@ export class CollaboratorCommissionPaymentFormComponent extends DataManagerFormC
                 details.push(newDtailFormGroup);
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Description, type: 'CLBRTAWARD' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Description, type: 'CLBRTAWARD', typeMap: this.cms.voucherTypeMap['CLBRTAWARD'] }))]);
           }
           
           setTimeout(() => {

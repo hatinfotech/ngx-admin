@@ -279,15 +279,16 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
           });
         }
       })(async (data: M[]) => {
-        if (!this.patchFormGroupValue) {
 
-          for (const item of data) {
-            if (item && Array.isArray(item['RelativeVouchers'])) {
-              for (const relativeVoucher of item['RelativeVouchers']) {
-                relativeVoucher.typeMap = this.cms.voucherTypeMap[relativeVoucher.type];
-              }
+        for (const item of data) {
+          if (item && Array.isArray(item['RelativeVouchers'])) {
+            for (const relativeVoucher of item['RelativeVouchers']) {
+              relativeVoucher.typeMap = this.cms.voucherTypeMap[relativeVoucher.type];
             }
           }
+        }
+
+        if (!this.patchFormGroupValue) {
 
           this.array.clear();
           for (let i = 0; i < data.length; i++) {

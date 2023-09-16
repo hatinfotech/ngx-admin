@@ -1392,7 +1392,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES', typeMap: this.cms.voucherTypeMap['SALES'] }))]);
           }
           if (type === 'PURCHASE') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1436,7 +1436,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
           }
           if (type === 'PURCHASEORDER') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1480,7 +1480,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASEORDER', typeMap: this.cms.voucherTypeMap['PURCHASEORDER'] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'PURCHASE') {
@@ -1525,7 +1525,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+            relationVoucher.setValue([...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
           }
           if (type === 'GOODSDELIVERY') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1572,7 +1572,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
           }
           if (type === 'PRICEREPORT') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1637,7 +1637,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any, typeMap: this.cms.voucherTypeMap[m?.type || type] }))]);
           }
           if (type === 'CLBRTORDER') {
             for (let i = 0; i < chooseItems.length; i++) {
@@ -1688,7 +1688,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id || m?.Code, text: m?.text || m.Title, type: m?.type || type as any, typeMap: this.cms.voucherTypeMap[m?.type || type] }))]);
           }
 
           setTimeout(() => {

@@ -368,7 +368,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.cms.voucherTypeMap[m.type] }))]);
           }
           if (type === 'PURCHASE') {
             const details = this.getDetails(formGroup);
@@ -397,7 +397,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.cms.voucherTypeMap[m.type] }))]);
           }
           setTimeout(() => {
             this.onProcessed();
@@ -471,7 +471,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
       }
     }
     insertList.push(relativeVoucher);
-    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
     return relativeVoucher;
   }
 

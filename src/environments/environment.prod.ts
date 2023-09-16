@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.9.6.2',
+  version: '6.10.0.1',
+// 6.10.0.1:   sales processing: Price quotation > Goods Delivery > Sales > Receipt demo 1
   // 6.9.6.2:   hotupdate: discount table
   // 6.9.6.1:   hotupdate: b2b quotation
   // 6.9.5.8:   accounting: fix debt report: sum of revenue not matched

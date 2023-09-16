@@ -1006,7 +1006,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
             }
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES', typeMap: this.cms.voucherTypeMap['SALES'] }))]);
 
           setTimeout(() => {
             this.onProcessed();
@@ -1025,7 +1025,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
         components: {
           'SALES': { title: 'Phiếu bán hàng' },
           'DEPLOYMENT': { title: 'Phiếu triển khai' },
-          'PRICEREPORT': { title: 'Phiếu báo giá' },
+          'PRICEQUOTATION': { title: 'Phiếu báo giá' },
           'CLBRTORDER': { title: 'Đơn hàng CTV Bán hàng' },
           'WPORDER': { title: 'Đơn hàng WP' },
         },
@@ -1081,18 +1081,18 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
-          if (type === 'PRICEREPORT') {
+          if (type === 'PRICEREPORT' || type === 'PRICEQUOTATION') {
             const details = this.getDetails(formGroup);
             for (let i = 0; i < chooseItems.length; i++) {
               const index = relationVoucherValue.findIndex(f => f?.id === chooseItems[i]?.Code);
               if (index < 0) {
                 // get purchase order
-                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-reports/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true }).then(rs => rs[0]);
+                const refVoucher = await this.apiService.getPromise<SalesVoucherModel[]>('/sales/price-quotations/' + chooseItems[i].Code, { includeContact: true, includeDetails: true, includeProductUnitList: true }).then(rs => rs[0]);
 
-                if (['APPROVED', 'COMPLETE'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
+                if (['APPROVED'].indexOf(this.cms.getObjectId(refVoucher.State)) < 0) {
                   this.cms.toastService.show(this.cms.translateText('Phiếu báo giá chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
                   continue;
                 }
@@ -1117,11 +1117,11 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
                 if (refVoucher?.Details) {
                   details.push(this.makeNewDetailFormGroup(formGroup, { Type: 'CATEGORY', Description: 'Phiếu báo giá: ' + refVoucher.Code + ' - ' + refVoucher.Title }));
                   for (const voucherDetail of refVoucher.Details) {
-                    if (voucherDetail.Type === 'PRODUCT') {
+                    if (voucherDetail.Type === 'PRODUCT' && voucherDetail.Business && voucherDetail.Business.some(s => this.cms.getObjectId(s) == 'GOODSDELIVERY')) {
                       // delete voucherDetail.Id;
                       // delete voucherDetail.Voucher;
                       // delete voucherDetail.No;
-                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: `PRICEREPORT/${refVoucher.Code}/${voucherDetail.Id}` });
+                      const newDtailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, Id: null, Voucher: null, No: null, Business: this.accountingBusinessList.filter(f => f.id === 'GOODSDELIVERY'), RelateDetail: `PRICEQUOTATION/${refVoucher.Code}/${voucherDetail.SystemUuid}` });
                       details.push(newDtailFormGroup);
                       this.onSelectProduct(newDtailFormGroup, voucherDetail.Product, true);
                       // this.onSelectUnit(newDtailFormGroup, voucherDetail.Unit, true);
@@ -1135,7 +1135,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'CLBRTORDER') {
@@ -1186,7 +1186,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'DEPLOYMENT') {
@@ -1234,7 +1234,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'WPORDER') {
@@ -1285,7 +1285,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: type, typeMap: this.cms.voucherTypeMap[type] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           setTimeout(() => {

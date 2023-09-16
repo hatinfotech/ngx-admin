@@ -571,7 +571,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
               }
             }
           }
-          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES' }))]);
+          relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'SALES', typeMap: this.cms.voucherTypeMap['SALES'] }))]);
 
           setTimeout(() => {
             this.onProcessed();

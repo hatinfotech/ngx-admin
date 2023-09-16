@@ -373,7 +373,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
     dropdownAutoWidth: true,
     minimumInputLength: 0,
     // dropdownCssClass: 'is_tags',
-    maximumSelectionLength: 1,
+    maximumSelectionLength: 2,
     multiple: true,
     // tags: true,
     keyMap: {
@@ -390,7 +390,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   async init(): Promise<boolean> {
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     console.log(this.adminProductService.unitList$.value);
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES' }).then(rs => rs.map(accBusiness => {
+    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]' }).then(rs => rs.map(accBusiness => {
       accBusiness['id'] = accBusiness.Code;
       accBusiness['text'] = accBusiness.Name;
       return accBusiness;
@@ -616,7 +616,7 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
       CustomerProductName: [''],
       ProductTaxName: [''],
       Tax: [''],
-      Business: [null, (control: FormControl) => {
+      Business: [this.accountingBusinessList.filter(f => ['NETREVENUE', 'GOODSDELIVERY'].some(s => this.cms.getObjectId(f) == s)), (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }

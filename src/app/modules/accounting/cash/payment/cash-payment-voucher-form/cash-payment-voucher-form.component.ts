@@ -723,7 +723,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.cms.voucherTypeMap[m.type] }))]);
             // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           if (type === 'PURCHASE') {
@@ -754,7 +754,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.id, text: m.text, type: m.type, typeMap: this.cms.voucherTypeMap[m.type] }))]);
             // this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
           setTimeout(() => {
@@ -833,7 +833,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
       }
     }
     insertList.push(relativeVoucher);
-    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE' }))]);
+    relativeVouchers.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'PURCHASE', typeMap: this.cms.voucherTypeMap['PURCHASE'] }))]);
     return relativeVoucher;
   }
 

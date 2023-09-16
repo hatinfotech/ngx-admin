@@ -1037,7 +1037,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
 
               }
             }
-            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'COMMERCEPOSORDER' }))]);
+            relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: 'COMMERCEPOSORDER', typeMap: this.cms.voucherTypeMap['COMMERCEPOSORDER'] }))]);
             this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
           }
 

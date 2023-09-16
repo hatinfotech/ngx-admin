@@ -631,6 +631,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
             this.cms.toastService.show(this.cms.translateText('Phiếu bán hàng chưa được duyệt'), this.cms.translateText('Common.warning'), { status: 'warning' });
             return false;
           }
+          break;
         case 'CLBRTORDER':
           refVoucher = await this.apiService.getPromise<CollaboratorOrderModel[]>('/collaborator/orders/' + relativeVoucher.Code, { includeObject: true }).then(rs => rs[0]);
           totalMoney = refVoucher.Total;
@@ -685,7 +686,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
       // }
     }
     insertList.push(relativeVoucher);
-    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: relativeVoucherType }))]);
+    relationVoucher.setValue([...relationVoucherValue, ...insertList.map(m => ({ id: m?.Code, text: m.Title, type: relativeVoucherType, typeMap: this.cms.voucherTypeMap[relativeVoucherType] }))]);
     return relativeVoucher;
   }
 

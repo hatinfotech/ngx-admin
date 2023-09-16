@@ -5,6 +5,9 @@
                 <nb-tab *ngIf="components['PRICEREPORT']" tabTitle="{{components['PRICEREPORT'].title}}">
                     <ngx-sales-price-report-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PRICEREPORT')"></ngx-sales-price-report-list>
                 </nb-tab>
+                <nb-tab *ngIf="components['PRICEQUOTATION']" tabTitle="{{components['PRICEQUOTATION'].title}}">
+                    <ngx-sales-price-report-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'PRICEQUOTATION')"></ngx-sales-price-report-list>
+                </nb-tab>
                 <nb-tab *ngIf="components['GOODSDELIVERY']" tabTitle="{{components['GOODSDELIVERY'].title}}">
                     <ngx-warehouse-goods-delivery-note-list [gridHeight]="'calc(100vh - 12rem)'" (onItemsChoosed)="onDialogChoose($event, 'GOODSDELIVERY')"></ngx-warehouse-goods-delivery-note-list>
                 </nb-tab>
