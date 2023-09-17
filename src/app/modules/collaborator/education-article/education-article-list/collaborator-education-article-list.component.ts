@@ -144,11 +144,11 @@ export class CollaboratorEducationArticleListComponent extends ServerDataManager
             instance.display = true;
             instance.status = 'primary';
             instance.init.pipe(takeUntil(this.destroy$)).subscribe((row: CollaboratorEducationArticleModel) => {
-              const link = `https://probox.center/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/edu/${row?.Code?.toLowerCase()}`;
+              const link = `https://probox.vn/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/edu/${row?.Code?.toLowerCase()}`;
               instance.title = link;
             });
             instance.click.pipe(takeUntil(this.destroy$)).subscribe(async (row: CollaboratorEducationArticleModel) => {
-              const link = `https://probox.center/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/edu/${row?.Code?.toLowerCase()}`;
+              const link = `https://probox.vn/${(row.Page && row.Page.id || row.Page).toLowerCase()}/ctvbanhang/edu/${row?.Code?.toLowerCase()}`;
               this.cms.copyTextToClipboard(link);
             });
           },

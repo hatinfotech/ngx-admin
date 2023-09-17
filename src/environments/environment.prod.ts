@@ -253,7 +253,7 @@ export const environment = {
     url: '/app/Smart-BOT/',
   },
   proboxApp: {
-    deepLink: 'https://probox.center',
+    deepLink: 'https://probox.vn',
   },
   firebase: {
     apiKey: "AIzaSyCqLj9QQ0KUuLackTP-GTBrKL6byBaCz54",
