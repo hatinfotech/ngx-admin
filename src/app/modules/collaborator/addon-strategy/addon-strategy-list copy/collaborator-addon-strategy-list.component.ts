@@ -8,6 +8,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorAddonStrategyFormComponent } from '../addon-strategy-form/collaborator-addon-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
@@ -31,6 +32,7 @@ export class CollaboratorAddonStrategyListComponent extends ServerDataManagerLis
   idKey: string | string[] = ['Code'];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -41,7 +43,7 @@ export class CollaboratorAddonStrategyListComponent extends ServerDataManagerLis
     public collaboratorService: CollaboratorService,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   formDialog = CollaboratorAddonStrategyFormComponent;

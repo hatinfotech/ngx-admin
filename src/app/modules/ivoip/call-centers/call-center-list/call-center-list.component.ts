@@ -3,6 +3,7 @@ import { PbxCallCenterQueueModel } from '../../../../models/pbx-center-queue.mod
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { LocalDataSource } from 'ng2-smart-table';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -27,6 +28,7 @@ export class CallCenterListComponent extends IvoipBaseListComponent<PbxCallCente
   outboundSource: LocalDataSource = new LocalDataSource();
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -34,7 +36,7 @@ export class CallCenterListComponent extends IvoipBaseListComponent<PbxCallCente
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};

@@ -33,6 +33,7 @@ import { ImagesViewerComponent } from '../../../../lib/custom-element/my-compone
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sync-profile-preview',
@@ -50,6 +51,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
   @ViewChild('agSyncTaskDetailList') agSyncTaskDetailList: AgDynamicListComponent<any>;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -63,7 +65,7 @@ export class WordpressSyncProfilePreviewComponent extends DataManagerFormCompone
     public datePipe: DatePipe,
     public prds: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.updateGridColumn();

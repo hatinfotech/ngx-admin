@@ -5,6 +5,7 @@ import { filter, take } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { CollaboratorCommissionVoucherModel } from '../../../../models/collaborator.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorCommissionFormComponent } from '../collaborator-commission-form/collaborator-commission-form.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
@@ -43,6 +44,7 @@ export class CollaboratorCommissionListComponent extends AgGridDataManagerListCo
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -53,7 +55,7 @@ export class CollaboratorCommissionListComponent extends AgGridDataManagerListCo
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

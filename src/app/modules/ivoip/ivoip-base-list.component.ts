@@ -7,6 +7,7 @@ import { IvoipService, PbxDomainSelection } from './ivoip-service';
 import { Component, OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -16,6 +17,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
   activePbxDoamin: string;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -23,7 +25,7 @@ export abstract class IvoipBaseListComponent<M> extends DataManagerListComponent
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

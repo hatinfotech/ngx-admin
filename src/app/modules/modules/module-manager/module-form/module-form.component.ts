@@ -9,6 +9,7 @@ import { ResourceModel } from '../../../../models/resource.model';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-module-form',
@@ -23,6 +24,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
   baseFormUrl = 'modules/manager/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class ModuleFormComponent extends DataManagerFormComponent<ModuleModel> i
     public dialogService: NbDialogService,
     public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.idKey = 'Name';
     this.apiPath = '/module/modules';
 

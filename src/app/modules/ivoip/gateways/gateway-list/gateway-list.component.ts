@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -23,6 +24,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
   formDialog = GatewayFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -30,7 +32,7 @@ export class GatewayListComponent extends IvoipBaseListComponent<PbxGatewayModel
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};

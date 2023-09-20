@@ -4,6 +4,7 @@ import { ActionControl, ActionControlListOption } from './action-control.interfa
 import { CommonService } from '../../../services/common.service';
 import { NbLayoutScrollService } from '@nebular/theme';
 import { Subject } from 'rxjs';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-action-control-list',
@@ -21,6 +22,7 @@ export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewI
   protected destroy$: Subject<void> = new Subject<void>();
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public layoutScrollService: NbLayoutScrollService,
   ) {

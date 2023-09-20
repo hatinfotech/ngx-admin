@@ -18,6 +18,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-product-form',
@@ -81,6 +82,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
   });
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -91,7 +93,7 @@ export class CollaboratorProductFormComponent extends DataManagerFormComponent<P
     public ref?: NbDialogRef<CollaboratorProductFormComponent>,
     public collaboratorService?: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** ngx-uploader */
     // this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };

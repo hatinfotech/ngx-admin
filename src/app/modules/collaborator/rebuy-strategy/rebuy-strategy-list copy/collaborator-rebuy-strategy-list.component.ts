@@ -1,21 +1,28 @@
 import { CollaboratorService } from '../../collaborator.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
-import { UnitModel } from '../../../../models/unit.model';
+import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
-import { CollaboratorRebuyStrategyFormComponent } from '../rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { CollaboratorRebuyStrategyModel } from '../../../../models/collaborator.model';
+import { CollaboratorBasicStrategyListComponent } from '../../basic-strategy/basic-strategy-list/collaborator-basic-strategy-list.component';
+import { IGetRowsParams } from 'ag-grid-community';
+import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
+import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { CollaboratorBasicStrategyModel } from '../../../../models/collaborator.model';
+import { ContactModel } from '../../../../models/contact.model';
+import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { CollaboratorBasicStrategyFormComponent } from '../../basic-strategy/basic-strategy-form/collaborator-basic-strategy-form.component';
+import { ColDef } from '@ag-grid-community/core';
 
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-list',
@@ -38,6 +45,7 @@ export class CollaboratorRebuyStrategyListComponent extends AgGridDataManagerLis
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -48,7 +56,7 @@ export class CollaboratorRebuyStrategyListComponent extends AgGridDataManagerLis
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

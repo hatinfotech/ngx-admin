@@ -13,6 +13,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-account-form.component';
 import { AccountingService } from '../../accounting.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report',
@@ -51,6 +52,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
   @Input() reportComponent: Type<any> | TemplateRef<any>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -60,7 +62,7 @@ export class AccountingDetailByObjectReportComponent extends ServerDataManagerLi
     public ref: NbDialogRef<AccountingDetailByObjectReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

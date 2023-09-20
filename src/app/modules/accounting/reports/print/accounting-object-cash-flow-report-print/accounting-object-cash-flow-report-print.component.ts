@@ -11,6 +11,7 @@ import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { RootServices } from '../../../../../services/root.services';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -35,6 +36,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
 
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -43,7 +45,7 @@ export class AccountingObjectCashFlowReportPrintComponent extends DataManagerPri
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.cms.systemConfigs$.subscribe(systemConfigs => {
       this.systemConfigs = systemConfigs;
       // this.systemConfigs.LICENSE_INFO.register.companyName

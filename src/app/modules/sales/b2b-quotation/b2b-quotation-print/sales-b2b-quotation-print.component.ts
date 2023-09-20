@@ -14,6 +14,7 @@ import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { filter, take } from 'rxjs/operators';
 import * as XLSX from 'xlsx';
+import { RootServices } from '../../../../services/root.services';
 
 declare var $: JQueryStatic;
 
@@ -34,6 +35,7 @@ export class SalesB2bQuotationPrintComponent extends DataManagerPrintComponent<S
   idKey: ['Code'];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -41,7 +43,7 @@ export class SalesB2bQuotationPrintComponent extends DataManagerPrintComponent<S
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

@@ -15,6 +15,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AnyTxtRecord } from 'dns';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { of } from 'rxjs';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-access-number-print',
@@ -179,6 +180,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
   };
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -186,7 +188,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
     public datePipe: DatePipe,
     public formBuilder?: FormBuilder,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

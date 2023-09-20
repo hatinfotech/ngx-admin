@@ -25,6 +25,7 @@ import { CollaboratorPageFormComponent } from "../../../page/collaborator-page-f
 import { agMakeNumberColDef } from "../../../../../lib/custom-element/ag-list/column-define/number.define";
 import { Select2Option } from "../../../../../lib/custom-element/select2/select2.component";
 import { FormBuilder, FormGroup } from "@angular/forms";
+import { RootServices } from "../../../../../services/root.services";
 
 declare const $: any;
 @Component({
@@ -57,6 +58,7 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
   filterFormGroup: FormGroup;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -69,7 +71,7 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
     public collaboratorService: CollaboratorService,
     public formBuilder: FormBuilder,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

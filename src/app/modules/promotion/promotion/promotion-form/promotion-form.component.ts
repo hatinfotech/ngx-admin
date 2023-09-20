@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 // import '../../../../lib/ckeditor.loader';
 // import 'ckeditor';
 
@@ -23,6 +24,7 @@ export class PromotionFormComponent extends DataManagerFormComponent<PromotionMo
   baseFormUrl = '/promotion/promotion/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -32,7 +34,7 @@ export class PromotionFormComponent extends DataManagerFormComponent<PromotionMo
     public cms: CommonService,
     public ref: NbDialogRef<PromotionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -75,7 +77,7 @@ export class PromotionFormComponent extends DataManagerFormComponent<PromotionMo
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForProductGroup = {
     placeholder: 'Chọn nhóm sản phẩm...',

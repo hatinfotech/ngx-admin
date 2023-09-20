@@ -24,6 +24,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-purchase-price-table-import',
@@ -93,6 +94,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -103,7 +105,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
     public ref: NbDialogRef<PurchasePriceTableImportComponent>,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -419,7 +421,7 @@ export class PurchasePriceTableImportComponent extends DataManagerFormComponent<
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',

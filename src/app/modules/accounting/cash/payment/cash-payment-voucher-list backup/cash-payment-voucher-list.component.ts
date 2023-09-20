@@ -16,6 +16,7 @@ import { CommonService } from '../../../../../services/common.service';
 // import { AccountingModule } from '../../../accounting.module';
 import { CashPaymentVoucherFormComponent } from '../cash-payment-voucher-form/cash-payment-voucher-form.component';
 import { CashPaymentVoucherPrintComponent } from '../cash-payment-voucher-print/cash-payment-voucher-print.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-list',
@@ -40,6 +41,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -48,7 +50,7 @@ export class CashPaymentVoucherListComponent extends ServerDataManagerListCompon
     public _http: HttpClient,
     public ref: NbDialogRef<CashPaymentVoucherListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {

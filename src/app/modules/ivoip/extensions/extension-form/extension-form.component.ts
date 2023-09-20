@@ -12,6 +12,7 @@ import { IvoipService } from '../../ivoip-service';
 import { PbxDeviceModel } from '../../../../models/pbx-device.model';
 import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-extension-form',
@@ -56,6 +57,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -66,7 +68,7 @@ export class ExtensionFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<ExtensionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
 
   }
 

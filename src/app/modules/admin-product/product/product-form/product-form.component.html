@@ -263,6 +263,82 @@
                   </div>
                 </div>
                 <!-- End Detail form -->
+
+                <!-- Begin product part form -->
+                <label class="label">{{'Thuộc tính' | translate | headtitlecase}} <nb-icon class="copy-btn" (click)="copyFormControlValueToOthers(array, i, 'ProductParts')" title="{{'Common.copyToAllNextForm' | translate}}" pack="eva" icon="copy-outline"></nb-icon></label>
+                <div class="row fit-row form-detail-header">
+                  <div class="fit-fist-col label column">{{'Common.noNumber' | translate | headtitlecase}}</div>
+                  <div class="row fit-content-column">
+                    <div class="col-lg-12">
+                      <div class="row">
+                        <div class="col-lg-3 label column">{{'SP Thành phần' | translate | headtitlecase}}</div>
+                        <div class="col-lg-3 label column align-rightX">{{'ĐVT' | translate | headtitlecase}}</div>
+                        <div class="col-lg-3 label column align-rightX">{{'Số lượng' | translate | headtitlecase}}</div>
+                        <div class="col-lg-3 label column align-rightX">{{'Khoản mục CP' | translate | headtitlecase}}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="fit-last-col column">
+                    <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addProductPartFormGroup(formItem)" size="medium" hero>
+                      <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                    </button>
+                  </div>
+                </div>
+
+                <hr>
+                <div formArrayName="ProductParts" class="form-details" [sortablejs]="getProductParts(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
+                  <div class="form-detail-item" *ngFor="let property of getProductParts(formItem).controls; let ie=index" [formGroup]="property">
+                    <div class="row fit-row">
+                      <div class="fit-fist-col label">
+                        <div class="form-group">
+                          <!-- <label class="label">{{'Common.noNumber' | translate | headtitlecase}}</label> -->
+                          <input class="fit-sequence sorting-handle" nbInput fullWidth disabled="true" value="{{ ie + 1 }}">
+                          <!-- <input type="hidden" formControlName="Id"> -->
+                        </div>
+                      </div>
+                      <div class="row fit-content-column">
+                        <div class="col-sm-12">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div class="row">
+                                <div class="col-sm-3">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="PartProduct" label="SP Thành phần" [array]="getProductParts(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="PartProduct" [data]="propertyList" [select2Option]="select2OptionForProperty"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-3">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="PartUnit" label="ĐVT" [array]="getProductParts(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="PartUnit" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-3">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="Quantity" label="Số lượng" [array]="getProductParts(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <input type="text" nbInput fullWidth formControlName="Quantity" [inputMask]="towDigitsInputMask" placeholder="{{'Số lượng' | translate | headtitlecase}}">
+                                  </ngx-form-group>
+                                </div>
+                                <div class="col-sm-3">
+                                  <ngx-form-group [hideLabel]="true" [formGroup]="property" name="CostClassification" label="Khoản mục CP" [array]="getProductParts(formItem)" [index]="ie" [allowCopy]="false" [required]="true">
+                                    <ngx-select2 formControlName="CostClassification" [data]="unitList" [select2Option]="select2OptionForUnit"></ngx-select2>
+                                  </ngx-form-group>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fit-last-col">
+                        <div class="form-group" style="text-align: right;">
+                          <!-- <label class="label">CM</label> -->
+                          <button class="fit-control-button" nbButton status="danger" [outline]="true" hero size="medium" (click)="removeProductPartGroup(formItem, unitConversion, ie)">
+                            <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- End Product Part form -->
               </div>
               <div class="col-xxl-2 col-xl-12 col-lg-12 col-md-12 col-sm-12 col-is-12 dashed-radius-border">
                 <!-- <div class="row">

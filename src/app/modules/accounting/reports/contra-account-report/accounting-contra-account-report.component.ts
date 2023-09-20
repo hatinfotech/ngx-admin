@@ -17,6 +17,7 @@ import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-contra-account-report',
@@ -42,6 +43,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class AccountingContraAccountReportComponent extends ServerDataManagerLis
     public ref: NbDialogRef<AccountingContraAccountReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   tabTitle = 'Báo cáo lưu chuyển';

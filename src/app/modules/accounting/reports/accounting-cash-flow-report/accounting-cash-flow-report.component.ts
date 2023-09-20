@@ -18,6 +18,7 @@ import { AccountingObjectCashFlowReportPrintComponent } from '../print/accountin
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-cash-flow-report',
@@ -43,6 +44,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -52,7 +54,7 @@ export class AccountingCashFlowReportComponent extends ServerDataManagerListComp
     public ref: NbDialogRef<AccountingCashFlowReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

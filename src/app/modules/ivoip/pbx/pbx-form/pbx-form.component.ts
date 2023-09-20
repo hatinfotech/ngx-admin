@@ -9,6 +9,7 @@ import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-pbx-form',
@@ -23,6 +24,7 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
   baseFormUrl = '/ivoip/pbxs/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -33,7 +35,7 @@ export class PbxFormComponent extends IvoipBaseFormComponent<PbxModel> implement
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<PbxFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

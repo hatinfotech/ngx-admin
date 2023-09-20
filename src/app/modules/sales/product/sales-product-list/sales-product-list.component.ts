@@ -2,6 +2,7 @@ import { MasterPriceTablePrintComponent } from './../../master-price-table/maste
 import { Component, OnInit } from '@angular/core';
 import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
@@ -314,6 +315,7 @@ export class SalesProductListComponent extends ProductListV1Component implements
   listControl: FormGroup;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -324,7 +326,7 @@ export class SalesProductListComponent extends ProductListV1Component implements
     public formBuilder: FormBuilder,
     public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, _http, ref, adminProductService);
+    super(rsv, apiService, router, cms, dialogService, toastService, _http, ref, adminProductService);
     this.listControl = this.formBuilder.group({
       Limit: [],
     });

@@ -19,6 +19,7 @@ import { ContactFormComponent } from '../contact/contact-form/contact-form.compo
 import { DatePipe } from '@angular/common';
 import { agMakeCommandColDef } from '../../../lib/custom-element/ag-list/column-define/command.define';
 import { IGetRowsParams } from '@ag-grid-community/core';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-contact-removed-list',
@@ -31,6 +32,7 @@ export class ContactRemovedListComponent extends ContactAllListComponent impleme
   static _dialog: NbDialogRef<ContactRemovedListComponent>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -41,7 +43,7 @@ export class ContactRemovedListComponent extends ContactAllListComponent impleme
     public ref: NbDialogRef<ContactRemovedListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref, datePipe);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref, datePipe);
   }
 
   async init() {

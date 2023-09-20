@@ -21,6 +21,7 @@ import { agMakeSelectionColDef } from "../../../../../lib/custom-element/ag-list
 import { CollaboratorProductListComponent } from "../../../product/collaborator-product-list/collaborator-product-list.component";
 import { AgDynamicListComponent } from "../../../../general/ag-dymanic-list/ag-dymanic-list.component";
 import { CollaboratorKpiStrategyListComponent } from "../kpi-strategy-list/kpi-strategy-list.component";
+import { RootServices } from "../../../../../services/root.services";
 
 @Component({
   selector: 'ngx-collaborator-kpi-strategy-form',
@@ -39,6 +40,7 @@ export class CollaboratorKpiStrategyFormComponent extends DataManagerFormCompone
   baseFormUrl = '/collaborator/kpi-strategy/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -48,7 +50,7 @@ export class CollaboratorKpiStrategyFormComponent extends DataManagerFormCompone
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorKpiStrategyFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.prepareProductList();
   }
 

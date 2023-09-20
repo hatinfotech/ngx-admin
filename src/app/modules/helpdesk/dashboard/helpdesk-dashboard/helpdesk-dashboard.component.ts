@@ -20,6 +20,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
 import { DatePipe } from '@angular/common';
 import { TicketPmsFormComponent } from '../ticket-pms-form/ticket-pms-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-helpdesk-dashboard',
@@ -92,6 +93,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
   private callStateSubscription: Subscription;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -108,7 +110,7 @@ export class HelpdeskDashboardComponent extends BaseComponent implements OnInit,
     public notificationService: NotificationService,
     public helpdeskService?: HeldpeskServiceService,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
 
     // iconsLibrary.registerFontPack('fa', { packClass: 'fa', iconClassPrefix: 'fa' });
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });

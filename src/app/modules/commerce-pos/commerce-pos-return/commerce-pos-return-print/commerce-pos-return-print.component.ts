@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { CommercePosReturnFormComponent } from '../commerce-pos-return-form/commerce-pos-return-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-pos-return-print',
@@ -31,13 +32,14 @@ export class CommercePosReturnPrintComponent extends DataManagerPrintComponent<C
   formDialog = CommercePosReturnFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosReturnPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

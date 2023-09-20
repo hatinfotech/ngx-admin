@@ -10,6 +10,7 @@ import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxIvrMenuOptionModel } from '../../../../models/pbx-ivr-menu-option.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-ivr-menu-form',
@@ -95,6 +96,7 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -105,7 +107,7 @@ export class IvrMenuFormComponent extends IvoipBaseFormComponent<PbxIvrMenuModel
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<IvrMenuFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

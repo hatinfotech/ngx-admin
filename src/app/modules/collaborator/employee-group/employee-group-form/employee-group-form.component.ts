@@ -19,6 +19,7 @@ import { CollaboratorProductListComponent } from "../../product/collaborator-pro
 import { Model } from "../../../../models/model";
 import { ColDef, ColumnApi, GridApi, IRowNode } from "@ag-grid-community/core";
 import { ContactAllListComponent } from '../../../contact/contact-all-list/contact-all-list.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-employee-group-form',
@@ -39,6 +40,7 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
   unitList: ProductUnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -51,7 +53,7 @@ export class CollaboratorEmployeeGroupFormComponent extends DataManagerFormCompo
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
     const $this = this;

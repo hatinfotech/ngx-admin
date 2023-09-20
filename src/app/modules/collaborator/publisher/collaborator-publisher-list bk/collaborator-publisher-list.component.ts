@@ -12,6 +12,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
@@ -41,6 +42,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class CollaboratorPublisherListComponent extends ServerDataManagerListCom
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

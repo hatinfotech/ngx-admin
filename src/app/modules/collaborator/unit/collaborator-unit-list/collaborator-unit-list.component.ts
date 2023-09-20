@@ -5,6 +5,7 @@ import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ProductUnitModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorUnitFormComponent } from '../collaborator-unit-form/collaborator-unit-form.component';
 
@@ -22,6 +23,7 @@ export class CollaboratorUnitListComponent extends DataManagerListComponent<Prod
   formDialog = CollaboratorUnitFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -29,7 +31,7 @@ export class CollaboratorUnitListComponent extends DataManagerListComponent<Prod
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

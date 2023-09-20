@@ -7,6 +7,7 @@ import { CommonService } from '../../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { IvoipService } from '../../../ivoip-service';
 import { SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-call-center-agent-list',
@@ -21,6 +22,7 @@ export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCall
   idKey = 'call_center_agent_uuid';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -28,7 +30,7 @@ export class CallCenterAgentListComponent extends IvoipBaseListComponent<PbxCall
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};

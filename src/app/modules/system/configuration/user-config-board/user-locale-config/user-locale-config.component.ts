@@ -13,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Timezone } from '../../system-configuration-board/system-locale-config/system-locale-config.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { filter, take } from 'rxjs/operators';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-locale-config',
@@ -50,6 +51,7 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -59,7 +61,7 @@ export class UserLocaleConfigComponent extends DataManagerFormComponent<LocaleCo
     public cms: CommonService,
     public translate: TranslateService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Remove close button */
     this.actionButtonList = this.actionButtonList.filter(btn => btn.name !== 'close');

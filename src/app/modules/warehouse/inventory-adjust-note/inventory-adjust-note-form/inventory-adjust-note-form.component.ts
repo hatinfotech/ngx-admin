@@ -41,6 +41,7 @@ import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dyma
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { RootServices } from '../../../../services/root.services';
 // @Component({
 //   selector: 'btn-cell-renderer',
 //   template: `
@@ -258,6 +259,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
   themeName = this.themeService.currentTheme == 'default' ? '' : this.themeService.currentTheme;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -269,7 +271,7 @@ export class WarehouseInventoryAdjustNoteFormComponent extends DataManagerFormCo
     public adminProductService: AdminProductService,
     public themeService: NbThemeService
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     this.themeService.onThemeChange().pipe(map(({ name }) => name), takeUntil(this.destroy$)).subscribe(theme => {
       this.themeName = theme == 'default' ? '' : theme;

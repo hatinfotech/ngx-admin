@@ -24,6 +24,7 @@ import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/
 import { AccountingAccountDetailsReportPrintComponent } from '../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '../print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-detail-by-object-report-ag',
@@ -64,6 +65,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
   // @Input() suppressRowClickSelection = true;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -75,7 +77,7 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
     public accountingService: AccountingService,
     public prds: AdminProductService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
   }
 
   onGridReady(params: any): void {

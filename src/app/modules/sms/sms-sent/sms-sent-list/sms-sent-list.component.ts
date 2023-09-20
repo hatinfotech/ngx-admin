@@ -6,6 +6,7 @@ import { CommonService } from '../../../../services/common.service';
 import { UserActive } from '../../../../@core/data/user-activity';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { NbThemeService, NbLayoutScrollService, NbIconLibraries, NbDialogService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 import { QuickTicketFormComponent } from '../../../helpdesk/dashboard/quick-ticket-form/quick-ticket-form.component';
@@ -72,6 +73,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
   quickFormOnInit$ = this.quickFormOnInitSubject.asObservable();
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -82,7 +84,7 @@ export class SmsSentListComponent extends BaseComponent implements OnInit, OnDes
     public dialogService: NbDialogService,
     // private mobileAppService: MobileAppService,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
 
     iconsLibrary.registerFontPack('ion', { iconClassPrefix: 'ion' });
 

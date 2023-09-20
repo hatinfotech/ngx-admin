@@ -7,6 +7,7 @@ import { ApiService } from '../../services/api.service';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { CustomServerDataSource } from '../custom-element/smart-table/custom-server.data-source';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class ServerDataManagerListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -14,6 +15,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
   source: CustomServerDataSource<M>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -21,7 +23,7 @@ export abstract class ServerDataManagerListComponent<M> extends DataManagerListC
     public toastService: NbToastrService,
     public ref?: NbDialogRef<ServerDataManagerListComponent<M>>,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
     this.source = null;
   }
 

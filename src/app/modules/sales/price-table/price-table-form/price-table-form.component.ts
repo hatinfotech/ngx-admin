@@ -15,7 +15,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PriceTablePrintComponent } from '../price-table-print/price-table-print.component';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { PurchasePriceTableDetailModel } from '../../../../models/purchase.model';
 import { BehaviorSubject } from 'rxjs';
 // import { IGetRowsParams, GridApi, ColumnApi, Module, AllCommunityModules, IDatasource } from '@ag-grid-community/all-modules';
@@ -26,6 +25,8 @@ import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { DecimalPipe } from '@angular/common';
 import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+import { RootServices } from '../../../../services/root.services';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 
 
 @Component({
@@ -121,6 +122,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -132,7 +134,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     // public currencyPipe: CurrencyPipe,
     public decimalPipe: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -460,7 +462,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',
@@ -790,7 +792,7 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     return false;
   }
 
-  static productListDialog: NbDialogRef<ProductListV1Component>;
+  static productListDialog: NbDialogRef<ProductListComponent>;
 
   /** Implement required */
   openProductListDialog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
@@ -808,13 +810,13 @@ export class PriceTableFormComponent extends DataManagerFormComponent<SalesPrice
     };
 
     try {
-      if (ProductListV1Component._dialog.componentRef.location.nativeElement) {
-        this.cms.resumeDialog(ProductListV1Component._dialog, { events: events });
+      if (ProductListComponent._dialog.componentRef.location.nativeElement) {
+        this.cms.resumeDialog(ProductListComponent._dialog, { events: events });
       } else {
         throw Error;
       }
     } catch (error) {
-      ProductListV1Component._dialog = this.cms.openDialog(ProductListV1Component, {
+      ProductListComponent._dialog = this.cms.openDialog(ProductListComponent, {
         context: events as any,
         closeOnEsc: false,
         closeOnBackdropClick: false,

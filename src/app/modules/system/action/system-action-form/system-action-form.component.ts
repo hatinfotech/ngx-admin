@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-system-action-form',
@@ -47,6 +48,7 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
   }
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -56,7 +58,7 @@ export class SystemActionFormComponent extends DataManagerFormComponent<SystemAc
     public cms: CommonService,
     public ref: NbDialogRef<SystemActionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

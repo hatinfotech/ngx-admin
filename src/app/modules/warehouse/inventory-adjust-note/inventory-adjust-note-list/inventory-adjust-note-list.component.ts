@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
@@ -43,6 +44,7 @@ export class WarehouseInventoryAdjustNoteListComponent extends AgGridDataManager
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -52,7 +54,7 @@ export class WarehouseInventoryAdjustNoteListComponent extends AgGridDataManager
     public ref: NbDialogRef<WarehouseInventoryAdjustNoteListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

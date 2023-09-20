@@ -8,6 +8,7 @@ import { ContactDetailModel } from '../../../models/contact.model';
 import { PageModel } from '../../../models/page.model';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-core-connection-form',
@@ -22,6 +23,7 @@ export class CoreConnectionFormComponent extends DataManagerFormComponent<PageMo
   apiPath = '/core-connection/connections';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class CoreConnectionFormComponent extends DataManagerFormComponent<PageMo
     public cms: CommonService,
     public ref: NbDialogRef<CoreConnectionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   select2SalesPriceReportOption = {

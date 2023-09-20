@@ -18,6 +18,7 @@ import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-cu
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { AdminProductService } from '../../admin-product.service';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { RootServices } from '../../../../services/root.services';
 
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -57,6 +58,7 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<any>
   @Input() columnList: any[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -67,7 +69,7 @@ export class ImportProductMapFormComponent extends DataManagerFormComponent<any>
     public ref?: NbDialogRef<ImportProductMapFormComponent>,
     public adminProductService?: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
 

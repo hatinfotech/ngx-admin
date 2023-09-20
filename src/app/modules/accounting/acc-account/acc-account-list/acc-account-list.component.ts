@@ -2,11 +2,10 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
-import { SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { AccAccountFormComponent } from '../acc-account-form/acc-account-form.component';
 
@@ -33,6 +32,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
   totalBalance: { Debit: number, Credit: number } = {Debit: 0, Credit: 0};
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -41,7 +41,7 @@ export class AccAccountListComponent extends DataManagerListComponent<AccountMod
     public _http: HttpClient,
     public ref: NbDialogRef<AccAccountListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

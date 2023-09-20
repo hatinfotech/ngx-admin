@@ -13,6 +13,7 @@ import { UnitModel } from '../../../../../models/unit.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { Timezone } from '../../system-configuration-board/system-locale-config/system-locale-config.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-theme-config',
@@ -50,6 +51,7 @@ export class ThemeConfigComponent extends DataManagerFormComponent<LocaleConfigM
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -59,7 +61,7 @@ export class ThemeConfigComponent extends DataManagerFormComponent<LocaleConfigM
     public cms: CommonService,
     public translate: TranslateService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Remove close button */
     this.actionButtonList = this.actionButtonList.filter(btn => btn.name !== 'close');

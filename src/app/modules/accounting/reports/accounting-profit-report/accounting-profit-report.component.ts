@@ -17,6 +17,7 @@ import { Icon } from '../../../../lib/custom-element/card-header/card-header.com
 import { ActionControl, ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-profit-report',
@@ -45,6 +46,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class AccountingProfitReportComponent extends DataManagerListComponent<Ac
     public currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
 
   }
 

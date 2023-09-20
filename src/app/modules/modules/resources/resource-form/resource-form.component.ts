@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PermissionModel } from '../../../../models/permission.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-resource-form',
@@ -81,6 +82,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -89,7 +91,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
     public dialogService: NbDialogService,
     public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     // this.idKey = 'Name';
     // this.apiPath = '/module/modules';
 

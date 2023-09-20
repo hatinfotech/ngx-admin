@@ -16,6 +16,7 @@ import { AccountingOtherBusinessVoucherPrintComponent } from '../../../accountin
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorAwardDetailComponent } from './collaboartor-award-detail/collaboartor-award-detail.component';
 import { IGetRowsParams } from '@ag-grid-community/core';
+import { RootServices } from '../../../../services/root.services';
 // import { IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
@@ -38,6 +39,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
   accountingBusinessList: BusinessModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -48,7 +50,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
     public ref: NbDialogRef<CollaboratorAwardFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

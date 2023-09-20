@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SystemParameterModel } from '../../../../models/system.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -23,6 +24,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
   formDialog = SystemParameterFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -30,7 +32,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   initDataSource() {

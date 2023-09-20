@@ -13,6 +13,7 @@ import { FileModel } from '../../../../models/file.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sms-phone-number-form',
@@ -27,6 +28,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
   baseFormUrl = '/sms/phone-number/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -36,7 +38,7 @@ export class SmsPhoneNumberFormComponent extends DataManagerFormComponent<SmsPho
     public cms: CommonService,
     public ref: NbDialogRef<SmsPhoneNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.columnDefs = [

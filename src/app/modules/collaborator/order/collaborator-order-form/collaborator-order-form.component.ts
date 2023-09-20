@@ -13,7 +13,7 @@ import { ChatRoomMemberModel, ChatRoomModel } from '../../../../models/chat-room
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesPriceReportModel, SalesPriceReportDetailModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -26,6 +26,7 @@ import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -36,6 +37,7 @@ import { CurrencyPipe } from '@angular/common';
 export class CollaboratorOrderFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -49,7 +51,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     public mobileAppService: MobileAppService,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

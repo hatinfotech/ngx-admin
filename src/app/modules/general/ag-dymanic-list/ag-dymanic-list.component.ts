@@ -9,6 +9,7 @@ import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from "@
 import { Router } from "@angular/router";
 import { CommonService } from "../../../services/common.service";
 import { IGetRowsParams, RowDataUpdatedEvent } from "@ag-grid-community/core";
+import { RootServices } from "../../../services/root.services";
 
 
 @Component({
@@ -40,6 +41,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
     public ref: NbDialogRef<AgDynamicListComponent<M>>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

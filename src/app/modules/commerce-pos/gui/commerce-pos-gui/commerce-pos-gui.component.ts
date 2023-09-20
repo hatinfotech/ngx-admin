@@ -35,6 +35,7 @@ import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/
 import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
+import { RootServices } from '../../../../services/root.services';
 
 declare const openDatabase;
 
@@ -167,6 +168,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
   barcodeProcessHistory$ = new Subject<any>();
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -174,7 +176,7 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     public ref?: NbDialogRef<CommercePosGuiComponent>,
     public formBuilder?: FormBuilder,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
 
     this.cms.systemConfigs$.pipe(takeUntil(this.destroy$)).subscribe(settings => {
       this.systemConfigs = settings;

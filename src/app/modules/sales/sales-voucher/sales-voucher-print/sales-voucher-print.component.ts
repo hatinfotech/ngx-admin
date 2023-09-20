@@ -15,6 +15,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { SalesVoucherFormComponent } from '../sales-voucher-form/sales-voucher-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sales-voucher-print',
@@ -33,13 +34,14 @@ export class SalesVoucherPrintComponent extends DataManagerPrintComponent<SalesV
   formDialog = SalesVoucherFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

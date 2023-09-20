@@ -3,6 +3,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { WarehouseModel } from '../../../../models/warehouse.model';
 import { WarehouseFormComponent } from '../warehouse-form/warehouse-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -22,6 +23,7 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
   formDialog = WarehouseFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -29,7 +31,7 @@ export class WarehouseListComponent extends DataManagerListComponent<WarehouseMo
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

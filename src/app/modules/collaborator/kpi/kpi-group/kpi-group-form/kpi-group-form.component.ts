@@ -17,6 +17,7 @@ import { CollaboratorService } from "../../../collaborator.service";
 import { CollaboratorProductListComponent } from "../../../product/collaborator-product-list/collaborator-product-list.component";
 import { Model } from "../../../../../models/model";
 import { ColDef, ColumnApi, GridApi, IRowNode } from "@ag-grid-community/core";
+import { RootServices } from "../../../../../services/root.services";
 
 @Component({
   selector: 'ngx-collaborator-kpi-group-form',
@@ -37,6 +38,7 @@ export class CollaboratorKpiGroupFormComponent extends DataManagerFormComponent<
   unitList: ProductUnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -49,7 +51,7 @@ export class CollaboratorKpiGroupFormComponent extends DataManagerFormComponent<
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   /** AG-Grid */

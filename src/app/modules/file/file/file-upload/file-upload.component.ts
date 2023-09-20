@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { FileListComponent } from '../file-list/file-list.component';
 import { UploaderOptions, UploadInput, UploadFile, humanizeBytes, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-file-upload',
@@ -24,11 +25,12 @@ export class FileUploadComponent extends BaseComponent implements OnInit {
   @Input('fileListComponent') fileListComponent: FileListComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
     this.options = { concurrency: 3, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };
     this.files = []; // local uploading files array
     this.uploadInput = new EventEmitter<UploadInput>(); // input events, we use this to emit data to ngx-uploader

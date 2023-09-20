@@ -8,6 +8,7 @@ import { ServerDataManagerListComponent } from '../../../../../lib/data-manager/
 import { AccountModel } from '../../../../../models/accounting.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaboartor-commission-detail',
@@ -43,6 +44,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
   @Output() onUpdateTotalCommission = new EventEmitter<number>();
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class CollaboartorCommissionDetailComponent extends ServerDataManagerList
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboartorCommissionDetailComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

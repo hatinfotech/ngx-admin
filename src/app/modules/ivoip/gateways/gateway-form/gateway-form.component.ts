@@ -9,6 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-gateway-form',
@@ -23,6 +24,7 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
   baseFormUrl = '/ivoip/gateways/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -33,7 +35,7 @@ export class GatewayFormComponent extends IvoipBaseFormComponent<PbxGatewayModel
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<GatewayFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   blockActions: { id: string, text: string, Code: string, Name: string }[];

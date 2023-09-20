@@ -29,6 +29,7 @@ import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-vo
 import { SalesVoucherPrintComponent } from '../../../sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
 import { WarehouseGoodsDeliveryNotePrintComponent } from '../warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 import { DecimalPipe } from '@angular/common';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-delivery-note-form',
@@ -149,6 +150,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
   @ViewChild('errorSound', { static: true }) errorSound: ElementRef;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -160,7 +162,7 @@ export class WarehouseGoodsDeliveryNoteFormComponent extends DataManagerFormComp
     public adminProductService: AdminProductService,
     public decimalPipe: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

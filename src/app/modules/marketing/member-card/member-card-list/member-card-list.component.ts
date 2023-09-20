@@ -1,6 +1,7 @@
 import { Input } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
@@ -45,6 +46,7 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -54,7 +56,7 @@ export class MktMemberCardListComponent extends AgGridDataManagerListComponent<M
     public ref: NbDialogRef<MktMemberCardListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

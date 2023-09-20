@@ -11,6 +11,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { CommerceServiceByCycleModel } from '../../../../models/commerce-service-by-cycle.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CommerceServiceByCycleFormComponent } from '../commerce-service-by-cycle-form/commerce-service-by-cycle-form.component';
 import { SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
@@ -41,6 +42,7 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -50,7 +52,7 @@ export class CommerceServiceByCycleListComponent extends ServerDataManagerListCo
     public ref: NbDialogRef<CommerceServiceByCycleListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

@@ -12,6 +12,7 @@ import { CollaboratorEducationArticleFormComponent } from '../education-article-
 import { CollaboratorEducationArticleModel } from '../../../../models/collaborator.model';
 // import { iframely } from "@iframely/embed.js";
 import { DomSanitizer } from '@angular/platform-browser';
+import { RootServices } from '../../../../services/root.services';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
   idKey = ['Code', 'Page'];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -38,7 +40,7 @@ export class CollaboratorEducationArticlePrintComponent extends DataManagerPrint
     public datePipe: DatePipe,
     public sanitizer: DomSanitizer
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

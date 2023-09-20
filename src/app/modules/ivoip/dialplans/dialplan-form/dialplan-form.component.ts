@@ -11,6 +11,7 @@ import { CommonService } from '../../../../services/common.service';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
 import { PbxGatewayModel } from '../../../../models/pbx-gateway.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-dialplan-form',
@@ -44,6 +45,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
   gatewaylist: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -54,7 +56,7 @@ export class DialplanFormComponent extends IvoipBaseFormComponent<PbxDialplanMod
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<DialplanFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   // blockActions: { id: string, text: string, Code: string, Name: string }[];

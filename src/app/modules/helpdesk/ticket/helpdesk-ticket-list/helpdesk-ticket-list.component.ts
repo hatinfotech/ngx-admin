@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { HelpdeskTicketModel } from '../../../../models/helpdesk.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
@@ -21,6 +22,7 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
   idKey = 'Code';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -29,7 +31,7 @@ export class HelpdeskTicketListComponent extends AgGridDataManagerListComponent<
     public themeService: NbThemeService,
     public ref: NbDialogRef<HelpdeskTicketListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.columnDefs = this.configSetting([
       {

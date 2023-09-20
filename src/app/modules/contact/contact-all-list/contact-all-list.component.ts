@@ -16,6 +16,7 @@ import { AgSelect2Filter } from '../../../lib/custom-element/ag-list/filter/sele
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { DialogFormComponent } from '../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-contact-all-list',
@@ -38,6 +39,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -47,7 +49,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
     public ref: NbDialogRef<ContactAllListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

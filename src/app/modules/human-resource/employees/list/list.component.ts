@@ -4,6 +4,7 @@ import { EmployeeModel } from '../../../../models/employee.model';
 import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { NbDialogService } from '@nebular/theme';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CommonService } from '../../../../services/common.service';
@@ -16,6 +17,7 @@ import { CommonService } from '../../../../services/common.service';
 export class ListComponent implements OnInit {
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public dialogService: NbDialogService,
     public router: Router,

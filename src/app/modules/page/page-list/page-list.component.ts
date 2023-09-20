@@ -16,6 +16,7 @@ import { CommonService } from '../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { MobileAppService } from '../../mobile-app/mobile-app.service';
 import { PageFormComponent } from '../page-form/page-form.component';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-page-list',
@@ -40,6 +41,7 @@ export class PageListComponent extends ServerDataManagerListComponent<PageModel>
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class PageListComponent extends ServerDataManagerListComponent<PageModel>
     public ref: NbDialogRef<PageListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

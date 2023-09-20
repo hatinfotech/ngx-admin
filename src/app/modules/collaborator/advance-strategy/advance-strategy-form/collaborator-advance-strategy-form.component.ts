@@ -21,6 +21,7 @@ import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dyma
 import { CollaboratorBasicStrategyProductFormComponent } from '../../basic-strategy/product-form/collaborator-basic-strategy-product-form.component';
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
+import { RootServices } from '../../../../services/root.services';
 @Component({
   selector: 'ngx-collaborator-advance-strategy-form',
   templateUrl: './collaborator-advance-strategy-form.component.html',
@@ -40,6 +41,7 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
   unitList: ProductUnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +54,7 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
     const $this = this;

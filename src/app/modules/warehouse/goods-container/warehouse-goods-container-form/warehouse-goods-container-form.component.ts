@@ -8,6 +8,7 @@ import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WarehouseGoodsContainerModel, WarehouseModel } from '../../../../models/warehouse.model';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-container-form',
@@ -132,6 +133,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -141,7 +143,7 @@ export class WarehouseGoodsContainerFormComponent extends DataManagerFormCompone
     public cms: CommonService,
     public ref: NbDialogRef<WarehouseGoodsContainerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async loadCache() {

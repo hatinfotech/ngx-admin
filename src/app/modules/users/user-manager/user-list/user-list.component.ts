@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
@@ -32,6 +33,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -40,7 +42,7 @@ export class UserListComponent extends ServerDataManagerListComponent<UserModel>
     public _http: HttpClient,
     public ref: NbDialogRef<UserListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-crawl-server-form',
@@ -21,6 +22,7 @@ export class CrawlServerFormComponent extends DataManagerFormComponent<CrawlServ
   baseFormUrl = '/crawl/server/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -30,7 +32,7 @@ export class CrawlServerFormComponent extends DataManagerFormComponent<CrawlServ
     public cms: CommonService,
     public ref: NbDialogRef<CrawlServerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

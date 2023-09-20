@@ -12,6 +12,7 @@ import { CollaboratorPublisherModel } from '../../../../models/collaborator.mode
 import { PageModel } from '../../../../models/page.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorPageFormComponent } from '../collaborator-page-form/collaborator-page-form.component';
@@ -39,6 +40,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -48,7 +50,7 @@ export class CollaboratorSubscriptionPageListComponent extends ServerDataManager
     public ref: NbDialogRef<CollaboratorSubscriptionPageListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

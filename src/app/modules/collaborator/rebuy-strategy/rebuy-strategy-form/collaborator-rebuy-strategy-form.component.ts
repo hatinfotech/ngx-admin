@@ -24,6 +24,7 @@ import { CollaboratorRebuyStrategyProductFormComponent } from '../product-form/c
 import { CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, IRowNode, Module, RowNode, SuppressKeyboardEventParams } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cell/button.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { RootServices } from '../../../../services/root.services';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
@@ -40,6 +41,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
   baseFormUrl = '';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +54,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
     const $this = this;

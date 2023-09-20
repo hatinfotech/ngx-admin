@@ -15,6 +15,7 @@ import { ReferenceChoosingDialogComponent } from "../../../../dialog/reference-c
 import { PurchaseVoucherListComponent } from "../../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component";
 import { Select2Option } from "../../../../../lib/custom-element/select2/select2.component";
 import { ContactModel } from "../../../../../models/contact.model";
+import { RootServices } from "../../../../../services/root.services";
 
 @Component({
   selector: 'ngx-collaborator-kpi-distributed-contract-form',
@@ -33,6 +34,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
   baseFormUrl = '/collaborator/kpi-distributed-contract/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -42,7 +44,7 @@ export class CollaboratorKpiDistributedContractFormComponent extends DataManager
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorKpiDistributedContractFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   towDigitsInputMask = this.cms.createFloatNumberMaskConfig({

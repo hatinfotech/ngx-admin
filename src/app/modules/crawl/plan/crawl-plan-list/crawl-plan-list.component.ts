@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { CrawlPlanModel } from '../../../../models/crawl.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -23,6 +24,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
   // protected _http: HttpClient;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -30,7 +32,7 @@ export class CrawlPlanListComponent extends DataManagerListComponent<CrawlPlanMo
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

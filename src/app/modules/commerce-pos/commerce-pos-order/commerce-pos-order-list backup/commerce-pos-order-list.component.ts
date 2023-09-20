@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
@@ -44,6 +45,7 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
   loaded = false;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -52,7 +54,7 @@ export class CommercePosOrderListComponent extends ServerDataManagerListComponen
     public _http: HttpClient,
     public ref: NbDialogRef<CommercePosOrderListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

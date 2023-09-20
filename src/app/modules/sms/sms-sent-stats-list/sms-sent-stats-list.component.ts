@@ -9,6 +9,7 @@ import { SmsPhoneNumberListModel, SmsReceipientModel, SmsPhoneNumberListDetailMo
 import { DataManagerFormComponent } from '../../../lib/data-manager/data-manager-form.component';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+import { RootServices } from '../../../services/root.services';
 // import { GridApi, ColumnApi, Module, AllCommunityModules, IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
@@ -25,6 +26,7 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
   @Input() inputSms: string & number;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -34,7 +36,7 @@ export class SmsSentStatsListComponent extends DataManagerFormComponent<SmsPhone
     public cms: CommonService,
     public ref: NbDialogRef<SmsPhoneNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.columnDefs = [

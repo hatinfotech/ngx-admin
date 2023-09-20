@@ -3,12 +3,13 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { UserGroupFormComponent } from '../user-group-form/user-group-form.component';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { HttpClient } from '@angular/common/http';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 
 @Component({
   selector: 'ngx-user-group-list',
@@ -24,7 +25,7 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
   formDialog = UserGroupFormComponent;
 
   reuseDialog = true;
-  static _dialog: NbDialogRef<ProductListV1Component>;
+  static _dialog: NbDialogRef<ProductListComponent>;
 
   // Smart table
   static filterConfig: any;
@@ -32,6 +33,7 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -40,7 +42,7 @@ export class UserGroupListComponent extends ServerDataManagerListComponent<UserG
     public _http: HttpClient,
     public ref: NbDialogRef<UserGroupListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {

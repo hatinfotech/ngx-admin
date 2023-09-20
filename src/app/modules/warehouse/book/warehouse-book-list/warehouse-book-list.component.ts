@@ -4,6 +4,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { WarehouseBookModel } from '../../../../models/warehouse.model';
 import { WarehouseBookFormComponent } from '../warehouse-book-form/warehouse-book-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -27,6 +28,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
   formDialog = WarehouseBookFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -34,7 +36,7 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
 
     this.actionButtonList.map(button => {
       if (button.name === 'add') {

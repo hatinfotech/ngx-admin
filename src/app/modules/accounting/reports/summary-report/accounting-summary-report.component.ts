@@ -14,6 +14,7 @@ import { AccAccountFormComponent } from '../../acc-account/acc-account-form/acc-
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 import { AccountingAccountDetailsReportPrintComponent } from './../print/accounting-account-details-report-print/accounting-account-details-report-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-summary-report',
@@ -39,6 +40,7 @@ export class AccountingSummaryReportComponent extends ServerDataManagerListCompo
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -48,7 +50,7 @@ export class AccountingSummaryReportComponent extends ServerDataManagerListCompo
     public ref: NbDialogRef<AccountingSummaryReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

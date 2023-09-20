@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-form',
@@ -21,6 +22,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
   apiPath = '/warehouse/warehouses';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -30,7 +32,7 @@ export class WarehouseFormComponent extends DataManagerFormComponent<WarehouseMo
     public cms: CommonService,
     public ref: NbDialogRef<WarehouseFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
   
   accountList = [

@@ -24,6 +24,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { PbxDeploymentModel } from '../../../../models/pbx-deployment.model';
 import { WhCronJobModel } from '../../../../models/wh-cron-job.model';
 import { WhFtpModel } from '../../../../models/wh-ftp.model';
+import { RootServices } from '../../../../services/root.services';
 
 export class Executable {
   message: string;
@@ -54,6 +55,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
   longToastRef: NbToastRef = null;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -64,7 +66,7 @@ export class CustomerFormComponent extends IvoipBaseFormComponent<PbxCustomerMod
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<CustomerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   progressBarValue = 10;

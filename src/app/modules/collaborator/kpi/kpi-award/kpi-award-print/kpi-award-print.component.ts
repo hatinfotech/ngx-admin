@@ -13,6 +13,7 @@ import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { DynamicListDialogComponent } from '../../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-kpi-award-print',
@@ -29,13 +30,14 @@ export class CollaboratorKpiAwardPrintComponent extends DataManagerPrintComponen
   processMapList: ProcessMap[] = [];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorKpiAwardPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

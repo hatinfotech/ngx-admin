@@ -23,6 +23,7 @@ import { CollaboratorKpiAwardFormComponent } from '../kpi-award-form/kpi-award-f
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { Model } from '../../../../../models/model';
 import { CollaboratorKpiAwardPrintComponent } from '../kpi-award-print/kpi-award-print.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-kpi-award-list',
@@ -44,6 +45,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -54,7 +56,7 @@ export class CollaboratorKpiAwardListComponent extends AgGridDataManagerListComp
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

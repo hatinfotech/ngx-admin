@@ -25,6 +25,7 @@ import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/colu
 import { ActionControl } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
+import { RootServices } from '../../../../services/root.services';
 // import { AgGridColumn } from '@ag-grid-community/angular';
 var CryptoJS = require("crypto-js");
 
@@ -45,6 +46,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
   @ViewChild('agProductList') agProductList: AgDynamicListComponent<any>;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -54,7 +56,7 @@ export class ImportProductDialogComponent extends BaseComponent implements OnIni
     public currencyPipe: CurrencyPipe,
     public ref?: NbDialogRef<ImportProductDialogComponent>,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
 
     /** AG-Grid */
     this.updateGridColumn();

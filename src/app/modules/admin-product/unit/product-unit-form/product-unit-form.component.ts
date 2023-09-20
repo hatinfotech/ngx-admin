@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminProductService } from '../../admin-product.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-product-unit-form',
@@ -22,6 +23,7 @@ export class ProductUnitFormComponent extends DataManagerFormComponent<ProductUn
   baseFormUrl = '/admin-product/units/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -32,7 +34,7 @@ export class ProductUnitFormComponent extends DataManagerFormComponent<ProductUn
     public ref: NbDialogRef<ProductUnitFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

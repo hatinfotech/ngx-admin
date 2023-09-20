@@ -3,6 +3,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { HelpdeskUserModel } from '../../../../models/helpdesk.model';
 import { UserExtensionFormComponent } from '../user-extension-form/user-extension-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
@@ -30,6 +31,7 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -38,7 +40,7 @@ export class UserExtensionListComponent extends ServerDataManagerListComponent<H
     public _http: HttpClient,
     public ref: NbDialogRef<UserExtensionListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

@@ -22,6 +22,7 @@ import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-elemen
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 import { takeUntil } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -70,6 +71,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   }];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -79,7 +81,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     public cms: CommonService,
     public ref: NbDialogRef<CashPaymentVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

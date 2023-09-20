@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableTagsComponent, SmartTableRelativeVouchersComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { SmartTableDateTimeComponent, SmartTableCurrencyComponent, SmartTableButtonComponent, SmartTableRelativeVouchersComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
@@ -12,9 +12,8 @@ import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/comp
 import { CashVoucherModel } from '../../../../models/accounting.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
-import { CashPaymentVoucherListComponent } from '../../../accounting/cash/payment/cash-payment-voucher-list/cash-payment-voucher-list.component';
-import { CashPaymentVoucherPrintComponent } from '../../../accounting/cash/payment/cash-payment-voucher-print/cash-payment-voucher-print.component';
 import { CollaboratorCommissionPaymentFormComponent } from '../collaborator-commission-payment-form/collaborator-commission-payment-form.component';
 import { CollaboratorCommissionPaymentPrintComponent } from '../collaborator-commission-payment-print/collaborator-commission-payment-print.component';
 
@@ -40,6 +39,7 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -48,7 +48,7 @@ export class CollaboratorCommissionPaymentListComponent extends ServerDataManage
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorCommissionPaymentListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {

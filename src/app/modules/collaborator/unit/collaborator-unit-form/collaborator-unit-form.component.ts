@@ -7,6 +7,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ProductUnitModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-unit-form',
@@ -21,6 +22,7 @@ export class CollaboratorUnitFormComponent extends DataManagerFormComponent<Prod
   baseFormUrl = '/collaborator/product-unit/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -30,7 +32,7 @@ export class CollaboratorUnitFormComponent extends DataManagerFormComponent<Prod
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorUnitFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

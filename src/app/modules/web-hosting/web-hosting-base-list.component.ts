@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { WebHostingService } from './web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class WebHostingBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -25,6 +26,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
   // };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -32,7 +34,7 @@ export abstract class WebHostingBaseListComponent<M> extends DataManagerListComp
     public toastService: NbToastrService,
     public webHostingService: WebHostingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

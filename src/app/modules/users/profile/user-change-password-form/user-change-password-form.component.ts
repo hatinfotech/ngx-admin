@@ -9,6 +9,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserPhoneExtensionModel } from '../../../../models/user-phone-extension.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-change-password-form',
@@ -37,6 +38,7 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -45,7 +47,7 @@ export class UserChangePasswordFormComponent extends DataManagerFormComponent<Us
     public dialogService: NbDialogService,
     public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

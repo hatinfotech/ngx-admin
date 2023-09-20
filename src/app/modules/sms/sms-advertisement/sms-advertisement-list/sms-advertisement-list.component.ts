@@ -3,6 +3,7 @@ import { SmsModel } from '../../../../models/sms.model';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
 import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -25,6 +26,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
   formDialog = SmsAdvertisementFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -32,7 +34,7 @@ export class SmsAdvertisementListComponent extends DataManagerListComponent<SmsM
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

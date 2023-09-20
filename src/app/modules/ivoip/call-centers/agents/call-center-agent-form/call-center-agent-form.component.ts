@@ -9,6 +9,7 @@ import { CommonService } from '../../../../../services/common.service';
 import { IvoipService } from '../../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxDomainModel } from '../../../../../models/pbx-domain.model';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-call-center-agent-form',
@@ -65,6 +66,7 @@ export class CallCenterAgentFormComponent extends IvoipBaseFormComponent<PbxCall
   ];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -74,7 +76,7 @@ export class CallCenterAgentFormComponent extends IvoipBaseFormComponent<PbxCall
     public cms: CommonService,
     public ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   ngOnInit() {

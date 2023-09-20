@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ResourceModel } from '../../../../models/resource.model';
-import { ApiService } from '../../../../services/api.service';
 import { Router } from '@angular/router';
-import { CommonService } from '../../../../services/common.service';
+import { CommonService } from '../../../../../services/common.service';
+import { DataManagerListComponent, SmartTableSetting } from '../../../../../lib/data-manager/data-manger-list.component';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
+import { ResourceModel } from '../../../../../models/resource.model';
+import { RootServices } from '../../../../../services/root.services';
+import { ApiService } from '../../../../../services/api.service';
 
 @Component({
   selector: 'ngx-resource-list',
@@ -68,13 +69,14 @@ export class ResourceListComponent extends DataManagerListComponent<ResourceMode
   }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
     // this.apiPath = '/module/modules';
     // this.idKey = 'Name';
   }

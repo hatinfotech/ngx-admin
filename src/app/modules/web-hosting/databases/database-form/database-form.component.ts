@@ -10,6 +10,7 @@ import { WebHostingService } from '../../web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { WhDatabaseUserModel } from '../../../../models/wh-database-user.model';
 import { WhWebsiteModel } from '../../../../models/wh-website.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-database-form',
@@ -50,6 +51,7 @@ export class DatabaseFormComponent extends WebHostingBaseFormComponent<WhDatabas
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -59,7 +61,7 @@ export class DatabaseFormComponent extends WebHostingBaseFormComponent<WhDatabas
     public cms: CommonService,
     public webHostingService: WebHostingService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
   }
 
   async ngOnInit() {

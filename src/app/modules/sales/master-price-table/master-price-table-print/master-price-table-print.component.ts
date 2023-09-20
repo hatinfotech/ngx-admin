@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { MasterPriceTableFormComponent } from '../master-price-table-form/master-price-table-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-master-price-table-print',
@@ -34,13 +35,14 @@ export class MasterPriceTablePrintComponent extends DataManagerPrintComponent<Sa
   @Input('params') params: any;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<MasterPriceTablePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   style = /*css*/ `

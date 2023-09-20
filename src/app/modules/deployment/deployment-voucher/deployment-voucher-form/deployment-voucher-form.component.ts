@@ -33,6 +33,7 @@ import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choo
 import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.model';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-deployment-voucher-form',
@@ -70,6 +71,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
   unitList: ProductUnitModel[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -81,7 +83,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     public adminProductService?: AdminProductService,
     public datePipe?: DatePipe
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

@@ -14,13 +14,15 @@ import { CommonService } from '../../../../services/common.service';
 import { CurrencyPipe } from '@angular/common';
 import { CollaboratorEducationArticleModel } from '../../../../models/collaborator.model';
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
+import { RootServices } from '../../../../services/root.services';
 
 class MyUploadAdapter {
   xhr: XMLHttpRequest;
   loader: any;
   options: any;
   editor: any;
-  constructor(loader: any, options: any) {
+  constructor(
+    public rsv: RootServices,loader: any, options: any) {
     // The file loader instance to use during the upload.
     this.loader = loader;
     this.options = options;
@@ -120,7 +122,7 @@ function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
     // Configure the URL to the upload script in your back-end here!
     const options = editor.config.get('simpleUpload');
-    return new MyUploadAdapter(loader, options);
+    return new MyUploadAdapter(this.rsv, loader, options);
   };
 }
 @Component({
@@ -144,6 +146,7 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
   env = environment;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -155,7 +158,7 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
     public currencyPipe: CurrencyPipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -236,7 +239,7 @@ export class CollaboratorEducationArticleFormComponent extends DataManagerFormCo
         };
       },
     },
-  };
+  } as any;
 
   uploadConfig = {
 

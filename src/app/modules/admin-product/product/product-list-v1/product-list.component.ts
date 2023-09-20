@@ -26,6 +26,7 @@ import { AssignContainerFormComponent } from '../../../warehouse/goods/assign-co
 import { defaultMaxListeners } from 'stream';
 import { ImportProductDialogComponent } from '../import-products-dialog/import-products-dialog.component';
 import { Ng2SmartTableComponent } from 'ng2-smart-table';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-product-list-v1',
@@ -62,6 +63,7 @@ export class ProductListV1Component extends ServerDataManagerListComponent<Produ
   @Input() pagingConfig: { display: boolean, perPage: number }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -71,7 +73,7 @@ export class ProductListV1Component extends ServerDataManagerListComponent<Produ
     public ref: NbDialogRef<ProductListV1Component>,
     public adminProductService: AdminProductService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   ngOnDestroy(): void {

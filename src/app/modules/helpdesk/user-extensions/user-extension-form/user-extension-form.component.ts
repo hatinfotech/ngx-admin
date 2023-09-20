@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../../models/user.model';
 import { IvoipService, PbxDomainSelection } from '../../../ivoip/ivoip-service';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-extension-form',
@@ -59,6 +60,7 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -69,7 +71,7 @@ export class UserExtensionFormComponent extends DataManagerFormComponent<Helpdes
     public ref: NbDialogRef<UserExtensionFormComponent>,
     public ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit() {

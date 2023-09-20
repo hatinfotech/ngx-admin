@@ -10,6 +10,7 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { BaseComponent } from '../../../lib/base-component';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { RootServices } from '../../../services/root.services';
 
 /**
 this.cms.openDialog(DialogFormComponent, {
@@ -104,12 +105,13 @@ export class DialogFormComponent extends BaseComponent implements OnInit, AfterV
   inited = new BehaviorSubject<boolean>(false);
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<DialogFormComponent>,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.formGroup = new FormGroup({});
 
     if (this.actions) {

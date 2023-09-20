@@ -11,6 +11,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
 import { WarehouseGoodsContainerModel, GoodsModel } from '../../../../models/warehouse.model';
 import { rejects } from 'assert';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-assign-containers-form',
@@ -48,12 +49,13 @@ export class AssignContainerFormComponent extends BaseComponent implements OnIni
   processing = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AssignContainerFormComponent>,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
   }
 
   ngOnInit() {

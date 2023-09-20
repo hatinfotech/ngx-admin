@@ -13,6 +13,7 @@ import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { CollaboratorOrderTeleCommitFormComponent } from '../collaborator-order-tele-commit/collaborator-order-tele-commit.component';
 import { filter, take } from 'rxjs/operators';
+import { RootServices } from '../../../../services/root.services';
 
 declare var $: JQueryStatic;
 
@@ -33,6 +34,7 @@ export class CollaboratorOrderTeleCommitPrintComponent extends DataManagerPrintC
   idKey: ['Code'];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -40,7 +42,7 @@ export class CollaboratorOrderTeleCommitPrintComponent extends DataManagerPrintC
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

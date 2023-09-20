@@ -1,12 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { FileStoreModel } from '../../../../models/file.model';
-import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ApiService } from '../../../../services/api.service';
-import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { CommonService } from '../../../../services/common.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { ActivatedRoute, Router } from "@angular/router";
+import { NbToastrService, NbDialogService, NbDialogRef } from "@nebular/theme";
+import { DataManagerFormComponent } from "../../../../../lib/data-manager/data-manager-form.component";
+import { FileStoreModel } from "../../../../../models/file.model";
+import { ApiService } from "../../../../../services/api.service";
+import { CommonService } from "../../../../../services/common.service";
+import { RootServices } from "../../../../../services/root.services";
 
 @Component({
   selector: 'ngx-file-store-form',
@@ -21,6 +22,7 @@ export class FileStoreFormComponent extends DataManagerFormComponent<FileStoreMo
   baseFormUrl = '/file/store/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -30,7 +32,7 @@ export class FileStoreFormComponent extends DataManagerFormComponent<FileStoreMo
     public cms: CommonService,
     public ref: NbDialogRef<FileStoreFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

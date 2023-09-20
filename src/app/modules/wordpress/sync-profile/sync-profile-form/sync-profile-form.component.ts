@@ -16,6 +16,7 @@ import { AgButtonCellRenderer } from '../../../../lib/custom-element/ag-list/cel
 import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/cell/checkbox.component';
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sync-profile-form',
@@ -30,6 +31,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
   apiPath = '/wordpress/wp-sync-profiles';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -40,7 +42,7 @@ export class WordpressSyncProfileFormComponent extends DataManagerFormComponent<
     public ref: NbDialogRef<WordpressSyncProfileFormComponent>,
     public themeService: NbThemeService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.updateGridColumn();

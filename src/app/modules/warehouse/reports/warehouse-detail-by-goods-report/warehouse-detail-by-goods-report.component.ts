@@ -12,6 +12,7 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { WarehouseService } from '../../warehouse.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-detail-by-goods-report',
@@ -47,6 +48,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
   @Input() reportComponent: Type<any> | TemplateRef<any>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -56,7 +58,7 @@ export class WarehouseDetailByGoodsReportComponent extends ServerDataManagerList
     public ref: NbDialogRef<WarehouseDetailByGoodsReportComponent>,
     public accountingService: WarehouseService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

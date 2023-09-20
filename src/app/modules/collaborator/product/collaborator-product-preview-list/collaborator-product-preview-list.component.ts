@@ -14,6 +14,7 @@ import { PageModel } from '../../../../models/page.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel, ProductUnitConversoinModel } from '../../../../models/product.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { AssignCategoriesFormComponent } from '../../../admin-product/product/assign-categories-form/assign-categories-form.component';
 import { CollaboratorService } from '../../collaborator.service';
@@ -45,6 +46,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   unitList: UnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -54,7 +56,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
     public ref: NbDialogRef<CollaboratorProductPreviewListComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
 

@@ -11,6 +11,7 @@ import { WpSiteModel } from '../../../../models/wordpress.model';
 import { CrawlService } from '../../crawl.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { takeUntil } from 'rxjs/operators';
+import { RootServices } from '../../../../services/root.services';
 
 export interface CrawlLog {
   plan: string;
@@ -108,6 +109,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
   crawlAlgorithmList: { id: string, text: string }[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -118,7 +120,7 @@ export class CrawlPlanFormComponent extends DataManagerFormComponent<CrawlPlanMo
     public ref: NbDialogRef<CrawlPlanFormComponent>,
     public service: CrawlService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WebHostingBaseListComponent } from '../../web-hosting-base-list.component';
 import { WhDatabaseModel } from '../../../../models/wh-database.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -57,6 +58,7 @@ export class DatabaseListComponent extends WebHostingBaseListComponent<WhDatabas
   }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -64,7 +66,7 @@ export class DatabaseListComponent extends WebHostingBaseListComponent<WhDatabas
     public toastService: NbToastrService,
     public webHostingService: WebHostingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, webHostingService);
+    super(rsv, apiService, router, cms, dialogService, toastService, webHostingService);
 
   }
 

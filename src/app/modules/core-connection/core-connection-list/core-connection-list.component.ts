@@ -18,6 +18,7 @@ import { DialogFormComponent } from '../../dialog/dialog-form/dialog-form.compon
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { MobileAppService } from '../../mobile-app/mobile-app.service';
 import { CoreConnectionFormComponent } from '../core-connection-form/core-connection-form.component';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-core-connection-list',
@@ -42,6 +43,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class CoreConnectionListComponent extends ServerDataManagerListComponent<
     public ref: NbDialogRef<CoreConnectionListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

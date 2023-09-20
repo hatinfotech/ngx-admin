@@ -5,6 +5,7 @@ import { WarehouseGoodsFindOrderTempPrintComponent } from '../warehouse-goods-fi
 import { Component, OnInit } from '@angular/core';
 import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
@@ -45,6 +46,7 @@ export class WarehouseGoodsListComponent extends ProductListV1Component implemen
   containerList: WarehouseGoodsContainerModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class WarehouseGoodsListComponent extends ProductListV1Component implemen
     public adminProductService: AdminProductService,
     public decimalPipe: DecimalPipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, _http, ref, adminProductService);
+    super(rsv, apiService, router, cms, dialogService, toastService, _http, ref, adminProductService);
   }
 
   loadListSetting(): SmartTableSetting {

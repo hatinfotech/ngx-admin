@@ -5,6 +5,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-form',
@@ -19,6 +20,7 @@ export class PurchaseGoodsFormComponent extends ProductFormComponent implements 
   baseFormUrl = '/admin-product/product/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -28,7 +30,7 @@ export class PurchaseGoodsFormComponent extends ProductFormComponent implements 
     public cms: CommonService,
     public ref?: NbDialogRef<PurchaseGoodsFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit(): void {

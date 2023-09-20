@@ -5,6 +5,7 @@ import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 
@@ -21,13 +22,14 @@ export class PriceTablePrintAsListComponent extends DataManagerPrintComponent<Sa
   env = environment;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<PriceTablePrintAsListComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
   }
 
   ngOnInit() {

@@ -10,7 +10,9 @@ import { SmartTableSetting } from "../../../../lib/data-manager/data-manger-list
 import { ServerDataManagerListComponent } from "../../../../lib/data-manager/server-data-manger-list.component";
 import { ResourcePermissionEditComponent } from "../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component";
 import { WarehouseGoodsDeliveryNoteModel } from "../../../../models/warehouse.model";
-import { ApiService } from "../../../../services/api.service";
+import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from "../../../../services/common.service";
 // import { AppModule } from "../../warehouse.module";
 import { WarehouseGoodsDeliveryNoteFormComponent } from "../warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component";
@@ -34,6 +36,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
   printDialog = WarehouseGoodsDeliveryNotePrintComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -42,7 +45,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends ServerDataManagerLi
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseGoodsDeliveryNoteListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
 
     if (this.ref && Object.keys(this.ref).length > 0) {
       for (const actionButton of this.actionButtonList) {

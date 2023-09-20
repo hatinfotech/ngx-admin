@@ -14,6 +14,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { DynamicListDialogComponent } from '../../../dialog/dynamic-list-dialog/dynamic-list-dialog.component';
 import { CollaboratorCommissionDetailPrintComponent } from '../collaborator-commission-detail-print/collaborator-commission-detail-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-commission-print',
@@ -31,6 +32,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
   processMapList: ProcessMap[] = [];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -38,7 +40,7 @@ export class CollaboratorCommissionPrintComponent extends DataManagerPrintCompon
     private datePipe: DatePipe,
     private decimalPipe: DecimalPipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

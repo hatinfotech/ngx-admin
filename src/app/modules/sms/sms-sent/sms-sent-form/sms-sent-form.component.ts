@@ -9,6 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sms-sent-form',
@@ -287,6 +288,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
   brandnameList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -296,7 +298,7 @@ export class SmsSentFormComponent extends DataManagerFormComponent<SmsModel> imp
     public cms: CommonService,
     public elRef: ElementRef,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];

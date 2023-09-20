@@ -11,6 +11,7 @@ import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
 import { ContactModel } from '../../../../../models/contact.model';
+import { RootServices } from '../../../../../services/root.services';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -33,6 +34,7 @@ export class AccountingAccountDetailsReportPrintComponent extends DataManagerPri
   @Input() query = {};
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -41,7 +43,7 @@ export class AccountingAccountDetailsReportPrintComponent extends DataManagerPri
     private currencyPipe: CurrencyPipe,
     public accountingService: AccountingService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

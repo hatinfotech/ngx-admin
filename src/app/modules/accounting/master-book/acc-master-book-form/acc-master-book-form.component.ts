@@ -3,20 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
-import { takeUntil } from 'rxjs/operators';
-import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { AccMasterBookEntryModel, AccMasterBookModel, AccountModel } from '../../../../models/accounting.model';
-import { ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
-import { SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
-import { UnitModel } from '../../../../models/unit.model';
-import { WarehouseModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
+import { AccMasterBookModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { WarehouseBookFormComponent } from '../../../warehouse/book/warehouse-book-form/warehouse-book-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-acc-master-book-form',
@@ -43,6 +34,7 @@ export class AccMasterBookFormComponent extends DataManagerFormComponent<AccMast
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +44,7 @@ export class AccMasterBookFormComponent extends DataManagerFormComponent<AccMast
     public cms: CommonService,
     public ref: NbDialogRef<AccMasterBookFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

@@ -14,6 +14,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { Component as F7Component } from 'framework7';
 import { HeldpeskServiceService } from '../../heldpesk-service.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-quick-ticket-form',
@@ -238,6 +239,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
   f7ChatRoom: F7Component & { sendMessage?: (message: any) => void };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -250,7 +252,7 @@ export class QuickTicketFormComponent extends DataManagerFormComponent<HelpdeskT
     public ref?: NbDialogRef<QuickTicketFormComponent>,
     public helpdeskService?: HeldpeskServiceService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
     this.silent = true;
     if (this.ticketCode) {
       this.id = [this.ticketCode];

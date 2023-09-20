@@ -15,6 +15,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { CommercePosOrderFormComponent } from '../commerce-pos-order-form/commerce-pos-order-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-pos-order-print',
@@ -33,13 +34,14 @@ export class CommercePosOrderPrintComponent extends DataManagerPrintComponent<Co
   formDialog = CommercePosOrderFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosOrderPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

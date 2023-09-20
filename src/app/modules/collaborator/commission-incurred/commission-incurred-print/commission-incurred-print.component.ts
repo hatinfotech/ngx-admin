@@ -16,6 +16,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { CollaboratorCommissionIncurredFormComponent } from '../commission-incurred-form/commission-incurred-form.component';
 import { filter, take } from 'rxjs/operators';
 import { CollaboratorCommissionIncurredDetailModel, CollaboratorCommissionIncurredModel } from '../../../../models/collaborator.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-commission-incurred-print',
@@ -34,6 +35,7 @@ export class CollaboratorCommissionIncurredPrintComponent extends DataManagerPri
   formDialog = CollaboratorCommissionIncurredFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -42,7 +44,7 @@ export class CollaboratorCommissionIncurredPrintComponent extends DataManagerPri
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

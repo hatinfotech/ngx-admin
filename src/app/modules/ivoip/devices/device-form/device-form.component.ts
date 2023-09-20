@@ -11,6 +11,7 @@ import { PbxDeviceVendorModel } from '../../../../models/pbx-device-vendor.model
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-device-form',
@@ -64,6 +65,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -74,7 +76,7 @@ export class DeviceFormComponent extends IvoipBaseFormComponent<PbxDeviceModel> 
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<DeviceFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   ngOnInit() {

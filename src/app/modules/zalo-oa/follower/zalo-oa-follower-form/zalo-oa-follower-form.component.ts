@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-zalo-oa-follower-form',
@@ -115,6 +116,7 @@ export class ZaloOaFollowerFormComponent extends DataManagerFormComponent<Contac
 
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -124,7 +126,7 @@ export class ZaloOaFollowerFormComponent extends DataManagerFormComponent<Contac
     public cms: CommonService,
     public ref: NbDialogRef<ZaloOaFollowerFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

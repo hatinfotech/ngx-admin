@@ -9,6 +9,7 @@ import { ContactDetailModel, ContactModel } from '../../../../models/contact.mod
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccBusinessFormComponent } from '../../../accounting/acc-business/acc-business-form/acc-business-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-service-by-cycle-form',
@@ -23,6 +24,7 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
   apiPath = '/commerce-service-by-cycle/service-by-cycles';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -32,7 +34,7 @@ export class CommerceServiceByCycleFormComponent extends DataManagerFormComponen
     public cms: CommonService,
     public ref: NbDialogRef<CommerceServiceByCycleFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   select2ContactOption = {

@@ -12,6 +12,7 @@ import { WordpressOrderFormComponent } from '../order-form/order-form.component'
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { WpOrderDetailModel, WpOrderModel } from '../../../../models/wordpress.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-wordpress-order-print',
@@ -30,13 +31,14 @@ export class WordpressOrderPrintComponent extends DataManagerPrintComponent<WpOr
   formDialog = WordpressOrderFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WordpressOrderPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

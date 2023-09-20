@@ -11,6 +11,7 @@ import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel 
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { trim } from 'jquery';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sales-product-qrcode-print',
@@ -116,13 +117,14 @@ export class SalesProductQrCodePrintComponent extends DataManagerPrintComponent<
   `;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesProductQrCodePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

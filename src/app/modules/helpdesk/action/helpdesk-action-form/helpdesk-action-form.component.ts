@@ -7,6 +7,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HelpdeskActionModel } from '../../../../models/helpdesk.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-helpdesk-action-form',
@@ -46,6 +47,7 @@ export class HelpdeskActionFormComponent extends DataManagerFormComponent<Helpde
   }
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -55,7 +57,7 @@ export class HelpdeskActionFormComponent extends DataManagerFormComponent<Helpde
     public cms: CommonService,
     public ref: NbDialogRef<HelpdeskActionFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

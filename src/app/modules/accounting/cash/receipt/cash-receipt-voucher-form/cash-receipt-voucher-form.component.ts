@@ -21,6 +21,7 @@ import { AccBusinessFormComponent } from '../../../acc-business/acc-business-for
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
 import { ReferenceChoosingDialogComponent } from '../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CollaboratorOrderModel } from '../../../../../models/collaborator.model';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-cash-receipt-voucher-form',
@@ -72,6 +73,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
   }];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -81,7 +83,7 @@ export class CashReceiptVoucherFormComponent extends DataManagerFormComponent<Ca
     public cms: CommonService,
     public ref: NbDialogRef<CashReceiptVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

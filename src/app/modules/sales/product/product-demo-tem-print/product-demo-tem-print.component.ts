@@ -8,6 +8,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-product-demo-tem-print',
@@ -91,13 +92,14 @@ export class SalesProductDemoTemPrintComponent extends DataManagerPrintComponent
   `;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesProductDemoTemPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

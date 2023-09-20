@@ -31,6 +31,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { BusinessModel } from '../../../../models/accounting.model';
 import { FileModel } from '../../../../models/file.model';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { RootServices } from '../../../../services/root.services';
 var CryptoJS = require("crypto-js");
 
 @Component({
@@ -113,6 +114,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -124,7 +126,7 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     public ref: NbDialogRef<PurchaseOrderVoucherFormComponent>,
     // public changeDirectorRef: ChangeDetectorRef,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

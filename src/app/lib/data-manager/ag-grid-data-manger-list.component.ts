@@ -18,6 +18,7 @@ import { InfiniteRowModelModule } from '@ag-grid-community/infinite-row-model';
 import { DataManagerListComponent } from './data-manger-list.component';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ResourcePermissionEditComponent } from '../lib-system/components/resource-permission-edit/resource-permission-edit.component';
+import { RootServices } from '../../services/root.services';
 
 @Component({ template: '' })
 export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -87,6 +88,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     //   // 'justify-content': 'center',
     //   'align-items': 'center',
     // },
+    cellClass: 'ag-cell-items-center',
   };
 
   @Input() gridOptions: GridOptions = {
@@ -143,6 +145,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
   // };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -151,7 +154,7 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     public themeService: NbThemeService,
     public ref?: NbDialogRef<AgGridDataManagerListComponent<M, F>>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
     this.themeName = this.themeMap[this.themeService.currentTheme];
     this.themeService.onThemeChange().pipe(takeUntil(this.destroy$)).subscribe(theme => {
       this.themeName = this.themeMap[theme.name];

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { WordpressProductFormComponent } from '../product-form/product-form.component';
 import { ProductModel } from '../../../../models/product.model';
@@ -47,6 +48,7 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
   refCategoriesLoading = false;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -57,7 +59,7 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
     public datePipe: DatePipe,
     public wordpressService: WordpressService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

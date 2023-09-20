@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { WebHostingService } from '../../web-hosting-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-database-user-form',
@@ -22,6 +23,7 @@ export class DatabaseUserFormComponent extends WebHostingBaseFormComponent<WhDat
   baseFormUrl = '/web-hosting/database-users/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class DatabaseUserFormComponent extends WebHostingBaseFormComponent<WhDat
     public cms: CommonService,
     public webHostingService: WebHostingService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
   }
 
   ngOnInit() {

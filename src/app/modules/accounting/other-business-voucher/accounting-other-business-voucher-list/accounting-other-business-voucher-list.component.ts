@@ -4,6 +4,7 @@ import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@
 import { AppModule } from '../../../../app.module';
 import { OtherBusinessVoucherModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
@@ -46,6 +47,7 @@ export class AccountingOtherBusinessVoucherListComponent extends AgGridDataManag
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class AccountingOtherBusinessVoucherListComponent extends AgGridDataManag
     public ref: NbDialogRef<AccountingOtherBusinessVoucherListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

@@ -14,6 +14,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput } from '../../../../../vendor/ngx-uploader/src/public_api';
 import { ColumnApi, GridApi, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/core';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-email-address-form',
@@ -28,6 +29,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
   baseFormUrl = '/email-marketing/address/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -37,7 +39,7 @@ export class EmailAddressFormComponent extends DataManagerFormComponent<EmailAdd
     public cms: CommonService,
     public ref: NbDialogRef<EmailAddressFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** AG-Grid */
     this.columnDefs = [

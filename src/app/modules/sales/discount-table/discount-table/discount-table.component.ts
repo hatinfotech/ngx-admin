@@ -19,6 +19,7 @@ import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/col
 import { SalesDiscountTableModel } from '../../../../models/sales.model';
 import { DiscountTableUpdateNoteFormComponent } from '../../discount-table-update-note/discount-table-update-note-form/discount-table-update-note-form.component';
 import { agMakeNumberColDef } from '../../../../lib/custom-element/ag-list/column-define/number.define';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-discount-table',
@@ -46,6 +47,7 @@ export class SalesDiscountTableComponent extends AgGridDataManagerListComponent<
   discountTableList: SalesDiscountTableModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class SalesDiscountTableComponent extends AgGridDataManagerListComponent<
     public ref: NbDialogRef<SalesDiscountTableComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

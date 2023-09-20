@@ -16,6 +16,7 @@ import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerFormComponent } from './data-manager-form.component';
 import { DataManagerPrintComponent } from './data-manager-print.component';
 import { ProcessMap } from '../../models/process-map.model';
+import { RootServices } from '../../services/root.services';
 
 export class SmartTableSetting {
   mode?: string;
@@ -117,6 +118,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
   }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -124,7 +126,7 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
     public toastService: NbToastrService,
     public ref?: NbDialogRef<DataManagerListComponent<M>>,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   async getFormData(ids: string[]): Promise<M[]> {

@@ -11,6 +11,7 @@ import { CommonService } from '../../../../../../services/common.service';
 import { Model } from '../../../../../../models/model';
 import { CollaboratorKpiStrategyFormComponent } from '../../kpi-strategy-form/kpi-strategy-form.component';
 import { CollaboratorKpiStrategyListComponent } from '../../kpi-strategy-list/kpi-strategy-list.component';
+import { RootServices } from '../../../../../../services/root.services';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -33,13 +34,14 @@ export class CollaboratorKpiStrategyInfoComponent extends DataManagerPrintCompon
   @Input() isSimple = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorKpiStrategyInfoComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.processingMap = {
       "APPROVED": {
         ...AppModule.approvedState,

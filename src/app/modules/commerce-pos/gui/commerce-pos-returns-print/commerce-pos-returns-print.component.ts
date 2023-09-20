@@ -12,6 +12,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { WarehouseGoodsDeliveryNoteModel, WarehouseGoodsDeliveryNoteDetailModel, WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-pos-returns-print',
@@ -100,13 +101,14 @@ export class CommercePosReturnsPrintComponent extends DataManagerPrintComponent<
   registerInfo: any;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CommercePosReturnsPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;
     });

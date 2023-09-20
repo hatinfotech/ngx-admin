@@ -12,6 +12,7 @@ import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/comp
 import { CollaboratorAwardVoucherModel } from '../../../../models/collaborator.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorAwardFormComponent } from '../collaborator-award-form/collaborator-award-form.component';
 import { CollaboratorAwardPrintComponent } from '../collaborator-award-print/collaborator-award-print.component';
@@ -43,6 +44,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
   @Input('filter') filter: any;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class CollaboratorAwardListComponent extends ServerDataManagerListCompone
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorAwardListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

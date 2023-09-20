@@ -33,6 +33,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe } from '@angular/common';
 import { MktMemberCardModel } from '../../../../models/marketing.model';
+import { RootServices } from '../../../../services/root.services';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -105,6 +106,7 @@ export class MktMemberCardFormComponent extends DataManagerFormComponent<MktMemb
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -116,7 +118,7 @@ export class MktMemberCardFormComponent extends DataManagerFormComponent<MktMemb
     public adminProductService?: AdminProductService,
     public datePipe?: DatePipe
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     // this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

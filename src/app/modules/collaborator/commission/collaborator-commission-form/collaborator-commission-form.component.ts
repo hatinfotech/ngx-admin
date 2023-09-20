@@ -21,6 +21,7 @@ import { ColDef } from '@ag-grid-community/core';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
 import { AgNumberCellRenderer } from '../../../../lib/custom-element/ag-list/cell/number.component';
 import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-commission-form',
@@ -42,6 +43,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
   accountingBusinessList: BusinessModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +54,7 @@ export class CollaboratorCommissionFormComponent extends DataManagerFormComponen
     public ref: NbDialogRef<CollaboratorCommissionFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { FileStoreModel } from '../../../../models/file.model';
-import { ApiService } from '../../../../services/api.service';
-import { Router } from '@angular/router';
-import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FileStoreFormComponent } from '../file-store-form/file-store-form.component';
-import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ZaloOaOfficialAccountModel } from '../../../../models/zalo-oa.model';
-import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
-import { takeUntil } from 'rxjs/operators';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Component, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
+import { takeUntil } from "rxjs/operators";
+import { SmartTableButtonComponent } from "../../../../../lib/custom-element/smart-table/smart-table.component";
+import { DataManagerListComponent, SmartTableSetting } from "../../../../../lib/data-manager/data-manger-list.component";
+import { FileStoreModel } from "../../../../../models/file.model";
+import { ApiService } from "../../../../../services/api.service";
+import { CommonService } from "../../../../../services/common.service";
+import { RootServices } from "../../../../../services/root.services";
+import { ShowcaseDialogComponent } from "../../../../dialog/showcase-dialog/showcase-dialog.component";
+import { FileStoreFormComponent } from "../file-store-form/file-store-form.component";
 
 @Component({
   selector: 'ngx-file-store-list',
@@ -127,6 +127,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
   }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -134,7 +135,7 @@ export class FileStoreListComponent extends DataManagerListComponent<FileStoreMo
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

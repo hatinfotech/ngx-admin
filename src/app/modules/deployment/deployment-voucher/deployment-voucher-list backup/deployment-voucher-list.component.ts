@@ -12,6 +12,7 @@ import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/comp
 import { DeploymentVoucherModel } from '../../../../models/deployment.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherPrintComponent } from '../deployment-voucher-print/deployment-voucher-print.component';
@@ -41,6 +42,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -50,7 +52,7 @@ export class DeploymentVoucherListComponent extends ServerDataManagerListCompone
     public ref: NbDialogRef<DeploymentVoucherListComponent>,
     public mobileAppService: MobileAppService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

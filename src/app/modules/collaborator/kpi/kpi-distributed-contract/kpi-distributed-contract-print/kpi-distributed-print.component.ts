@@ -11,6 +11,7 @@ import { CommonService } from '../../../../../services/common.service';
 import { Model } from '../../../../../models/model';
 import { CollaboratorKpiDistributedContractFormComponent } from '../kpi-distributed-contract-form/kpi-distributed-contract-form.component';
 import { CollaboratorKpiDistributedContractListComponent } from '../kpi-distributed-contract-list/kpi-distributed-contract-list.component';
+import { RootServices } from '../../../../../services/root.services';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -32,13 +33,14 @@ export class CollaboratorKpiDistributedContractPrintComponent extends DataManage
   processingMap;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorKpiDistributedContractPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.processingMap = CollaboratorKpiDistributedContractListComponent.processingMap;
   }
 

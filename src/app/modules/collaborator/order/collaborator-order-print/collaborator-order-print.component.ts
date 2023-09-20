@@ -17,6 +17,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { CollaboratorOrderTeleCommitPrintComponent } from '../collaborator-order-tele-commit-print/collaborator-order-tele-commit-print.component';
 import { CollaboratorOrderFormComponent } from '../collaborator-order-form/collaborator-order-form.component';
 import { filter, take } from 'rxjs/operators';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-order-print',
@@ -35,6 +36,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
   formDialog = CollaboratorOrderFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -43,7 +45,7 @@ export class CollaboratorOrderPrintComponent extends DataManagerPrintComponent<C
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

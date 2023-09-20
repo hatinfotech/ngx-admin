@@ -8,6 +8,7 @@ import { PbxDomainModel } from '../../models/pbx-domain.model';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { ServerDataManagerListComponent } from '../../lib/data-manager/server-data-manger-list.component';
 import { CdrModel } from '../../models/cdr.model';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerListComponent<M> implements OnInit, ReuseComponent {
@@ -17,6 +18,7 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
   activePbxDoamin: string;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -24,7 +26,7 @@ export abstract class IvoipServerBaseListComponent<M> extends ServerDataManagerL
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

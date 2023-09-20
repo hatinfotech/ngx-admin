@@ -19,6 +19,7 @@ import { ContactFormComponent } from '../contact/contact-form/contact-form.compo
 import { IGetRowsParams } from '@ag-grid-community/core';
 import { ContactSupplierListComponent } from '../contact-supplier-list/contact-supplier-list.component';
 import { DatePipe } from '@angular/common';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-employee-list',
@@ -31,6 +32,7 @@ export class ContactEmployeeListComponent extends ContactAllListComponent implem
   static _dialog: NbDialogRef<ContactEmployeeListComponent>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -41,7 +43,7 @@ export class ContactEmployeeListComponent extends ContactAllListComponent implem
     public ref: NbDialogRef<ContactSupplierListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref, datePipe);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref, datePipe);
   }
 
   async init() {

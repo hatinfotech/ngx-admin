@@ -13,6 +13,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { MktMemberCardFormComponent } from '../member-card-form/member-card-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-mkt-member-card-print',
@@ -170,6 +171,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<any> 
   };
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -177,7 +179,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<any> 
     public datePipe: DatePipe,
     public formBuilder?: FormBuilder,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

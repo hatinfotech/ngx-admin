@@ -22,6 +22,7 @@ import { agMakeCurrencyColDef } from '../../../../../lib/custom-element/ag-list/
 import { agMakeCommandColDef } from '../../../../../lib/custom-element/ag-list/column-define/command.define';
 import { ColDef } from '@ag-grid-community/core';
 import { IGetRowsParams } from 'ag-grid-community';
+import { RootServices } from '../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-list',
@@ -47,6 +48,7 @@ export class CashPaymentVoucherListComponent extends AgGridDataManagerListCompon
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -56,7 +58,7 @@ export class CashPaymentVoucherListComponent extends AgGridDataManagerListCompon
     public ref: NbDialogRef<CashPaymentVoucherListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

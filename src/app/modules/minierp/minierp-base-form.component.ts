@@ -7,11 +7,13 @@ import { CommonService } from '../../services/common.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from './minierp-service.service';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class MinierpBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -21,7 +23,7 @@ export abstract class MinierpBaseFormComponent<M> extends DataManagerFormCompone
     public cms: CommonService,
     public minierpService: MinierpService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

@@ -7,6 +7,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { BaseComponent } from '../../../lib/base-component';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-report',
@@ -20,6 +21,7 @@ export class AccountingReportComponent extends BaseComponent {
   formItem: FormGroup;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -27,7 +29,7 @@ export class AccountingReportComponent extends BaseComponent {
     public accountingService?: AccountingService,
     public formBuilder?: FormBuilder,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
 
     const reportFromDate = localStorage.getItem('Accounting.ReportFromDate');
     const reportToDate = localStorage.getItem('Accounting.ReportToDate');

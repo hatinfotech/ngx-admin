@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { PbxCallBlockModel } from '../../../../models/pbx-call-block.model';
 import { IvoipBaseFormComponent } from '../../ivoip-base-form.component';
 import { IvoipService } from '../../ivoip-service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-call-block-form',
@@ -22,6 +23,7 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
   baseFormUrl = '/ivoip/call-blocks/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -32,7 +34,7 @@ export class CallBlockFormComponent extends IvoipBaseFormComponent<PbxCallBlockM
     public ivoipService: IvoipService,
     public ref: NbDialogRef<CallBlockFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   blockActions: { id: string, text: string, Code: string, Name: string }[];

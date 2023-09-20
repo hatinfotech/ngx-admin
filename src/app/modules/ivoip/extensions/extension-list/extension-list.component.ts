@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { PbxExtensionModel } from '../../../../models/pbx-extension.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -53,6 +54,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
   formDialog = ExtensionFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -60,7 +62,7 @@ export class ExtensionListComponent extends IvoipServerBaseListComponent<PbxExte
     public toastService: NbToastrService,
     public ivoipService: IvoipService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};

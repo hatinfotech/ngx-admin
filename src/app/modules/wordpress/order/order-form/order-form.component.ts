@@ -26,6 +26,7 @@ import { ChatRoomModel, ChatRoomMemberModel } from '../../../../models/chat-room
 import { CollaboratorOrderPrintComponent } from '../../../collaborator/order/collaborator-order-print/collaborator-order-print.component';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { WordpressService } from '../../wordpress.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-wordpress-order-form',
@@ -36,6 +37,7 @@ import { WordpressService } from '../../wordpress.service';
 export class WordpressOrderFormComponent extends DataManagerFormComponent<WpOrderModel> implements OnInit {
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -48,7 +50,7 @@ export class WordpressOrderFormComponent extends DataManagerFormComponent<WpOrde
     public adminProductService: AdminProductService,
     public mobileAppService: MobileAppService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
@@ -330,7 +332,7 @@ export class WordpressOrderFormComponent extends DataManagerFormComponent<WpOrde
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',

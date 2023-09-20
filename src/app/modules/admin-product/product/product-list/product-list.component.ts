@@ -4,6 +4,7 @@ import { AdminProductService } from '../../admin-product.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from '@nebular/theme';
@@ -24,6 +25,7 @@ import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/s
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AppModule } from '../../../../app.module';
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
+import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
 
 @Component({
   selector: 'ngx-product-list',
@@ -65,6 +67,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
   @Input() pagingConfig: { display: boolean, perPage: number }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -75,7 +78,13 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     public adminProductService: AdminProductService,
     public themeService: NbThemeService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    // this.defaultColDef = {
+    //   ...this.defaultColDef,
+    //   cellClass: 'ag-cell-items-center',
+    // }
+
   }
 
   ngOnDestroy(): void {
@@ -223,12 +232,11 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
           filter: 'agTextColumnFilter',
         },
         {
+          ...agMakeTextColDef(this.cms),
           headerName: 'Tên',
           field: 'Name',
           pinned: 'left',
           width: 400,
-          filter: 'agTextColumnFilter',
-          cellRenderer: AgTextCellRenderer,
         },
         {
           ...agMakeTagsColDef(this.cms, (tag) => {

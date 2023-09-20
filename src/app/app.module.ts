@@ -160,20 +160,6 @@ import { PurchaseSimpleVoucherFormComponent } from './modules/purchase/voucher/p
 import { PurchaseVoucherFormComponent } from './modules/purchase/voucher/purchase-voucher-form/purchase-voucher-form.component';
 import { PurchaseVoucherListComponent } from './modules/purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { PurchaseVoucherPrintComponent } from './modules/purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
-import { MasterPriceTableFormComponent } from './modules/sales/master-price-table/master-price-table-form/master-price-table-form.component';
-import { MasterPriceTableListComponent } from './modules/sales/master-price-table/master-price-table-list/master-price-table-list.component';
-import { MasterPriceTablePrintComponent } from './modules/sales/master-price-table/master-price-table-print/master-price-table-print.component';
-import { SalesPriceReportFormComponent } from './modules/sales/price-report/sales-price-report-form/sales-price-report-form.component';
-import { SalesPriceReportListComponent } from './modules/sales/price-report/sales-price-report-list/sales-price-report-list.component';
-import { SalesPriceReportPrintComponent } from './modules/sales/price-report/sales-price-report-print/sales-price-report-print.component';
-import { PriceTableFormComponent } from './modules/sales/price-table/price-table-form/price-table-form.component';
-import { PriceTableListComponent } from './modules/sales/price-table/price-table-list/price-table-list.component';
-import { PriceTablePrintAsListComponent } from './modules/sales/price-table/price-table-print-as-list/price-table-print-as-list.component';
-import { PriceTablePrintComponent } from './modules/sales/price-table/price-table-print/price-table-print.component';
-import { SalesVoucherFormComponent } from './modules/sales/sales-voucher/sales-voucher-form/sales-voucher-form.component';
-import { SalesVoucherListComponent } from './modules/sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
-import { SalesVoucherPrintComponent } from './modules/sales/sales-voucher/sales-voucher-print/sales-voucher-print.component';
-import { SimpleSalesVoucherFormComponent } from './modules/sales/sales-voucher/simple-sales-voucher-form/simple-sales-voucher-form.component';
 import { WarehouseBookCommitComponent } from './modules/warehouse/book/warehouse-book-commit/warehouse-book-commit.component';
 import { WarehouseBookFormComponent } from './modules/warehouse/book/warehouse-book-form/warehouse-book-form.component';
 import { WarehouseBookListComponent } from './modules/warehouse/book/warehouse-book-list/warehouse-book-list.component';
@@ -215,7 +201,6 @@ import { AccountingReceivablesFromCustomersReportPrintComponent } from './module
 import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-details-report-print/accounting-receivables-from-customers-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
 import { AccountingLiabilitiesDetailsReportPrintComponent } from './modules/accounting/reports/print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
-import { SalesProductDemoTemPrintComponent } from './modules/sales/product/product-demo-tem-print/product-demo-tem-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from './modules/accounting/reports/print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingObjectCashFlowReportPrintComponent } from './modules/accounting/reports/print/accounting-object-cash-flow-report-print/accounting-object-cash-flow-report-print.component';
 import { AccountingCashFlowReportComponent } from './modules/accounting/reports/accounting-cash-flow-report/accounting-cash-flow-report.component';
@@ -227,15 +212,10 @@ import { CollaboratorOrderTeleCommitPrintComponent } from './modules/collaborato
 import { WarehouseInventoryAdjustNoteFormComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-form/inventory-adjust-note-form.component';
 import { WarehouseInventoryAdjustNoteListComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-list/inventory-adjust-note-list.component';
 import { WarehouseInventoryAdjustNotePrintComponent } from './modules/warehouse/inventory-adjust-note/inventory-adjust-note-print/inventory-adjust-note-print.component';
-import { SalesReturnsVoucherListComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-list/sales-returns-voucher-list.component';
-import { SalesReturnsVoucherFormComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-form/sales-returns-voucher-form.component';
-import { SalesReturnsVoucherPrintComponent } from './modules/sales/sales-returns-voucher/sales-returns-voucher-print/sales-returns-voucher-print.component';
 import { CommercePosGuiComponent } from './modules/commerce-pos/gui/commerce-pos-gui/commerce-pos-gui.component';
 import { CommercePosOrderFormComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-form/commerce-pos-order-form.component';
 import { CommercePosOrderPrintComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-print/commerce-pos-order-print.component';
 import { CommercePosOrderListComponent } from './modules/commerce-pos/commerce-pos-order/commerce-pos-order-list/commerce-pos-order-list.component';
-import { SalesProductListComponent } from './modules/sales/product/sales-product-list/sales-product-list.component';
-import { SalesProductQrCodePrintComponent } from './modules/sales/product/sales-product-qrcode-print/sales-product-qrcode-print.component';
 import { WarehouseGoodsFindOrderTempPrintComponent } from './modules/warehouse/goods/warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 import { CommercePosBillPrintComponent } from './modules/commerce-pos/gui/commerce-pos-order-print/commerce-pos-bill-print.component';
 import { CommercePosReturnsPrintComponent } from './modules/commerce-pos/gui/commerce-pos-returns-print/commerce-pos-returns-print.component';
@@ -250,7 +230,6 @@ import { CommercePosDashboardComponent } from './modules/commerce-pos/commerce-p
 import { CommercePosDeploymentVoucherPrintComponent } from './modules/commerce-pos/gui/commerce-pos-deployment-voucher-print/commerce-pos-deployment-voucher-print.component';
 import { WarehouseDashboardComponent } from './modules/warehouse/warehouse-dashboard/warehouse-dashboard.component';
 import { PurchaseDashboardComponent } from './modules/purchase/purchase-dashboard/purchase-dashboard.component';
-import { SalesDashboardComponent } from './modules/sales/sales-dashboard/sales-dashboard.component';
 import { NgxBarcodeModule } from 'ngx-barcode';
 import { CoreConnectionListComponent } from './modules/core-connection/core-connection-list/core-connection-list.component';
 import { CoreConnectionFormComponent } from './modules/core-connection/core-connection-form/core-connection-form.component';
@@ -280,16 +259,8 @@ import { WordpressSyncProfilePreviewComponent } from './modules/wordpress/sync-p
 import { WordpressOrderListComponent } from './modules/wordpress/order/order-list/order-list.component';
 import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
 import { WordpressOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
-import { SaleProductFormComponent } from './modules/sales/sales-product/sales-product-form/sales-product-form.component';
-import { SaleProductListComponent } from './modules/sales/sales-product/sales-product-list/sales-product-list.component';
 import { AgDynamicListComponent } from './modules/general/ag-dymanic-list/ag-dymanic-list.component';
 import { AccountingDetailByObjectReportAgComponent } from './modules/accounting/reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
-import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
-import { MasterPriceTableUpdateNoteListComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-list/master-price-table-update-note-list.component';
-import { MasterPriceTableUpdateNoteFormComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-form/master-price-table-update-note-form.component';
-import { MasterPriceTableUpdateNotePrintComponent } from './modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
-import { MasterPriceTableQueueComponent } from './modules/sales/master-price-table-queue/master-price-table-queue.component';
-import { SalesMasterPriceTableComponent } from './modules/sales/master-price-table/master-price-table/master-price-table.component';
 import { WarehouseDetailByObjectReportAgComponent } from './modules/warehouse/reports/detail-by-object-report-ag/detail-by-object-report-ag.component';
 import { MktMemberCardListComponent } from './modules/marketing/member-card/member-card-list/member-card-list.component';
 import { MktMemberCardFormComponent } from './modules/marketing/member-card/member-card-form/member-card-form.component';
@@ -297,6 +268,7 @@ import { MktMemberCardPrintComponent } from './modules/marketing/member-card/mem
 import { collaboratorComponents } from './modules/collaborator/collaborator.module';
 import { MentionModule } from 'angular-mentions';
 import { saleComponents } from './modules/sales/sales.module';
+import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -438,7 +410,6 @@ export class DynamicLocaleId extends String {
 
     // Admin product components
     ProductListComponent,
-    ProductListV1Component,
     ProductFormComponent,
     ProductCategoryListComponent,
     ProductCategoryFormComponent,
@@ -458,6 +429,7 @@ export class DynamicLocaleId extends String {
     ProductObjectReferenceFormComponent,
     ProductKeywordListComponent,
     ProductKeywordFormComponent,
+    ProductListV1Component,
 
     // Commerce service by cycle components
     CommerceServiceByCycleListComponent,

@@ -20,6 +20,7 @@ import { CollaboratorService } from '../../../collaborator.service';
 import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
 import { CollaboratorKpiGroupFormComponent } from '../kpi-group-form/kpi-group-form.component';
 import { Model } from '../../../../../models/model';
+import { RootServices } from '../../../../../services/root.services';
 
 
 @Component({
@@ -43,6 +44,7 @@ export class CollaboratorKpiGroupListComponent extends AgGridDataManagerListComp
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -53,7 +55,7 @@ export class CollaboratorKpiGroupListComponent extends AgGridDataManagerListComp
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

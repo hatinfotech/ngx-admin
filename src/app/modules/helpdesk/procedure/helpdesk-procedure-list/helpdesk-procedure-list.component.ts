@@ -3,6 +3,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { HelpdeskProcedureModel } from '../../../../models/helpdesk.model';
 import { HelpdeskProcedureFormComponent } from '../helpdesk-procedure-form/helpdesk-procedure-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -22,6 +23,7 @@ export class HelpdeskProcedureListComponent extends DataManagerListComponent<Hel
   formDialog = HelpdeskProcedureFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -29,7 +31,7 @@ export class HelpdeskProcedureListComponent extends DataManagerListComponent<Hel
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

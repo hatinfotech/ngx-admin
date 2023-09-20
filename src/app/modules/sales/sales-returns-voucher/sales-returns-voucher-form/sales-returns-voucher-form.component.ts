@@ -32,6 +32,7 @@ import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.com
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe } from '@angular/common';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sales-returns-voucher-form',
@@ -340,6 +341,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
   }];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -351,7 +353,7 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
     public adminProductService?: AdminProductService,
     public datePipe?: DatePipe
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

@@ -26,6 +26,7 @@ import { UploaderOptions, UploadFile, UploadInput, humanizeBytes, UploadOutput }
 import { FormGroup } from '@angular/forms';
 import { ProductModel } from '../../models/product.model';
 import { FileModel } from '../../models/file.model';
+import { RootServices } from '../../services/root.services';
 // import { ChatRoomSettingPage } from './f7pages/chat-room-setting.page';
 // import { ContactsPage } from './f7pages/contacts.page';
 
@@ -232,6 +233,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
 
   // app: Framework7;
   constructor(
+    public rsv: RootServices,
     // private chatService: ChatService,
     public mobileAppService: MobileAppService,
     // private apiService: ApiService,
@@ -243,7 +245,7 @@ export class MobileAppComponent extends BaseComponent implements OnInit, AfterVi
     public themeService: NbThemeService,
   ) {
 
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
     this.mobileAppService.registerMobileApp(this);
 
     // this.apiService.get<{ domain: string, port: number }>('/chat/services/connect-info', {}, rs => {

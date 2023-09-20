@@ -1,16 +1,17 @@
-import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
-import { FileModel, FileStoreModel } from '../../../../models/file.model';
-import { ApiService } from '../../../../services/api.service';
-import { Router } from '@angular/router';
-import { CommonService } from '../../../../services/common.service';
-import { NbDialogService, NbToastrService } from '@nebular/theme';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { FileFormComponent } from '../file-form/file-form.component';
-import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableThumbnailComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { humanizeBytes, UploadInput, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from '../../../../../vendor/ngx-uploader/src/public_api';
-import { CustomServerDataSource } from '../../../../lib/custom-element/smart-table/custom-server.data-source';
-import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from "@angular/core";
+import { Router } from "@angular/router";
+import { NbDialogService, NbToastrService } from "@nebular/theme";
+import { UploadInput, humanizeBytes, UploaderOptions, UploadFile, UploadOutput, UploadStatus } from "../../../../../../vendor/ngx-uploader/src/public_api";
+import { CustomServerDataSource } from "../../../../../lib/custom-element/smart-table/custom-server.data-source";
+import { SmartTableThumbnailComponent, SmartTableButtonComponent } from "../../../../../lib/custom-element/smart-table/smart-table.component";
+import { SmartTableSetting } from "../../../../../lib/data-manager/data-manger-list.component";
+import { ServerDataManagerListComponent } from "../../../../../lib/data-manager/server-data-manger-list.component";
+import { FileModel, FileStoreModel } from "../../../../../models/file.model";
+import { ApiService } from "../../../../../services/api.service";
+import { CommonService } from "../../../../../services/common.service";
+import { RootServices } from "../../../../../services/root.services";
+import { FileFormComponent } from "../file-form/file-form.component";
 
 @Component({
   selector: 'ngx-file-list',
@@ -42,6 +43,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
 
     // Update card header: action control list
     this.actionButtonList = this.actionButtonList.filter(btn => !['add', 'edit'].some(test => test === btn.name));

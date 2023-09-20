@@ -8,6 +8,7 @@ import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
 import { HttpClient } from '@angular/common/http';
 import { ZaloOaFollowerListComponent } from '../../follower/zalo-oa-follower-list/zalo-oa-follower-list.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-zalo-oa-conversation',
@@ -30,6 +31,7 @@ export class ZaloOaConversationComponent extends ServerDataManagerListComponent<
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -38,7 +40,7 @@ export class ZaloOaConversationComponent extends ServerDataManagerListComponent<
     public _http: HttpClient,
     public ref: NbDialogRef<ZaloOaFollowerListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

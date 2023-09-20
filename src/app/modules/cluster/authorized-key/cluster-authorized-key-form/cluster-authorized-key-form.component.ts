@@ -8,6 +8,7 @@ import { ClusterAuthorizedModel } from '../../../../models/cluster.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-cluster-authorized-key-form',
@@ -22,6 +23,7 @@ export class ClusterAuthorizedKeyFormComponent extends DataManagerFormComponent<
   apiPath = '/cluster/authorized-keys';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class ClusterAuthorizedKeyFormComponent extends DataManagerFormComponent<
     public cms: CommonService,
     public ref: NbDialogRef<ClusterAuthorizedKeyFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   select2ContactOption = {

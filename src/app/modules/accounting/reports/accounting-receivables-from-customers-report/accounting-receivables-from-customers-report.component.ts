@@ -17,6 +17,7 @@ import { AccountingReceivablesFromCustomersDetailsReportPrintComponent } from '.
 import { AccountingReceivablesFromCustomersReportPrintComponent } from '../print/accounting-receivables-from-customers-report-print/accounting-receivables-from-customers-report-print.component';
 import { AccountingReceivablesFromCustomersVoucherssReportPrintComponent } from '../print/accounting-receivables-from-customers-vouchers-report-print/accounting-receivables-from-customers-vouchers-report-print.component';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-receivables-from-customers-report',
@@ -42,6 +43,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -51,7 +53,7 @@ export class AccountingReceivablesFromCustomersReportComponent extends ServerDat
     public ref: NbDialogRef<AccountingReceivablesFromCustomersReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

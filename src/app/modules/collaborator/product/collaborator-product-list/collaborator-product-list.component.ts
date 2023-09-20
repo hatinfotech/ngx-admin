@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ProductModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorProductFormComponent } from '../collaborator-product-form/collaborator-product-form.component';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 import { PageModel } from '../../../../models/page.model';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
@@ -47,6 +48,7 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -57,7 +59,7 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,
@@ -85,7 +87,7 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
         size: 'medium',
         title: this.cms.translateText('Common.subscribe'),
         click: () => {
-          this.cms.openDialog(ProductListV1Component, {
+          this.cms.openDialog(ProductListComponent, {
             context: {
               inputMode: 'dialog',
               onDialogChoose: async (chooseItems: ProductModel[]) => {

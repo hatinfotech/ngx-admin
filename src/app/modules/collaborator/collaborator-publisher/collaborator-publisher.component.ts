@@ -4,6 +4,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { BaseComponent } from '../../../lib/base-component';
 import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-publisher',
@@ -16,12 +17,13 @@ export class CollaboratorPublisherComponent extends BaseComponent {
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<CollaboratorPublisherComponent>,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   async init() {

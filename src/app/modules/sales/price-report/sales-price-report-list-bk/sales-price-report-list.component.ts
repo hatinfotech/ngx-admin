@@ -5,6 +5,7 @@ import { PriceReportModel } from '../../../../models/price-report.model';
 import { Component, ComponentFactoryResolver, OnInit } from '@angular/core';
 import { SalesPriceReportDetailModel, SalesPriceReportModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
@@ -45,6 +46,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -54,7 +56,7 @@ export class SalesPriceReportListComponent extends ServerDataManagerListComponen
     public ref: NbDialogRef<SalesPriceReportListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

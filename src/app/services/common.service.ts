@@ -216,7 +216,7 @@ export class CommonService {
     public activeRoute: ActivatedRoute,
     public dateTimeAdapter: DateTimeAdapter<any>,
     public notificationService: NotificationService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
   ) {
     // this.authService.onAuthenticationChange().subscribe(state => {
     //   if (state) {

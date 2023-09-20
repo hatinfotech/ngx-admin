@@ -11,6 +11,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { ResourcePermissionEditComponent } from '../../../../lib/lib-system/components/resource-permission-edit/resource-permission-edit.component';
 import { PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 // import { PurchaseModule } from '../../purchase.module';
 import { PurchaseOrderVoucherFormComponent } from '../purchase-order-voucher-form/purchase-order-voucher-form.component';
@@ -34,6 +35,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
   static _dialog: NbDialogRef<PurchaseOrderVoucherListComponent>;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -42,7 +44,7 @@ export class PurchaseOrderVoucherListComponent extends ServerDataManagerListComp
     public _http: HttpClient,
     public ref: NbDialogRef<PurchaseOrderVoucherListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
 
     if (this.ref && Object.keys(this.ref).length > 0) {
       for (const actionButton of this.actionButtonList) {

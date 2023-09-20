@@ -11,6 +11,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { AccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-acc-master-book-head-object-amount',
@@ -38,6 +39,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
   @Input() data: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -46,7 +48,7 @@ export class AccMasterBookHeadObjectAmountComponent extends DataManagerListCompo
     public _http: HttpClient,
     public ref: NbDialogRef<AccMasterBookHeadObjectAmountComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

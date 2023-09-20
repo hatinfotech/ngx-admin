@@ -3,7 +3,8 @@ import { Router } from "@angular/router";
 import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from "@nebular/theme";
 import { AppModule } from "../../../../app.module";
 import { WarehouseGoodsDeliveryNoteModel } from "../../../../models/warehouse.model";
-import { ApiService } from "../../../../services/api.service";
+import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from "../../../../services/common.service";
 // import { AppModule } from "../../warehouse.module";
 import { WarehouseGoodsDeliveryNoteFormComponent } from "../warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component";
@@ -46,6 +47,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends AgGridDataManagerLi
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class WarehouseGoodsDeliveryNoteListComponent extends AgGridDataManagerLi
     public ref: NbDialogRef<WarehouseGoodsDeliveryNoteListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

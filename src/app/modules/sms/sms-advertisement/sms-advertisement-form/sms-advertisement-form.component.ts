@@ -11,6 +11,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { SmsModel } from '../../../../models/sms.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sms-advertisement-form',
@@ -277,6 +278,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
   isSendSms = false;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -287,7 +289,7 @@ export class SmsAdvertisementFormComponent extends DataManagerFormComponent<SmsM
     public elRef: ElementRef,
     public ref: NbDialogRef<SmsAdvertisementFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];

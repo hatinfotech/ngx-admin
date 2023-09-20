@@ -9,6 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { ActionControlListOption } from '../../../custom-element/action-control-list/action-control.interface';
 import { DataManagerFormComponent } from '../../../data-manager/data-manager-form.component';
 import { Model } from '../../../../models/model';
+import { RootServices } from '../../../../services/root.services';
 
 export class PermissionModel {
   User?: string;
@@ -43,6 +44,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
   // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +54,7 @@ export class ResourcePermissionEditComponent<M extends ResourceModel> extends Da
     public cms: CommonService,
     public ref: NbDialogRef<ResourcePermissionEditComponent<M>>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

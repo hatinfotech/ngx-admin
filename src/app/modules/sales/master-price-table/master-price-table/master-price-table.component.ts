@@ -22,6 +22,7 @@ import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dyma
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 import { AgCurrencyCellRenderer } from '../../../../lib/custom-element/ag-list/cell/currency.component';
 import { MasterPriceTableUpdateNoteFormComponent } from '../../master-price-table-update-note/master-price-table-update-note-form/master-price-table-update-note-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-master-price-table',
@@ -49,6 +50,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
   masterPriceTableList: SalesMasterPriceTableModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -58,7 +60,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
     public ref: NbDialogRef<SalesMasterPriceTableComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

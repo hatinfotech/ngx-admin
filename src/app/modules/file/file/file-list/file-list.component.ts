@@ -1,6 +1,7 @@
 import { Component, OnInit, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { FileModel, FileStoreModel } from '../../../../models/file.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -42,6 +43,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
   };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class FileListComponent extends ServerDataManagerListComponent<FileModel>
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
 
     // Update card header: action control list
     this.actionButtonList = this.actionButtonList.filter(btn => !['add', 'edit'].some(test => test === btn.name));

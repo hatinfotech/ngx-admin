@@ -10,6 +10,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-system-parameter-form',
@@ -34,6 +35,7 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
   unitList: (UnitModel & { id?: string, text?: string })[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -43,7 +45,7 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
     public cms: CommonService,
     public ref: NbDialogRef<SystemParameterFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

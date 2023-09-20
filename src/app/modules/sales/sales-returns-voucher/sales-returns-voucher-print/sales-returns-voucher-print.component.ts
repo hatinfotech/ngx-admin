@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { SalesReturnsVoucherFormComponent } from '../sales-returns-voucher-form/sales-returns-voucher-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sales-returns-voucher-print',
@@ -31,13 +32,14 @@ export class SalesReturnsVoucherPrintComponent extends DataManagerPrintComponent
   formDialog = SalesReturnsVoucherFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<SalesReturnsVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

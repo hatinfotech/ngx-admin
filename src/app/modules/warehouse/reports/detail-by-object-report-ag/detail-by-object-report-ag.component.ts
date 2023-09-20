@@ -18,6 +18,7 @@ import { agMakeAccCurrencyColDef } from '../../../../lib/custom-element/ag-list/
 import { AccAccountFormComponent } from '../../../accounting/acc-account/acc-account-form/acc-account-form.component';
 import { WarehouseService } from '../../warehouse.service';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-detail-by-object-report-ag',
@@ -58,6 +59,7 @@ export class WarehouseDetailByObjectReportAgComponent extends AgGridDataManagerL
   // @Input() suppressRowClickSelection = true;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -69,7 +71,7 @@ export class WarehouseDetailByObjectReportAgComponent extends AgGridDataManagerL
     public warehouseService: WarehouseService,
     public prds: AdminProductService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
   }
 
   onGridReady(params: any): void {

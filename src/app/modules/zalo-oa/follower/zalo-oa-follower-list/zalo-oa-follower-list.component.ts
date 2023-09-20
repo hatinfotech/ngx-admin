@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
@@ -33,6 +34,7 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -42,7 +44,7 @@ export class ZaloOaFollowerListComponent extends ServerDataManagerListComponent<
     public ref: NbDialogRef<ZaloOaFollowerListComponent>,
     public mobileAppService: MobileAppService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
 
   }
 

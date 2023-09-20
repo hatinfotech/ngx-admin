@@ -13,6 +13,7 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 // import 'ckeditor';
 import { takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-email-sent-form',
@@ -290,6 +291,7 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
   isSendMail = false;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -299,7 +301,7 @@ export class EmailSentFormComponent extends DataManagerFormComponent<EmailModel>
     public cms: CommonService,
     public elRef: ElementRef,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];

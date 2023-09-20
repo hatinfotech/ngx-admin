@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-system-route-form',
@@ -57,7 +58,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForRemoteDataSource = {
     placeholder: 'Chọn nhóm sản phẩm...',
@@ -153,6 +154,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
   paramList: SystemParamModel[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -162,7 +164,7 @@ export class SystemRouteFormComponent extends DataManagerFormComponent<SystemRou
     public cms: CommonService,
     public ref: NbDialogRef<SystemRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async init() {

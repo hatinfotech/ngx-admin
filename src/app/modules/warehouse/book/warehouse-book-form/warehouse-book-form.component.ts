@@ -22,6 +22,7 @@ import { UnitModel } from '../../../../models/unit.model';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { AssignContainerFormComponent } from '../../goods/assign-containers-form/assign-containers-form.component';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-book-form',
@@ -50,6 +51,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -59,7 +61,7 @@ export class WarehouseBookFormComponent extends DataManagerFormComponent<Warehou
     public cms: CommonService,
     public ref: NbDialogRef<WarehouseBookFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async loadCache() {

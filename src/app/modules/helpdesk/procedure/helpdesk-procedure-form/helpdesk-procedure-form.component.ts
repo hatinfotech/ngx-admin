@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 // import '../../../../lib/ckeditor.loader';
 // import 'ckeditor';
 @Component({
@@ -22,6 +23,7 @@ export class HelpdeskProcedureFormComponent extends DataManagerFormComponent<Hel
   baseFormUrl = '/helpdesk/procedure/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class HelpdeskProcedureFormComponent extends DataManagerFormComponent<Hel
     public cms: CommonService,
     public ref: NbDialogRef<HelpdeskProcedureFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-form',
@@ -36,6 +37,7 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -45,7 +47,7 @@ export class UserFormComponent extends DataManagerFormComponent<UserModel> imple
     public cms: CommonService,
     public ref: NbDialogRef<UserFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

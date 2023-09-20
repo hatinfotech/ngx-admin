@@ -8,6 +8,7 @@ import { AccountModel } from '../../../../models/accounting.model';
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-acc-account-form',
@@ -67,6 +68,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -76,7 +78,7 @@ export class AccAccountFormComponent extends DataManagerFormComponent<AccountMod
     public cms: CommonService,
     public ref: NbDialogRef<AccAccountFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

@@ -8,6 +8,7 @@ import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserModel } from '../../../../models/user.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-form',
@@ -65,6 +66,7 @@ export class UserFormComponent extends IvoipBaseFormComponent<UserModel> impleme
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -74,7 +76,7 @@ export class UserFormComponent extends IvoipBaseFormComponent<UserModel> impleme
     public cms: CommonService,
     public ivoipService: IvoipService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
   }
 
   ngOnInit() {

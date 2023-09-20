@@ -19,6 +19,7 @@ import { Model } from '../../../../../models/model';
 import { CollaboratorKpiStrategyFormComponent } from '../kpi-strategy-form/kpi-strategy-form.component';
 import { ShowcaseDialogComponent } from '../../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CollaboratorKpiStrategyPrintComponent } from '../kpi-strategy-print/kpi-strategy-print.component';
+import { RootServices } from '../../../../../services/root.services';
 
 
 @Component({
@@ -65,6 +66,7 @@ export class CollaboratorKpiStrategyListComponent extends AgGridDataManagerListC
   public static processingMap;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -75,7 +77,7 @@ export class CollaboratorKpiStrategyListComponent extends AgGridDataManagerListC
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

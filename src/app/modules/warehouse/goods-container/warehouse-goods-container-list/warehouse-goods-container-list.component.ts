@@ -7,6 +7,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { WarehouseGoodsContainerFormComponent } from '../warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
@@ -32,6 +33,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
   @Input() inputFilter: any;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -40,7 +42,7 @@ export class WarehouseGoodsContainerListComponent extends ServerDataManagerListC
     public _http: HttpClient,
     public ref: NbDialogRef<WarehouseGoodsContainerListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

@@ -17,6 +17,7 @@ import { CommonService } from "../../../services/common.service";
 import { agMakeImageColDef } from "../../../lib/custom-element/ag-list/column-define/image.define";
 import { agMakeTagsColDef } from "../../../lib/custom-element/ag-list/column-define/tags.define";
 import { agMakeCurrencyColDef } from "../../../lib/custom-element/ag-list/column-define/currency.define";
+import { RootServices } from "../../../services/root.services";
 
 
 @Component({
@@ -41,6 +42,7 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -50,7 +52,7 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
     public ref: NbDialogRef<MasterPriceTableQueueComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

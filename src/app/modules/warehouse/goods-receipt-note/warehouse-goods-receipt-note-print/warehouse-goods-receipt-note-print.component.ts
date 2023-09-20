@@ -14,6 +14,7 @@ import { AppModule } from '../../../../app.module';
 // import { AppModule } from '../../warehouse.module';
 import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from './../../goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
 import { WarehouseGoodsFindOrderTempPrintComponent } from '../../goods/warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-receipt-note-print',
@@ -31,13 +32,14 @@ export class WarehouseGoodsReceiptNotePrintComponent extends DataManagerPrintCom
   formDialog = WarehouseGoodsReceiptNoteFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsReceiptNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

@@ -8,6 +8,7 @@ import { AccBankModel, AccBankAccountModel } from '../../../../models/accounting
 import { ContactDetailModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-bank-account-form',
@@ -35,6 +36,7 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -44,7 +46,7 @@ export class AccountingBankAccountFormComponent extends DataManagerFormComponent
     public cms: CommonService,
     public ref: NbDialogRef<AccountingBankAccountFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   ngOnInit() {

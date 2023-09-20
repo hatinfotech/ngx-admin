@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AdminProductService } from '../../admin-product.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-product-group-form',
@@ -23,6 +24,7 @@ export class ProductGroupFormComponent extends DataManagerFormComponent<ProductG
 
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -33,7 +35,7 @@ export class ProductGroupFormComponent extends DataManagerFormComponent<ProductG
     public ref: NbDialogRef<ProductGroupFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

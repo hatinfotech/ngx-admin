@@ -7,6 +7,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { SalesPriceReportFormComponent } from '../../../sales/price-report/sales-price-report-form/sales-price-report-form.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { RootServices } from '../../../../services/root.services';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
   apiPath = '/collaborator/price-reports';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -30,7 +32,7 @@ export class CollaboratorOrderTeleCommitFormComponent extends SalesPriceReportFo
     public ref: NbDialogRef<CollaboratorOrderTeleCommitFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref, adminProductService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref, adminProductService);
   }
 
   makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {

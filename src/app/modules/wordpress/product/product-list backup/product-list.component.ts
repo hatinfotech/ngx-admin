@@ -9,6 +9,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccBankModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { WordpressProductFormComponent } from '../product-form/product-form.component';
 import { FormGroup } from '@angular/forms';
@@ -61,6 +62,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
   refCategoryList = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -70,7 +72,7 @@ export class WordpressProductListComponent extends ServerDataManagerListComponen
     public ref: NbDialogRef<WordpressProductListComponent>,
     public wordpressService: WordpressService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   siteList: WpSiteModel[];

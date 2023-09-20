@@ -25,6 +25,7 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe } from '@angular/common';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-discount-table-update-note-form',
@@ -404,6 +405,7 @@ export class DiscountTableUpdateNoteFormComponent extends DataManagerFormCompone
   }];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -415,7 +417,7 @@ export class DiscountTableUpdateNoteFormComponent extends DataManagerFormCompone
     public adminProductService?: AdminProductService,
     public datePipe?: DatePipe
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

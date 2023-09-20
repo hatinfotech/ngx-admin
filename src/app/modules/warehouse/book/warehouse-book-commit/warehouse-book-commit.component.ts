@@ -7,6 +7,7 @@ import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-book-commit',
@@ -44,12 +45,13 @@ export class WarehouseBookCommitComponent extends BaseComponent implements OnIni
   processing = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<WarehouseBookCommitComponent>,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
   }
 
   ngOnInit() {

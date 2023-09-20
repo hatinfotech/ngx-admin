@@ -21,6 +21,8 @@ import { ImagesViewerComponent } from '../../../../lib/custom-element/my-compone
 import { ProductGroupFormComponent } from '../../product-group/product-group-form/product-group-form.component';
 import { ProductBrandFormComponent } from '../../brand/product-brand-form/product-brand-form.component';
 import { ProductCategoryFormComponent } from '../../category/product-category-form/product-category-form.component';
+import { Model } from '../../../../models/model';
+import { RootServices } from '../../../../services/root.services';
 
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -61,6 +63,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   keywordList: (ProductKeywordModel & { id?: string, text?: string })[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -71,7 +74,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     public ref?: NbDialogRef<ProductFormComponent>,
     public adminProductService?: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
 
@@ -355,6 +358,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       IsStopBusiness: [false],
       UnitConversions: this.formBuilder.array([]),
       Properties: this.formBuilder.array([]),
+      ProductParts: this.formBuilder.array([]),
     });
     const unitConversions = this.getUnitConversions(newForm);
     const properties = this.getProperties(newForm);
@@ -628,6 +632,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     // this.componentList[mainIndex].splice(index, 1);
   }
 
+  // Begin Properties Form
   makeNewPropertyFormGroup(data?: ProductInPropertyModel, formItem?: FormGroup): FormGroup {
     const newForm = this.formBuilder.group({
       Property: [null, Validators.required],
@@ -667,7 +672,52 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   onRemovePropertyFormGroup(formItem: FormGroup, index: number) {
     // this.componentList[mainIndex].splice(index, 1);
   }
-  /** End Picture Form */
+
+  /** End Properties Form */
+
+  // Begin Product Part Form
+  makeNewProductPartFormGroup(data?: Model, formItem?: FormGroup): FormGroup {
+    const newForm = this.formBuilder.group({
+      PartProduct: [null, Validators.required],
+      PartUnit: [null, Validators.required],
+      Quantity: [null, Validators.required],
+      CostClassification: [null],
+    });
+
+    if (data) {
+      newForm.patchValue(data);
+      // setTimeout(() => {
+      //   newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(data.ProductPart))?.Values || [];
+      // }, 300);
+    }
+    // newForm.get('ProductParts').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+    //   newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(value))?.Values || [];
+    // })
+    return newForm;
+  }
+  getProductParts(formItem: FormGroup) {
+    return formItem.get('ProductParts') as FormArray;
+  }
+  addProductPartFormGroup(formItem: FormGroup) {
+    // this.componentList[formGroupIndex].push([]);
+    const newFormGroup = this.makeNewProductPartFormGroup(null, formItem);
+    this.getProductParts(formItem).push(newFormGroup);
+    this.onAddProductPartFormGroup(formItem, this.getProductParts(formItem).length - 1, newFormGroup);
+    return false;
+  }
+  removeProductPartGroup(parentForm: FormGroup, formItem: FormGroup, index: number) {
+    this.getProductParts(parentForm).removeAt(index);
+    // this.componentList[formGroupIndex].splice(index, 1);
+    this.onRemoveProductPartFormGroup(formItem, index);
+    return false;
+  }
+  onAddProductPartFormGroup(parentForm: FormGroup, index: number, newFormGroup: FormGroup) {
+    // this.componentList[mainIndex].push([]);
+  }
+  onRemoveProductPartFormGroup(formItem: FormGroup, index: number) {
+    // this.componentList[mainIndex].splice(index, 1);
+  }
+  /** End Ref Product Form */
 
 
   copyFormControlValueToOthers(array: FormArray, i: number, formControlName: string) {

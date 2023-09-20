@@ -19,6 +19,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CollaboratorService } from '../../collaborator.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-publisher-form',
@@ -82,6 +83,7 @@ export class CollaboratorRebuyStrategyPublisherFormComponent extends DataManager
   });
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -92,7 +94,7 @@ export class CollaboratorRebuyStrategyPublisherFormComponent extends DataManager
     public ref?: NbDialogRef<CollaboratorRebuyStrategyPublisherFormComponent>,
     public collaboratorService?: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** ngx-uploader */
     // this.options = { concurrency: 1, maxUploads: 0, maxFileSize: 1024 * 1024 * 1024 };

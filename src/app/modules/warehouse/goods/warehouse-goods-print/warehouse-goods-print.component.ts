@@ -11,6 +11,7 @@ import { CommonService } from '../../../../services/common.service';
 import { WarehouseGoodsContainerFormComponent } from '../../goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component';
 import { WarehouseGoodsContainerPrintComponent } from '../../goods-container/warehouse-goods-container-print/warehouse-goods-container-print.component';
 import { WarehouseGoodsFormComponent } from '../warehouse-goods-form/warehouse-goods-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-warehouse-goods-print',
@@ -74,13 +75,14 @@ export class WarehouseGoodsPrintComponent extends DataManagerPrintComponent<any>
   `;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

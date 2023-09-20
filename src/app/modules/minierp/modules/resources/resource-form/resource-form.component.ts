@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { ResourceModel } from '../../../../models/resource.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
-import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { PermissionModel } from '../../../../models/permission.model';
+import { RootServices } from '../../../../../services/root.services';
+import { PermissionModel } from '../../../../../models/permission.model';
+import { CommonService } from '../../../../../services/common.service';
+import { ApiService } from '../../../../../services/api.service';
+import { DataManagerFormComponent } from '../../../../../lib/data-manager/data-manager-form.component';
+import { ResourceModel } from '../../../../../models/resource.model';
 
 @Component({
   selector: 'ngx-resource-form',
@@ -81,6 +82,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -89,7 +91,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
     public dialogService: NbDialogService,
     public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     // this.idKey = 'Name';
     // this.apiPath = '/module/modules';
 
@@ -104,7 +106,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
   parentList: ResourceModel[];
 
   ngOnInit() {
-    this.restrict();
+    // this.restrict();
     super.ngOnInit();
   }
 
@@ -118,7 +120,7 @@ export class ResourceFormComponent extends DataManagerFormComponent<ResourceMode
   executeGet(params: any, success: (resources: ResourceModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includePermissions'] = true;
     this.apiService.get<ResourceModel[]>(this.apiPath, params, data => success(data), e => {
-      if (error) error(e); else this.onError(e);
+      // if (error) error(e); else this.onError(e);
       // this.onError(e);
     });
   }

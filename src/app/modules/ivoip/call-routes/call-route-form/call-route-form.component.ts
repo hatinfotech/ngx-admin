@@ -11,6 +11,7 @@ import { IvoipService } from '../../ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { PbxFollowMeDestinationModel } from '../../../../models/pbx-follow_me_destination.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-call-route-form',
@@ -55,6 +56,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -65,7 +67,7 @@ export class CallRouteFormComponent extends IvoipBaseFormComponent<PbxExtensionM
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<CallRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService);
 
   }
 

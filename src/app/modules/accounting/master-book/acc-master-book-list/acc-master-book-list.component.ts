@@ -11,6 +11,7 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccMasterBookModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
@@ -41,6 +42,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class AccMasterBookListComponent extends ServerDataManagerListComponent<A
     public _http: HttpClient,
     public ref: NbDialogRef<AccMasterBookListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

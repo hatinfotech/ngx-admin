@@ -13,6 +13,7 @@ import { User } from '../../../lib/nam-socket/model/user';
 import { ISocketNamespaceContext } from '../../../lib/nam-socket/socket.namspace';
 import { WpSyncMessage } from '../wp-sync-socket/wp-sync-socket.namespace';
 import { IDatasource, IGetRowsParams } from '@ag-grid-community/core';
+import { RootServices } from '../../../services/root.services';
 // import { IDatasource, IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
@@ -97,6 +98,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
   syncStates: { [key: string]: string } = {};
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -107,7 +109,7 @@ export class SyncFormComponent extends DataManagerFormComponent<WpSiteModel> imp
     public ref: NbDialogRef<SyncFormComponent>,
     public _http: HttpClient,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
   }
 

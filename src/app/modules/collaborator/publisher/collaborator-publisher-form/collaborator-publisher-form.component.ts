@@ -10,6 +10,7 @@ import { PageModel } from '../../../../models/page.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorService } from '../../collaborator.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-publisher-form',
@@ -24,6 +25,7 @@ export class CollaboratorPublisherFormComponent extends DataManagerFormComponent
   apiPath = '/collaborator/publishers';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -34,7 +36,7 @@ export class CollaboratorPublisherFormComponent extends DataManagerFormComponent
     public ref: NbDialogRef<CollaboratorPublisherFormComponent>,
     public collaboratorService: CollaboratorService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   levelList = [

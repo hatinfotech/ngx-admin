@@ -7,6 +7,7 @@ import { DataManagerFormComponent } from '../../../../lib/data-manager/data-mana
 import { ProductCategoryModel } from '../../../../models/product.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-product-category-form',
@@ -60,6 +61,7 @@ export class CollaboratorProductCategoryFormComponent extends DataManagerFormCom
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -69,7 +71,7 @@ export class CollaboratorProductCategoryFormComponent extends DataManagerFormCom
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorProductCategoryFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

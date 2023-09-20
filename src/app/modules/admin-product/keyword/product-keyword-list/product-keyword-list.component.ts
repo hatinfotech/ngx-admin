@@ -1,17 +1,14 @@
 import { ProductKeywordModel } from '../../../../models/product.model';
 import { Component, OnInit } from '@angular/core';
-import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
-import { ProductCategoryModel } from '../../../../models/product.model';
+import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ProductKeywordFormComponent } from '../product-keyword-form/product-keyword-form.component';
-import { SmartTableDateRangeFilterComponent, SmartTableSelect2FilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
-import { SmartTableDateTimeComponent, SmartTableTagsComponent, SmartTableThumbnailComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 
 @Component({
   selector: 'ngx-product-keyword-list',
@@ -27,6 +24,7 @@ export class ProductKeywordListComponent extends ServerDataManagerListComponent<
   formDialog = ProductKeywordFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -34,7 +32,7 @@ export class ProductKeywordListComponent extends ServerDataManagerListComponent<
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

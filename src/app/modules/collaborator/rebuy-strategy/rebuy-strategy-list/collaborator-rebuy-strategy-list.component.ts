@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorRebuyStrategyFormComponent } from '../rebuy-strategy-form/collaborator-rebuy-strategy-form.component';
 import { PageModel } from '../../../../models/page.model';
@@ -42,6 +43,7 @@ export class CollaboratorRebuyStrategyListComponent extends AgGridDataManagerLis
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -52,7 +54,7 @@ export class CollaboratorRebuyStrategyListComponent extends AgGridDataManagerLis
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

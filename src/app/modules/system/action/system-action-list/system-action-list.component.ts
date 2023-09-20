@@ -3,6 +3,7 @@ import { DataManagerListComponent, SmartTableSetting } from '../../../../lib/dat
 import { SystemActionModel } from '../../../../models/system.model';
 import { SystemActionFormComponent } from '../system-action-form/system-action-form.component';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -22,6 +23,7 @@ export class SystemActionListComponent extends DataManagerListComponent<SystemAc
   formDialog = SystemActionFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -29,7 +31,7 @@ export class SystemActionListComponent extends DataManagerListComponent<SystemAc
     public toastService: NbToastrService,
     public _http: HttpClient,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

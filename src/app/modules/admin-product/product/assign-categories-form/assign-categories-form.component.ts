@@ -7,6 +7,7 @@ import { FormControl } from '@angular/forms';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { NbDialogRef } from '@nebular/theme';
 import { ProductModel, ProductCategoryModel } from '../../../../models/product.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-assign-categories-form',
@@ -58,12 +59,13 @@ export class AssignCategoriesFormComponent extends BaseComponent implements OnIn
   processing = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<AssignCategoriesFormComponent>,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
   }
 
   ngOnInit() {

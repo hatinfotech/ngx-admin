@@ -12,6 +12,7 @@ import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-deployment-voucher-print',
@@ -30,13 +31,14 @@ export class DeploymentVoucherPrintComponent extends DataManagerPrintComponent<D
   formDialog = DeploymentVoucherFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<DeploymentVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

@@ -21,6 +21,7 @@ import { CollaboratorKpiDistributedContractPrintComponent } from '../kpi-distrib
 import { AgTextCellRenderer } from '../../../../../lib/custom-element/ag-list/cell/text.component';
 import { AgSelect2Filter } from '../../../../../lib/custom-element/ag-list/filter/select2.component.filter';
 import { AgDateCellRenderer } from '../../../../../lib/custom-element/ag-list/cell/date.component';
+import { RootServices } from '../../../../../services/root.services';
 
 
 @Component({
@@ -48,6 +49,7 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
   public static processingMap;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -58,7 +60,7 @@ export class CollaboratorKpiDistributedContractListComponent extends AgGridDataM
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

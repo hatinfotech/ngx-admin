@@ -20,6 +20,7 @@ import { AssignCategoriesFormComponent } from '../../../admin-product/product/as
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { CollaboratorService } from '../../collaborator.service';
 import { CollaboratorProductPreviewListComponent } from '../collaborator-product-preview-list/collaborator-product-preview-list.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-subscription-product',
@@ -49,6 +50,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
   unitList: UnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -59,7 +61,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
     public collaboratorService: CollaboratorService,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
 

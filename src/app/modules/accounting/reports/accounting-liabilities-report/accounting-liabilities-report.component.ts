@@ -19,6 +19,7 @@ import { AccountingReportComponent } from '../accounting-report.component';
 import { AccountingLiabilitiesDetailsReportPrintComponent } from '../print/accounting-liabilities-details-report-print/accounting-liabilities-details-report-print.component';
 import { AccountingLiabilitiesReportPrintComponent } from '../print/accounting-liabilities-report-print/accounting-liabilities-report-print.component';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-liabilities-report',
@@ -44,6 +45,7 @@ export class AccountingLiabilitiesReportComponent extends ServerDataManagerListC
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -53,7 +55,7 @@ export class AccountingLiabilitiesReportComponent extends ServerDataManagerListC
     public ref: NbDialogRef<AccountingLiabilitiesReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

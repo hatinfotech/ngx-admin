@@ -17,6 +17,7 @@ import { ProductModel } from '../../../../models/product.model';
 import { SalesVoucherPrintComponent } from '../sales-voucher-print/sales-voucher-print.component';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-simple-sales-voucher-form',
@@ -86,6 +87,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -95,7 +97,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
     public cms: CommonService,
     public ref: NbDialogRef<SimpleSalesVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {
       name: 'print',
       status: 'primary',
@@ -151,7 +153,7 @@ export class SimpleSalesVoucherFormComponent extends DataManagerFormComponent<Sa
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',

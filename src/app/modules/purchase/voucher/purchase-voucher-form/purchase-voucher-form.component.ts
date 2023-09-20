@@ -29,6 +29,7 @@ import { CurrencyPipe } from '@angular/common';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { Observable, forkJoin, combineLatest } from 'rxjs';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-purchase-voucher-form',
@@ -61,6 +62,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
   });
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -72,7 +74,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     public currencyPipe: CurrencyPipe,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

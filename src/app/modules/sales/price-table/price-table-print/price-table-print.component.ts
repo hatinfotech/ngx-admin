@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-price-table-print',
@@ -21,13 +22,14 @@ export class PriceTablePrintComponent extends DataManagerPrintComponent<SalesPri
   env = environment;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<PriceTablePrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
   }
 
   ngOnInit() {

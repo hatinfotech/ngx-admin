@@ -13,6 +13,7 @@ import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { AccMasterBookHeadObjectAmountComponent } from '../acc-master-book-head-object-amount/acc-master-book-head-object-amount.component';
 import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-account-list.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-acc-master-book-head-amount',
@@ -38,6 +39,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
   totalBalance: { Debit: number, Credit: number } = { Debit: 0, Credit: 0 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -46,7 +48,7 @@ export class AccMasterBookHeadAmountComponent extends DataManagerListComponent<A
     public _http: HttpClient,
     public ref: NbDialogRef<AccMasterBookHeadAmountComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

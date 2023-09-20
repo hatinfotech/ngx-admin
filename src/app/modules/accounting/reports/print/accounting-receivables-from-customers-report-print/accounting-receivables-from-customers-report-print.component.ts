@@ -10,6 +10,7 @@ import { CashVoucherModel, CashVoucherDetailModel } from '../../../../../models/
 import { ProcessMap } from '../../../../../models/process-map.model';
 import { ApiService } from '../../../../../services/api.service';
 import { CommonService } from '../../../../../services/common.service';
+import { RootServices } from '../../../../../services/root.services';
 // import { AccountingModule } from '../../../accounting.module';
 
 @Component({
@@ -34,6 +35,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
   note: string = '';
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -42,7 +44,7 @@ export class AccountingReceivablesFromCustomersReportPrintComponent extends Data
     public accountingService: AccountingService,
     private currencyPipe: CurrencyPipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

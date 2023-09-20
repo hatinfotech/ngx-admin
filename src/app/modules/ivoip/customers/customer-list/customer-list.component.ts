@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { IvoipBaseListComponent } from '../../ivoip-base-list.component';
 import { PbxCustomerModel } from '../../../../models/pbx-customer.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbGlobalPhysicalPosition } from '@nebular/theme';
@@ -27,6 +28,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
   formDialog = CustomerFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -35,7 +37,7 @@ export class CustomerListComponent extends IvoipBaseListComponent<PbxCustomerMod
     public ivoipService: IvoipService,
     public toastrService: NbToastrService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
   }
 
   editing = {};

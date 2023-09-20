@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { CashPaymentVoucherFormComponent } from '../../../accounting/cash/payment/cash-payment-voucher-form/cash-payment-voucher-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-purchase-voucher-print',
@@ -30,13 +31,14 @@ export class PurchaseVoucherPrintComponent extends DataManagerPrintComponent<Pur
   formDialog = PurchaseVoucherFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<PurchaseVoucherPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

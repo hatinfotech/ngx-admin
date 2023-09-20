@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PbxCdrModel } from '../../../../models/pbx-cdr.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
@@ -277,6 +278,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
   }
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -286,7 +288,7 @@ export class CdrListComponent extends IvoipServerBaseListComponent<any> implemen
     public translate: TranslateService,
     // private mobileAppService: MobileAppService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ivoipService);
+    super(rsv, apiService, router, cms, dialogService, toastService, ivoipService);
 
     this.actionButtonList = this.actionButtonList.filter(btn => !['delete', 'add', 'edit', 'preview'].some(name => name === btn.name));
 

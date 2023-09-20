@@ -9,6 +9,7 @@ import { Icon } from './custom-element/card-header/card-header.component';
 import { ActionControl } from './custom-element/action-control-list/action-control.interface';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { environment } from '../../environments/environment';
+import { RootServices } from '../services/root.services';
 
 @Component({ template: '' })
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
@@ -46,6 +47,7 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   isDialog = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,

@@ -11,6 +11,7 @@ import { ComponentModel } from '../../../../models/component.model';
 import { PermissionModel } from '../../../../models/permission.model';
 import { CommonService } from '../../../../services/common.service';
 import { ResourceModel } from '../../../../models/resource.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-menu-form',
@@ -39,6 +40,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -47,7 +49,7 @@ export class MenuFormComponent extends DataManagerFormComponent<MenuItemModel> i
     public toastService: NbToastrService,
     public cms: CommonService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastService, dialogService, cms);
   }
 
   parentList: MenuItemModel[];

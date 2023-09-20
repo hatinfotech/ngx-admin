@@ -11,6 +11,8 @@ import { BaseComponent } from '../base-component';
 import { ActionControl, ActionControlListOption } from '../custom-element/action-control-list/action-control.interface';
 import { Icon } from '../custom-element/card-header/card-header.component';
 import { DataManagerPrintComponent } from './data-manager-print.component';
+import { Select2Option } from '../custom-element/select2/select2.component';
+import { RootServices } from '../../services/root.services';
 
 @Component({ template: '' })
 export abstract class DataManagerFormComponent<M> extends BaseComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -90,6 +92,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   protected cleanedDataBeforeSave = false;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -99,7 +102,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     public cms: CommonService,
     public ref?: NbDialogRef<DataManagerFormComponent<M>>,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
     // this.formLoading = true;
     this.onProcessing();
     this.formUniqueId = Date.now().toString();
@@ -872,6 +875,55 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
       }
     }),
     // minimumInputLength: 1,
+  };
+
+  select2OptionForProduct: Select2Option = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    withThumbnail: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      data: function (params) {
+        return {
+          ...params,
+          offset: params['offset'] || 0,
+          limit: params['limit'] || 10
+        };
+      },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        const params = settings.data;
+        const offset = settings.data['offset'];
+        const limit = settings.data['limit'];
+        const results = !params['term'] ? this.rsv.adminProductService.productSearchIndexsGroupById : this.rsv.adminProductService.productSearchIndexsGroupById.filter(f => this.cms.smartFilter(f.SearchText, params['term']));
+        success({ data: results.slice(offset, offset + limit), total: results.length });
+        return null;
+      },
+      delay: 300,
+      processResults: (rs: { data: any[], total: number }, params: any) => {
+        const data = rs.data;
+        const total = rs.total;
+        params.limit = params.limit || 10;
+        params.offset = params.offset || 0;
+        params.offset = params.offset += params.limit;
+        return {
+          results: data.map(item => {
+            item.id = item.Code;
+            item.text = `${item.Sku} - ${item.Name} (${item.Code})`;
+            item.thumbnail = item?.FeaturePicture?.Thumbnail;
+            return item;
+          }),
+          pagination: {
+            more: params.offset < total
+          }
+        };
+      },
+    },
   };
 
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {

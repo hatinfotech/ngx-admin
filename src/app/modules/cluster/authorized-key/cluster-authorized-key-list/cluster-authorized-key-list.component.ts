@@ -11,6 +11,7 @@ import { ServerDataManagerListComponent } from '../../../../lib/data-manager/ser
 import { ClusterAuthorizedModel } from '../../../../models/cluster.model';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { ClusterAuthorizedKeyFormComponent } from '../cluster-authorized-key-form/cluster-authorized-key-form.component';
@@ -38,6 +39,7 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
   stateList: { id: string, text: string }[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -47,7 +49,7 @@ export class ClusterAuthorizedKeyListComponent extends ServerDataManagerListComp
     public ref: NbDialogRef<ClusterAuthorizedKeyListComponent>,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

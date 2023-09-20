@@ -47,6 +47,8 @@ import { CollaboratorKpiStrategyFormComponent } from "./kpi/kpi-strategy/kpi-str
 import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-strategy-list/kpi-strategy-list.component";
 import { CollaboratorKpiStrategyInfoComponent } from "./kpi/kpi-strategy/kpi-strategy-print/info/kpi-strategy-info.component";
 import { CollaboratorKpiStrategyPrintComponent } from "./kpi/kpi-strategy/kpi-strategy-print/kpi-strategy-print.component";
+import { CollaboratorOrderFormComponent } from "./order/collaborator-order-form/collaborator-order-form.component";
+import { CollaboratorOrderListComponent } from "./order/collaborator-order-list/collaborator-order-list.component";
 import { CollaboratorPublisherFormComponent } from "./publisher/collaborator-publisher-form/collaborator-publisher-form.component";
 import { CollaboratorRebuyStrategyProductFormComponent } from "./rebuy-strategy/product-form/collaborator-rebuy-strategy-product-form.component";
 import { CollaboratorRebuyStrategyPublisherFormComponent } from "./rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component";
@@ -111,4 +113,6 @@ export const collaboratorComponents = [
     CollaboratorKpiDistributedContractFormComponent,
     CollaboratorKpiDistributedContractPrintComponent,
     CollaboratorKpiDashboardComponent,
+    CollaboratorOrderFormComponent,
+    CollaboratorOrderListComponent,
 ];

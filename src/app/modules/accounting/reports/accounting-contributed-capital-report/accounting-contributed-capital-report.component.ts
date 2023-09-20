@@ -15,6 +15,7 @@ import { AccAccountListComponent } from '../../acc-account/acc-account-list/acc-
 import { AccountingService } from '../../accounting.service';
 import { AccountingDetailByObjectReportComponent } from '../accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingDetailByObjectReportAgComponent } from '../accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-contributed-capital-report',
@@ -40,6 +41,7 @@ export class AccountingContributedCapitalReportComponent extends ServerDataManag
   tabs: any[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -49,7 +51,7 @@ export class AccountingContributedCapitalReportComponent extends ServerDataManag
     public ref: NbDialogRef<AccountingContributedCapitalReportComponent>,
     public accountingService: AccountingService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

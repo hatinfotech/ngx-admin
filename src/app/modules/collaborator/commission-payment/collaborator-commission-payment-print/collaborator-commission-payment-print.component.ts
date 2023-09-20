@@ -10,6 +10,7 @@ import { CollaboratorCommissionVoucherModel } from '../../../../models/collabora
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-commission-payment-print',
@@ -26,13 +27,14 @@ export class CollaboratorCommissionPaymentPrintComponent extends DataManagerPrin
   processMapList: ProcessMap[] = [];
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorCommissionPaymentPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

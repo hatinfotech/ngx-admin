@@ -19,6 +19,7 @@ import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { RootServices } from '../../../../services/root.services';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',
@@ -38,6 +39,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
   unitList: ProductUnitModel[] = [];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -50,7 +52,7 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
     public themeService?: NbThemeService,
     public onDetectChangeRef?: ChangeDetectorRef
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
 
     const $this = this;

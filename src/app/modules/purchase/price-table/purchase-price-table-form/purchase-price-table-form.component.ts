@@ -16,6 +16,7 @@ import { ProductModel } from '../../../../models/product.model';
 // import { PurchasePriceTablePrintComponent } from '../purchase-price-table-print/purchase-price-table-print.component';
 import * as XLSX from 'xlsx';
 import { CurrencyMaskConfig } from 'ng2-currency-mask';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-purchase-price-table-form',
@@ -84,6 +85,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -93,7 +95,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
     public cms: CommonService,
     public ref: NbDialogRef<PurchasePriceTableFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -136,7 +138,7 @@ export class PurchasePriceTableFormComponent extends DataManagerFormComponent<Pu
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',

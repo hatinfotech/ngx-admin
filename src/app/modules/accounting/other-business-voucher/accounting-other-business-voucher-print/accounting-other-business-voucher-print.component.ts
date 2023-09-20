@@ -10,6 +10,7 @@ import { OtherBusinessVoucherModel, CashVoucherDetailModel } from '../../../../m
 import { ProcessMap } from '../../../../models/process-map.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-other-business-voucher-print',
@@ -28,13 +29,14 @@ export class AccountingOtherBusinessVoucherPrintComponent extends DataManagerPri
   formDialog = AccountingOtherBusinessVoucherFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<AccountingOtherBusinessVoucherPrintComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

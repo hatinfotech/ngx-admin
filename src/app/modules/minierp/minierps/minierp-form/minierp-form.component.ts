@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from '../../minierp-service.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-minierp-form',
@@ -22,6 +23,7 @@ export class MinierpFormComponent extends MinierpBaseFormComponent<MiniErpModel>
   baseFormUrl = '/minierp/minierps/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class MinierpFormComponent extends MinierpBaseFormComponent<MiniErpModel>
     public cms: CommonService,
     public minierpService: MinierpService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, minierpService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, minierpService);
   }
 
   ngOnInit() {

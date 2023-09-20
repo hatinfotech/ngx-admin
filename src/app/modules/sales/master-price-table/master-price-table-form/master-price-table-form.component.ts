@@ -16,7 +16,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntil } from 'rxjs/operators';
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel, ProductCategoryModel, ProductGroupModel } from '../../../../models/product.model';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { SmartTableThumbnailComponent, SmartTableCheckboxComponent, SmartTableCurrencyEditableComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSelect2FilterComponent, SmartTableFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
@@ -28,6 +27,8 @@ import { MasterPriceTablePrintComponent } from '../master-price-table-print/mast
 import { WarehouseGoodsContainerModel } from '../../../../models/warehouse.model';
 import { ThisReceiver } from '@angular/compiler';
 import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
+import { RootServices } from '../../../../services/root.services';
+import { ProductListComponent } from '../../../admin-product/product/product-list/product-list.component';
 
 @Component({
   selector: 'ngx-master-price-table-form',
@@ -134,6 +135,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -145,7 +147,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     // public currencyPipe: CurrencyPipe,
     public decimalPipe: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {
@@ -188,7 +190,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForUnit = {
     placeholder: 'Chọn ĐVT...',
@@ -216,7 +218,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
     //     };
     //   },
     // },
-  };
+  } as any;
 
   select2OptionForTax = {
     placeholder: 'Chọn thuế...',
@@ -521,7 +523,7 @@ export class MasterPriceTableFormComponent extends DataManagerFormComponent<Sale
 
   /** Implement required */
   openProductListDialplog(filter?: {}, onDialogChoose?: (newData: ProductModel[]) => void, onDialogClose?: () => void) {
-    this.cms.openDialog(ProductListV1Component, {
+    this.cms.openDialog(ProductListComponent, {
       context: {
         inputMode: 'dialog',
         // inputId: ids,

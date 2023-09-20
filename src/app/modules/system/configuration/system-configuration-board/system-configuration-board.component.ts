@@ -3,6 +3,7 @@ import { BaseComponent } from '../../../../lib/base-component';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-system-configuration-board',
@@ -13,11 +14,12 @@ export class SystemConfigurationBoardComponent extends BaseComponent implements 
   componentName = 'SystemConfigurationBoardComponent';
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
   ) {
-    super(cms, router, apiService);
+    super(rsv, cms, router, apiService);
    }
 
   ngOnInit() {

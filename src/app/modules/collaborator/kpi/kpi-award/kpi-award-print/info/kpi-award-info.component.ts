@@ -11,6 +11,7 @@ import { CommonService } from '../../../../../../services/common.service';
 import { Model } from '../../../../../../models/model';
 import { CollaboratorKpiStrategyFormComponent } from '../../../kpi-strategy/kpi-strategy-form/kpi-strategy-form.component';
 import { CollaboratorKpiStrategyListComponent } from '../../../kpi-strategy/kpi-strategy-list/kpi-strategy-list.component';
+import { RootServices } from '../../../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-kpi-award-info',
@@ -32,13 +33,14 @@ export class CollaboratorKpiAwardInfoComponent extends DataManagerPrintComponent
   @Input() isSimple = false;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<CollaboratorKpiAwardInfoComponent>,
     private datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
     this.processingMap = {
       "APPROVED": {
         ...AppModule.approvedState,

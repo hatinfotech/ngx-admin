@@ -7,11 +7,13 @@ import { Component, OnInit } from '@angular/core';
 import { ReuseComponent } from '../../lib/reuse-component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MinierpService } from './minierp-service.service';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class MinierpBaseListComponent<M> extends DataManagerListComponent<M> implements OnInit, ReuseComponent {
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -19,7 +21,7 @@ export abstract class MinierpBaseListComponent<M> extends DataManagerListCompone
     public toastService: NbToastrService,
     public miniErpService: MinierpService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   ngOnInit() {

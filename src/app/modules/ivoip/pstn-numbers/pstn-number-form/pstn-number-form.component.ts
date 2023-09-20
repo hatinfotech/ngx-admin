@@ -9,6 +9,7 @@ import { CommonService } from '../../../../services/common.service';
 import { IvoipService } from '../../ivoip-service';
 import { PbxDialplanDetailModel } from '../../../../models/pbx-dialplan-detail.model';
 import { PbxDomainModel } from '../../../../models/pbx-domain.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-pstn-number-form',
@@ -71,6 +72,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -81,7 +83,7 @@ export class PstnNumberFormComponent extends IvoipBaseFormComponent<PbxPstnNumbe
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<PstnNumberFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ivoipService, ref);
   }
 
   ngOnInit() {

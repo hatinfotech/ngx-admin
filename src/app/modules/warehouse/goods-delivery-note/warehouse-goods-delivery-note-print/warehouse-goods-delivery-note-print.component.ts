@@ -10,6 +10,7 @@ import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 // import { AppModule } from '../../warehouse.module';
 
 @Component({
@@ -29,13 +30,14 @@ export class WarehouseGoodsDeliveryNotePrintComponent extends DataManagerPrintCo
   formDialog = WarehouseGoodsDeliveryNoteFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<WarehouseGoodsDeliveryNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

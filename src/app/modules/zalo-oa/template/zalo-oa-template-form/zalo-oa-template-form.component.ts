@@ -12,6 +12,7 @@ import { ContactModel } from '../../../../models/contact.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-zalo-oa-template-form',
@@ -32,6 +33,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
   // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -41,7 +43,7 @@ export class ZaloOaTemplateFormComponent extends DataManagerFormComponent<ZaloOa
     public cms: CommonService,
     public ref: NbDialogRef<ZaloOaTemplateFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

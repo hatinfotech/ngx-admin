@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-email-advertisement-form',
@@ -277,6 +278,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
   isSendMail = false;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -287,7 +289,7 @@ export class EmailAdvertisementFormComponent extends DataManagerFormComponent<Em
     public elRef: ElementRef,
     public ref: NbDialogRef<EmailAdvertisementFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.silent = true;
     // if (this.ticketCode) {
     //   this.id = [this.ticketCode];

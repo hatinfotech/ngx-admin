@@ -8,6 +8,7 @@ import { Select2Options } from '../../../../vendor/ng2select2/lib/ng2-select2.in
 import { NbThemeService } from '@nebular/theme';
 import { ColDef, ColumnApi, GridApi, IDatasource, Module } from '@ag-grid-community/core';
 import { AgButtonCellRenderer } from './cell/button.component';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-ag-list',
@@ -29,6 +30,7 @@ import { AgButtonCellRenderer } from './cell/button.component';
 export class AgListComponent implements ControlValueAccessor, Validator, OnChanges {
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public themeService: NbThemeService,
   ) {

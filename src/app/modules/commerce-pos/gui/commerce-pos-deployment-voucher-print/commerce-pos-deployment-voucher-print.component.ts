@@ -12,6 +12,7 @@ import { CommonService } from '../../../../services/common.service';
 import { AppModule } from '../../../../app.module';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { DeploymentVoucherFormComponent } from '../../../deployment/deployment-voucher/deployment-voucher-form/deployment-voucher-form.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-pos-deployment-voucher-print',
@@ -32,6 +33,7 @@ export class CommercePosDeploymentVoucherPrintComponent extends DataManagerPrint
   registerInfo: any;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -39,7 +41,7 @@ export class CommercePosDeploymentVoucherPrintComponent extends DataManagerPrint
     private datePipe: DatePipe,
     public adminProductService: AdminProductService,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
 
     this.cms.systemConfigs$.subscribe(registerInfo => {
       this.registerInfo = registerInfo.LICENSE_INFO.register;

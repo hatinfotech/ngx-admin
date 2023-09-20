@@ -18,6 +18,7 @@ import { base64 } from '@firebase/util';
 import * as XLSX from 'xlsx';
 import { runInThisContext } from 'vm';
 import { takeUntil } from 'rxjs/operators';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-purchase-order-voucher-print',
@@ -38,6 +39,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
   showPicture = true;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
@@ -45,7 +47,7 @@ export class PurchaseOrderVoucherPrintComponent extends DataManagerPrintComponen
     public datePipe: DatePipe,
     public currencyPipe: CurrencyPipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

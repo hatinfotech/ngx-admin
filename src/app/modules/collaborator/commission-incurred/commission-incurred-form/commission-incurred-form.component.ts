@@ -27,6 +27,7 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 import { CollaboratorCommissionIncurredPrintComponent } from '../commission-incurred-print/commission-incurred-print.component';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-commission-incurred-form',
@@ -36,6 +37,7 @@ import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 export class CollaboratorCommissionIncurredFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -48,7 +50,7 @@ export class CollaboratorCommissionIncurredFormComponent extends DataManagerForm
     public adminProductService: AdminProductService,
     public mobileAppService: MobileAppService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

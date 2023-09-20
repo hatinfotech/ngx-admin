@@ -4,6 +4,7 @@ import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@
 import { AppModule } from '../../../../app.module';
 import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/collaborator-order-print.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
@@ -52,6 +53,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
   };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -63,7 +65,7 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
     public mobileAppService: MobileAppService,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

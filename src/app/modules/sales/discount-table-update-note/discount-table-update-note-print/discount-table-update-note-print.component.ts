@@ -13,6 +13,7 @@ import { DiscountTableUpdateNoteFormComponent } from '../discount-table-update-n
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { DiscountTableUpdateNoteDetailModel, DiscountTableUpdateNoteModel } from '../../../../models/sales.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-discount-table-update-note-print',
@@ -33,13 +34,14 @@ export class DiscountTableUpdateNotePrintComponent extends DataManagerPrintCompo
   showPicture = true;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<DiscountTableUpdateNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

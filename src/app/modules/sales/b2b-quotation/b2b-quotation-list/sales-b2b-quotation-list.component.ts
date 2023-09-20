@@ -2,6 +2,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SalesB2bQuotationModel } from '../../../../models/sales.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
@@ -45,6 +46,7 @@ export class SalesB2bQuotationListComponent extends AgGridDataManagerListCompone
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class SalesB2bQuotationListComponent extends AgGridDataManagerListCompone
     public datePipe: DatePipe,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

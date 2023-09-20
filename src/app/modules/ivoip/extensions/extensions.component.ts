@@ -6,6 +6,7 @@ import { CommonService } from '../../../services/common.service';
 import { NbDialogService, NbToastrService } from '@nebular/theme';
 import { PbxExtensionModel } from '../../../models/pbx-extension.model';
 import { LocalDataSource } from 'ng2-smart-table';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-extensions',
@@ -20,13 +21,14 @@ export class ExtensionsComponent extends DataManagerListComponent<PbxExtensionMo
   idKey = 'Id';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
   ) {
-    super(apiService, router, cms, dialogService, toastService);
+    super(rsv, apiService, router, cms, dialogService, toastService);
   }
 
   editing = {};

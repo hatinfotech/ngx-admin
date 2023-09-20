@@ -31,6 +31,7 @@ import { AdminProductService } from '../../../admin-product/admin-product.servic
 import { ProductUnitFormComponent } from '../../../admin-product/unit/product-unit-form/product-unit-form.component';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-commerce-pos-order-form',
@@ -364,6 +365,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
   }
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -376,7 +378,7 @@ export class CommercePosOrderFormComponent extends DataManagerFormComponent<Comm
     public datePipe?: DatePipe,
     public decimalPipe?: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

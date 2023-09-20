@@ -3,7 +3,8 @@ import { CollaboratorPublisherFormComponent } from "../collaborator-publisher-fo
 import { AgGridDataManagerListComponent } from "../../../../lib/data-manager/ag-grid-data-manger-list.component";
 import { ContactModel } from "../../../../models/contact.model";
 import { ContactFormComponent } from "../../../contact/contact/contact-form/contact-form.component";
-import { ApiService } from "../../../../services/api.service";
+import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from "@angular/router";
 import { CommonService } from "../../../../services/common.service";
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from "@nebular/theme";
@@ -46,6 +47,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -56,7 +58,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

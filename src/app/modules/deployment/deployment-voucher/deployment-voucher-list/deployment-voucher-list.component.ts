@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
 import { DeploymentVoucherModel } from '../../../../models/deployment.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { DeploymentVoucherFormComponent } from '../deployment-voucher-form/deployment-voucher-form.component';
 import { DeploymentVoucherPrintComponent } from '../deployment-voucher-print/deployment-voucher-print.component';
@@ -45,6 +46,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
   @Input() gridHeight = '100%';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -55,7 +57,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
     public datePipe: DatePipe,
     public mobileAppService: MobileAppService
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

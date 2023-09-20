@@ -12,6 +12,7 @@ import { CollaboratorCommissionVoucherModel } from '../../../../models/collabora
 import { ProcessMap } from '../../../../models/process-map.model';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CollaboratorCommissionFormComponent } from '../collaborator-commission-form/collaborator-commission-form.component';
 import { CollaboratorCommissionPrintComponent } from '../collaborator-commission-print/collaborator-commission-print.component';
@@ -42,6 +43,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
   @Input('filter') filter: any;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -50,7 +52,7 @@ export class CollaboratorCommissionListComponent extends ServerDataManagerListCo
     public _http: HttpClient,
     public ref: NbDialogRef<CollaboratorCommissionListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

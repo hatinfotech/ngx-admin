@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import { MasterPriceTableUpdateNoteFormComponent } from '../master-price-table-update-note-form/master-price-table-update-note-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-master-price-table-update-note-print',
@@ -33,13 +34,14 @@ export class MasterPriceTableUpdateNotePrintComponent extends DataManagerPrintCo
   showPicture = true;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref: NbDialogRef<MasterPriceTableUpdateNotePrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {

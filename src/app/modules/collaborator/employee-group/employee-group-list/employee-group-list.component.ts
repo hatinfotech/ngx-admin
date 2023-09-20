@@ -14,6 +14,7 @@ import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-
 import { ContactModel } from '../../../../models/contact.model';
 import { PageModel } from '../../../../models/page.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { CollaboratorService } from '../../collaborator.service';
@@ -43,6 +44,7 @@ export class CollaboratorEmployeeGroupListComponent extends AgGridDataManagerLis
   // @Input() gridHeight = 'calc(100vh - 230px)';
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -53,7 +55,7 @@ export class CollaboratorEmployeeGroupListComponent extends AgGridDataManagerLis
     public datePipe: DatePipe,
     public collaboratorService: CollaboratorService,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

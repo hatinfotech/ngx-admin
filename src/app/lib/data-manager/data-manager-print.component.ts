@@ -9,6 +9,7 @@ import { Type } from '@angular/core';
 import { ProcessMap } from '../../models/process-map.model';
 import { AppModule } from '../../app.module';
 import { ShowcaseDialogComponent } from '../../modules/dialog/showcase-dialog/showcase-dialog.component';
+import { RootServices } from '../../services/root.services';
 
 declare var $: JQueryStatic;
 
@@ -37,12 +38,13 @@ export abstract class DataManagerPrintComponent<M> extends BaseComponent impleme
   style: string;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
     public ref?: NbDialogRef<DataManagerPrintComponent<M>>,
   ) {
-    super(cms, router, apiService, ref);
+    super(rsv, cms, router, apiService, ref);
 
   }
 

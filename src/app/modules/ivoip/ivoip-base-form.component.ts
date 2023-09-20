@@ -8,6 +8,7 @@ import { IvoipService } from './ivoip-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { PbxDomainModel } from '../../models/pbx-domain.model';
+import { RootServices } from '../../services/root.services';
 
 @Component({template: ''})
 export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent<M> implements OnInit {
@@ -53,6 +54,7 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -63,7 +65,7 @@ export abstract class IvoipBaseFormComponent<M> extends DataManagerFormComponent
     public ivoipService: IvoipService,
     public ref?: NbDialogRef<IvoipBaseFormComponent<M>>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, ref);
   }
 
   ngOnInit() {

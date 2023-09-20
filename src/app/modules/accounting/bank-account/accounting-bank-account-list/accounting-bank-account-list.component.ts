@@ -8,10 +8,9 @@ import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { AccBankAccountModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
-import { AccBusinessFormComponent } from '../../acc-business/acc-business-form/acc-business-form.component';
 import { AccountingBankAccountFormComponent } from '../accounting-bank-account-form/accounting-bank-account-form.component';
-import { AccountingDetailByObjectReportComponent } from '../../reports/accounting-detail-by-object-report/accounting-detail-by-object-report.component';
 import { AccountingAccountDetailsReportPrintComponent } from '../../reports/print/accounting-account-details-report-print/accounting-account-details-report-print.component';
 import { AccountingDetailByObjectReportAgComponent } from '../../reports/accounting-detail-by-object-report-ag/accounting-detail-by-object-report-ag.component';
 
@@ -36,6 +35,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -44,7 +44,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
     public _http: HttpClient,
     public ref: NbDialogRef<AccountingBankAccountListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {

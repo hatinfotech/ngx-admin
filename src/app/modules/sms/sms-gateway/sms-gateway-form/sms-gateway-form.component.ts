@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { SmsTemplateFormComponent } from '../../sms-template/sms-template-form/sms-template-form.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sms-gateway-form',
@@ -63,6 +64,7 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -72,7 +74,7 @@ export class SmsGatewayFormComponent extends DataManagerFormComponent<SmsGateway
     public cms: CommonService,
     public ref: NbDialogRef<SmsTemplateFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

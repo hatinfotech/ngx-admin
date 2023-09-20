@@ -4,6 +4,7 @@ import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@
 import { AppModule } from '../../../../app.module';
 import { PurchaseOrderVoucherModel } from '../../../../models/purchase.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 // import { PurchaseModule } from '../../purchase.module';
 import { PurchaseOrderVoucherFormComponent } from '../purchase-order-voucher-form/purchase-order-voucher-form.component';
@@ -45,6 +46,7 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
 
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -54,7 +56,7 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
     public ref: NbDialogRef<PurchaseOrderVoucherListComponent>,
     public datePipe: DatePipe,
   ) {
-    super(apiService, router, cms, dialogService, toastService, themeService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
 
     this.defaultColDef = {
       ...this.defaultColDef,

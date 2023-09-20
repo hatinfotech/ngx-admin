@@ -9,6 +9,7 @@ import { CoreConnectionModel } from '../../../../models/core-connection.model';
 import { PageModel } from '../../../../models/page.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-collaborator-page-form',
@@ -23,6 +24,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
   apiPath = '/collaborator/pages';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -32,7 +34,7 @@ export class CollaboratorPageFormComponent extends DataManagerFormComponent<Page
     public cms: CommonService,
     public ref: NbDialogRef<CollaboratorPageFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   select2SalesPriceReportOption = {

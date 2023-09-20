@@ -9,6 +9,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AdminProductService } from '../../admin-product.service';
 import { ProductCategoryModel, ProductObjectReferenceModel } from '../../../../models/product.model';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-product-object-reference-form',
@@ -62,6 +63,7 @@ export class ProductObjectReferenceFormComponent extends DataManagerFormComponen
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -72,7 +74,7 @@ export class ProductObjectReferenceFormComponent extends DataManagerFormComponen
     public ref: NbDialogRef<ProductObjectReferenceFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

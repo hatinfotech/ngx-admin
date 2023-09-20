@@ -7,6 +7,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-helpdesk-route-form',
@@ -56,7 +57,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
         };
       },
     },
-  };
+  } as any;
 
   select2OptionForRemoteDataSource = {
     placeholder: 'Chọn nhóm sản phẩm...',
@@ -148,6 +149,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
   paramList: HelpdeskParamModel[];
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -157,7 +159,7 @@ export class HelpdeskRouteFormComponent extends DataManagerFormComponent<Helpdes
     public cms: CommonService,
     public ref: NbDialogRef<HelpdeskRouteFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   async init() {

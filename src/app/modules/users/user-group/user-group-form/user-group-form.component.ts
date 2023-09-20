@@ -8,6 +8,7 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { UserModel } from '../../../../models/user.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-user-group-form',
@@ -22,6 +23,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
   baseFormUrl = '/users/group/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class UserGroupFormComponent extends DataManagerFormComponent<UserGroupMo
     public cms: CommonService,
     public ref: NbDialogRef<UserGroupFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   // getRequestId(callback: (id?: string[]) => void) {

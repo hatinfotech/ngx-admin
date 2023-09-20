@@ -19,6 +19,7 @@ import { CollaboratorService } from '../../collaborator.service';
 import { BaseComponent } from '../../../../lib/base-component';
 import { Router } from '@angular/router';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { RootServices } from '../../../../services/root.services';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -105,6 +106,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
   ];
 
   constructor(
+    public rsv: RootServices,
     public router: Router,
     private themeService: NbThemeService,
     private solarService: SolarData,
@@ -116,7 +118,7 @@ export class CollaboratorKpiDashboardComponent extends BaseComponent {
     public decimalPipe: DecimalPipe,
     public ref?: NbDialogRef<CollaboratorKpiDashboardComponent>,
   ) {
-    super(cms, router, apiService, ref)
+    super(rsv, cms, router, apiService, ref)
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {

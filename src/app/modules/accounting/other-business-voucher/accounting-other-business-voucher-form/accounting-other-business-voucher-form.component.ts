@@ -16,6 +16,7 @@ import { CommonService } from '../../../../services/common.service';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-accounting-other-business-voucher-form',
@@ -43,6 +44,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   printDialog = AccountingOtherBusinessVoucherPrintComponent;
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -52,7 +54,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     public cms: CommonService,
     public ref: NbDialogRef<AccountingOtherBusinessVoucherFormComponent>,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

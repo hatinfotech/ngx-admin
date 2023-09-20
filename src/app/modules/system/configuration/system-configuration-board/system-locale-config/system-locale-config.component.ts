@@ -12,6 +12,7 @@ import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { RootServices } from '../../../../../services/root.services';
 
 export interface Timezone {
   value: string;
@@ -58,6 +59,7 @@ export class SystemLocaleConfigComponent extends DataManagerFormComponent<Locale
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -67,7 +69,7 @@ export class SystemLocaleConfigComponent extends DataManagerFormComponent<Locale
     public cms: CommonService,
     public translate: TranslateService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
     this.cms.timezones$.pipe(filter(f => !!f), take(1)).toPromise().then((timezones) => {
       this.tz = (timezones as Timezone[]).map((timezon) => {
         return {

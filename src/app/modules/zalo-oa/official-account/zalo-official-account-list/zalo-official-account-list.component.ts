@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { ZaloOaOfficialAccountModel } from '../../../../models/zalo-oa.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { Router } from '@angular/router';
 import { CommonService } from '../../../../services/common.service';
 import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
@@ -34,6 +35,7 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -42,7 +44,7 @@ export class ZaloOfficialAccountListComponent extends ServerDataManagerListCompo
     public _http: HttpClient,
     public ref: NbDialogRef<ZaloOaFollowerListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
     this.actionButtonList.unshift({
       name: 'zalooa',
       status: 'primary',

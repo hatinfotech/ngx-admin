@@ -2,16 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbToastrService } from '@nebular/theme';
-import { SmartTableDateTimeComponent, SmartTableCurrencyComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { SmartTableDateTimeRangeFilterComponent } from '../../../../lib/custom-element/smart-table/smart-table.filter.component';
+import { SmartTableDateTimeComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
 import { SmartTableSetting } from '../../../../lib/data-manager/data-manger-list.component';
 import { ServerDataManagerListComponent } from '../../../../lib/data-manager/server-data-manger-list.component';
 import { UserGroupModel } from '../../../../models/user-group.model';
 import { ZaloOaTemplateModel } from '../../../../models/zalo-oa.model';
 import { ApiService } from '../../../../services/api.service';
+import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
 import { CashReceiptVoucherPrintComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-print/cash-receipt-voucher-print.component';
-import { ProductListV1Component } from '../../../admin-product/product/product-list-v1/product-list.component';
 import { ZaloOaTemplateFormComponent } from '../zalo-oa-template-form/zalo-oa-template-form.component';
 
 @Component({
@@ -36,6 +35,7 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
   static pagingConf = { page: 1, perPage: 40 };
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -44,7 +44,7 @@ export class ZaloOaTemplateListComponent extends ServerDataManagerListComponent<
     public _http: HttpClient,
     public ref: NbDialogRef<ZaloOaTemplateListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   // async loadCache() {

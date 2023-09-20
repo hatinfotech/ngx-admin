@@ -26,6 +26,7 @@ import { ProductUnitFormComponent } from '../../../admin-product/unit/product-un
 import { DatePipe, DecimalPipe } from '@angular/common';
 import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
 import { BusinessModel } from '../../../../models/accounting.model';
+import { RootServices } from '../../../../services/root.services';
 
 function MyCustomUploadAdapterPlugin(editor) {
   editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
@@ -89,6 +90,7 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -101,7 +103,7 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
     public datePipe?: DatePipe,
     public decimalPipe?: DecimalPipe,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
 
     /** Append print button to head card */
     this.actionButtonList.splice(this.actionButtonList.length - 1, 0, {

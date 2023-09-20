@@ -8,6 +8,7 @@ import { ApiService } from '../../../../services/api.service';
 import { NbToastrService, NbDialogService } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-hosting-form',
@@ -22,6 +23,7 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
   baseFormUrl = '/web-hosting/hostings/form';
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -31,7 +33,7 @@ export class HostingFormComponent extends WebHostingBaseFormComponent<WhHostingM
     public cms: CommonService,
     public webHostingService: WebHostingService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms, webHostingService);
   }
 
   ngOnInit() {

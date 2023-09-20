@@ -10,6 +10,7 @@ import { ProductCategoryModel } from '../../../../models/product.model';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { SalesProductModel } from '../../../../models/sales.model';
+import { RootServices } from '../../../../services/root.services';
 
 @Component({
   selector: 'ngx-sale-product-form',
@@ -63,6 +64,7 @@ export class SaleProductFormComponent extends DataManagerFormComponent<SalesProd
   };
 
   constructor(
+    public rsv: RootServices,
     public activeRoute: ActivatedRoute,
     public router: Router,
     public formBuilder: FormBuilder,
@@ -73,7 +75,7 @@ export class SaleProductFormComponent extends DataManagerFormComponent<SalesProd
     public ref: NbDialogRef<SaleProductFormComponent>,
     public adminProductService: AdminProductService,
   ) {
-    super(activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
+    super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
 
   getRequestId(callback: (id?: string[]) => void) {

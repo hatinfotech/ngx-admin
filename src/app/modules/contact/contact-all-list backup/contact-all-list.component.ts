@@ -15,6 +15,7 @@ import { ApiService } from '../../../services/api.service';
 import { CommonService } from '../../../services/common.service';
 import { ShowcaseDialogComponent } from '../../dialog/showcase-dialog/showcase-dialog.component';
 import { ContactFormComponent } from '../contact/contact-form/contact-form.component';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-contact-all-list',
@@ -39,6 +40,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
   groupsList: ContactGroupModel[];
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -47,7 +49,7 @@ export class ContactAllListComponent extends ServerDataManagerListComponent<Cont
     public _http: HttpClient,
     public ref: NbDialogRef<ContactAllListComponent>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
     this.actionButtonList.unshift({
       name: 'merge',
       status: 'danger',

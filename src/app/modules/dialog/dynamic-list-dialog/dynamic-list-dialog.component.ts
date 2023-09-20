@@ -16,6 +16,7 @@ import { CommonService } from '../../../services/common.service';
 import { CollaboratorCommissionFormComponent } from '../../collaborator/commission/collaborator-commission-form/collaborator-commission-form.component';
 import { CollaboratorCommissionListComponent } from '../../collaborator/commission/collaborator-commission-list/collaborator-commission-list.component';
 import { CollaboratorCommissionPrintComponent } from '../../collaborator/commission/collaborator-commission-print/collaborator-commission-print.component';
+import { RootServices } from '../../../services/root.services';
 
 @Component({
   selector: 'ngx-dynamic-list-dialog',
@@ -50,6 +51,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
   @Input('filter') filter: any;
 
   constructor(
+    public rsv: RootServices,
     public apiService: ApiService,
     public router: Router,
     public cms: CommonService,
@@ -58,7 +60,7 @@ export class DynamicListDialogComponent<M> extends ServerDataManagerListComponen
     public _http: HttpClient,
     public ref?: NbDialogRef<ServerDataManagerListComponent<M>>,
   ) {
-    super(apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, ref);
   }
 
   async init() {
