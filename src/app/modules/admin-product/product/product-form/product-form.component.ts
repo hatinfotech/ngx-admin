@@ -217,6 +217,11 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     data: [
       { id: 'PRODUCT', text: 'Hàng hóa' },
       { id: 'SERVICE', text: 'Dịch vụ' },
+      { id: 'MATERIAL', text: 'Nguyên vật liệu' },
+      { id: 'FINISHEDGOODS', text: 'Thành phẩm' },
+      { id: 'TOOLANDEQUIPMENTS', text: 'Công cụ dụng cụ' },
+      { id: 'PRODUCTCOMPO', text: 'Compo sản phẩm' },
+      { id: 'ONCEAGENCY', text: 'Thông tin môi giới 1 lần' },
     ],
   };
 

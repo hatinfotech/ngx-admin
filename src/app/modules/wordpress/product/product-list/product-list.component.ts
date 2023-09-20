@@ -103,6 +103,35 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
           autoHeight: true,
         },
         {
+          headerName: 'Danh mục',
+          field: 'Categories',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/admin-product/categories', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+                placeholder: 'Chọn danh mục...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Danh mục WP',
+          field: 'RefCategories',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: 'agTextColumnFilter',
+        },
+        {
           headerName: 'Sku',
           field: 'Sku',
           width: 120,
@@ -164,35 +193,6 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
               allowClear: true,
             }
           },
-        },
-        {
-          headerName: 'Danh mục',
-          field: 'Categories',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/admin-product/categories', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
-                placeholder: 'Chọn danh mục...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Danh mục WP',
-          field: 'RefCategories',
-          // pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: 'agTextColumnFilter',
         },
         {
           headerName: 'Site',
