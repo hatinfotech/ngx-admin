@@ -606,13 +606,36 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   getRawFormData() {
     const rawData = this.form.getRawValue();
     if (this.cleanedDataBeforeSave) {
-      for (const item of rawData.array) {
-        for (const prop in item) {
-          item[prop] = this.cms.getObjectId(item[prop]);
-        }
+      for (const index in rawData.array) {
+        // const item = rawData.array[index];
+        // const formGroup = this.array.controls[index];
+        // for (const prop in item) {
+        //   if (this.array.controls[index].get(prop) instanceof FormArray) {
+
+        //   } else {
+        //     const formControl = formGroup[prop];
+        //     item[prop] = this.cms.getClearObject(item[prop]);
+        //   }
+        // }
+        this.getRawFormDataRecursion(rawData.array[index], this.array.controls[index]);
       }
     }
     return rawData;
+  }
+
+  getRawFormDataRecursion(formData: any, formGroup: FormGroup) {
+    for (const prop in formData) {
+      const formControl = formGroup.get(prop);
+      if (formControl instanceof FormArray) {
+        for(const dindex in formData[prop]) {
+          this.getRawFormDataRecursion(formData[prop][dindex], formControl.controls[dindex]);
+        }
+      } else {
+        // const formControl = formGroup[prop];
+        formData[prop] = this.cms.getClearObject(formData[prop]);
+      }
+    }
+    // return formData;
   }
 
   /** Form submit event */

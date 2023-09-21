@@ -174,7 +174,7 @@ export class CommonService {
     },
   };
 
-  voucherTypeMap: { [key: string]: { prefix: string, id: string, text: string, symbol: string, status?: string } } = {
+  voucherTypeMap: { [key: string]: { prefix: string, id: string, text: string, symbol: string, status?: string, icon?: string } } = {
     PAYMENT: { prefix: '101', id: 'PAYMENT', text: 'Phiếu chi', symbol: 'PC', status: 'primary' },
     RECEIPT: { prefix: '100', id: 'RECEIPT', text: 'Phiếu thu', symbol: 'PT', status: 'primary' },
     OTHERBUSINESSVOUCHER: { prefix: '103', id: 'OTHERBUSINESSVOUCHER', text: 'Chứng từ nghiệp vụ khác', symbol: 'NVK', status: 'warning' },
@@ -942,8 +942,22 @@ export class CommonService {
   getObjectText(obj: any, textName?: string) {
     return obj && Object.keys(obj).indexOf(textName || 'id') > -1 ? obj[textName || 'text'] : obj;
   }
+  getObjectType(obj: any, typeName?: string) {
+    return obj && obj[typeName || 'type'] || null;
+  }
   getObjectsText(objs: any, textName?: string) {
     return (objs || []).map(m => this.getObjectText(m)).join(', ');
+  }
+
+  getClearObject(obj: any) {
+    if (obj !== null && typeof obj == 'object' && typeof obj['id'] !== 'undefined' && obj['id'] !== null) {
+      const type = this.getObjectType(obj);
+      return { id: this.getObjectId(obj), text: this.getObjectText(obj), ...(type ? { type: type } : {}) };
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(obj => typeof obj['id'] !== 'undefined' && obj['id'] !== null && ({ id: this.getObjectId(obj), text: this.getObjectText(obj), ...(this.getObjectType(obj) ? { type: this.getObjectType(obj) } : {}) } )|| obj);
+    }
+    return obj;
   }
 
   currencyTransform(value: any, currencyCode?: string, display?: 'code' | 'symbol' | 'symbol-narrow' | string | boolean, digitsInfo?: string, locale?: string): string | null {

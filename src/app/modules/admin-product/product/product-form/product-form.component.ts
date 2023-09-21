@@ -168,6 +168,17 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       text: 'text',
     },
   };
+  select2OptionForCostClassification = {
+    placeholder: 'Khoản mục CP...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
   select2OptionForBrand = {
     placeholder: 'Chọn thương hiệu...',
     allowClear: true,
@@ -262,6 +273,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     params['includeUnitConversions'] = true;
     params['includeProperties'] = true;
     params['includeWarehouseUnit'] = true;
+    params['includeProductParts'] = true;
     super.executeGet(params, success, error);
   }
 
@@ -304,6 +316,19 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         });
       }
 
+      if (itemFormData?.ProductParts) {
+        const details = this.getProductParts(newForm);
+        details.clear();
+        itemFormData.ProductParts.forEach(property => {
+          // unitConversion['Thumbnail'] += '?token=' + this.apiService.getAccessToken();
+          // property.Property.Values = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(property))?.Values;
+          const newDetailFormGroup = this.makeNewProductPartFormGroup(property, newForm);
+          details.push(newDetailFormGroup);
+          const comIndex = details.length - 1;
+          this.onAddProductPartFormGroup(newForm, comIndex, newDetailFormGroup);
+        });
+      }
+
       // // Actions form load
       // if (itemFormData.Actions) {
       //   itemFormData.Actions.forEach(action => {
@@ -326,32 +351,32 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
     let newForm = null;
     newForm = this.formBuilder.group({
       // Code_old: [''],
-      Code: [''],
+      Code: [],
       // Sku: { disabled: true, value: '' },
-      Sku: [''],
-      Barcode: [''],
+      Sku: [],
+      Barcode: [],
       WarehouseUnit: ['n/a', (control: FormControl) => {
         if (newForm && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      Name: ['', Validators.required],
-      TaxName: [''],
-      FeaturePicture: [''],
-      Description: [''],
-      Technical: [''],
-      Categories: [''],
+      Name: [null, Validators.required],
+      TaxName: [],
+      FeaturePicture: [],
+      Description: [],
+      Technical: [],
+      Categories: [[]],
       Type: ['PRODUCT', (control: FormControl) => {
         if (newForm && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
         }
         return null;
       }],
-      Groups: [''],
-      Pictures: [''],
-      VatTax: [''],
-      Brand: [null],
+      Groups: [[]],
+      Pictures: [[]],
+      VatTax: [],
+      Brand: [],
       Tags: [[]],
       Keywords: [[]],
       RequireVatTax: [false],
@@ -419,7 +444,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
               groupsContrrol.patchValue([...(groupsContrrol.value || []), newGroup]);
             },
             onDialogClose: () => {
-  
+
             },
           },
           closeOnEsc: false,
@@ -427,7 +452,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
         });
       }
     } as CustomIcon];
-  
+
     newForm['__categoriesControlIcons'] = [{
       icon: 'plus-square-outline', title: this.cms.translateText('Thêm danh mục sản phẩm'), status: 'success', action: (formGroupComponet: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
         this.cms.openDialog(ProductCategoryFormComponent, {
@@ -442,7 +467,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
               categoriesContrrol.patchValue([...(categoriesContrrol.value || []), newGroup]);
             },
             onDialogClose: () => {
-  
+
             },
           },
           closeOnEsc: false,
@@ -462,7 +487,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
               formGroup.get('WarehouseUnit').patchValue(newUnit);
             },
             onDialogClose: () => {
-  
+
             },
           },
           closeOnEsc: false,
@@ -485,7 +510,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
               brandContrrol.patchValue(newGroup);
             },
             onDialogClose: () => {
-  
+
             },
           },
           closeOnEsc: false,
@@ -690,9 +715,9 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       //   newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(data.ProductPart))?.Values || [];
       // }, 300);
     }
-    // newForm.get('ProductParts').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
-    //   newForm['dataList'] = this.propertyList.find(f => this.cms.getObjectId(f) == this.cms.getObjectId(value))?.Values || [];
-    // })
+    newForm.get('PartProduct').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      newForm['__unitList'] = value?.Units || [];
+    });
     return newForm;
   }
   getProductParts(formItem: FormGroup) {
@@ -817,7 +842,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
   }
 
   onCkeditorReady(editor: any) {
-    console.log(editor);
+    // console.log(editor);
   }
 
   async save(): Promise<ProductModel[]> {
@@ -941,4 +966,73 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       this.onDialogSave(newFormData);
     }
   }
+
+  /** Hight performance config */
+  patchedDataAfterSave = false;
+  cleanedDataBeforeSave = true;
+  /**
+   * Override: Clean data for detail form items
+   */
+  getRawFormData() {
+    const rawData = super.getRawFormData();
+    for (const rawItem of rawData.array) {
+      // for (const rawDetail of rawItem['ProductParts']) {
+      //   for (const prop in rawDetail) {
+      //     rawDetail[prop] = this.cms.getClearObject(rawDetail[prop]);
+      //   }
+      // }
+
+      // Clean UnitConversions
+      rawItem.UnitConversions = rawItem.UnitConversions.map(detail => {
+        for (const prop in detail) {
+          detail[prop] = this.cms.getClearObject(detail[prop]);
+        }
+        return detail;
+      });
+
+      // Clean Properties
+      rawItem.Properties = rawItem.Properties.map(detail => {
+        for (const prop in detail) {
+          detail[prop] = this.cms.getClearObject(detail[prop]);
+        }
+        return detail;
+      });
+
+      // Clean ProductParts
+      rawItem.ProductParts = rawItem.ProductParts.map(detail => {
+        for (const prop in detail) {
+          detail[prop] = this.cms.getClearObject(detail[prop]);
+        }
+        return detail;
+      });
+    }
+
+    return rawData;
+  }
+  /** Override: Auto update SystemUuid for detail form item */
+  onItemAfterSaveSubmit(formItemData: Model, index: number, method: string) {
+    const result = super.onItemAfterSaveSubmit(formItemData, index, method);
+    // Update data for UnitConversions
+    if (result && formItemData.UnitConversions) {
+      for (const d in formItemData.UnitConversions) {
+        (this.array.controls[index].get('UnitConversions')['controls'][d] as FormGroup).get('SystemUuid').setValue(formItemData.UnitConversions[d]['SystemUuid']);
+      }
+    }
+
+    // Update data for Properties
+    if (result && formItemData.Properties) {
+      for (const d in formItemData.Properties) {
+        (this.array.controls[index].get('Properties')['controls'][d] as FormGroup).get('SystemUuid').setValue(formItemData.Properties[d]['SystemUuid']);
+      }
+    }
+
+    // Update data for ProductParts
+    if (result && formItemData.ProductParts) {
+      for (const d in formItemData.ProductParts) {
+        (this.array.controls[index].get('ProductParts')['controls'][d] as FormGroup).get('SystemUuid').setValue(formItemData.ProductParts[d]['SystemUuid']);
+      }
+    }
+    return result;
+  }
+  /** End Hight performance config */
 }

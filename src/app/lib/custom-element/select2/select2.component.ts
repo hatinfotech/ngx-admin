@@ -393,6 +393,7 @@ export class Select2Component implements ControlValueAccessor, Validator, OnChan
     });
     // this.value = changedValue;
     this.selectChange.emit(changedValue);
+    console.log(changedValue);
     this.currentValue = changedValue;
     if (e.value === null) {
       this.value = null;

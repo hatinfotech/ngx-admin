@@ -242,15 +242,17 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
           ...agMakeTagsColDef(this.cms, (tag) => {
           }),
           headerName: 'ĐVT',
-          field: 'Units',
+          field: 'UnitConversions',
           width: 200,
           valueGetter: (params: { data: ProductModel }) => {
             const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
             const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
-            return params.data?.Units?.map(unit => {
+            return params.data?.UnitConversions?.map(unit => {
               let text = '';
               if (baseUnitId == unit?.id) {
                 text = unit.text;
+                unit.icon = 'checkmark-square-outline';
+                // unit.status = 'primary';
               } else {
                 text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
               }
@@ -261,7 +263,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
               if (!unit.IsAutoAdjustInventory) {
                 unit.status = 'warning';
               }
-              unit.label = `${unit.text} (${unit.ConversionRatio})`;
+              unit.label = baseUnitId != unit?.id && `${unit.text} (${baseUnitId == unit?.id ? '*' : unit.ConversionRatio})` || unit.text;
               return unit;
             });
           },
@@ -453,7 +455,8 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     params['includeCategories'] = true;
     params['includeGroups'] = true;
     params['includeWarehouseUnit'] = true;
-    params['includeUnits'] = true;
+    // params['includeUnits'] = true;
+    params['embedUnitConversions'] = true;
     params['includeCreator'] = true;
     params['includeLastUpdateBy'] = true;
     // params['sort_Id'] = 'desc';

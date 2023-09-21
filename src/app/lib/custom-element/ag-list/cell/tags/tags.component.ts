@@ -96,7 +96,8 @@ export class AgTagsCellRenderer implements ICellRendererAngularComp, OnDestroy {
                         ...inputTag,
                         toolTip: this.renderToolTip(inputTag),
                         label: this.labelAsText(inputTag),
-                        status: voucherType?.status
+                        status: voucherType?.status || inputTag.status,
+                        icon: voucherType?.icon || inputTag.icon
                     };
                 }
                 renderTags.push(tag);
