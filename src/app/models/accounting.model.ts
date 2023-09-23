@@ -176,3 +176,11 @@ export interface AccMasterBookEntryModel {
     State?: string;
     RelativeStaff?: string;
 }
+export interface CostClassificationModel {
+    [key: string]: any;
+    Id?: string;
+    Code?: string;
+    Parent?: Partial<CostClassificationModel> | string;
+    Name?: string;
+    Description?: string;
+}

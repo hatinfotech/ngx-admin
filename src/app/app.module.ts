@@ -269,6 +269,7 @@ import { collaboratorComponents } from './modules/collaborator/collaborator.modu
 import { MentionModule } from 'angular-mentions';
 import { saleComponents } from './modules/sales/sales.module';
 import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
+import { accountingComponents } from './modules/accounting/accounting.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -356,52 +357,7 @@ export class DynamicLocaleId extends String {
 
 
     // Accounting components
-    CashReceiptVoucherListComponent,
-    CashReceiptVoucherFormComponent,
-    CashPaymentVoucherListComponent,
-    CashPaymentVoucherFormComponent,
-    CashReceiptVoucherFormComponent,
-    CashReceiptVoucherListComponent,
-    CashReceiptVoucherPrintComponent,
-    CashPaymentVoucherPrintComponent,
-    AccAccountListComponent,
-    AccAccountFormComponent,
-    AccBusinessListComponent,
-    AccBusinessFormComponent,
-    AccountingReportComponent,
-    AccountingLiabilitiesReportComponent,
-    AccountingReceivablesReportComponent,
-    AccountingSummaryReportComponent,
-    AccountingContraAccountReportComponent,
-    AccountingReceivablesFromCustomersReportComponent,
-    AccountingReceivablesFromEmployeeReportComponent,
-    AccountingProfitReportComponent,
-    AccountingDetailByObjectReportComponent,
-    AccountingDetailByObjectReportAgComponent,
-    AccountingOtherBusinessVoucherListComponent,
-    AccountingOtherBusinessVoucherFormComponent,
-    AccountingOtherBusinessVoucherPrintComponent,
-    AccountingBankListComponent,
-    AccountingBankFormComponent,
-    AccountingBankAccountListComponent,
-    AccountingBankAccountFormComponent,
-    AccMasterBookListComponent,
-    AccMasterBookFormComponent,
-    AccMasterBookHeadAmountComponent,
-    AccMasterBookHeadObjectAmountComponent,
-    AccMasterBookHeadBankAccountAmountComponent,
-    AccountingReceivablesFromCustomersReportPrintComponent,
-    AccountingReceivablesFromCustomersDetailsReportPrintComponent,
-    AccountingReceivablesFromCustomersVoucherssReportPrintComponent,
-    AccountingObjectCashFlowReportPrintComponent,
-    AccountingCashFlowReportComponent,
-    AccountingLiabilitiesReportPrintComponent,
-    AccountingLiabilitiesDetailsReportPrintComponent,
-    AccountingDashboardComponent,
-    AccountingRevenueStatisticsComponent,
-    AccountingMostOfDebtComponent,
-    AccountingAccountDetailsReportPrintComponent,
-    AccountingContributedCapitalReportComponent,
+    ...accountingComponents,
 
     // Deployment components
     DeploymentVoucherListComponent,

@@ -815,6 +815,9 @@
         "CashPaymentVoucher": {
             "title": "phiếu chi"
         },
+        "AccCostClassification": {
+            "title": "khoản mục chi phí"
+        },
         "debitAccount": "tài khoản nợ",
         "creditAccount": "tài khoản có",
         "dateOfPayment": "ngày thanh toán",
