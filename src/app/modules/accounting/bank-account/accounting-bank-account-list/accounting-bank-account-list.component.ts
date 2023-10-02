@@ -183,7 +183,7 @@ export class AccountingBankAccountListComponent extends ServerDataManagerListCom
         accounts: ['1121'],
         report: 'reportDetailByAccountAndObject',
         fromDate: null,
-        toDate: null,
+        toDate: new Date(),
         filter: {
           eq_BankAccount: rowData.Code
         },

@@ -359,7 +359,7 @@ export class CollaboratorAdvanceStrategyPublisherFormComponent extends DataManag
     super.executeGet(params, success, error);
   }
 
-  async formLoad(formData: ProductModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: ProductModel) => void) {
+  async formLoad(formData: CollaboratorAdvanceStrategyPublisherModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CollaboratorAdvanceStrategyPublisherModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // if (itemFormData?.Levels) {

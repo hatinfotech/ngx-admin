@@ -104,11 +104,17 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
 
   async loadCache() {
     // iniit category
-    this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
-    this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
     // this.unitList = (await this.apiService.getPromise<UnitModel[]>('/admin-product/units', { includeIdText: true, limit: 'nolimit' }));
-    this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
-    this.shelfList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, limit: 'nolimit', eq_Type: 'SHELF' })).map(container => ({ id: container.Code, text: `${container.Name}` })) as any;
+    //
+    // this.categoryList = (await this.apiService.getPromise<ProductCategoryModel[]>('/admin-product/categories', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    // this.groupList = (await this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit' })).map(cate => ({ ...cate, id: cate.Code, text: cate.Name })) as any;
+    // this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
+    // this.shelfList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, limit: 'nolimit', eq_Type: 'SHELF' })).map(container => ({ id: container.Code, text: `${container.Name}` })) as any;
+    //
+    this.categoryList = await this.rsv.adminProductService.categoryList$.pipe(take(1)).toPromise();
+    this.groupList = await this.rsv.adminProductService.groupList$.pipe(take(1)).toPromise();
+    this.containerList = await this.rsv.adminProductService.containerList$.pipe(take(1)).toPromise();
+    this.shelfList = this.containerList.filter(f => this.cms.getObjectId(f.Type) == 'SHELF');
   }
 
   ngAfterViewInit(): void {
@@ -460,6 +466,11 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     params['includeCreator'] = true;
     params['includeLastUpdateBy'] = true;
     // params['sort_Id'] = 'desc';
+    if (this.inputQuery) {
+      for(const key in this.inputQuery) {
+        params[key] = this.inputQuery[key];
+      }
+    }
     return params;
   }
 

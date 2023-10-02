@@ -4,9 +4,10 @@ import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { ProductModel, ProductPictureModel } from './product.model';
 import { UnitModel } from './unit.model';
-import { BusinessModel } from './accounting.model';
+import { BusinessModel, CostClassificationModel } from './accounting.model';
 import { Tracing } from 'trace_events';
 import { IdTextModel } from './common.model';
+import { Model } from './model';
 
 export class WarehouseModel {
   Id?: string | number;
@@ -175,6 +176,7 @@ export class WarehouseGoodsDeliveryNoteModel {
   Warehouse?: string;
   Branch?: string;
   State?: string;
+  RelativeVouchers?: any[];
 
   Bookkeeping?: boolean;
 
@@ -190,7 +192,7 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   Product?: string & ProductModel;
   ProductName?: string;
   Description?: string;
-  Unit?: string & UnitModel;
+  Unit?: any;
   Quantity?: number;
   PriceOfDelivered?: number;
   Location?: string;
@@ -269,4 +271,83 @@ export class WarehouseGoodsInContainerModel {
 
 export class GoodsModel extends ProductModel {
   Containers?: WarehouseGoodsInContainerModel[];
+}
+
+
+export interface ProductionOrderModel extends Model {
+  Code?: string;
+  Title?: string;
+  Description?: string;
+  DateOfCreated?: string;
+  DateOfStart?: string;
+  DateOfEnd?: string;
+  Approved?: string;
+  Creator?: string;
+  CreatorName?: string;
+  Manager?: string;
+  ManagerName?: string;
+  State?: string;
+
+  FinishedGoods?: ProductionOrderFinishedGoodsModel[];
+  CostClassifications?: ProductionOrderCostClassificationModel[];
+}
+export interface ProductionOrderFinishedGoodsModel extends Model {
+  SystemUuid?: string;
+  ProductionOrder?: Partial<ProductionOrderModel>;
+  No?: number;
+  FinishedGoods?: Partial<ProductModel>;
+  FinishedGoodsName?: string;
+  Unit?: Partial<UnitModel> | string;
+  UnitLabel?: string;
+  Quantity?: number;
+  CostClassification?: Partial<CostClassificationModel> | string;
+  CostClassificationLabel?: string;
+  DistributeCostPercent?: number;
+  DistributeCost?: number;
+
+  Materials?: ProductionOrderMaterialModel[];
+  DistributedCosts?: ProductionOrderDistributedCostModel[];
+}
+export interface ProductionOrderMaterialModel extends Model {
+  SystemUuid?: string;
+  ProductionOrder?: string;
+  FinishedGoodsUuid?: string;
+  FinishedGoods?: Partial<ProductModel>;
+  FinishedGoodsName?: string;
+  FinishedGoodsUnit?: Partial<UnitModel>;
+  FinishedGoodsUnitName?: string;
+  No?: number;
+  Material?: any;
+  MaterialName?: string;
+  Unit?: Partial<UnitModel> | string;
+  UnitLabel?: string;
+  Budgeted?: number;
+  Quantity?: number;
+  Price?: number;
+  CostClassification?: any;
+  CostClassificationLabel?: string;
+}
+export interface ProductionOrderDistributedCostModel extends Model {
+  SystemUuid?: string;
+  ProductionOrder?: string;
+  FinishedGoodsUuid?: string;
+  FinishedGoods?: Partial<ProductModel>;
+  FinishedGoodsName?: string;
+  FinishedGoodsUnit?: Partial<UnitModel>;
+  FinishedGoodsUnitName?: string;
+  No?: number;
+  Cost?: number;
+  CostClassification?: any;
+  CostClassificationLabel?: string;
+}
+export interface ProductionOrderCostClassificationModel extends Model {
+  SystemUuid?: string;
+  ProductionOrder?: string;
+  No?: number;
+  CostClassification?: any;
+  CostClassificationLabel?: string;
+  Balance?: number;
+  DistributedPercent?: number;
+  DistributedValue?: number;
+  DistributedType?: string;
 }

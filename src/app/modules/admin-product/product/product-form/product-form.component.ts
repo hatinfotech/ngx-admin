@@ -985,7 +985,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       // Clean UnitConversions
       rawItem.UnitConversions = rawItem.UnitConversions.map(detail => {
         for (const prop in detail) {
-          detail[prop] = this.cms.getClearObject(detail[prop]);
+          detail[prop] = this.cms.getCleanObject(detail[prop]);
         }
         return detail;
       });
@@ -993,7 +993,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       // Clean Properties
       rawItem.Properties = rawItem.Properties.map(detail => {
         for (const prop in detail) {
-          detail[prop] = this.cms.getClearObject(detail[prop]);
+          detail[prop] = this.cms.getCleanObject(detail[prop]);
         }
         return detail;
       });
@@ -1001,7 +1001,7 @@ export class ProductFormComponent extends DataManagerFormComponent<ProductModel>
       // Clean ProductParts
       rawItem.ProductParts = rawItem.ProductParts.map(detail => {
         for (const prop in detail) {
-          detail[prop] = this.cms.getClearObject(detail[prop]);
+          detail[prop] = this.cms.getCleanObject(detail[prop]);
         }
         return detail;
       });

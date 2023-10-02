@@ -5,14 +5,14 @@
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
-        <div style="display: flex;">
+        <ngx-print-header></ngx-print-header>
+        <!-- <div style="display: flex;">
           <div>
             <img style="margin-top: 2px;" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}" src="{{data.Signature}}">
           </div>
           <div style="flex: 1;">
-            <ngx-print-header></ngx-print-header>
           </div>
-        </div>
+        </div> -->
         <div class="print-title">{{ 'Sales.SalesVoucher.title' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>

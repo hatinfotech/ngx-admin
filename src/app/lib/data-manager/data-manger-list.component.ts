@@ -99,6 +99,10 @@ export abstract class DataManagerListComponent<M> extends BaseComponent implemen
 
   @Input() extendActionButtons: ActionControl[] = [];
   @Input() hideChooseButton: boolean = false;
+  @Input() inputQuery: any = {};
+  
+  @Input() width = '100%';
+  @Input() height = '100%';
 
   smartTable: Ng2SmartTableComponent;
   @ViewChild('smartTable') set content(content: Ng2SmartTableComponent) {

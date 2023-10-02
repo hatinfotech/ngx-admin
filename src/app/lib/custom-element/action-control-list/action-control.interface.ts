@@ -11,6 +11,7 @@ export interface ActionControl {
   rightIcon?: string;
   title: string;
   size: string;
+  outline?: boolean;
   select2?: { data?: any[], option?: Select2Option };
   value?: any;
   disabled?: (option?: any) => boolean;

@@ -2,6 +2,9 @@ import { WarehouseGoodsContainerModel } from './warehouse.model';
 import { IdTextModel } from './common.model';
 import { FileModel } from './file.model';
 import { UnitModel } from './unit.model';
+import { Model } from './model';
+import { PromotionModel } from './promotion.model';
+import { CostClassificationModel } from './accounting.model';
 
 export class ProductModel {
   [key: string]: any;
@@ -19,6 +22,7 @@ export class ProductModel {
   Containers?: WarehouseGoodsContainerModel[];
 
   Units?: ProductUnitConversoinModel[];
+  ProductParts?: Partial<ProductPartModel>[];
 
   // References
   Categories?: ProductCategoryModel[];
@@ -28,6 +32,20 @@ export class ProductModel {
   Revisions?: ProductModel[];
   constructor() { }
 
+}
+
+export interface ProductPartModel extends Model {
+  Product?: Partial<ProductModel> | string;
+  ProductName?: string;
+  No?: string;
+  PartProduct?: Partial<ProductModel> | string;
+  PartProductName?: string;
+  PartUnit?: Partial<UnitModel> | string;
+  PartUnitLabel?: string;
+  Quantity?: number;
+  CostClassification?: Partial<CostClassificationModel> | string;
+  CostClassificationLabel?: string;
+  SystemUuid?: string;
 }
 
 export class ProductCategoryModel {

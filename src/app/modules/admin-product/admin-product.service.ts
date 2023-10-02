@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 import { _ } from 'ag-grid-community';
+import { WarehouseGoodsContainerModel } from '../../models/warehouse.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,7 @@ export class AdminProductService {
   propertyValueList$ = new BehaviorSubject<ProductPropertyValueModel[]>(null);
   brandList$ = new BehaviorSubject<ProductBrandModel[]>(null);
   keywordList$ = new BehaviorSubject<ProductKeywordModel[]>(null);
+  containerList$ = new BehaviorSubject<WarehouseGoodsContainerModel[]>(null);
 
 
   updateCacheProcessing = null;
@@ -115,6 +117,10 @@ export class AdminProductService {
         path: 'admin-product/keywords',
         params: {}
       },
+      {
+        path: 'warehouse/goods-containers',
+        params: { includePath: true, includeIdText: true }
+      },
     ]).then(rs => {
       console.log(rs);
 
@@ -139,6 +145,9 @@ export class AdminProductService {
 
       // Update keyboard list
       this.keywordList$.next(rs[6]);
+
+      // Update container list
+      this.containerList$.next(rs[7].map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })));
       return rs;
     });
   }
@@ -184,6 +193,14 @@ export class AdminProductService {
   async updateGroupList() {
     return this.apiService.getPromise<ProductGroupModel[]>('/admin-product/groups', { limit: 'nolimit', onlyIdText: true }).then(rs => {
       this.groupList$.next(rs);
+      return rs;
+    });
+  }
+
+  // this.containerList = (await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' })).map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })) as any;
+  async updateContainerList() {
+    return this.apiService.getPromise<ProductGroupModel[]>('/warehouse/goods-containers', { includePath: true, includeIdText: true, limit: 'nolimit' }).then(rs => {
+      this.containerList$.next(rs.map(container => ({ ...container, text: `${container.FindOrder} - ${container.Path}` })));
       return rs;
     });
   }

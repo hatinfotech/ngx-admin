@@ -440,7 +440,8 @@
         "printBarCode": "in mã vạch",
         "province": "Tỉnh/Tp",
         "district": "Quận/Huyện",
-        "ward": "Phường/Xã"
+        "ward": "Phường/Xã",
+        "costClassification": "khoản mục chi phí"
     },
     "Contact": {
         "Customer": {
@@ -646,6 +647,9 @@
             "voucherWasUnwroteInToWahouseBook": "phiếu đã được xóa khỏi sổ kho",
             "commit": "chốt sổ",
             "commitTo": "chốt sổ tới ngày"
+        },
+        "ProductionOrder": {
+            "title": "{{definition}}{{action}} lệnh sản xuất"
         },
         "Menu": {
             "book": "sổ kho",

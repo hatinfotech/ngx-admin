@@ -56,6 +56,8 @@ export class AgDynamicListComponent<M> extends AgGridDataManagerListComponent<Mo
     this.defaultColDef = {
       ...this.defaultColDef,
       cellClass: 'ag-cell-items-center',
+      // suppressFiltersToolPanel: true,
+      // floatingFilter: false,
     }
 
     this.pagination = false;

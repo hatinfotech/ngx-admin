@@ -310,6 +310,17 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
           },
         },
         {
+          headerName: 'Khoản mục CP',
+          field: 'CostClassification',
+          width: 180,
+          filter: 'agTextColumnFilter',
+          filterParams: {
+            type: 'equals'
+          },
+          autoHeight: true,
+          cellRenderer: AgTextCellRenderer,
+        },
+        {
           headerName: 'Luồng hạch toán',
           field: 'Thread',
           width: 180,
@@ -714,12 +725,22 @@ export class AccountingDetailByObjectReportAgComponent extends AgGridDataManager
       params['includeIncrementAmount'] = true;
     }
 
-    // if (this.accountingService?.reportToDate$?.value) {
-    const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
-    const fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+    let toDate = null;
+    let fromDate = null;
 
-    const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
-    const toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+    if (this.fromDate) {
+      fromDate = this.fromDate
+    } else {
+      const choosedFromDate = (this.accountingService.reportFromDate$.value as Date) || new Date();
+      fromDate = new Date(choosedFromDate.getFullYear(), choosedFromDate.getMonth(), choosedFromDate.getDate(), 0, 0, 0, 0);
+    }
+
+    if (this.toDate) {
+      toDate = this.toDate
+    } else {
+      const choosedToDate = (this.accountingService.reportToDate$.value as Date) || new Date();
+      toDate = new Date(choosedToDate.getFullYear(), choosedToDate.getMonth(), choosedToDate.getDate(), 23, 59, 59, 999);
+    }
 
     params['toDate'] = toDate.toISOString();
     params['fromDate'] = fromDate.toISOString();

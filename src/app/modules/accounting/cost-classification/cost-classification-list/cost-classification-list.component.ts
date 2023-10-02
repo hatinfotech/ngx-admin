@@ -282,6 +282,13 @@ export class AccCostClassificationListComponent extends AgGridDataManagerListCom
           autoHeight: true,
         },
         {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Số dư',
+          field: 'Balance',
+          width: 200,
+          pinned: 'right'
+        },
+        {
           ...agMakeCommandColDef(this, this.cms, true, true, false),
           headerName: 'Lệnh',
         },
@@ -300,6 +307,7 @@ export class AccCostClassificationListComponent extends AgGridDataManagerListCom
   // }
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    params['includeBalance'] = true;
     return params;
   }
 

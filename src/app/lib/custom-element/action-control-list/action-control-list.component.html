@@ -4,7 +4,7 @@
     <ng-template ngFor let-control [ngForOf]="list" let-i="index">
       <button type="button" class="action-list-item"
         *ngIf="(!control.type || control.type == 'button') && (!control.hidden || !control.hidden(option))" nbButton
-        [status]="control.status" hero [size]="control.size" [disabled]="control.disabled && control.disabled(option)"
+        [status]="control.status" hero [size]="control.size" [outline]="control?.outline === true && true || false" [disabled]="control.disabled && control.disabled(option)"
         [nbTooltip]="control.title" nbTooltipPlacement="bottom" (click)="control.click($event, option)">
         <nb-icon *ngIf="!hideIcon" [pack]="control.iconPack || 'eva'" [icon]="control.icon"></nb-icon>
         <span *ngIf="!!control.label && !hideLabel">{{control.label}}</span>

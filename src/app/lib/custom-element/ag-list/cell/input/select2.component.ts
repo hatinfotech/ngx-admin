@@ -6,22 +6,23 @@ import { ICellRendererParams } from "@ag-grid-community/core";
 import { FormControl } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
+import { Select2Option } from "../../../select2/select2.component";
 
 @Component({
-    selector: 'ag-number-cell-input',
+    selector: 'ag-select2-cell-input',
     template: `
-      <input type="text" nbInput #inputEle [formControl]="inputControl" fullWidth placeholder="" [inputMask]="towDigitsInputMask" (change)="onChangeHandler($event)">
+      <ngx-select2 #inputEle [formControl]="inputControl" [select2Option]="select2Option" [data]="list" (selectChange)="onChangeHandler($event)"></ngx-select2>
     `,
     providers: [DecimalPipe]
 })
-export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, AfterViewInit {
+export class AgSelect2CellInput implements ICellRendererAngularComp, OnDestroy, AfterViewInit {
 
     @ViewChild('inputEle') inputEle: ElementRef;
 
-    towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
-        digitsOptional: false,
-        digits: 2
-    });
+    list: any[];
+    select2Option: Select2Option = {
+        ...this.cms.select2OptionForTemplate,
+    }
     inputControl: FormControl = new FormControl();
 
     protected destroy$: Subject<void> = new Subject<void>();
@@ -51,12 +52,9 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, A
 
     agInit(params: any): void {
         this.params = params;
-
-        this.towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
-            digitsOptional: false,
-            digits: this.params.digits || 2
-        });
-        
+        if (this.params['list']) {
+            this.list = this.params['list'];
+        }
         if (params.onInit) {
             params.onInit(params, this);
         }

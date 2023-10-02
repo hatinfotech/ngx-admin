@@ -1,8 +1,7 @@
-import { SmartTableDateTimeRangeFilterComponent } from './../../../../lib/custom-element/smart-table/smart-table.filter.component';
 // import { AllCommunityModules, CellDoubleClickedEvent, ColDef, ColumnApi, GridApi, IDatasource, IGetRowsParams, Module, RowNode, SuppressKeyboardEventParams, ValueFormatterParams } from '@ag-grid-community/all-modules';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NbToastrService, NbDialogService, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
@@ -20,16 +19,10 @@ import { AgCheckboxCellRenderer } from '../../../../lib/custom-element/ag-list/c
 import { CustomHeader } from '../../../../lib/custom-element/ag-list/header/custom.component';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { AgDynamicListComponent } from '../../../general/ag-dymanic-list/ag-dymanic-list.component';
-import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
-import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 import { AgDateCellRenderer } from '../../../../lib/custom-element/ag-list/cell/date.component';
 import { AgTextCellRenderer } from '../../../../lib/custom-element/ag-list/cell/text.component';
-import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 import { AgSelect2Filter } from '../../../../lib/custom-element/ag-list/filter/select2.component.filter';
-import { AgImageCellRenderer } from '../../../../lib/custom-element/ag-list/cell/image.component';
-import { FileModel } from '../../../../models/file.model';
-import { ImagesViewerComponent } from '../../../../lib/custom-element/my-components/images-viewer/images-viewer.component';
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { AgButtonsCellRenderer } from '../../../../lib/custom-element/ag-list/cell/buttons.component';

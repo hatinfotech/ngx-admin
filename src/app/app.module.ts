@@ -270,6 +270,7 @@ import { MentionModule } from 'angular-mentions';
 import { saleComponents } from './modules/sales/sales.module';
 import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
 import { accountingComponents } from './modules/accounting/accounting.module';
+import { warehouseComponents } from './modules/warehouse/warehouse.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -322,38 +323,7 @@ export class DynamicLocaleId extends String {
     PurchaseProductFormComponent,
 
     // Warehouse components
-    WarehouseGoodsReceiptNoteListComponent,
-    WarehouseGoodsReceiptNoteFormComponent,
-    WarehouseGoodsReceiptNotePrintComponent,
-    WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent,
-    WarehouseGoodsDeliveryNoteListComponent,
-    WarehouseGoodsDeliveryNoteFormComponent,
-    WarehouseGoodsDeliveryNotePrintComponent,
-    WarehouseGoodsContainerListComponent,
-    WarehouseGoodsContainerFormComponent,
-    WarehouseGoodsContainerPrintComponent,
-    WarehouseInventoryAdjustNoteListComponent,
-    WarehouseInventoryAdjustNoteFormComponent,
-    WarehouseInventoryAdjustNotePrintComponent,
-    WarehouseListComponent,
-    WarehouseFormComponent,
-    WarehousePrintComponent,
-    WarehouseBookListComponent,
-    WarehouseBookFormComponent,
-    WarehouseBookPrintComponent,
-    WarehouseGoodsListComponent,
-    WarehouseGoodsFormComponent,
-    WarehouseGoodsFindOrderTempPrintComponent,
-    WarehouseGoodsPrintComponent,
-    AssignContainerFormComponent,
-    AssignNewContainerFormComponent,
-    WarehouseBookCommitComponent,
-    WarehouseFindOrderTempPrintComponent,
-    WarehouseDashboardComponent,
-    WarehouseReportComponent,
-    WarehouseDetailByGoodsReportComponent,
-    WarehouseSummaryReportComponent,
-    WarehouseDetailByObjectReportAgComponent,
+    ...warehouseComponents,
 
 
     // Accounting components

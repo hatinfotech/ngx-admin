@@ -1,6 +1,6 @@
 import { AccBusinessFormComponent } from './../../../acc-business/acc-business-form/acc-business-form.component';
 import { TaxModel } from './../../../../../models/tax.model';
-import { AccountModel, BusinessModel, AccBankAccountModel } from './../../../../../models/accounting.model';
+import { AccountModel, BusinessModel, AccBankAccountModel, CostClassificationModel } from './../../../../../models/accounting.model';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray, FormControl } from '@angular/forms';
@@ -20,9 +20,10 @@ import { PurchaseOrderVoucherModel, PurchaseVoucherModel } from '../../../../../
 import { PurchaseVoucherPrintComponent } from '../../../../purchase/voucher/purchase-voucher-print/purchase-voucher-print.component';
 import { CustomIcon, FormGroupComponent } from '../../../../../lib/custom-element/form/form-group/form-group.component';
 import { ContactFormComponent } from '../../../../contact/contact/contact-form/contact-form.component';
-import { takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { RootServices } from '../../../../../services/root.services';
+import { Select2Option } from '../../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-cash-payment-voucher-form',
@@ -221,6 +222,22 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     },
   };
 
+  select2OptionForCostClassification: Select2Option = {
+    placeholder: 'Khoản mục chi phí...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    templateResult: (object: Select2SelectionObject) => {
+      console.log(object);
+      return object.title;
+    }
+  };
+
   roles: { id: string, text: string }[] = [
     {
       id: 'MANAGER',
@@ -271,6 +288,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
   accountList: AccountModel[] = [];
   accountDebitList: AccountModel[] = [];
   accountCreditList: AccountModel[] = [];
+  costClssificationList: CostClassificationModel[] = [];
 
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
@@ -335,6 +353,7 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     }));
 
     this.accountDebitList = this.accountList.filter(f => f.Group != 'CASH');
+    this.costClssificationList = await this.rsv.accountingService.costClassificationtList$.pipe(filter(f => !!f), take(1)).toPromise();
     // this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
     this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
@@ -455,13 +474,14 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
 
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      SystemUuid: [''],
-      AccountingBusiness: [''],
-      Description: ['', Validators.required],
+      SystemUuid: [null],
+      AccountingBusiness: [null],
+      CostClassification: [null],
+      Description: [null, Validators.required],
       // RelateCode: [''],
-      DebitAccount: ['', Validators.required],
+      DebitAccount: [null, Validators.required],
       CreditAccount: ['1111', Validators.required],
-      Amount: ['', Validators.required],
+      Amount: [null, Validators.required],
     });
 
     if (data) {

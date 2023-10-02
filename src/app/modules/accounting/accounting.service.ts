@@ -1,6 +1,6 @@
 import { ApiService } from './../../services/api.service';
 import { NbAuthService } from '@nebular/auth';
-import { AccountModel } from './../../models/accounting.model';
+import { AccountModel, CostClassificationModel } from './../../models/accounting.model';
 import { filter, take } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -12,6 +12,7 @@ export class AccountingService {
   reportToDate$ = new BehaviorSubject<Date>(null);
   reportFromDate$ = new BehaviorSubject<Date>(null);
   accountList$ = new BehaviorSubject<AccountModel[]>(null);
+  costClassificationtList$ = new BehaviorSubject<CostClassificationModel[]>(null);
   accountMap$ = new BehaviorSubject<{ [key: string]: AccountModel }>(null);
   constructor(
     public authService: NbAuthService,
@@ -45,6 +46,37 @@ export class AccountingService {
         }
         this.accountMap$.next(accountMap);
       });
+
+      this.apiService.getPromise<CostClassificationModel[]>('/accounting/cost-classifications', { limit: 'nolimit', includeIdText: true, loadByTree: true }).then(costClassificationList => {
+        this.costClassificationtList$.next(this.prepareCostClassifications(costClassificationList, 0));
+      });
     });
+  }
+
+  prepareCostClassifications(tree: CostClassificationModel[], level: number) {
+    let result = [];
+    for (const node of tree) {
+      node.level = level;
+      node.text = `${node.text}` + ` (${node.id}/${node.AccModel})`;
+      node.title = '+ - '.repeat(level) + node.text;
+      result.push(node);
+      if (node.children && node.children.length > 0) {
+        const rs = this.prepareCostClassifications(node.children, level + 1);
+        result = [
+          ...result,
+          ...rs,
+        ];
+        delete node.children;
+      }
+    }
+
+    return result;
+
+    // node.text = `[${node.id}] ${node.text}` + (node.Parent == null ? ` (${node.AccModel})` : '');
+    // if(node.children && node.children.length > 0) {
+    //   for(const chilNode of node.children) {
+    //     this.prepareCostClassifications(chilNode);
+    //   }
+    // }
   }
 }

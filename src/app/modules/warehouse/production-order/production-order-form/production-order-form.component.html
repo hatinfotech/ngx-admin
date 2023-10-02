@@ -1,0 +1,75 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)" (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Warehouse.ProductionOrder.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+
+            <div class="row">
+              <div class="col-sm-6">
+                <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" nbInput fullWidth formControlName="Title" [placeholder]="'Common.title' | translate | headtitlecase">
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <ngx-form-group [formGroup]="formItem" name="DateRange" label="Thời gian sản xuất" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
+                  <input type="text" [owlDateTime]="DateRange" [owlDateTimeTrigger]="DateRange" [selectMode]="'range'" nbInput fullWidth formControlName="DateRange" placeholder="{{'Common.dateRange' | translate | headtitlecase}}">
+                  <owl-date-time #DateRange></owl-date-time>
+                </ngx-form-group>
+              </div>
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">ID</span><span class="invalid">ID (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code" maxlength="30" placeholder="Auto...">
+                </div>
+              </div>
+              <div class="col-sm-12" *ngIf="formItem.get('RelativeVouchers').value?.length > 0">
+                <div class="form-group">
+                  <label class="label"><span class="valid">{{'Common.relativeVoucher' | translate | headtitlecase}}: </span></label>
+                  <div>
+                    <span class="tag" *ngFor="let relationVoucher of formItem.get('RelativeVouchers').value" nbTooltip="{{relationVoucher.typeMap?.text}}: {{relationVoucher | objectstext}}">
+                      <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher.typeMap?.symbol | objectid}}:{{relationVoucher | objectid}}</span>
+                      <nb-icon pack="eva" icon="close-outline" class="close-btn" (click)="removeRelativeVoucher(formItem, relationVoucher)"></nb-icon>
+                    </span>
+                  </div>
+                  <div class="break"></div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'Phân bổ chi phí sản xuất vào giá thành sản phẩm'" [columnDefs]="columnDefsForClassifications" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['CostClassification']" (onReady)="onCostClassificationGridReady($event)" (onNodesSelected)="onCostClassificationSelected($event)" (onComponentInit)="onCostClassificationGridInit($event)" style="display: block; height: 300px" [height]="'300px'"></ngx-ag-dynamic-list>
+              </div>
+            </div>
+
+
+            <div class="row">
+              <div class="col-md-6">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS Thành phẩm'" [columnDefs]="columnDefsForFinishedGoods" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['FinishedGoods']" (onReady)="onFinishedGoodsGridReady($event)" (onNodesSelected)="onFinishedGoodsSelected($event)" (onComponentInit)="onFinishedGoodsGridInit($event)" [height]="'716px'" style="display: block; height: 716px"></ngx-ag-dynamic-list>
+              </div>
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-12">
+                    <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'Định mức NVL cho thành phẩm: ' + ((productExtendData?.finishedGoodsItem?.FinishedGoods | objecttext) || '' )" [columnDefs]="columnDefsForMaterials" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['FinishedGoods','FinishedGoodsUnit','Material', 'Unit']" (onReady)="onMaterialGridReady($event)" (onComponentInit)="onMaterialGridInit($event)" [height]="'350px'" style="display: block; height: 350px"></ngx-ag-dynamic-list>
+                  </div>
+                  <div class="col-md-12">
+                    <ngx-ag-dynamic-list [titleNowrap]="true" #details3 [title]="'Chi phí phân bổ cho thành phẩm: ' + ((productExtendData?.finishedGoodsItem?.FinishedGoods | objecttext) || '' )" [columnDefs]="columnDefsForDistributedCost" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['FinishedGoods','FinishedGoodsUnit','CostClassification']" (onReady)="onDistributedCostGridReady($event)" (onComponentInit)="onDistributedCostGridInit($event)" [height]="'350px'" style="display: block; height: 350px"></ngx-ag-dynamic-list>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="primary" [disabled]="!form.valid || isProcessing" style="float: right;" hero (click)="saveAndClose()">Lưu & Đóng</button>
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;" hero>Lưu</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

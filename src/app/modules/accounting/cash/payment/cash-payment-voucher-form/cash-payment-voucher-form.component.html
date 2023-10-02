@@ -99,10 +99,11 @@
                             <!-- <div class="row"> -->
                             <!-- <div class="col-sm-12"> -->
                             <div class="row fit-content-column">
-                                <div class="col-sm-3 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Common.accountingBusiness' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column">{{'Accounting.debitAccount' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column">{{'Accounting.creditAccount' | translate | headtitlecase}}</div>
-                                <div class="col-sm-3 label column">{{'Common.description' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Common.costClassification' | translate | headtitlecase}}</div>
+                                <div class="col-sm-2 label column">{{'Common.description' | translate | headtitlecase}}</div>
                                 <div class="col-sm-2 label column" style="text-align: right;">{{'Common.numOfMoney' | translate | headtitlecase}}</div>
                             </div>
                             <!-- </div> -->
@@ -126,7 +127,7 @@
                                     <div class="row fit-content-column">
                                         <div class="col-sm-12">
                                             <div class="row">
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
                                                     <ngx-form-group [formGroup]="detail" name="AccountingBusiness" label="Common.accountingBusiness" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false" [hideLabel]="true" [customIcons]="customIcons">
                                                         <ngx-select2 formControlName="AccountingBusiness" [select2Option]="select2OptionForAccountingBusiness" [data]="accountingBusinessList" (selectChange)="onAccBusinessChange(detail, $event, ir)"></ngx-select2>
                                                     </ngx-form-group>
@@ -141,7 +142,12 @@
                                                         <ngx-select2 formControlName="CreditAccount" [select2Option]="select2ForReciprocalAccount" [data]="formItem.creditAccounts"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
+                                                    <ngx-form-group [formGroup]="detail" name="CostClassification" label="Common.costClassification" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="false" [hideLabel]="true" [customIcons]="customIcons">
+                                                        <ngx-select2 formControlName="CostClassification" [select2Option]="select2OptionForCostClassification" [data]="costClssificationList" (selectChange)="onAccBusinessChange(detail, $event, ir)"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-2">
                                                     <ngx-form-group [formGroup]="detail" name="Description" label="Common.description" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
                                                         <input type="text" nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}">
                                                     </ngx-form-group>

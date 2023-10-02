@@ -65,6 +65,7 @@ import { CommercePosReturnsPrintComponent } from '../modules/commerce-pos/gui/co
 import { HttpClient, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { MasterPriceTableUpdateNotePrintComponent } from '../modules/sales/master-price-table-update-note/master-price-table-update-note-print/master-price-table-update-note-print.component';
 import { CollaboratorCommissionIncurredPrintComponent } from '../modules/collaborator/commission-incurred/commission-incurred-print/commission-incurred-print.component';
+import { ProductionOrderPrintComponent } from '../modules/warehouse/production-order/production-order-print/production-order-print.component';
 
 declare var $: any;
 interface ClipboardItem {
@@ -195,6 +196,7 @@ export class CommonService {
     CLBRTCOMMISSION: { prefix: '139', id: 'CLBRTCOMMISSION', text: 'Phiếu chốt chiết khấu CTV', symbol: 'CKCTV', status: 'success' },
     CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK', status: 'warning' },
     TASK: { prefix: '120', id: 'TASK', text: 'Task', symbol: 'TASK', status: 'warning' },
+    PRODUCTIONORDER: { prefix: '150', id: 'PRODUCTIONORDER', text: 'Lệnh sản xuất', symbol: 'PDS', status: 'danger' },
   };
 
   constructor(
@@ -949,7 +951,7 @@ export class CommonService {
     return (objs || []).map(m => this.getObjectText(m)).join(', ');
   }
 
-  getClearObject(obj: any) {
+  getCleanObject(obj: any) {
     if (obj !== null && typeof obj == 'object' && typeof obj['id'] !== 'undefined' && obj['id'] !== null) {
       const type = this.getObjectType(obj);
       return { id: this.getObjectId(obj), text: this.getObjectText(obj), ...(type ? { type: type } : {}) };
@@ -1060,6 +1062,7 @@ export class CommonService {
     'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
+    'PRODUCTIONORDER': ProductionOrderPrintComponent,
   };
   voucherPrintConponentTypeIndexByPrefix = {
     '104': SalesVoucherPrintComponent,
@@ -1079,6 +1082,7 @@ export class CommonService {
     '139': CollaboratorCommissionPrintComponent,
     '140': MasterPriceTableUpdateNotePrintComponent,
     '142': CollaboratorCommissionIncurredPrintComponent,
+    '150': ProductionOrderPrintComponent,
     'SERVICEBYCYCLE': CommerceServiceByCycleFormComponent,
     'CLBRTCOMMISSION': CollaboratorCommissionPrintComponent,
     'CLBRTCOMMPAY': CollaboratorCommissionPaymentPrintComponent,
@@ -1095,6 +1099,7 @@ export class CommonService {
     'DEPLOYMENT80': CommercePosDeploymentVoucherPrintComponent,
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
+    'PRODUCTIONORDER': ProductionOrderPrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
     if (!type) {

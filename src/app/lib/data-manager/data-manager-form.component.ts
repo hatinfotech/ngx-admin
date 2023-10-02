@@ -627,12 +627,12 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     for (const prop in formData) {
       const formControl = formGroup.get(prop);
       if (formControl instanceof FormArray) {
-        for(const dindex in formData[prop]) {
+        for (const dindex in formData[prop]) {
           this.getRawFormDataRecursion(formData[prop][dindex], formControl.controls[dindex]);
         }
       } else {
         // const formControl = formGroup[prop];
-        formData[prop] = this.cms.getClearObject(formData[prop]);
+        formData[prop] = this.cms.getCleanObject(formData[prop]);
       }
     }
     // return formData;

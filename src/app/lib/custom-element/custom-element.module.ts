@@ -46,6 +46,7 @@ import { AgNumberCellInput } from './ag-list/cell/input/number.component';
 import { AgNumberCellRenderer } from './ag-list/cell/number.component';
 import { AgCurrencyCellInput } from './ag-list/cell/input/curency.component';
 import { TagComponent } from './my-components/tag/tag.component';
+import { AgSelect2CellInput } from './ag-list/cell/input/select2.component';
 // import { MentionModule } from 'angular-mentions';
 
 @NgModule({
@@ -102,8 +103,10 @@ import { TagComponent } from './my-components/tag/tag.component';
     AgImageCellRenderer,
     AgImagesCellRenderer,
     AgNumberCellRenderer,
+    // Input control
     AgNumberCellInput,
     AgCurrencyCellInput,
+    AgSelect2CellInput,
     // - Filter
     AgSelect2Filter,
   ],

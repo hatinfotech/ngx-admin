@@ -1,5 +1,5 @@
 import { takeUntil, filter } from 'rxjs/operators';
-import { Component, Input, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, Input, OnInit, AfterViewInit, OnDestroy, ViewChild, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { ActionControl, ActionControlListOption } from './action-control.interface';
 import { CommonService } from '../../../services/common.service';
 import { NbLayoutScrollService } from '@nebular/theme';
@@ -11,7 +11,7 @@ import { RootServices } from '../../../services/root.services';
   templateUrl: './action-control-list.component.html',
   styleUrls: ['./action-control-list.component.scss'],
 })
-export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewInit {
+export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewInit, OnChanges {
   @Input() list: ActionControl[];
   @Input() hideLabel: boolean = false;
   @Input() hideIcon: boolean = false;
@@ -27,6 +27,9 @@ export class ActionControlListComponent implements OnInit, OnDestroy, AfterViewI
     public layoutScrollService: NbLayoutScrollService,
   ) {
     console.log('constructor');
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
   }
 
   ngOnInit(): void { }

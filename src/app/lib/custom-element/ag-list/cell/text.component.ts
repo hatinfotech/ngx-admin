@@ -7,7 +7,7 @@ import { ICellRendererParams } from "@ag-grid-community/core";
     selector: 'ag-text-cell-renderer',
     template: `
         <ng-container *ngIf="params.value; else elseContainer">
-            <span>{{params.value | objectstext}}</span>
+            <span [innerHTML]="params.value | objectstext"></span>
         </ng-container>
         <ng-template #elseContainer>
             <button *ngIf="params.coalesceButton" nbButton ghost [outline]="params.coalesceButton.outline" [disabled]="params.coalesceButton?.disabled(params.node.data, params)" [status]="params.coalesceButton.status || 'basic'" (click)="params.coalesceButton.action(params) && false" [size]="params.coalesceButton.size || 'small'">
