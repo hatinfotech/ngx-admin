@@ -143,7 +143,27 @@
                                                 </div>
                                                 <div class="col-sm-2">
                                                     <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Amount" label="Common.amount" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
-                                                        <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="curencyFormat" style="text-align: right;">
+                                                        <input type="text" (keyup)="toMoney(formItem)" nbInput fullWidth formControlName="Amount" placeholder="{{'Common.amount' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" style="text-align: right;">
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Product" label="Common.product" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                        <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Unit" label="Common.unit" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="true" [required]="true">
+                                                        <ngx-select2 formControlName="Unit" [select2Option]="select2OptionForUnit"></ngx-select2>
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Quantity" label="Common.quantity" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
+                                                        <input type="text" nbInput fullWidth formControlName="Quantity" placeholder="{{'Voucher.quantity' | translate | headtitlecase}}" class="align-right" (keyup)="toMoney(formItem, detail, 'Quantity', ic)" [inputMask]="towDigitsInputMask">
+                                                    </ngx-form-group>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="detail" name="Price" label="Common.price" [array]="getDetails(formItem)" [index]="ir" [allowCopy]="false" [align]="'rignt'" [required]="true">
+                                                        <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Common.price' | translate | headtitlecase}}" currencyMask [options]="priceCurencyFormat" style="text-align: right;">
                                                     </ngx-form-group>
                                                 </div>
                                             </div>

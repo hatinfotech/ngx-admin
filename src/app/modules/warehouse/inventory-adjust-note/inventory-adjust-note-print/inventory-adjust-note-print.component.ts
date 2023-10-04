@@ -1,8 +1,7 @@
 import { WarehouseInventoryAdjustNoteFormComponent } from '../inventory-adjust-note-form/inventory-adjust-note-form.component';
-import { WarehouseGoodsReceiptNoteModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
+import { WarehouseInventoryAdjustNoteDetailModel, WarehouseInventoryAdjustNoteModel } from '../../../../models/warehouse.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
-import { WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
@@ -20,7 +19,7 @@ import { RootServices } from '../../../../services/root.services';
   templateUrl: './inventory-adjust-note-print.component.html',
   styleUrls: ['./inventory-adjust-note-print.component.scss'],
 })
-export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrintComponent<WarehouseGoodsReceiptNoteModel> implements OnInit {
+export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrintComponent<WarehouseInventoryAdjustNoteModel> implements OnInit {
 
   /** Component name */
   componentName = 'WarehouseInventoryAdjustNotePrintComponent';
@@ -52,7 +51,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
 
     // for (const i in this.data) {
     //   const data = this.data[i];
-    //   this.setDetailsNo(data?.Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+    //   this.setDetailsNo(data?.Details, (detail: WarehouseInventoryAdjustNoteDetailModel) => detail.Type === 'PRODUCT');
     //   data['Total'] = 0;
     //   data['Title'] = this.renderTitle(data);
     //   for (const detail of data.Details) {
@@ -154,7 +153,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     return '';
   }
 
-  toMoney(detail: WarehouseGoodsReceiptNoteDetailModel) {
+  toMoney(detail: WarehouseInventoryAdjustNoteDetailModel) {
     if (detail.Type === 'PRODUCT') {
       let toMoney = detail['Quantity'] * detail['Price'];
       detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
@@ -197,9 +196,9 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true, onlyNewAccessNumbersx: true }).then(rs => {
+    return this.apiService.getPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, { id: ids, includeContact: true, includeDetails: true, includeRelativeVouchers: true, includeAccessNumbers: true, onlyNewAccessNumbersx: true }).then(rs => {
       if (rs[0] && rs[0].Details) {
-        this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+        this.setDetailsNo(rs[0].Details, (detail: WarehouseInventoryAdjustNoteDetailModel) => detail.Type === 'PRODUCT');
         // let no = 1;
         // for (const detail of rs[0].Details) {
         //   if (detail.Type === 'PRODUCT') {
@@ -212,7 +211,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     });
   }
 
-  approvedConfirm(data: WarehouseGoodsReceiptNoteModel, index: number) {
+  approvedConfirm(data: WarehouseInventoryAdjustNoteModel, index: number) {
     // if (['BOOKKEEPING'].indexOf(data.State) > -1) {
     //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
@@ -256,7 +255,7 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<WarehouseGoodsReceiptNoteModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<WarehouseInventoryAdjustNoteModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = false;
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
@@ -280,11 +279,11 @@ export class WarehouseInventoryAdjustNotePrintComponent extends DataManagerPrint
     ]);
   }
 
-  getItemDescription(item: WarehouseGoodsReceiptNoteModel) {
+  getItemDescription(item: WarehouseInventoryAdjustNoteModel) {
     return item?.Description;
   }
 
-  summaryCalculate(data: WarehouseGoodsReceiptNoteModel[]) {
+  summaryCalculate(data: WarehouseInventoryAdjustNoteModel[]) {
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;

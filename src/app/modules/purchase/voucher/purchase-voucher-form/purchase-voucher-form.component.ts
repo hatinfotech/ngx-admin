@@ -1029,7 +1029,7 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
                       if (!existsDetail) {
 
                         const accessNumbers = voucherDetail.AccessNumbers && Array.isArray(voucherDetail.AccessNumbers) && voucherDetail.AccessNumbers.length > 0 ? (voucherDetail.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n')) : '';
-                        const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...voucherDetail, No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
+                        const newDetailFormGroup = this.makeNewDetailFormGroup(formGroup, { ...(voucherDetail as any), No: null, Voucher: null, Business: null, RelateDetail: `GOODSDELIVERY/${voucher.Code}/${voucherDetail.Id}` });
                         // newDetailFormGroup.get('Business').disable();
                         newDetailFormGroup['case'] = 'REIMPORT';
 

@@ -276,11 +276,11 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   }
 
   encodeId(id: string) {
-    return this.cms.getObjectId(id || '').replace(/-/g, '~!');
+    return (this.cms.getObjectId(id || '') + '').replace(/-/g, '~!');
   }
 
   decodeId(id: string) {
-    return id.replace(/~!/g, '-');
+    return (id + '').replace(/~!/g, '-');
   }
 
   // Fix currency mask

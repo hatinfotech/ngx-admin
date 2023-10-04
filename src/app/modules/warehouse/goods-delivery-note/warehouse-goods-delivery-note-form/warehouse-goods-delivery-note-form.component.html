@@ -23,7 +23,7 @@
                                     <nb-tab tabTitle="{{'Common.mainInfo' | translate | headtitlecase}} (*)">
                                         <!-- <label class="label label-with-border-below">{{'Common.mainInfo' | translate | headtitlecase}}</label> -->
                                         <div class="row">
-                                            <input type="hidden" formControlName="Code">
+                                            <!-- <input type="hidden" formControlName="Code"> -->
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Object" label="Voucher.organizationOrPersornal" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [customIcons]="objectControlIcons" [touchedValidate]="false">
                                                     <ngx-select2 formControlName="Object" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
@@ -35,9 +35,18 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
-                                                </ngx-form-group>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="Thread" label="Accounting.thread" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="Thread" placeholder="{{'Accounting.thread' | translate | headtitlecase}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="Code" label="Common.id" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="Code" placeholder="{{'Common.id' | translate | headtitlecase}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="ObjectIdentifiedNumber" label="Common.identifiedNumber" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
@@ -50,9 +59,18 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
-                                                <ngx-form-group [formGroup]="formItem" name="ObjectEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
-                                                    <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{formItem.get('ObjectEmail').placeholder || ('Common.email' | translate | headtitlecase)}}">
-                                                </ngx-form-group>
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="ObjectEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="ObjectEmail" placeholder="{{formItem.get('ObjectEmail').placeholder || ('Common.email' | translate | headtitlecase)}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <ngx-form-group [formGroup]="formItem" name="ObjectPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                            <input type="text" nbInput fullWidth formControlName="ObjectPhone" placeholder="{{formItem.get('ObjectPhone').placeholder || ('Common.phone' | translate | headtitlecase)}}">
+                                                        </ngx-form-group>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </nb-tab>

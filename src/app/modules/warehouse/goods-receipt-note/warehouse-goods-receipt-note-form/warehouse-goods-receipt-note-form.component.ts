@@ -500,7 +500,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
 
   makeNewFormGroup(data?: WarehouseGoodsReceiptNoteModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Code: [''],
+      Code: {value: null, disabled: true},
       Object: ['', Validators.required],
       ObjectName: ['', Validators.required],
       ObjectEmail: [''],
@@ -525,6 +525,7 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
       Title: [''],
       Note: [''],
       SubNote: [''],
+      Thread: [],
       RelativeVouchers: [],
       _total: [''],
       Details: this.formBuilder.array([]),

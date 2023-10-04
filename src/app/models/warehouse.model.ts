@@ -50,6 +50,9 @@ export class WarehouseGoodsReceiptNoteModel {
   State?: string;
 
   Bookkeeping?: boolean;
+  Thread?: string;
+
+  RelativeVouchers?: any[];
 
   Details?: WarehouseGoodsReceiptNoteDetailModel[];
 }
@@ -61,18 +64,26 @@ export class WarehouseGoodsReceiptNoteDetailModel {
   No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
   Type?: string;
-  Product?: string & ProductModel;
+  Product?: Partial<ProductModel>;
   ProductName?: string;
   Description?: string;
-  Unit?: string & UnitModel;
+  Unit?: Partial<UnitModel>;
   Quantity?: number;
   PriceOfReceipted?: string;
   Location?: string;
   ImageThumbnail?: string;
   Business?: IdTextModel[];
-  DebitAccount?: number;
-  CreaditAccount?: number;
+  DebitAccount?: string;
+  CreaditAccount?: string;
   Tax?: string & TaxModel;
+  CostClassification?: string;
+  CostObject?: string;
+  Construction?: string;
+  SalesOrder?: string;
+  Contract?: string;
+  
+  Thread?: string;
+
   AccessNumbers?: WarehouseGoodsReceiptNoteDetailAccessNumberModel[];
 }
 export class WarehouseGoodsReceiptNoteDetailAccessNumberModel {
@@ -81,13 +92,13 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberModel {
   No?: number;
   Voucher?: string & WarehouseGoodsReceiptNoteModel;
   Type?: string;
-  Product?: string & ProductModel;
+  Product?: Partial<ProductModel>;
   ProductName?: string;
   Description?: string;
   Unit?: string & UnitModel;
   AccessNumber?: string;
   Price?: string;
-  DebitAccount?: number;
+  DebitAccount?: string;
   CreaditAccount?: number;
 }
 export class WarehouseInventoryAdjustNoteModel {
@@ -141,7 +152,7 @@ export class WarehouseInventoryAdjustNoteDetailModel {
   Location?: string;
   ImageThumbnail?: string;
   Business?: IdTextModel[];
-  DebitAccount?: number;
+  DebitAccount?: string;
   CreaditAccount?: number;
   Tax?: string & TaxModel;
   AccessNumbers?: any;
@@ -179,6 +190,7 @@ export class WarehouseGoodsDeliveryNoteModel {
   RelativeVouchers?: any[];
 
   Bookkeeping?: boolean;
+  Thread?: string;
 
   Details?: WarehouseGoodsDeliveryNoteDetailModel[];
 }
@@ -199,8 +211,8 @@ export class WarehouseGoodsDeliveryNoteDetailModel {
   Container?: any;
   ImageThumbnail?: string;
   Business?: IdTextModel[];
-  DebitAccount?: number;
-  CreaditAccount?: number;
+  DebitAccount?: string;
+  CreaditAccount?: string;
   Tax?: string & TaxModel;
   RelateDetail?: string;
   AccessNumbers?: any[];
@@ -297,10 +309,10 @@ export interface ProductionOrderFinishedGoodsModel extends Model {
   No?: number;
   FinishedGoods?: Partial<ProductModel>;
   FinishedGoodsName?: string;
-  Unit?: Partial<UnitModel> | string;
+  Unit?: Partial<UnitModel>;
   UnitLabel?: string;
   Quantity?: number;
-  CostClassification?: Partial<CostClassificationModel> | string;
+  CostClassification?: Partial<CostClassificationModel>;
   CostClassificationLabel?: string;
   DistributeCostPercent?: number;
   DistributeCost?: number;
@@ -319,7 +331,7 @@ export interface ProductionOrderMaterialModel extends Model {
   No?: number;
   Material?: any;
   MaterialName?: string;
-  Unit?: Partial<UnitModel> | string;
+  Unit?: Partial<UnitModel>;
   UnitLabel?: string;
   Budgeted?: number;
   Quantity?: number;
@@ -339,6 +351,7 @@ export interface ProductionOrderDistributedCostModel extends Model {
   Cost?: number;
   CostClassification?: any;
   CostClassificationLabel?: string;
+  Account?: string;
 }
 export interface ProductionOrderCostClassificationModel extends Model {
   SystemUuid?: string;
@@ -350,4 +363,24 @@ export interface ProductionOrderCostClassificationModel extends Model {
   DistributedPercent?: number;
   DistributedValue?: number;
   DistributedType?: string;
+}
+export interface ProductionOrderCostForwardingModel extends Model {
+  Id?: string;
+  Type?: string;
+  SystemUuid?: string;
+  Description?: string;
+  No?: number;
+  CostClassification?: any;
+  CostClassificationLabel?: string;
+  Account?: string;
+  ForwardingAccount?: string;
+  Budgeted?: number;
+  Quantity?: number;
+  ProductUnit?: number;
+  Price?: number;
+  Material?: Partial<ProductModel>;
+  MaterialUnit?: Partial<UnitModel>;
+  FinishedGoods?: Partial<ProductModel>;
+  Cost?: number;
+  Amount?: number;
 }

@@ -17,6 +17,9 @@ import { ContactFormComponent } from '../../../contact/contact/contact-form/cont
 import { SalesVoucherListComponent } from '../../../sales/sales-voucher/sales-voucher-list/sales-voucher-list.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import { RootServices } from '../../../../services/root.services';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
+import { filter, take } from 'rxjs/operators';
+import { ProductUnitModel } from '../../../../models/product.model';
 
 @Component({
   selector: 'ngx-accounting-other-business-voucher-form',
@@ -34,6 +37,13 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   // variables
   locale = this.cms.getCurrentLoaleDataset();
   curencyFormat: CurrencyMaskConfig = this.cms.getCurrencyMaskConfig();
+  priceCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  toMoneyCurencyFormat: CurrencyMaskConfig = { ...this.cms.getCurrencyMaskConfig(), precision: 0 };
+  quantityFormat: CurrencyMaskConfig = { ...this.cms.getNumberMaskConfig(), precision: 2 };
+  towDigitsInputMask = this.cms.createFloatNumberMaskConfig({
+    digitsOptional: false,
+    digits: 2
+  });
   // numberFormat: CurrencyMaskConfig = this.cms.getNumberMaskConfig();
 
   // accountDebitList: AccountModel[] = [];
@@ -220,6 +230,20 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     },
   };
 
+  unitList: ProductUnitModel[];
+  select2OptionForUnit: Select2Option = {
+    placeholder: 'Chọn ĐVT...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    withThumbnail: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    }
+  };
+
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent:FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup }) => {
       this.cms.openDialog(ContactFormComponent, {
@@ -290,6 +314,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       accBusiness['text'] = accBusiness.Name;
       return accBusiness;
     }));
+    this.unitList = await this.rsv.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     return super.init().then(rs => {
       // this.getRequestId(id => {
       //   if (!id || id.length === 0) {
@@ -343,7 +368,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       // Currency: ['VND', Validators.required],
       DateOfVoucher: [this.cms.lastVoucherDate, Validators.required],
       Thread: [''],
-      RelativeVouchers: [''],
+      RelativeVouchers: [],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -393,6 +418,11 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       RelateCode: [''],
       DebitAccount: ['1111', Validators.required],
       CreditAccount: ['', Validators.required],
+      Product: [],
+      Unit: [],
+      Quantity: [],
+      Price: [],
+      CostClassification: [],
       Amount: ['', Validators.required],
     });
 

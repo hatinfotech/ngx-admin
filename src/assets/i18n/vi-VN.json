@@ -853,6 +853,7 @@
         "profitForward": "kết chuyển lãi/lỗ",
         "addAccount": "thêm tài khoản",
         "property": "tính chất",
+        "thread": "Luồng hạch toán",
         "MasterBook": {
             "State": {
                 "OPEN": {

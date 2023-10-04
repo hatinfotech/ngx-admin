@@ -54,9 +54,15 @@
                     <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'Định mức NVL cho thành phẩm: ' + ((productExtendData?.finishedGoodsItem?.FinishedGoods | objecttext) || '' )" [columnDefs]="columnDefsForMaterials" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['FinishedGoods','FinishedGoodsUnit','Material', 'Unit']" (onReady)="onMaterialGridReady($event)" (onComponentInit)="onMaterialGridInit($event)" [height]="'350px'" style="display: block; height: 350px"></ngx-ag-dynamic-list>
                   </div>
                   <div class="col-md-12">
-                    <ngx-ag-dynamic-list [titleNowrap]="true" #details3 [title]="'Chi phí phân bổ cho thành phẩm: ' + ((productExtendData?.finishedGoodsItem?.FinishedGoods | objecttext) || '' )" [columnDefs]="columnDefsForDistributedCost" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['FinishedGoods','FinishedGoodsUnit','CostClassification']" (onReady)="onDistributedCostGridReady($event)" (onComponentInit)="onDistributedCostGridInit($event)" [height]="'350px'" style="display: block; height: 350px"></ngx-ag-dynamic-list>
+                    <ngx-ag-dynamic-list [titleNowrap]="true" #details3 [title]="'Chi phí phân bổ cho thành phẩm: ' + ((productExtendData?.finishedGoodsItem?.FinishedGoods | objecttext) || '' )" [columnDefs]="columnDefsForDistributedCost" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['FinishedGoods','FinishedGoodsUnit','CostClassification','Account']" (onReady)="onDistributedCostGridReady($event)" (onComponentInit)="onDistributedCostGridInit($event)" [height]="'350px'" style="display: block; height: 350px"></ngx-ag-dynamic-list>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS Chi phí sẽ được kết chuyển vào giá thành'" [columnDefs]="columnDefsForCostForwardings" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Id']" (onReady)="onCostForwardingGridReady($event)" (onNodesSelected)="onCostForwardingSelected($event)" (onComponentInit)="onCostForwardingGridInit($event)" style="display: block; height: 300px" [height]="'300px'"></ngx-ag-dynamic-list>
               </div>
             </div>
 

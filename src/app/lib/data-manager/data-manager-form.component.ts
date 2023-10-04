@@ -899,7 +899,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     }),
     // minimumInputLength: 1,
   };
-
+  
   select2OptionForProduct: Select2Option = {
     placeholder: 'Chọn...',
     allowClear: true,

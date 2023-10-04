@@ -17,6 +17,7 @@ import { CollaboratorService } from '../../collaborator.service';
 import { CollaboartorAwardDetailComponent } from './collaboartor-award-detail/collaboartor-award-detail.component';
 import { IGetRowsParams } from '@ag-grid-community/core';
 import { RootServices } from '../../../../services/root.services';
+import { CollaboratorAwardPrintComponent } from '../collaborator-award-print/collaborator-award-print.component';
 // import { IGetRowsParams } from '@ag-grid-community/all-modules';
 
 @Component({
@@ -323,7 +324,7 @@ export class CollaboratorAwardFormComponent extends DataManagerFormComponent<Col
 
   async preview(formItem: FormGroup) {
     const data: CollaboratorAwardVoucherModel = formItem.value;
-    this.cms.openDialog(AccountingOtherBusinessVoucherPrintComponent, {
+    this.cms.openDialog(CollaboratorAwardPrintComponent, {
       context: {
         title: 'Xem trước',
         data: [data],

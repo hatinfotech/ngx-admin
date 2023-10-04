@@ -1,3 +1,6 @@
+import { ProductModel } from "./product.model";
+import { UnitModel } from "./unit.model";
+
 export class AccountModel {
     [id: string]: any;
     Id?: string;
@@ -89,10 +92,17 @@ export interface OtherBusinessVoucherModel {
     ObjectIdentifiedNumber?: string;
     Amount?: number;
     Currency?: string;
+    Product?: ProductModel;
+    Unit?: UnitModel;
+    Quantity?: number;
     RelationVoucher?: string;
     Details?: OtherBusinessVoucherDetailModel[];
     State?: string;
     Permission?: string;
+
+    RelativeVouchers?: any[];
+
+    Thread?: string;
 }
 
 export interface OtherBusinessVoucherDetailModel {
@@ -100,15 +110,22 @@ export interface OtherBusinessVoucherDetailModel {
     Voucher?: string;
     RelateCode?: string;
     Description?: string;
+    Product?: Partial<ProductModel>;
+    Unit?: Partial<UnitModel>;
+    Quantity?: number ;
+    Price?: number ;
     Amount?: number;
     Currency?: string;
     AccountingBusiness?: string;
+    CostClassification?: string;
     DebitAccount?: string;
     CreditAccount?: string;
     DebitObject?: string;
     DebitObjectName?: string;
     CreditObject?: string;
     CreditObjectName?: string;
+
+    RelateDetail?: string;
 }
 
 export interface AccBankModel {
