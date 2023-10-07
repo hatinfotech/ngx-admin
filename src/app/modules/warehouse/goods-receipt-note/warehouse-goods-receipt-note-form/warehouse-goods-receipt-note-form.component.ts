@@ -1,5 +1,3 @@
-import { PromotionModel } from './../../../../models/promotion.model';
-import { AccAccountFormComponent } from './../../../accounting/acc-account/acc-account-form/acc-account-form.component';
 import { ProductUnitConversoinModel, ProductUnitModel } from './../../../../models/product.model';
 import { GoodsModel, WarehouseGoodsContainerModel, WarehouseGoodsDeliveryNoteModel } from './../../../../models/warehouse.model';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,16 +18,14 @@ import { UnitModel } from '../../../../models/unit.model';
 import { WarehouseGoodsReceiptNoteModel, WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
-import { PurchaseVoucherListComponent } from '../../../purchase/voucher/purchase-voucher-list/purchase-voucher-list.component';
 import { WarehouseGoodsReceiptNotePrintComponent } from '../warehouse-goods-receipt-note-print/warehouse-goods-receipt-note-print.component';
 import { BusinessModel } from '../../../../models/accounting.model';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { ProductFormComponent } from '../../../admin-product/product/product-form/product-form.component';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
-import { concatAll, filter, pairwise, startWith, take, takeUntil } from 'rxjs/operators';
+import { filter, pairwise, startWith, take, takeUntil } from 'rxjs/operators';
 import { AdminProductService } from '../../../admin-product/admin-product.service';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
-import { Select2Component } from '../../../../lib/custom-element/select2/select2.component';
 import { AssignNewContainerFormComponent } from '../../goods/assign-new-containers-form/assign-new-containers-form.component';
 import { RootServices } from '../../../../services/root.services';
 
@@ -389,7 +385,10 @@ export class WarehouseGoodsReceiptNoteFormComponent extends DataManagerFormCompo
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise().then(list => this.unitList = list);
 
     this.warehouseContainerList = await this.apiService.getPromise<WarehouseGoodsContainerModel[]>('/warehouse/goods-containers', { sort_Path: 'asc', select: 'id=>Code,text=>Path' });
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'WAREHOUSERECEIPT', select: 'id=>Code,text=>Name,type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['WAREHOUSERECEIPT'].indexOf(f.Type) > -1);
+    });
 
     return super.init().then(status => {
       if (this.isDuplicate) {

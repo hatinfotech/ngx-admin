@@ -466,7 +466,10 @@ export class SalesReturnsVoucherFormComponent extends DataManagerFormComponent<S
       return tax;
     });
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALESRETURNS', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALESRETURNS', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALESRETURNS'].indexOf(f.Type) > -1);
+    });
 
     return super.init().then(status => {
       if (this.isDuplicate) {

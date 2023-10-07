@@ -1,6 +1,6 @@
 import { ApiService } from './../../services/api.service';
 import { NbAuthService } from '@nebular/auth';
-import { AccountModel, CostClassificationModel } from './../../models/accounting.model';
+import { AccountModel, BusinessModel, CostClassificationModel } from './../../models/accounting.model';
 import { filter, take } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { Injectable } from '@angular/core';
@@ -11,6 +11,7 @@ import { Injectable } from '@angular/core';
 export class AccountingService {
   reportToDate$ = new BehaviorSubject<Date>(null);
   reportFromDate$ = new BehaviorSubject<Date>(null);
+  accountingBusinessList$ = new BehaviorSubject<BusinessModel[]>(null);
   accountList$ = new BehaviorSubject<AccountModel[]>(null);
   costClassificationtList$ = new BehaviorSubject<CostClassificationModel[]>(null);
   accountMap$ = new BehaviorSubject<{ [key: string]: AccountModel }>(null);
@@ -38,17 +39,23 @@ export class AccountingService {
     });
 
     this.authService.isAuthenticated().pipe(filter(f => f === true), take(1)).toPromise().then(status => {
-      this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(accounts => {
-        this.accountList$.next(accounts);
-        const accountMap = {};
-        for (const account of accounts) {
-          accountMap[account.Code] = account;
-        }
-        this.accountMap$.next(accountMap);
-      });
+      // this.apiService.getPromise<AccountModel[]>('/accounting/accounts', { limit: 'nolimit' }).then(accounts => {
+      //   this.accountList$.next(accounts);
+      //   const accountMap = {};
+      //   for (const account of accounts) {
+      //     accountMap[account.Code] = account;
+      //   }
+      //   this.accountMap$.next(accountMap);
+      // });
 
-      this.apiService.getPromise<CostClassificationModel[]>('/accounting/cost-classifications', { limit: 'nolimit', includeIdText: true, loadByTree: true }).then(costClassificationList => {
-        this.costClassificationtList$.next(this.prepareCostClassifications(costClassificationList, 0));
+      // this.apiService.getPromise<CostClassificationModel[]>('/accounting/cost-classifications', { limit: 'nolimit', includeIdText: true, loadByTree: true }).then(costClassificationList => {
+      //   this.costClassificationtList$.next(this.prepareCostClassifications(costClassificationList, 0));
+      // });
+
+      this.updateAllCache();
+
+      this.authService.isAuthenticated().pipe(filter(f => f === true), take(1)).toPromise().then(async status => {
+        this.updateAllCache();
       });
     });
   }
@@ -78,5 +85,43 @@ export class AccountingService {
     //     this.prepareCostClassifications(chilNode);
     //   }
     // }
+  }
+
+  async updateAllCache() {
+    return this.apiService.postPromise<any[]>('/utility/multi-resources', { includeIdText: true, limit: 'nolimit' }, [
+      {
+        path: 'accounting/business',
+        params: {}
+      },
+      {
+        path: 'accounting/accounts',
+        params: {}
+      },
+      {
+        path: 'accounting/cost-classifications',
+        params: { loadByTree: true }
+      },
+    ]).then(rs => {
+      console.log(rs);
+
+      // Update accounting business list
+      this.accountingBusinessList$.next(rs[0].map((m: BusinessModel) => {
+        m.text = `${m.Name} (${m.DebitAccount},${m.CreditAccount})`;
+        m.type = m.Type;
+        return m;
+      }));
+
+      // Update account and map
+      this.accountList$.next(rs[1]);
+      const accountMap = {};
+      for (const account of rs[1]) {
+        accountMap[account.Code] = account;
+      }
+      this.accountMap$.next(accountMap);
+
+      // Update cost classifications
+      this.costClassificationtList$.next(this.prepareCostClassifications(rs[2], 0));
+      return rs;
+    });
   }
 }

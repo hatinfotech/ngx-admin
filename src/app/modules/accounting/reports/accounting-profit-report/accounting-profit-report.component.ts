@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 import { OtherBusinessVoucherModel, OtherBusinessVoucherDetailModel } from '../../../../models/accounting.model';
-import { AccountingOtherBusinessVoucherFormComponent } from '../../other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
+import { AccountingOtherBusinessVoucherFormComponent } from '../../other-business-voucher/accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';

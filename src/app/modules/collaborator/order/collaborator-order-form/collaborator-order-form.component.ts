@@ -27,6 +27,7 @@ import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/col
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
 import { RootServices } from '../../../../services/root.services';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -398,7 +399,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         const limit = settings.data['limit'];
         // const params = settings.data;
         const results = !params['term'] ? this.adminProductService.productSearchIndexsGroupById : this.adminProductService.productSearchIndexsGroupById.filter(f => this.cms.smartFilter(f.SearchText, params['term']));
-        success({ data: results.slice(offset, offset + limit), total: results.length });  
+        success({ data: results.slice(offset, offset + limit), total: results.length });
         // this.apiService.getObservable('/admin-product/products', { select: "id=>Code,text=>Name,Code,Name,OriginName=>Name,Sku,FeaturePicture,Pictures", includeSearchResultLabel: true, includeUnits: true, 'search': params['term'], offset, limit }).pipe(
         //   map((res) => {
         //     const total = +res.headers.get('x-total-count');
@@ -606,7 +607,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   async init(): Promise<boolean> {
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALES', 'WAREHOUSEDELIVERY'].indexOf(f.Type) > -1);
+    });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id

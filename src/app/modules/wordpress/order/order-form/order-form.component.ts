@@ -27,6 +27,7 @@ import { CollaboratorOrderPrintComponent } from '../../../collaborator/order/col
 import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { WordpressService } from '../../wordpress.service';
 import { RootServices } from '../../../../services/root.services';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-wordpress-order-form',
@@ -484,7 +485,10 @@ export class WordpressOrderFormComponent extends DataManagerFormComponent<WpOrde
   }
 
   async init(): Promise<boolean> {
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALES', 'WAREHOUSEDELIVERY'].indexOf(f.Type) > -1);
+    });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id

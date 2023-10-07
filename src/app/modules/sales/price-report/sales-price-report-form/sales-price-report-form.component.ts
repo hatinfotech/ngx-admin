@@ -392,11 +392,14 @@ export class SalesPriceReportFormComponent extends DataManagerFormComponent<Sale
   async init(): Promise<boolean> {
     await this.adminProductService.unitList$.pipe(filter(f => !!f), take(1)).toPromise();
     console.log(this.adminProductService.unitList$.value);
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]' }).then(rs => rs.map(accBusiness => {
-      accBusiness['id'] = accBusiness.Code;
-      accBusiness['text'] = accBusiness.Name;
-      return accBusiness;
-    }));
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]' }).then(rs => rs.map(accBusiness => {
+    //   accBusiness['id'] = accBusiness.Code;
+    //   accBusiness['text'] = accBusiness.Name;
+    //   return accBusiness;
+    // }));
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALES','WAREHOUSEDELIVERY'].indexOf(f.Type) > -1);
+    });
 
     return super.init().then(status => {
       if (this.isDuplicate) {

@@ -578,7 +578,10 @@ export class CommercePosReturnFormComponent extends DataManagerFormComponent<Com
     //   this.taxList = CommercePosReturnFormComponent._taxList;
     // }
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALES','WAREHOUSEDELIVERY'].indexOf(f.Type) > -1);
+    });
 
     return super.init().then(status => {
       if (this.isDuplicate) {

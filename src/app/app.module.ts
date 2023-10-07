@@ -1,14 +1,14 @@
+/**
+ * @license
+ * Copyright Akveo. All Rights Reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ */
 import { SmartBotModule } from './modules/smart-bot/smart-bot.module';
 import { CookieService } from 'ngx-cookie-service';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { IConfig, NgxMaskModule } from 'ngx-mask';
 import { SortablejsModule } from 'ngx-sortablejs';
 import { NbCardModule, NbRouteTabsetModule, NbIconModule, NbSpinnerModule, NbAccordionModule, NbActionsModule, NbButtonModule, NbCheckboxModule, NbInputModule, NbListModule, NbProgressBarModule, NbRadioModule, NbSelectModule, NbStepperModule, NbTabsetModule, NbUserModule, NbDialogRef, NbTagModule, NbTooltipModule, NbBadgeModule, NbButtonGroupModule } from '@nebular/theme';
-/**
- * @license
- * Copyright Akveo. All Rights Reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- */
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LOCALE_ID, NgModule } from '@angular/core';

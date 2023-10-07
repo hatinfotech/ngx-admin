@@ -588,7 +588,10 @@ export class SalesVoucherFormComponent extends DataManagerFormComponent<SalesVou
     //   this.taxList = SalesVoucherFormComponent._taxList;
     // }
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['SALES'].indexOf(f.Type) > -1);
+    });
     this.masterPriceTable = await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { limit: 1 }).then(rs => rs[0]);
     return super.init().then(status => {
       if (this.isDuplicate) {

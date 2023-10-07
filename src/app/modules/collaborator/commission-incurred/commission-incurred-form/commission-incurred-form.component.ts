@@ -28,6 +28,7 @@ import { CollaboratorCommissionIncurredPrintComponent } from '../commission-incu
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 import { RootServices } from '../../../../services/root.services';
+import { filter, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'ngx-collaborator-commission-incurred-form',
@@ -552,7 +553,10 @@ export class CollaboratorCommissionIncurredFormComponent extends DataManagerForm
   }
 
   async init(): Promise<boolean> {
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Code: '[CLBRTTMPCOMMISSION,NETREVENUE,NETREVENUESERVICE]', select: 'id=>Code,text=>Name,type=>Type' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Code: '[CLBRTTMPCOMMISSION,NETREVENUE,NETREVENUESERVICE]', select: 'id=>Code,text=>Name,type=>Type' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['CLBRTTMPCOMMISSION', 'NETREVENUE', 'NETREVENUESERVICE'].indexOf(f.Type) > -1);
+    });
     return super.init().then(status => {
       if (this.isDuplicate) {
         // Clear id

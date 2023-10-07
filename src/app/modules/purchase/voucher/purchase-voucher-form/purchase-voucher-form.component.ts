@@ -400,11 +400,14 @@ export class PurchaseVoucherFormComponent extends DataManagerFormComponent<Purch
     //   this.taxList = SalesVoucherFormComponent._taxList;
     // }
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
-      accBusiness['id'] = accBusiness.Code;
-      accBusiness['text'] = accBusiness.Name;
-      return accBusiness;
-    }));
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
+    //   accBusiness['id'] = accBusiness.Code;
+    //   accBusiness['text'] = accBusiness.Name;
+    //   return accBusiness;
+    // }));
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['PURCHASE'].indexOf(f.Type) > -1);
+    });
 
     return super.init().then(status => {
       if (this.isDuplicate) {

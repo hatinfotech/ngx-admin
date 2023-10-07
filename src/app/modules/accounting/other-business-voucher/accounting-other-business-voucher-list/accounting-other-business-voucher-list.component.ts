@@ -6,7 +6,7 @@ import { OtherBusinessVoucherModel } from '../../../../models/accounting.model';
 import { ApiService } from '../../../../services/api.service';
 import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
-import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
+import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
 import { DatePipe } from '@angular/common';

@@ -23,7 +23,7 @@ import { AccMasterBookHeadAmountComponent } from "./master-book/acc-master-book-
 import { AccMasterBookHeadBankAccountAmountComponent } from "./master-book/acc-master-book-head-bank-account-amount/acc-master-book-head-bank-account-amount.component";
 import { AccMasterBookHeadObjectAmountComponent } from "./master-book/acc-master-book-head-object-amount/acc-master-book-head-object-amount.component";
 import { AccMasterBookListComponent } from "./master-book/acc-master-book-list/acc-master-book-list.component";
-import { AccountingOtherBusinessVoucherFormComponent } from "./other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component";
+import { AccountingOtherBusinessVoucherFormComponent } from './other-business-voucher/accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
 import { AccountingOtherBusinessVoucherListComponent } from "./other-business-voucher/accounting-other-business-voucher-list/accounting-other-business-voucher-list.component";
 import { AccountingOtherBusinessVoucherPrintComponent } from "./other-business-voucher/accounting-other-business-voucher-print/accounting-other-business-voucher-print.component";
 import { AccountingCashFlowReportComponent } from "./reports/accounting-cash-flow-report/accounting-cash-flow-report.component";

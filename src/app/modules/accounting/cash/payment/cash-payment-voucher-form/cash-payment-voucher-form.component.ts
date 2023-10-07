@@ -356,7 +356,10 @@ export class CashPaymentVoucherFormComponent extends DataManagerFormComponent<Ca
     this.costClssificationList = await this.rsv.accountingService.costClassificationtList$.pipe(filter(f => !!f), take(1)).toPromise();
     // this.accountCreditList = this.accountList.filter(f => f.Group == 'CASH');
 
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { select: 'id=>Code,text=>Name,DebitAccount=>DebitAccount,CreditAccount=>CreditAccount,Name=>Name,Code=>Code', limit: 'nolimit', eq_Type: 'PAYMENT' });
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['PAYMENT'].indexOf(f.Type) > -1);
+    });
     this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
     return super.init().then(rs => {
       if (this.isDuplicate) {

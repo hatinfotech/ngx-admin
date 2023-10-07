@@ -6,7 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.11.0.1',
+  version: '6.11.0.2',
   // 6.11.0.1:   production order v1 demo
   // 6.10.0.1:   sales processing: Price quotation > Goods Delivery > Sales > Receipt demo 1
   // 6.10.0.2:   replace probox.center by probox.vn

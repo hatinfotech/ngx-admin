@@ -22,7 +22,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { takeUntil, takeWhile } from 'rxjs/operators';
+import { filter, take, takeUntil, takeWhile } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
@@ -359,11 +359,14 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
     // } else {
     //   this.taxList = PurchaseOrderVoucherFormComponent._taxList;
     // }
-    this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
-      accBusiness['id'] = accBusiness.Code;
-      accBusiness['text'] = `${accBusiness.Name} (${accBusiness.DebitAccount},${accBusiness.CreditAccount})`;
-      return accBusiness;
-    }));
+    // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'PURCHASE' }).then(rs => rs.map(accBusiness => {
+    //   accBusiness['id'] = accBusiness.Code;
+    //   accBusiness['text'] = `${accBusiness.Name} (${accBusiness.DebitAccount},${accBusiness.CreditAccount})`;
+    //   return accBusiness;
+    // }));
+    this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
+      this.accountingBusinessList = list.filter(f => ['PURCHASE'].indexOf(f.Type) > -1);
+    });
     return super.init().then(async status => {
       if (this.isDuplicate) {
         // Clear id
