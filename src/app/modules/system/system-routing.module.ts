@@ -14,12 +14,118 @@ import { SystemActionListComponent } from './action/system-action-list/system-ac
 import { SystemActionFormComponent } from './action/system-action-form/system-action-form.component';
 import { SystemLibraryIconComponent } from './library/icon/system-library-icon/system-library-icon.component';
 
-const routes: Routes = [{
+// const routes: Routes = [{
+//   path: '',
+//   component: SystemComponent,
+//   children: [
+//     {
+//       path: 'parameter/list',
+//       canActivate: [AuthGuardService],
+//       component: SystemParameterListComponent,
+//       data: {
+//         reuse: true,
+//       },
+//     },
+//     {
+//       path: 'parameter/form',
+//       canActivate: [AuthGuardService],
+//       component: SystemParameterFormComponent,
+//     },
+//     {
+//       path: 'parameter/form/:id',
+//       canActivate: [AuthGuardService],
+//       component: SystemParameterFormComponent,
+//     },
+//     {
+//       path: 'config-board',
+//       canActivate: [AuthGuardService],
+//       component: SystemConfigurationBoardComponent,
+//     },
+//     {
+//       path: 'user-config-board',
+//       canActivate: [AuthGuardService],
+//       component: UserConfigBoardComponent,
+//     },
+//     // Routes
+//     {
+//       path: 'route/rule/list',
+//       canActivate: [AuthGuardService],
+//       component: SystemRouteListComponent,
+//       data: {
+//         reuse: true,
+//       },
+//     },
+//     {
+//       path: 'route/rule/form',
+//       canActivate: [AuthGuardService],
+//       component: SystemRouteFormComponent,
+//     },
+//     {
+//       path: 'route/rule/form/:id',
+//       canActivate: [AuthGuardService],
+//       component: SystemRouteFormComponent,
+//     },
+//     // Params
+//     {
+//       path: 'route/param/list',
+//       canActivate: [AuthGuardService],
+//       component: SystemParamListComponent,
+//       data: {
+//         reuse: true,
+//       },
+//     },
+//     {
+//       path: 'route/param/form',
+//       canActivate: [AuthGuardService],
+//       component: SystemParamFormComponent,
+//     },
+//     {
+//       path: 'route/param/form/:id',
+//       canActivate: [AuthGuardService],
+//       component: SystemParamFormComponent,
+//     },
+//     // Action
+//     {
+//       path: 'route/action/list',
+//       canActivate: [AuthGuardService],
+//       component: SystemActionListComponent,
+//       data: {
+//         reuse: true,
+//       },
+//     },
+//     {
+//       path: 'route/action/form',
+//       canActivate: [AuthGuardService],
+//       component: SystemActionFormComponent,
+//     },
+//     {
+//       path: 'route/action/form/:id',
+//       canActivate: [AuthGuardService],
+//       component: SystemActionFormComponent,
+//     },
+//     // Icon
+//     {
+//       path: 'library/icon',
+//       canActivate: [AuthGuardService],
+//       component: SystemLibraryIconComponent,
+//     },
+//   ],
+// }];
+
+// @NgModule({
+//   imports: [RouterModule.forChild(routes)],
+//   exports: [RouterModule],
+// })
+// export class SystemRoutingModule {
+// }
+
+
+export const systemRoutes: Routes = [{
   path: '',
   component: SystemComponent,
   children: [
     {
-      path: 'parameter/list',
+      path: 'system/parameter/list',
       canActivate: [AuthGuardService],
       component: SystemParameterListComponent,
       data: {
@@ -27,28 +133,28 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'parameter/form',
+      path: 'system/parameter/form',
       canActivate: [AuthGuardService],
       component: SystemParameterFormComponent,
     },
     {
-      path: 'parameter/form/:id',
+      path: 'system/parameter/form/:id',
       canActivate: [AuthGuardService],
       component: SystemParameterFormComponent,
     },
     {
-      path: 'config-board',
+      path: 'system/config-board',
       canActivate: [AuthGuardService],
       component: SystemConfigurationBoardComponent,
     },
     {
-      path: 'user-config-board',
+      path: 'system/-config-board',
       canActivate: [AuthGuardService],
       component: UserConfigBoardComponent,
     },
     // Routes
     {
-      path: 'route/rule/list',
+      path: 'system/route/rule/list',
       canActivate: [AuthGuardService],
       component: SystemRouteListComponent,
       data: {
@@ -56,18 +162,18 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'route/rule/form',
+      path: 'system/route/rule/form',
       canActivate: [AuthGuardService],
       component: SystemRouteFormComponent,
     },
     {
-      path: 'route/rule/form/:id',
+      path: 'system/route/rule/form/:id',
       canActivate: [AuthGuardService],
       component: SystemRouteFormComponent,
     },
     // Params
     {
-      path: 'route/param/list',
+      path: 'system/route/param/list',
       canActivate: [AuthGuardService],
       component: SystemParamListComponent,
       data: {
@@ -75,18 +181,18 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'route/param/form',
+      path: 'system/route/param/form',
       canActivate: [AuthGuardService],
       component: SystemParamFormComponent,
     },
     {
-      path: 'route/param/form/:id',
+      path: 'system/route/param/form/:id',
       canActivate: [AuthGuardService],
       component: SystemParamFormComponent,
     },
     // Action
     {
-      path: 'route/action/list',
+      path: 'system/route/action/list',
       canActivate: [AuthGuardService],
       component: SystemActionListComponent,
       data: {
@@ -94,27 +200,20 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'route/action/form',
+      path: 'system/route/action/form',
       canActivate: [AuthGuardService],
       component: SystemActionFormComponent,
     },
     {
-      path: 'route/action/form/:id',
+      path: 'system/route/action/form/:id',
       canActivate: [AuthGuardService],
       component: SystemActionFormComponent,
     },
     // Icon
     {
-      path: 'library/icon',
+      path: 'system/library/icon',
       canActivate: [AuthGuardService],
       component: SystemLibraryIconComponent,
     },
   ],
 }];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class SystemRoutingModule {
-}

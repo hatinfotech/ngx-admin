@@ -49,6 +49,12 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
   idKey: string | string[] = ['Code', 'WarehouseUnit', 'Container'];
   formDialog = ProductFormComponent;
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'Goods', text: 'Hàng hóa' }
+  };
+
   @Input() reuseDialog = true;
   static _dialog: NbDialogRef<ProductListComponent>;
 

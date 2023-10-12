@@ -389,9 +389,18 @@ export class CommonService {
       }
     });
 
-    this.apiService.getPromise<SystemConfigModel>('/system/settings', {}).then(systemConfigs => {
+    // this.apiService.getPromise<SystemConfigModel>('/system/settings', {}).then(systemConfigs => {
+    //   console.log(systemConfigs);
+    //   this.systemConfigs$.next(systemConfigs);
+    // });
+    this.updateSystemConfigs();
+  }
+
+  async updateSystemConfigs() {
+    return this.apiService.getPromise<SystemConfigModel>('/system/settings', {}).then(systemConfigs => {
       console.log(systemConfigs);
       this.systemConfigs$.next(systemConfigs);
+      return systemConfigs;
     });
   }
 
@@ -957,7 +966,7 @@ export class CommonService {
       return { id: this.getObjectId(obj), text: this.getObjectText(obj), ...(type ? { type: type } : {}) };
     }
     if (Array.isArray(obj)) {
-      return obj.map(obj => typeof obj['id'] !== 'undefined' && obj['id'] !== null && ({ id: this.getObjectId(obj), text: this.getObjectText(obj), ...(this.getObjectType(obj) ? { type: this.getObjectType(obj) } : {}) } )|| obj);
+      return obj.map(obj => typeof obj['id'] !== 'undefined' && obj['id'] !== null && ({ id: this.getObjectId(obj), text: this.getObjectText(obj), ...(this.getObjectType(obj) ? { type: this.getObjectType(obj) } : {}) }) || obj);
     }
     return obj;
   }

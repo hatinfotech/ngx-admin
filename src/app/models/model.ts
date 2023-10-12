@@ -55,6 +55,8 @@ export interface SystemConfigModel {
     LICENSE_INFO: {
         register: RegisterInfoModel
     },
+    PARAMETERS?: { [key: string]: any }
+
 }
 
 export class MyObject {

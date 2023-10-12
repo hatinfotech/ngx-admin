@@ -39,6 +39,12 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
   formDialog = DeploymentVoucherFormComponent;
   printDialog = DeploymentVoucherPrintComponent;
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Deployment', text: 'Triển khai' },
+    Feature: { id: 'DeploymentVoucher', text: 'Phiếu triển khai' }
+  };
+
   // AG-Grid config
   public rowHeight: number = 50;
   // @Input() suppressRowClickSelection = false;

@@ -20,7 +20,7 @@ export class SystemParameterListComponent extends ServerDataManagerListComponent
   componentName: string = 'SystemParameterListComponent';
   formPath = '/system/parameter/form';
   apiPath = '/system/parameters';
-  idKey = 'Name';
+  idKey = 'Id';
   formDialog = SystemParameterFormComponent;
 
   constructor(

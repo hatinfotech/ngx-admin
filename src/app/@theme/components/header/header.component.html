@@ -38,6 +38,8 @@
       <!-- <nb-action class="control-item">
           <nb-search type="rotate-layout"></nb-search>
       </nb-action> -->
+      <!-- <nb-action class="control-item" icon="settings-outline"></nb-action> -->
+      <nb-action class="user-action" icon="settings-outline" [headerSettingsContext] [badgeStatus]="'primary'"></nb-action>
       <nb-action class="control-item" icon="email-outline"></nb-action>
       <nb-action class="user-action" icon="bell-outline" [headerNotificationContext] [badgeText]="numOfUnreadNotification < 100 ? numOfUnreadNotification : '99+'" [badgeStatus]="'danger'"></nb-action>
       <nb-action (click)="toggleChatbar()" class="control-item" icon="message-circle-outline"></nb-action>

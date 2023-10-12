@@ -34,6 +34,12 @@ export class ProductionOrderListComponent extends AgGridDataManagerListComponent
   apiPath = '/warehouse/production-orders';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'ProductionOrder', text: 'Lệnh sản xuất' }
+  };
+
   formDialog = ProductionOrderFormComponent;
   printDialog = ProductionOrderPrintComponent;
 

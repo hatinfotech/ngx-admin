@@ -1,4 +1,4 @@
-import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
+import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';

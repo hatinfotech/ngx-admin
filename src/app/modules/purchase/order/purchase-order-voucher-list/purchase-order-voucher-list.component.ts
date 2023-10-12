@@ -35,6 +35,12 @@ export class PurchaseOrderVoucherListComponent extends AgGridDataManagerListComp
   apiPath = '/purchase/order-vouchers';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Purchase', text: 'Thu mua' },
+    Feature: { id: 'PurchaseOrder', text: 'Đơn đặt mua hàng' }
+  };
+
   printDialog = PurchaseOrderVoucherPrintComponent;
   formDialog = PurchaseOrderVoucherFormComponent;
 

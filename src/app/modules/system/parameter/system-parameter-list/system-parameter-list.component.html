@@ -1,13 +1,6 @@
 <nb-card class="small-header smart-table">
   <nb-card-header>
     <ngx-card-header [size]="size" [icon]="favicon" [title]="title ? title : ('System.Parameter.title' | translate:{definition: '', action: cms.translate.instant('Common.list')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
-
-    <!-- <nav>
-      <nb-icon pack="eva" icon="list-outline"></nb-icon> {{ 'System.Parameter.title' | translate:{action: '', definition: cms.translate.instant('Common.list')} | headtitlecase }}
-      <button nbButton status="success" hero size="tiny" (click)="loadList()" style="float: right;">
-        <nb-icon pack="eva" icon="refresh-outline"></nb-icon>{{'Common.refresh' | translate | titlecase}}
-      </button>
-    </nav> -->
   </nb-card-header>
   <nb-card-body>
     <div class="ng2-smart-table-wrap">

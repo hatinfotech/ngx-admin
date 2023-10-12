@@ -34,6 +34,12 @@ export class WarehouseGoodsReceiptNoteListComponent extends AgGridDataManagerLis
   apiPath = '/warehouse/goods-receipt-notes';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'GoodsReceiptNote', text: 'Phiếu nhập kho' }
+  };
+
   formDialog = WarehouseGoodsReceiptNoteFormComponent;
   printDialog = WarehouseGoodsReceiptNotePrintComponent;
 

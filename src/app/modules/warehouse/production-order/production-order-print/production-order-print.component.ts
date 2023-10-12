@@ -52,10 +52,10 @@ export class ProductionOrderPrintComponent extends DataManagerPrintComponent<Pro
 
     // for (const i in this.data) {
     //   const data = this.data[i];
-    //   this.setDetailsNo(data?.Details, (detail: ProductionOrderFinishedGoodsModel) => detail.Type === 'PRODUCT');
+    //   this.setFinishedGoodsNo(data?.FinishedGoods, (detail: ProductionOrderFinishedGoodsModel) => detail.Type === 'PRODUCT');
     //   data['Total'] = 0;
     //   data['Title'] = this.renderTitle(data);
-    //   for (const detail of data.Details) {
+    //   for (const detail of data.FinishedGoods) {
     //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //   }
     //   this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
@@ -74,7 +74,7 @@ export class ProductionOrderPrintComponent extends DataManagerPrintComponent<Pro
         const item = this.data[option.index];
 
 
-        const productList = item.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.cms.getObjectId(m.Product) + '-' + this.cms.getObjectId(m.Unit), text: m.Description + ' (' + this.cms.getObjectText(m.Unit) + ')', ...m }));
+        const productList = item.FinishedGoods.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.cms.getObjectId(m.Product) + '-' + this.cms.getObjectId(m.Unit), text: m.Description + ' (' + this.cms.getObjectText(m.Unit) + ')', ...m }));
 
         // this.cms.openDialog(ProductionOrderDetailAccessNumberPrintComponent, {
         //   context: {
@@ -123,7 +123,7 @@ export class ProductionOrderPrintComponent extends DataManagerPrintComponent<Pro
 
   getTotal() {
     let total = 0;
-    // const details = this.data.Details;
+    // const details = this.data.FinishedGoods;
     // for (let i = 0; i < details.length; i++) {
     //   total += this.toMoney(details[i]);
     // }
@@ -151,18 +151,19 @@ export class ProductionOrderPrintComponent extends DataManagerPrintComponent<Pro
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<ProductionOrderModel[]>(this.apiPath, {
       id: ids,
-      includeContact: true,
-      includeDetails: true,
+      includeFinishedGoods: true,
+      includeMaterials: true,
+      includeDistributedCosts: true,
+      includeFeaturePicture: true,
+      includeFinishedGoodsInfo: true,
+      includeCostClassifications: true,
+      includeCostForwardings: true,
       includeRelativeVouchers: true,
-      includeAccessNumbers: true,
-      detailIncludeShelf: true,
-      detailRenderFindOrderLabel: true,
-      detailIncludeContainer: true,
     }).then(rs => {
-      if (rs[0] && rs[0].Details) {
-        this.setDetailsNo(rs[0].Details, (detail: ProductionOrderFinishedGoodsModel) => detail.Type === 'PRODUCT');
+      if (rs[0] && rs[0].FinishedGoods) {
+        this.setDetailsNo(rs[0].FinishedGoods, (detail: ProductionOrderFinishedGoodsModel) => true);
         // let no = 1;
-        // for (const detail of rs[0].Details) {
+        // for (const detail of rs[0].FinishedGoods) {
         //   if (detail.Type === 'PRODUCT') {
         //     detail.No = no++;
         //   }
@@ -250,7 +251,7 @@ export class ProductionOrderPrintComponent extends DataManagerPrintComponent<Pro
       const item = data[i];
       item['Total'] = 0;
       item['Title'] = this.renderTitle(item);
-      for (const detail of item.Details) {
+      for (const detail of item.FinishedGoods) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
       }
       this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[item.State || ''];

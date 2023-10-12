@@ -36,6 +36,12 @@ export class SalesPriceReportListComponent extends AgGridDataManagerListComponen
   apiPath = '/sales/price-quotations';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Sales', text: 'Bán hàng' },
+    Feature: { id: 'PriceQuotation', text: 'Phiếu báo giá' }
+  };
+
   printDialog = SalesPriceReportPrintComponent;
   formDialog = SalesPriceReportFormComponent;
 

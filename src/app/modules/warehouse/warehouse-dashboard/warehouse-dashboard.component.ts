@@ -3,7 +3,7 @@ import { ProductGroupModel } from '../../../models/product.model';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
 import { Component, OnDestroy } from '@angular/core';
-import { NbColorHelper, NbThemeService } from '@nebular/theme';
+import { NbColorHelper, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { takeWhile } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 import { ApiService } from '../../../services/api.service';
@@ -11,6 +11,10 @@ import { Icon } from '../../../lib/custom-element/card-header/card-header.compon
 import { ActionControl } from '../../../lib/custom-element/action-control-list/action-control.interface';
 import { PageModel } from '../../../models/page.model';
 import { AccMasterBookModel } from '../../../models/accounting.model';
+import { BaseComponent } from '../../../lib/base-component';
+import { Router } from '@angular/router';
+import { RootServices } from '../../../services/root.services';
+import { SalesDashboardComponent } from '../../sales/sales-dashboard/sales-dashboard.component';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -22,7 +26,8 @@ interface CardSettings {
   styleUrls: ['./warehouse-dashboard.component.scss'],
   providers: [CurrencyPipe]
 })
-export class WarehouseDashboardComponent implements OnDestroy {
+export class WarehouseDashboardComponent extends BaseComponent implements OnDestroy {
+  componentName: string = 'WarehouseDashboardComponent';
 
   groupList: ProductGroupModel[];
   formItem: FormGroup;
@@ -31,6 +36,12 @@ export class WarehouseDashboardComponent implements OnDestroy {
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   title?: string = 'Phát sinh doanh thu/hoa hồng';
   actionButtonList: ActionControl[];
+
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'WarehouseDashboard', text: 'Quan sát tổng thể kho bãi' }
+  };
 
   goodsGroupsStatisticsData: {};
   costAndRevenueStatisticsData: {};
@@ -77,13 +88,17 @@ export class WarehouseDashboardComponent implements OnDestroy {
   masterBook: AccMasterBookModel;
 
   constructor(
-    private themeService: NbThemeService,
-    private solarService: SolarData,
+    public rsv: RootServices,
+    public themeService: NbThemeService,
+    public solarService: SolarData,
     public cms: CommonService,
     public formBuilder: FormBuilder,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
+    public router: Router,
+    public ref: NbDialogRef<WarehouseDashboardComponent>,
   ) {
+    super(rsv, cms, router, apiService, ref);
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {

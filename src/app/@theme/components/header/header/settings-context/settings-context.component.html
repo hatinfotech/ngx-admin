@@ -1,0 +1,20 @@
+<nb-card class="list-card notification-area" size="small">
+    <nb-list class="scrollable-container" nbInfiniteList [threshold]="500" (bottomThreshold)="loadNext()">
+        <nb-list-item *ngFor="let item of items" (click)="onMenuItemClick(item)" [ngClass]="{'read': item.State === 'READ', 'new': item.State === 'NEW', 'active': item.State === 'ACTIVE'}">
+            <user class="size-medium">
+                <div class="user-container">
+                    <!-- <div class="user-picture image" [ngStyle]="{backgroundImage: 'url('+item.Picture+')'}">
+                    </div> -->
+                    <nb-icon [icon]="item.Icon" status="item.Status"></nb-icon>
+                    <div class="info-container">
+                        <div class="user-title" [innerHTML]="item.Content"></div>
+                        <div class="user-title" style="font-size: 11px;">{{ item.DateOfCreate | date: 'short' }}</div>
+                    </div>
+                </div>
+            </user>
+        </nb-list-item>
+        <nb-list-item *ngIf="isEnd">
+            <div style="width: 100%; text-align: center; color: #ccc;">end</div>
+        </nb-list-item>
+    </nb-list>
+</nb-card>

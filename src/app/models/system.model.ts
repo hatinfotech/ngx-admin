@@ -1,5 +1,5 @@
 export class SystemParameterModel {
-  Id?: string & number;
+  Id?: any;
   Name?: string;
   Type?: string;
   Value?: string;

@@ -54,6 +54,8 @@ import { collaboratorRoutes } from './modules/collaborator/collaborator.routing'
 import { salesRoutes } from './modules/sales/sales.routing';
 import { accoutingRoutes } from './modules/accounting/accounting.routing';
 import { warehouseRoutes } from './modules/warehouse/warehouse.routing';
+import { systemRoutes } from './modules/system/system-routing.module';
+import { userRoutes } from './modules/users/users-routing.module';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -670,15 +672,15 @@ const routes: Routes = [
     loadChildren: () => import('./modules/web-hosting/web-hosting.module')
       .then(m => m.WebHostingModule),
   },
-  {
-    path: 'users',
-    resolve: {
-      configuration: RoutingResolve,
-    },
-    // canActivate: [AuthGuardService],
-    loadChildren: () => import('./modules/users/users.module')
-      .then(m => m.UsersModule),
-  },
+  // {
+  //   path: 'users',
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/users/users.module')
+  //     .then(m => m.UsersModule),
+  // },
   {
     path: 'modules',
     resolve: {
@@ -814,15 +816,17 @@ const routes: Routes = [
     loadChildren: () => import('./modules/file/file.module')
       .then(m => m.FileModule),
   },
-  {
-    path: 'system',
-    resolve: {
-      configuration: RoutingResolve,
-    },
-    // canActivate: [AuthGuardService],
-    loadChildren: () => import('./modules/system/system.module')
-      .then(m => m.SystemModule),
-  },
+  // {
+  //   path: 'system',
+  //   resolve: {
+  //     configuration: RoutingResolve,
+  //   },
+  //   // canActivate: [AuthGuardService],
+  //   loadChildren: () => import('./modules/system/system.module')
+  //     .then(m => m.SystemModule),
+  // },
+  ...systemRoutes,
+  ...userRoutes,
   {
     path: 'virtual-phone',
     // canActivate: [AuthGuardService],

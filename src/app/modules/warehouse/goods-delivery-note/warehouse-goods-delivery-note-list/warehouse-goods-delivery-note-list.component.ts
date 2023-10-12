@@ -37,6 +37,12 @@ export class WarehouseGoodsDeliveryNoteListComponent extends AgGridDataManagerLi
   apiPath = '/warehouse/goods-delivery-notes';
   idKey = 'Code';
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'GoodsDeliveryNote', text: 'Phiếu xuất kho' }
+  };
+
   formDialog = WarehouseGoodsDeliveryNoteFormComponent;
   printDialog = WarehouseGoodsDeliveryNotePrintComponent;
 

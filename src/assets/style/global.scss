@@ -2411,3 +2411,18 @@ ngx-barcode svg {
   width: 9mm;
   height: 9mm;
 }
+
+.default-probox-one-print-footer {
+  // font-style: italic;
+
+  // position: absolute !important;
+  // right: 16px;
+  // bottom: 16px;
+  display: none;
+}
+
+.default-print-footer {
+  img {
+    max-width: 100%;
+  }
+}

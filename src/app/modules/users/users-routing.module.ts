@@ -14,18 +14,18 @@ import { AuthGuardService } from '../../services/auth-guard.service';
 import { UserChangePasswordFormComponent } from './profile/user-change-password-form/user-change-password-form.component';
 
 
-const routes: Routes = [{
+export const userRoutes: Routes = [{
   path: '',
   component: UsersComponent,
   children: [
     // User manager
     {
-      path: 'user-manager',
+      path: 'users/user-manager',
       redirectTo: 'user-manager/list',
       pathMatch: 'full',
     },
     {
-      path: 'user-manager/list',
+      path: 'users/user-manager/list',
       // canActivate: [AuthGuardService],
       component: UserListComponent,
       data: {
@@ -33,33 +33,33 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'user-manager/form',
+      path: 'users/user-manager/form',
       // canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
-      path: 'user-manager/form/:id',
+      path: 'users/user-manager/form/:id',
       // canActivate: [AuthGuardService],
       component: UserFormComponent,
     },
     {
-      path: 'user-manager/view',
+      path: 'users/user-manager/view',
       // canActivate: [AuthGuardService],
       component: UserViewComponent,
     },
     {
-      path: 'user-manager/report',
+      path: 'users/user-manager/report',
       canActivate: [AuthGuardService],
       component: UserReportComponent,
     },
     // User group
     {
-      path: 'group',
+      path: 'users/group',
       redirectTo: 'group/list',
       pathMatch: 'full',
     },
     {
-      path: 'group/list',
+      path: 'users/group/list',
       // canActivate: [AuthGuardService],
       component: UserGroupListComponent,
       data: {
@@ -67,33 +67,33 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'group/form',
+      path: 'users/group/form',
       // canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
-      path: 'group/form/:id',
+      path: 'users/group/form/:id',
       // canActivate: [AuthGuardService],
       component: UserGroupFormComponent,
     },
     {
-      path: 'group/view',
+      path: 'users/group/view',
       // canActivate: [AuthGuardService],
       component: UserGroupViewComponent,
     },
     {
-      path: 'group/report',
+      path: 'users/group/report',
       canActivate: [AuthGuardService],
       component: UserGroupReportComponent,
     },
     // Permission
     {
-      path: 'permission',
+      path: 'users/permission',
       redirectTo: 'permission/grant',
       pathMatch: 'full',
     },
     {
-      path: 'permission/grant',
+      path: 'users/permission/grant',
       canActivate: [AuthGuardService],
       component: PermissionGrantComponent,
       data: {
@@ -101,16 +101,16 @@ const routes: Routes = [{
       },
     },
     {
-      path: 'profile/change-password',
+      path: 'users/profile/change-password',
       canActivate: [AuthGuardService],
       component: UserChangePasswordFormComponent,
     },
   ],
 }];
 
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
-})
-export class UsersRoutingModule {
-}
+// @NgModule({
+//   imports: [RouterModule.forChild(userRoutes)],
+//   exports: [RouterModule],
+// })
+// export class UsersRoutingModule {
+// }

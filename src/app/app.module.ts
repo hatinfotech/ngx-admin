@@ -195,6 +195,8 @@ import { saleComponents } from './modules/sales/sales.module';
 import { ProductListV1Component } from './modules/admin-product/product/product-list-v1/product-list.component';
 import { accountingComponents } from './modules/accounting/accounting.module';
 import { warehouseComponents } from './modules/warehouse/warehouse.module';
+import { systemComponents } from './modules/system/system.module';
+import { userComponents } from './modules/users/users.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -393,6 +395,9 @@ export class DynamicLocaleId extends String {
 
     // General components
     AgDynamicListComponent,
+
+    ...systemComponents,
+    ...userComponents,
   ],
   imports: [
     BrowserModule,

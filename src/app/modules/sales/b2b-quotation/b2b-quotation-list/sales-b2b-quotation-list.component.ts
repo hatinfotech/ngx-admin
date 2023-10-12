@@ -35,6 +35,12 @@ export class SalesB2bQuotationListComponent extends AgGridDataManagerListCompone
   apiPath = '/sales/price-quotations';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Sales', text: 'Bán hàng' },
+    Feature: { id: 'B2bQuotation', text: 'Phiếu báo giá B2B' }
+  };
+
   printDialog = SalesB2bQuotationPrintComponent;
   formDialog = SalesB2bQuotationFormComponent;
 

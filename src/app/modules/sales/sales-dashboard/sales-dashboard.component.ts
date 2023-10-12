@@ -5,7 +5,7 @@ import { ProductGroupModel } from '../../../models/product.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonService } from '../../../services/common.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { NbColorHelper, NbThemeService } from '@nebular/theme';
+import { NbColorHelper, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { takeWhile, takeUntil } from 'rxjs/operators';
 import { SolarData } from '../../../@core/data/solar';
 import { ApiService } from '../../../services/api.service';
@@ -15,6 +15,9 @@ import { PageModel } from '../../../models/page.model';
 import { AccMasterBookModel } from '../../../models/accounting.model';
 import { Select2Option } from '../../../lib/custom-element/select2/select2.component';
 import { BranchModel } from '../../../models/branch.model';
+import { BaseComponent } from '../../../lib/base-component';
+import { RootServices } from '../../../services/root.services';
+import { Router } from '@angular/router';
 interface CardSettings {
   title: string;
   iconClass: string;
@@ -26,7 +29,8 @@ interface CardSettings {
   styleUrls: ['./sales-dashboard.component.scss'],
   providers: [CurrencyPipe]
 })
-export class SalesDashboardComponent implements OnDestroy {
+export class SalesDashboardComponent extends BaseComponent implements OnDestroy {
+  componentName: string = 'SalesDashboardComponent';
 
   // groupList: ProductGroupModel[];
   formItem: FormGroup;
@@ -35,6 +39,12 @@ export class SalesDashboardComponent implements OnDestroy {
   favicon: Icon = { pack: 'eva', name: 'list', size: 'medium', status: 'primary' };
   title?: string = 'Phát sinh doanh thu/hoa hồng';
   actionButtonList: ActionControl[];
+
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Sales', text: 'Bán hàng' },
+    Feature: { id: 'SalesDashboard', text: 'Quan sát tổng thể bán hàng' }
+  };
 
   costAndRevenueStatisticsData: {};
   goodsStatisticsData: {};
@@ -73,13 +83,17 @@ export class SalesDashboardComponent implements OnDestroy {
   masterBook: AccMasterBookModel;
 
   constructor(
-    private themeService: NbThemeService,
-    private solarService: SolarData,
+    public rsv: RootServices,
+    public themeService: NbThemeService,
+    public solarService: SolarData,
     public cms: CommonService,
     public formBuilder: FormBuilder,
     public apiService: ApiService,
     public currencyPipe: CurrencyPipe,
+    public router: Router,
+    public ref: NbDialogRef<SalesDashboardComponent>,
   ) {
+    super(rsv, cms, router, apiService, ref)
     this.themeService.getJsTheme()
       .pipe(takeWhile(() => this.alive))
       .subscribe(theme => {

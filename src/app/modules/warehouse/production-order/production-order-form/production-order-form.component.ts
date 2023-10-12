@@ -30,7 +30,7 @@ import { AccCostClassificationListComponent } from '../../../accounting/cost-cla
 import { AgSelect2CellInput } from '../../../../lib/custom-element/ag-list/cell/input/select2.component';
 import { WarehouseGoodsDeliveryNoteFormComponent } from '../../goods-delivery-note/warehouse-goods-delivery-note-form/warehouse-goods-delivery-note-form.component';
 import { AccMasterBookEntryModel, OtherBusinessVoucherDetailModel, OtherBusinessVoucherModel } from '../../../../models/accounting.model';
-import { AccountingOtherBusinessVoucherFormComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
+import { AccountingOtherBusinessVoucherFormComponent } from '../../../accounting/other-business-voucher/accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { WarehouseGoodsReceiptNoteFormComponent } from '../../goods-receipt-note/warehouse-goods-receipt-note-form/warehouse-goods-receipt-note-form.component';
 @Component({
   selector: 'ngx-production-order-form',

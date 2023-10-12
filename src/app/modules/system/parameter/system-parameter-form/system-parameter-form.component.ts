@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { environment } from '../../../../../environments/environment';
-import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
+import { DataManagerFormComponent, MyUploadAdapter } from '../../../../lib/data-manager/data-manager-form.component';
 import { SystemParameterModel } from '../../../../models/system.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
@@ -11,7 +11,16 @@ import { NbToastrService, NbDialogService, NbDialogRef } from '@nebular/theme';
 import { CommonService } from '../../../../services/common.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RootServices } from '../../../../services/root.services';
+import * as ClassicEditorBuild from '../../../../../vendor/ckeditor/ckeditor5-custom-build/build/ckeditor.js';
+import { SystemConfigModel } from '../../../../models/model';
 
+function MyCustomUploadAdapterPlugin(editor) {
+  editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    // Configure the URL to the upload script in your back-end here!
+    const options = editor.config.get('simpleUpload');
+    return new MyUploadAdapter(loader, options);
+  };
+}
 @Component({
   selector: 'ngx-system-parameter-form',
   templateUrl: './system-parameter-form.component.html',
@@ -20,7 +29,7 @@ import { RootServices } from '../../../../services/root.services';
 export class SystemParameterFormComponent extends DataManagerFormComponent<SystemParameterModel> implements OnInit {
 
   componentName: string = 'SystemParameterFormComponent';
-  idKey = 'Code';
+  idKey = 'Id';
   apiPath = '/system/parameters';
   baseFormUrl = '/system/parameter/form';
 
@@ -47,6 +56,41 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
   ) {
     super(rsv, activeRoute, router, formBuilder, apiService, toastrService, dialogService, cms);
   }
+
+  public Editor = ClassicEditorBuild;
+  public ckEditorConfig = {
+    height: '200px',
+    // plugins: [ImageResize],
+    extraPlugins: [MyCustomUploadAdapterPlugin],
+    simpleUpload: {
+      uploadUrl: () => {
+        // return this.apiService.getPromise<FileStoreModel[]>('/file/file-stores', { filter_Type: 'REMOTE', sort_Weight: 'asc', requestUploadToken: true, weight: 4194304, limit: 1 }).then(fileStores => {
+        return this.cms.getAvailableFileStores().then(fileStores => fileStores[0]).then(fileStore => {
+          return this.apiService.buildApiUrl(fileStore.Path + '/v1/file/files', { token: fileStore['UploadToken'] });
+        });
+      },
+    },
+  };
+
+  typeList = [
+    { id: 'string', text: 'String' },
+    { id: 'int', text: 'Int' },
+    { id: 'float', text: 'Float' },
+    { id: 'boolean', text: 'Boolean' },
+  ];
+  select2optionForType = {
+    ...this.cms.select2OptionForTemplate,
+  };
+  inputTypeList = [
+    { id: 'text', text: 'Chữ (text box)' },
+    { id: 'textarea', text: 'HTML (text editor)' },
+    { id: 'checkbox', text: 'Checkbox' },
+    { id: 'option', text: 'Option' },
+    { id: 'multioption', text: 'Multi Options' },
+  ];
+  select2optionForInputType = {
+    ...this.cms.select2OptionForTemplate,
+  };
 
   getRequestId(callback: (id?: string[]) => void) {
     callback(this.inputId);
@@ -85,12 +129,14 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
   makeNewFormGroup(data?: SystemParameterModel): FormGroup {
     const newForm = this.formBuilder.group({
       _index: [''],
-      Name_old: [''],
-      Name: ['', Validators.required],
-      Type: [''],
-      Value: [''],
-      IsApplied: [''],
-      Module: [''],
+      Id: [],
+      Name: [null, Validators.required],
+      Type: [],
+      InputType: ['TEXT'],
+      Value: [],
+      IsApplied: [true],
+      Module: [],
+      Description: [],
     });
     if (data) {
       data['Name_old'] = data['Name'];
@@ -121,4 +167,12 @@ export class SystemParameterFormComponent extends DataManagerFormComponent<Syste
   onUpdatePastFormData(aPastFormData: { formData: any; meta: any; }): void { }
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
+
+  /** Form submit event */
+  async save(): Promise<SystemParameterModel[]> {
+    return super.save().then(rs => {
+      this.cms.updateSystemConfigs();
+      return rs;
+    });
+  }
 }

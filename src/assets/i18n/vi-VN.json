@@ -508,6 +508,9 @@
         "Config": {
             "userLocale": "Cấu hình ngôn ngữ & vùng miền"
         },
+        "Parameter": {
+            "title": "{{definition}}{{action}} tham số hệ thống"
+        },
         "Route": {
             "Rule": {
                 "title": "{{definition}}{{action}} luật định tuyến"

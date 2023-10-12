@@ -35,6 +35,12 @@ export class SalesVoucherListComponent extends AgGridDataManagerListComponent<Sa
   apiPath = '/sales/sales-vouchers';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Sales', text: 'Bán hàng' },
+    Feature: { id: 'SalesVoucher', text: 'Phiếu bán hàng' }
+  };
+
   formDialog = SalesVoucherFormComponent;
   printDialog = SalesVoucherPrintComponent;
 

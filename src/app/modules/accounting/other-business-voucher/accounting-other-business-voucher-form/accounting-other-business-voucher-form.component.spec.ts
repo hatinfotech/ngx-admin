@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountingOtherBusinessVoucherFormComponent } from './AccountingOtherBusinessVoucherFormComponent';
+import { AccountingOtherBusinessVoucherFormComponent } from './accounting-other-business-voucher-form.component';
 
 describe('AccountingOtherBusinessVoucherFormComponent', () => {
   let component: AccountingOtherBusinessVoucherFormComponent;

@@ -325,3 +325,12 @@
 .text-color-danger {
   color: #dc3545 !important;
 }
+
+
+.default-probox-one-print-footer {
+  font-style: italic;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: block;
+}

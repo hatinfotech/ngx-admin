@@ -6,7 +6,8 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.11.0.2',
+  version: '6.12.0.7',
+  // 6.12.0.1:   Allow config setting for module and feature anywhere
   // 6.11.0.1:   production order v1 demo
   // 6.10.0.1:   sales processing: Price quotation > Goods Delivery > Sales > Receipt demo 1
   // 6.10.0.2:   replace probox.center by probox.vn
@@ -268,4 +269,5 @@ export const environment = {
     appId: "1:316262946834:web:f8e595eb803da324ce20cb",
     measurementId: "G-1KP1VJ8804"
   },
+  defaultPrintFooter: 'Phiếu được in tại Phần mềm ProBox One - Phần mềm quản trị cộng tác viên chuyên sâu'
 };

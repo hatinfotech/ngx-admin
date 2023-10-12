@@ -786,28 +786,30 @@ export abstract class AgGridDataManagerListComponent<M, F> extends DataManagerLi
     if (this.isChoosedMode) {
 
       if (settings) {
-        const commandColumn: ColDef = settings.find(f => f.field == 'Command');
-        if (commandColumn) {
-          commandColumn.width = 90;
-          commandColumn.resizable = true;
-          commandColumn.cellRendererParams['buttons'] = [];
-          // if (commandColumn.cellRendererParams['buttons']) {
-          commandColumn.cellRendererParams['buttons'].push({
-            name: 'choose',
-            label: 'Chọn',
-            status: 'primary',
-            icon: 'checkmark-square',
-            outline: true,
-            action: (params: any, button: any) => {
-              if (this.onDialogChoose) {
-                this.onDialogChoose([params.data]);
+        if (!this.hideChooseButton && this.isChoosedMode) {
+          const commandColumn: ColDef = settings.find(f => f.field == 'Command');
+          if (commandColumn) {
+            commandColumn.width = 90;
+            commandColumn.resizable = true;
+            commandColumn.cellRendererParams['buttons'] = [];
+            // if (commandColumn.cellRendererParams['buttons']) {
+            commandColumn.cellRendererParams['buttons'].push({
+              name: 'choose',
+              label: 'Chọn',
+              status: 'primary',
+              icon: 'checkmark-square',
+              outline: true,
+              action: (params: any, button: any) => {
+                if (this.onDialogChoose) {
+                  this.onDialogChoose([params.data]);
+                }
+                this.onItemsChoosed.emit([params.data]);
+                this.close();
               }
-              this.onItemsChoosed.emit([params.data]);
-              this.close();
-            }
-          });
-          // commandColumn.width += 40;
-          // }
+            });
+            // commandColumn.width += 40;
+            // }
+          }
         }
       }
     }

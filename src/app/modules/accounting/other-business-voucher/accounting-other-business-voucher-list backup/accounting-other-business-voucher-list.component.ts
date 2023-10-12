@@ -14,7 +14,7 @@ import { UserGroupModel } from '../../../../models/user-group.model';
 import { ApiService } from '../../../../services/api.service';
 import { RootServices } from '../../../../services/root.services';
 import { CommonService } from '../../../../services/common.service';
-import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/AccountingOtherBusinessVoucherFormComponent';
+import { AccountingOtherBusinessVoucherFormComponent } from '../accounting-other-business-voucher-form/accounting-other-business-voucher-form.component';
 import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-other-business-voucher-print/accounting-other-business-voucher-print.component';
 
 @Component({

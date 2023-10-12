@@ -15,6 +15,15 @@ import { RootServices } from '../services/root.services';
 export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent, AfterViewInit {
 
   abstract componentName: string;
+
+  // Use for load settings menu for context
+  feature: {
+    // id?: string,
+    // text?: string,
+    Module?: { id?: string, text?: string },
+    Feature: { id?: string, text?: string },
+  } = null;
+
   requiredPermissions: string[] = ['ACCESS'];
 
   protected subcriptions: Subscription[] = [];
@@ -44,7 +53,9 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
   @Input() size?: string = 'medium';
   @Input() actionButtonList?: ActionControl[] = [];
 
-  isDialog = false;
+  get isDialog() {
+    return this.ref instanceof NbDialogRef;
+  };
 
   constructor(
     public rsv: RootServices,
@@ -62,7 +73,8 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
       }
     });
 
-    this.isDialog = this.ref instanceof NbDialogRef;
+    // this.isDialog = this.ref instanceof NbDialogRef;
+
   }
 
   // init() {
@@ -167,12 +179,18 @@ export abstract class BaseComponent implements OnInit, OnDestroy, ReuseComponent
         },
       }
     ];
+    if (!this.isDialog) {
+      this.rsv.headerService.activeFeature$.next(this.feature);
+    }
     return true;
   }
 
   onResume() {
     this.cms.clearHeaderActionControlList();
     this.restrict();
+    if (!this.isDialog) {
+      this.rsv.headerService.activeFeature$.next(this.feature);
+    }
   }
 
   ngOnDestroy(): void {

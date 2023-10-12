@@ -34,6 +34,12 @@ export class WarehouseInventoryAdjustNoteListComponent extends AgGridDataManager
   apiPath = '/warehouse/inventory-adjust-notes';
   idKey = ['Code'];
 
+  // Use for load settings menu for context
+  feature = {
+    Module: { id: 'Warehouse', text: 'Kho bãi' },
+    Feature: { id: 'InventopryAdjustNote', text: 'Phiếu kiểm kho' }
+  };
+
   formDialog = WarehouseInventoryAdjustNoteFormComponent;
   printDialog = WarehouseInventoryAdjustNotePrintComponent;
 
