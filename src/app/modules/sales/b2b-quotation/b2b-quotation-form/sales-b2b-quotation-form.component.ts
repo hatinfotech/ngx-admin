@@ -1000,20 +1000,30 @@ export class SalesB2bQuotationFormComponent extends DataManagerFormComponent<Sal
 
 
 
+  // calculatToMoney(detail: FormGroup, source?: string) {
+  //   if (source === 'ToMoney') {
+  //     const toMoney = parseFloat(detail.get('ToMoney').value || 0);
+  //     const quantity = parseFloat(detail.get('ToMoney').value || 0);
+  //     let discountPrice = detail.get('ToMoney').value / detail.get('Quantity').value;
+  //     return discountPrice;
+  //   } else {
+  //     // if(source === 'Price') {
+
+  //     // }
+  //     const quantity = parseFloat(detail.get('Quantity').value || 0);
+  //     // const price = parseFloat(detail.get('Price').value);
+  //     const discountPrice = parseFloat(detail.get('DiscountPrice').value || 0);
+  //     let toMoney = quantity * discountPrice;
+  //     return toMoney;
+  //   }
+  // }
+
   calculatToMoney(detail: FormGroup, source?: string) {
     if (source === 'ToMoney') {
-      const toMoney = parseFloat(detail.get('ToMoney').value || 0);
-      const quantity = parseFloat(detail.get('ToMoney').value || 0);
-      let discountPrice = detail.get('ToMoney').value / detail.get('Quantity').value;
-      return discountPrice;
+      const price = detail.get('ToMoney').value / detail.get('Quantity').value;
+      return price;
     } else {
-      // if(source === 'Price') {
-
-      // }
-      const quantity = parseFloat(detail.get('Quantity').value || 0);
-      // const price = parseFloat(detail.get('Price').value);
-      const discountPrice = parseFloat(detail.get('DiscountPrice').value || 0);
-      let toMoney = quantity * discountPrice;
+      const toMoney = detail.get('Quantity').value * detail.get('Price').value;
       return toMoney;
     }
   }

@@ -40,6 +40,9 @@
                 "title": "{{action}} sales voucher"
             }
         },
+        "SaleByCommissionVoucher": {
+            "title": "{{action}}{{definition}} bán hàng đối tác"
+        },
         "SalesReturnsVoucher": {
             "title": "{{action}}{{definition}} phiếu trả hàng",
             "List": {

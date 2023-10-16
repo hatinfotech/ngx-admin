@@ -23,6 +23,11 @@ import { PriceTablePrintComponent } from "./price-table/price-table-print/price-
 import { SalesProductDemoTemPrintComponent } from "./product/product-demo-tem-print/product-demo-tem-print.component";
 import { SalesProductListComponent } from "./product/sales-product-list/sales-product-list.component";
 import { SalesProductQrCodePrintComponent } from "./product/sales-product-qrcode-print/sales-product-qrcode-print.component";
+import { SaleByCommissionVoucherDetailsReportPrintComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-details-report-print/sale-by-commission-voucher-details-report-print.component";
+import { SaleByCommissionVoucherFormComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-form/sale-by-commission-voucher-form.component";
+import { SaleByCommissionVoucherListComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-list/sale-by-commission-voucher-list.component";
+import { SaleByCommissionVoucherPrintComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-print/sale-by-commission-voucher-print.component";
+import { SaleByCommissionVoucherReportPrintComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-report-print/sale-by-commission-voucher-report-print.component";
 import { SalesDashboardComponent } from "./sales-dashboard/sales-dashboard.component";
 import { SaleProductFormComponent } from "./sales-product/sales-product-form/sales-product-form.component";
 import { SaleProductListComponent } from "./sales-product/sales-product-list/sales-product-list.component";
@@ -70,4 +75,9 @@ export const saleComponents = [
     DiscountTableUpdateNoteListComponent,
     DiscountTableUpdateNoteFormComponent,
     DiscountTableUpdateNotePrintComponent,
+    SaleByCommissionVoucherListComponent,
+    SaleByCommissionVoucherFormComponent,
+    SaleByCommissionVoucherPrintComponent,
+    SaleByCommissionVoucherDetailsReportPrintComponent,
+    SaleByCommissionVoucherReportPrintComponent,
 ];

@@ -949,6 +949,50 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
     },
   };
 
+  baseSelect2OptionForUnit: Select2Option = {
+    placeholder: 'Chọn...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // withThumbnail: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      data: function (params) {
+        return {
+          ...params,
+          offset: params['offset'] || 0,
+          limit: params['limit'] || 10
+        };
+      },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        const params = settings.data;
+        const offset = settings.data['offset'];
+        const limit = settings.data['limit'];
+        const results = !params['term'] ? this.rsv.adminProductService.unitList$.value : this.rsv.adminProductService.unitList$.value.filter(f => this.cms.smartFilter(f.Name, params['term']));
+        success({ data: results.slice(offset, offset + limit), total: results.length });
+        return null;
+      },
+      delay: 300,
+      processResults: (rs: { data: any[], total: number }, params: any) => {
+        const data = rs.data;
+        const total = rs.total;
+        params.limit = params.limit || 10;
+        params.offset = params.offset || 0;
+        params.offset = params.offset += params.limit;
+        return {
+          results: data,
+          pagination: {
+            more: params.offset < total
+          }
+        };
+      },
+    },
+  };
+
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));

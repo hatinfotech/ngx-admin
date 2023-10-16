@@ -17,6 +17,7 @@ import { SalesVoucherListComponent } from "./sales-voucher/sales-voucher-list/sa
 import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-list/sales-b2b-quotation-list.component";
 import { SalesDiscountTableComponent } from "./discount-table/discount-table/discount-table.component";
 import { DiscountTableUpdateNoteListComponent } from "./discount-table-update-note/discount-table-update-note-list/discount-table-update-note-list.component";
+import { SaleByCommissionVoucherListComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-list/sale-by-commission-voucher-list.component";
 
 export const salesRoutes: Routes = [
   // Price report
@@ -61,6 +62,15 @@ export const salesRoutes: Routes = [
     path: 'sales/sales-voucher/list',
     canActivate: [AuthGuardService],
     component: SalesVoucherListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  // Sales voucher
+  {
+    path: 'sales/sale-by-commission-voucher/list',
+    canActivate: [AuthGuardService],
+    component: SaleByCommissionVoucherListComponent,
     data: {
       reuse: true,
     },
