@@ -31,6 +31,12 @@ export class SaleByCommissionVoucherPrintComponent extends DataManagerPrintCompo
   idKey = ['Code'];
   formDialog = SaleByCommissionVoucherFormComponent;
 
+  registerInfo: any = {
+    voucherInfo: this.cms.translateText('Information.Voucher.register'),
+    voucherLogo: environment.register.logo.voucher,
+    voucherLogoHeight: 60,
+  };
+
   constructor(
     public rsv: RootServices,
     public cms: CommonService,
@@ -40,6 +46,13 @@ export class SaleByCommissionVoucherPrintComponent extends DataManagerPrintCompo
     public datePipe: DatePipe,
   ) {
     super(rsv, cms, router, apiService, ref);
+    this.cms.systemConfigs$.subscribe(settings => {
+      if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
+        this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
+        this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
+        this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
+      }
+    });
   }
 
   ngOnInit() {

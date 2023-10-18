@@ -40,7 +40,7 @@ export class SaleByCommissionVoucherListComponent extends AgGridDataManagerListC
   // Use for load settings menu for context
   feature = {
     Module: { id: 'Sales', text: 'Bán hàng' },
-    Feature: { id: 'SaleByCommissionVoucher', text: 'Phiếu bán hàng' }
+    Feature: { id: 'SaleByCommissionVoucher', text: 'Phiếu bán hàng đối tác' }
   };
 
   formDialog = SaleByCommissionVoucherFormComponent;

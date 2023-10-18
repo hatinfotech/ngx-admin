@@ -150,6 +150,13 @@ export class SaleByCommissionVoucherFormComponent extends DataManagerFormCompone
 
   };
 
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
+
   select2SalesPriceReportOption = {
     placeholder: 'Chọn bảng giá...',
     allowClear: true,
@@ -510,6 +517,91 @@ export class SaleByCommissionVoucherFormComponent extends DataManagerFormCompone
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
+  select2OptionForProvince = {
+    placeholder: 'Chọn tỉnh/TP...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      // url: (params, options: any) => {
+      //   return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+  select2OptionForDistrict = {
+    placeholder: 'Chọn quận/huyện...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        const formGroup = options?.formGroup;
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('DeliveryProvince').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -634,6 +726,17 @@ export class SaleByCommissionVoucherFormComponent extends DataManagerFormCompone
       // PriceReportVoucher: [''],
       // PriceReport: [''],
       // Employee: [''],
+
+      DeliveryProvince: [],
+      DeliveryDistrict: [],
+      DeliveryWard: [],
+      DeliveryAddress: [],
+      DirectReceiver: [],
+      DirectReceiverName: [],
+      DirectReceiverEmail: [],
+      DirectReceiverPhone: [],
+
+
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
@@ -878,6 +981,22 @@ export class SaleByCommissionVoucherFormComponent extends DataManagerFormCompone
           if (selectedData['Email'] && selectedData['Email']['restricted']) formGroup.get('CustomerEmail')['placeholder'] = selectedData['Email']['placeholder']; else formGroup.get('CustomerEmail').setValue(selectedData['Email']);
           if (selectedData['Address'] && selectedData['Address']['restricted']) formGroup.get('CustomerAddress')['placeholder'] = selectedData['Address']['placeholder']; else formGroup.get('CustomerAddress').setValue(selectedData['Address']);
           // formGroup.get('CustomerIdentifiedNumber').setValue(selectedData.TaxCode);
+        }
+      }
+    }
+  }
+
+  onDirectReceiverChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+    // console.info(item);
+
+    if (!this.isProcessing) {
+      if (selectedData && !selectedData['doNotAutoFill']) {
+
+        // this.priceReportForm.get('Supplier').setValue($event['data'][0]['id']);
+        if (selectedData.Code) {
+          formGroup.get('DirectReceiverName').setValue(selectedData.Name);
+          formGroup.get('DirectReceiverPhone').setValue(selectedData.Phone);
+          formGroup.get('DirectReceiverEmail').setValue(selectedData.Email);
         }
       }
     }

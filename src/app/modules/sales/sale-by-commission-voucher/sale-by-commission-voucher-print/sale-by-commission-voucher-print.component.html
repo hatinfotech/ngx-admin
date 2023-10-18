@@ -5,7 +5,21 @@
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
-        <ngx-print-header></ngx-print-header>
+        <!-- <ngx-print-header></ngx-print-header> -->
+        <table width="100%">
+          <tr>
+            <td style="line-height: 1rem">
+            <div>NHÀ CUNG CẤP<br>{{data.Supplier | objecttext}}</div>
+            <!-- <div>MST: {{data.SupplierTaxCode}}</div> -->
+            <!-- <div>SĐT: {{data.SupplierPhone}}</div> -->
+            <!-- <div>Email: {{data.SupplierEmail}}</div> -->
+            <!-- <div>ĐC: {{data.SupplierAddress}}</div> -->
+            </td>
+            <td align="right" style="vertical-align: top;">
+              <!-- <img class="voucher-logo-image" [src]="registerInfo.voucherLogo" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}"> -->
+            </td>
+          </tr>
+        </table>
         <!-- <div style="display: flex;">
           <div>
             <img style="margin-top: 2px;" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}" src="{{data.Signature}}">
@@ -13,12 +27,10 @@
           <div style="flex: 1;">
           </div>
         </div> -->
-        <div class="print-title">{{ 'Sales.SaleByCommissionVoucher.title' | translate:{action: '', definition: ''} |
+        <div class="print-title">{{ 'ĐƠN ĐẶT HÀNG' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>
-        <!-- <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }} - {{data.StateLabel | translate}}</div> -->
         <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
-        <!-- <div class="under-title" style="font-size: 11px;">{{'Ngày in phiếu' | translate}}: {{ data.DateOfSignature | date:'short' }}</div> -->
         <div>
           <div style="display: flex;">
             <div style="flex: 1;">
@@ -86,7 +98,7 @@
             </table>
           </div>
         </div>
-        <div>
+        <!-- <div>
           <div class="under-line" *ngIf="data.Note"><span [innerHTML]="renderValue(data.Note)"></span></div>
           <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
             {{renderValue(data.DeliveryAddress)}}
@@ -94,6 +106,33 @@
           <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
             {{renderValue(data.DirectReceiverName)}}
           </div>
+        </div> -->
+        <div>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="under-line">{{'Người trực tiếp nhận hàng' | translate | headtitlecase}} :
+                {{renderValue(data.DirectReceiverName)}}
+              </div>
+            </div>
+            <div>
+              <div class="under-line">{{'Common.phone' | translate | headtitlecase}} :
+                {{renderValue(data.DirectReceiverPhone | objectid)}}
+              </div>
+            </div>
+          </div>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
+                {{renderValue(data.FullDeliveryAddress)}}
+              </div>
+            </div>
+            <div>
+              <div class="under-line">{{'Contact.email' | translate | headtitlecase}} :
+                {{renderValue(data.DirectReceiverEmail)}}
+              </div>
+            </div>
+          </div>
+
         </div>
         <div style="display: flex; flex-wrap: wrap">
           <div style="text-align: center; flex: 0 0 50%;">
@@ -105,7 +144,7 @@
             <br><br><br>
           </div>
         </div>
-        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_SALEBYCOMMISSION_PRINT_FOOTER"></div>
+        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_SALEBYCOMMISSIONVOUCHER_PRINT_FOOTER"></div>
         <div class="default-probox-one-print-footer">{{cms.env.defaultPrintFooter}}</div>
       </div>
     </nb-card-body>

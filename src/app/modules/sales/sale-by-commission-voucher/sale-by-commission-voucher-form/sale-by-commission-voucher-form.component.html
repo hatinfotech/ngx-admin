@@ -86,6 +86,51 @@
                                             </div>
                                         </div>
                                     </nb-tab>
+                                    <nb-tab tabTitle="{{'Giao nhận' | translate | headtitlecase}}">
+                                        <!-- <label class="label label-with-border-below">{{'Common.contact' | translate | headtitlecase}}</label> -->
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiver" label="Người trực tiếp nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
+                                                    <ngx-select2 formControlName="DirectReceiver" [select2Option]="select2OptionForContact" (selectChange)="onDirectReceiverChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverName" placeholder="{{'Common.name' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverEmail" placeholder="{{'Common.email' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryProvince" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryProvince" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryDistrict" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryDistrict" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryWard" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryWard" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Địa chỉ nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Số nhà, tên đường...' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                        </div>
+                                    </nb-tab>
                                 </nb-tabset>
                             </div>
                         </div>
@@ -180,7 +225,7 @@
                                                     <div class="col-lg-3 col-md-3 col-sm-3 col-is-3">
                                                         <ngx-form-group [hideLabel]="false" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'" [formGroup]="detail" name="No" label="STT" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false">
                                                             <input nbInput class="sorting-handle" title="Kéo thả để di chuyển" fullWidth formControlName="No" value="{{ic+1}}" readonly style="text-align: center; cursor: grab; width: 100%; height: 2.5rem; padding: 0;">
-                                                            <input type="hidden" formControlName="Id">
+                                                            <!-- <input type="hidden" formControlName="Id"> -->
                                                         </ngx-form-group>
                                                         <div class="form-group">
                                                             <label class="label" *ngIf="getFieldValue(detail, 'Type') === 'CATEGORY'">Gở</label>
@@ -240,7 +285,7 @@
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-2 col-md-2 col-sm-2 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name=" DiscountPrice" label="Giá CK" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [align]="'right'">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="DiscountPrice" label="Giá CK" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="DiscountPrice" placeholder="Giá CK" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (keyup)="toMoney(formItem, detail, 'DiscountPrice', ic)" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
                                                                 </ngx-form-group>
                                                             </div>
