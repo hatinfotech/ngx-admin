@@ -18,6 +18,7 @@ import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-li
 import { SalesDiscountTableComponent } from "./discount-table/discount-table/discount-table.component";
 import { DiscountTableUpdateNoteListComponent } from "./discount-table-update-note/discount-table-update-note-list/discount-table-update-note-list.component";
 import { SaleByCommissionVoucherListComponent } from "./sale-by-commission-voucher/sale-by-commission-voucher-list/sale-by-commission-voucher-list.component";
+import { AuthorizedSaleVoucherListComponent } from "./authorized-sale-voucher/authorized-sale-voucher-list/authorized-sale-voucher-list.component";
 
 export const salesRoutes: Routes = [
   // Price report
@@ -187,6 +188,15 @@ export const salesRoutes: Routes = [
     path: 'sales/discount-update-note/list',
     canActivate: [AuthGuardService],
     component: DiscountTableUpdateNoteListComponent,
+    data: {
+      reuse: true,
+    },
+  },
+  // Authorized Sale voucher
+  {
+    path: 'sales/authorized-sale-voucher/list',
+    canActivate: [AuthGuardService],
+    component: AuthorizedSaleVoucherListComponent,
     data: {
       reuse: true,
     },

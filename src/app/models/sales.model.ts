@@ -490,3 +490,52 @@ export interface SaleByCommissionVoucherDetailModel extends Model {
   Business?: string;
   Amount?: number;
 }
+export interface AuthorizedSaleVoucherModel extends Model {
+  Id?: string;
+  Code?: string;
+  Title?: string;
+  Note?: string;
+  SubNote?: string;
+  Supplier?: string;
+  SupplierName?: string;
+  SupplierPhone?: string;
+  SupplierEmail?: string;
+  SupplierAddress?: string;
+  Customer?: string;
+  CustomerName?: string;
+  CustomerPhone?: string;
+  CustomerEmail?: string;
+  CustomerAddress?: string;
+  Employee?: string;
+  EmployeeName?: string;
+  Creator?: string;
+  CreatorName?: string;
+  Approver?: string;
+  ApproverName?: string;
+  DateOfCreated?: string;
+  DateOfApproved?: string;
+  DateOfSale?: string;
+  State?: string;
+  Thread?: string;
+  Permission?: string;
+
+  Details?: AuthorizedSaleVoucherDetailModel[];
+}
+export interface AuthorizedSaleVoucherDetailModel extends Model {
+  Id?: string;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: string;
+  Image?: string;
+  Product?: Partial<ProductModel>;
+  ProductName?: string;
+  Description?: string;
+  Quantity?: number;
+  Price?: number;
+  Unit?: string;
+  UnitLabel?: string;
+  DebitAccount?: string;
+  CreditAccount?: string;
+  Business?: string;
+  Amount?: number;
+}

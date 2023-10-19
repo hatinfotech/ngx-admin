@@ -43,6 +43,9 @@
         "SaleByCommissionVoucher": {
             "title": "{{action}}{{definition}} bán hàng đối tác"
         },
+        "AuthorizedSaleVoucher": {
+            "title": "{{action}}{{definition}} bán hàng đa năng"
+        },
         "SalesReturnsVoucher": {
             "title": "{{action}}{{definition}} phiếu trả hàng",
             "List": {

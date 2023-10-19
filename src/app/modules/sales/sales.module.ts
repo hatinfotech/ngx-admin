@@ -1,3 +1,8 @@
+import { AuthorizedSaleVoucherDetailsReportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-details-report-print/authorized-sale-voucher-details-report-print.component";
+import { AuthorizedSaleVoucherFormComponent } from "./authorized-sale-voucher/authorized-sale-voucher-form/authorized-sale-voucher-form.component";
+import { AuthorizedSaleVoucherListComponent } from "./authorized-sale-voucher/authorized-sale-voucher-list/authorized-sale-voucher-list.component";
+import { AuthorizedSaleVoucherPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-print/authorized-sale-voucher-print.component";
+import { AuthorizedSaleVoucherReportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-report-print/authorized-sale-voucher-report-print.component";
 import { SalesB2bQuotationFormComponent } from "./b2b-quotation/b2b-quotation-form/sales-b2b-quotation-form.component";
 import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-list/sales-b2b-quotation-list.component";
 import { SalesB2bQuotationPrintComponent } from "./b2b-quotation/b2b-quotation-print/sales-b2b-quotation-print.component";
@@ -80,4 +85,9 @@ export const saleComponents = [
     SaleByCommissionVoucherPrintComponent,
     SaleByCommissionVoucherDetailsReportPrintComponent,
     SaleByCommissionVoucherReportPrintComponent,
+    AuthorizedSaleVoucherListComponent,
+    AuthorizedSaleVoucherFormComponent,
+    AuthorizedSaleVoucherPrintComponent,
+    AuthorizedSaleVoucherDetailsReportPrintComponent,
+    AuthorizedSaleVoucherReportPrintComponent,
 ];
