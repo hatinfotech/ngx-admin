@@ -24,6 +24,10 @@ import { AuthorizedSaleVoucherDetailsReportPrintComponent } from '../authorized-
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { FormGroup } from '@angular/forms';
 import { AuthorizedSaleVoucherReportPrintComponent } from '../authorized-sale-voucher-report-print/authorized-sale-voucher-report-print.component';
+import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
+import { AuthorizedSaleVoucherDeliveryPrintComponent } from '../authorized-sale-voucher-delivery-print/authorized-sale-voucher-delivery-print.component';
+import { AuthorizedSaleVoucherSupplierPrintComponent } from '../authorized-sale-voucher-supplier-print/authorized-sale-voucher-supplier-print.component';
+import { AuthorizedSaleVoucherCustomerPrintComponent } from '../authorized-sale-voucher-customer-print/authorized-sale-voucher-customer-print.component';
 
 @Component({
   selector: 'ngx-authorized-sale-voucher-list',
@@ -78,111 +82,111 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
 
   async init() {
     return super.init().then(async state => {
-      this.actionButtonList.unshift({
-        type: 'button',
-        name: 'reprotbyDetail',
-        status: 'primary',
-        label: 'Báo cáo chi tiết',
-        title: 'Báo cáo chi tiết',
-        size: 'medium',
-        icon: 'list-outline',
-        disabled: () => false,
-        click: () => {
-          this.cms.openDialog(DialogFormComponent, {
-            context: {
-              title: 'Báo cáo bán hàng đối tác',
-              width: '600px',
-              onInit: async (form, dialog) => {
-                return true;
-              },
-              controls: [
-                {
-                  name: 'Supplier',
-                  label: 'Nhà cung cấp',
-                  placeholder: 'Chọn nhà cung cấp',
-                  type: 'select2',
-                  initValue: null,
-                  option: {
-                    ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true }),
-                  }
-                },
-                {
-                  name: 'FromDate',
-                  label: 'Từ ngày',
-                  placeholder: 'Chọn báo cáo từ ngày',
-                  type: 'date',
-                  initValue: null,
-                },
-                {
-                  name: 'ToDate',
-                  label: 'Đến ngày',
-                  placeholder: 'Chọn báo cáo đến ngày',
-                  type: 'date',
-                  initValue: null,
-                },
-              ],
-              actions: [
-                {
-                  label: 'Trở về',
-                  icon: 'back',
-                  status: 'basic',
-                  action: async () => { return true; },
-                },
-                {
-                  label: 'Báo cáo chi tiết',
-                  icon: 'npm-outline',
-                  status: 'info',
-                  action: async (form: FormGroup) => {
+      // this.actionButtonList.unshift({
+      //   type: 'button',
+      //   name: 'reprotbyDetail',
+      //   status: 'primary',
+      //   label: 'Báo cáo chi tiết',
+      //   title: 'Báo cáo chi tiết',
+      //   size: 'medium',
+      //   icon: 'list-outline',
+      //   disabled: () => false,
+      //   click: () => {
+      //     this.cms.openDialog(DialogFormComponent, {
+      //       context: {
+      //         title: 'Báo cáo bán hàng đối tác',
+      //         width: '600px',
+      //         onInit: async (form, dialog) => {
+      //           return true;
+      //         },
+      //         controls: [
+      //           {
+      //             name: 'Supplier',
+      //             label: 'Nhà cung cấp',
+      //             placeholder: 'Chọn nhà cung cấp',
+      //             type: 'select2',
+      //             initValue: null,
+      //             option: {
+      //               ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true }),
+      //             }
+      //           },
+      //           {
+      //             name: 'FromDate',
+      //             label: 'Từ ngày',
+      //             placeholder: 'Chọn báo cáo từ ngày',
+      //             type: 'date',
+      //             initValue: null,
+      //           },
+      //           {
+      //             name: 'ToDate',
+      //             label: 'Đến ngày',
+      //             placeholder: 'Chọn báo cáo đến ngày',
+      //             type: 'date',
+      //             initValue: null,
+      //           },
+      //         ],
+      //         actions: [
+      //           {
+      //             label: 'Trở về',
+      //             icon: 'back',
+      //             status: 'basic',
+      //             action: async () => { return true; },
+      //           },
+      //           {
+      //             label: 'Báo cáo chi tiết',
+      //             icon: 'npm-outline',
+      //             status: 'info',
+      //             action: async (form: FormGroup) => {
 
-                    let supplier: string[] = form.get('Supplier').value;
-                    let fromDate = form.get('FromDate').value as Date;
-                    let toDate = form.get('ToDate').value as Date;
-                    this.cms.openDialog(AuthorizedSaleVoucherDetailsReportPrintComponent, {
-                      context: {
-                        id: [],
-                        suppliers: [this.cms.getObjectId(supplier)],
-                        fromDate: fromDate,
-                        toDate: toDate,
-                        query: {
-                          // ge_DateOfSale: fromDate.toISOString(),
-                          // le_DateOfSale: toDate.toISOString(),
-                          eq_State: 'APPROVED'
-                        }
-                      }
-                    });
-                    return true;
-                  },
-                },
-                {
-                  label: 'Báo cáo',
-                  icon: 'npm-outline',
-                  status: 'primary',
-                  action: async (form: FormGroup) => {
+      //               let supplier: string[] = form.get('Supplier').value;
+      //               let fromDate = form.get('FromDate').value as Date;
+      //               let toDate = form.get('ToDate').value as Date;
+      //               this.cms.openDialog(AuthorizedSaleVoucherDetailsReportPrintComponent, {
+      //                 context: {
+      //                   id: [],
+      //                   suppliers: [this.cms.getObjectId(supplier)],
+      //                   fromDate: fromDate,
+      //                   toDate: toDate,
+      //                   query: {
+      //                     // ge_DateOfSale: fromDate.toISOString(),
+      //                     // le_DateOfSale: toDate.toISOString(),
+      //                     eq_State: 'APPROVED'
+      //                   }
+      //                 }
+      //               });
+      //               return true;
+      //             },
+      //           },
+      //           {
+      //             label: 'Báo cáo',
+      //             icon: 'npm-outline',
+      //             status: 'primary',
+      //             action: async (form: FormGroup) => {
 
-                    let supplier: string[] = form.get('Supplier').value;
-                    let fromDate = form.get('FromDate').value as Date;
-                    let toDate = form.get('ToDate').value as Date;
-                    this.cms.openDialog(AuthorizedSaleVoucherReportPrintComponent, {
-                      context: {
-                        id: [],
-                        suppliers: [this.cms.getObjectId(supplier)],
-                        fromDate: fromDate,
-                        toDate: toDate,
-                        query: {
-                          // ge_DateOfSale: fromDate.toISOString(),
-                          // le_DateOfSale: toDate.toISOString(),
-                          eq_State: 'APPROVED'
-                        }
-                      }
-                    });
-                    return true;
-                  },
-                },
-              ],
-            },
-          });
-        }
-      });
+      //               let supplier: string[] = form.get('Supplier').value;
+      //               let fromDate = form.get('FromDate').value as Date;
+      //               let toDate = form.get('ToDate').value as Date;
+      //               this.cms.openDialog(AuthorizedSaleVoucherReportPrintComponent, {
+      //                 context: {
+      //                   id: [],
+      //                   suppliers: [this.cms.getObjectId(supplier)],
+      //                   fromDate: fromDate,
+      //                   toDate: toDate,
+      //                   query: {
+      //                     // ge_DateOfSale: fromDate.toISOString(),
+      //                     // le_DateOfSale: toDate.toISOString(),
+      //                     eq_State: 'APPROVED'
+      //                   }
+      //                 }
+      //               });
+      //               return true;
+      //             },
+      //           },
+      //         ],
+      //       },
+      //     });
+      //   }
+      // });
 
       // this.actionButtonList.unshift({
       //   type: 'button',
@@ -412,7 +416,106 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
         },
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
-            this.preview([data]);
+            this.cms.openDialog(ShowcaseDialogComponent, {
+              context: {
+                title: 'Xem trước phiếu',
+                content: 'Bạn cần chọn mẫu in gửi cho đối tượng phù hợp !',
+                actions: [
+                  {
+                    label: 'Đóng',
+                    status: 'basic',
+                    outline: true,
+                    action: () => {
+                      
+                      return true;
+                    }
+                  },
+                  {
+                    label: 'Shipper',
+                    status: 'danger',
+                    action: () => {
+                      
+                      this.cms.openDialog(AuthorizedSaleVoucherDeliveryPrintComponent, {
+                        // closeOnEsc: false,
+                        context: {
+                          showLoadinng: true,
+                          title: 'Xem trước',
+                          id: [this.makeId(data)],
+                          sourceOfDialog: 'list',
+                          mode: 'print',
+                          idKey: ['Code'],
+                          // approvedConfirm: true,
+                          onChange: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                          onSaveAndClose: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                        },
+                      });
+
+                      return true;
+                    }
+                  },
+                  {
+                    label: 'Kho NCC',
+                    status: 'primary',
+                    action: () => {
+                      this.cms.openDialog(AuthorizedSaleVoucherSupplierPrintComponent, {
+                        // closeOnEsc: false,
+                        context: {
+                          showLoadinng: true,
+                          title: 'Xem trước',
+                          id: [this.makeId(data)],
+                          sourceOfDialog: 'list',
+                          mode: 'print',
+                          idKey: ['Code'],
+                          // approvedConfirm: true,
+                          onChange: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                          onSaveAndClose: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                        },
+                      });
+                      return true;
+                    }
+                  },
+                  {
+                    label: 'Khách hàng',
+                    status: 'success',
+                    action: () => {
+                      this.cms.openDialog(AuthorizedSaleVoucherCustomerPrintComponent, {
+                        // closeOnEsc: false,
+                        context: {
+                          showLoadinng: true,
+                          title: 'Xem trước',
+                          id: [this.makeId(data)],
+                          sourceOfDialog: 'list',
+                          mode: 'print',
+                          idKey: ['Code'],
+                          // approvedConfirm: true,
+                          onChange: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                          onSaveAndClose: (data: AuthorizedSaleVoucherModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                        },
+                      });
+                      return true;
+                    }
+                  },
+                ]
+              }
+            })
           }),
           headerName: 'Trạng thái',
           field: 'State',

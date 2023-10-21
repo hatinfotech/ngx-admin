@@ -1,7 +1,7 @@
 import { BusinessModel } from './accounting.model';
 import { TaxModel } from './tax.model';
 import { UnitModel } from './unit.model';
-import { ProductModel } from './product.model';
+import { ProductModel, ProductUnitModel } from './product.model';
 import { ContactModel } from './contact.model';
 import { UserModel } from './user.model';
 import { Model } from './model';
@@ -532,8 +532,10 @@ export interface AuthorizedSaleVoucherDetailModel extends Model {
   Description?: string;
   Quantity?: number;
   Price?: number;
-  Unit?: string;
+  Unit?: Partial<ProductUnitModel>;
   UnitLabel?: string;
+  Supplier?: Partial<ContactModel>;
+  SupplierAddress?: Partial<ProductUnitModel>;
   DebitAccount?: string;
   CreditAccount?: string;
   Business?: string;

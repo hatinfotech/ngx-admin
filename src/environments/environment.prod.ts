@@ -6,7 +6,7 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.12.2.2',
+  version: '6.12.2.3',
   // 6.12.2.1:   demo authorized sale voucher
   // 6.12.1.1:   demo sale by commission voucher
   // 6.12.0.1:   Allow config setting for module and feature anywhere

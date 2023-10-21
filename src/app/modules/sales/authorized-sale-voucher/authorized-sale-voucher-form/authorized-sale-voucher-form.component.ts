@@ -31,6 +31,7 @@ import { DatePipe } from '@angular/common';
 import { RootServices } from '../../../../services/root.services';
 import { ContactModel } from '../../../../models/contact.model';
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 // import { WarehouseGoodsDeliveryNotePrintComponent } from '../../../warehouse/goods-delivery-note/warehouse-goods-delivery-note-print/warehouse-goods-delivery-note-print.component';
 
 @Component({
@@ -283,7 +284,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     minimumInputLength: 0,
     dropdownCssClass: 'is_tags',
     multiple: true,
-    maximumSelectionLength: 1,
+    // maximumSelectionLength: 1,
     // tags: true,
     keyMap: {
       id: 'Code',
@@ -512,8 +513,9 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     },
   };
   select2DataForType = [
-    { id: 'PRODUCT', text: 'Sản phẩm' },
-    // { id: 'SERVICE', text: 'Dịch vụ' },
+    { id: 'PRODUCT', text: 'Hàng trong kho' },
+    { id: 'PARTNERPRODUCT', text: 'Hàng của đối tác' },
+    { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -602,6 +604,27 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     },
   };
 
+  select2OptionForContainer = {
+    placeholder: 'Chọn kho/ngăn/kệ...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
+  select2OptionForDelegateSupplier: Select2Option = {
+    ...this.select2OptionForContact,
+    placeholder: 'Chọn nhà cung cấp...'
+  };
+  select2OptionForDetailSupplier: Select2Option = {
+    ...this.select2OptionForContact,
+    placeholder: 'Chọn kho...'
+  };
+
   ngOnInit() {
     this.restrict();
     super.ngOnInit();
@@ -676,10 +699,51 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       if (itemFormData?.Details) {
         const details = this.getDetails(newForm);
         details.clear();
+
+        let inventoryMap = {};
+        let contactMap = {};
+        await this.apiService.getPromise<any[]>('/warehouse/goods-in-containers', { id: itemFormData?.Details.map(detail => `${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}-${this.cms.getObjectId(detail.Container)}`), includeAccessNumbers: false }).then(goodsInContainerList => {
+          console.log(goodsInContainerList);
+          for (const goodsInContainer of goodsInContainerList) {
+            inventoryMap[`${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`] = goodsInContainer;
+          }
+        });
+        await this.apiService.getPromise<any[]>('/contact/contacts', { id: itemFormData?.Details.filter(f => f.Supplier).map(detail => this.cms.getObjectId(detail.Supplier)), includeIdText: true }).then(suppliers => {
+          console.log(suppliers);
+          for (const supplier of suppliers) {
+            contactMap[supplier.Code] = supplier;
+          }
+        });
+
         for (const detailData of itemFormData.Details) {
+          const productId = this.cms.getObjectId(detailData.Product);
+          const unitId = this.cms.getObjectId(detailData.Unit);
+          const containerId = this.cms.getObjectId(detailData.Container);
+
+          if (detailData.Supplier) {
+            detailData.Supplier = contactMap[this.cms.getObjectId(detailData.Supplier)] || detailData.Supplier;
+          }
+
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
-          const unitControl = newDetailFormGroup.get('Unit');
-          unitControl['UnitList'] = this.adminProductService.productSearchIndexsGroupById.find(f => f.Code == this.cms.getObjectId(detailData.Product))?.Units;
+          // const unitControl = newDetailFormGroup.get('Unit');
+          newDetailFormGroup['UnitList'] = this.adminProductService.productSearchIndexsGroupById.find(f => f.Code == this.cms.getObjectId(detailData.Product))?.Units;
+          if (detailData.Unit) {
+            detailData.Unit = newDetailFormGroup['UnitList']?.find(unit => this.cms.getObjectId(unit) == this.cms.getObjectId(detailData.Unit)) || detailData.Unit;
+            detailData.Unit.Containers.map((container: any) => {
+              container.text = `[${container.FindOrder}] ${container.WarehouseName}  » ${container.ShelfName} » ${container.Name} > Tồn kho: ${inventoryMap[`${productId}-${unitId}-${containerId}`]?.Inventory}`;
+              return container;
+            });
+            newDetailFormGroup['ContainerList'] = detailData.Unit?.Containers;
+            if (detailData.Container) {
+              detailData.Container = detailData.Unit?.Containers?.find(container => this.cms.getObjectId(container) == this.cms.getObjectId(detailData.Container)) || detailData.Container;
+            }
+            if (detailData.Unit?.IsManageByAccessNumber && detailData.Container) {
+              newDetailFormGroup['IsManageByAccessNumber'] = true;
+            }
+          }
+
+
+
           details.push(newDetailFormGroup);
           // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
@@ -702,6 +766,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
 
     const newForm = this.formBuilder.group({
       Code: { disabled: true, value: '' },
+      IsAuthorizedObject: [true],
       Supplier: [null, Validators.required],
       SupplierName: [null, Validators.required],
       SupplierEmail: [],
@@ -758,7 +823,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     }
 
     const titleControl = newForm.get('Title');
-    newForm.get('SupplierName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+    newForm.get('CustomerName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
       if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Bán hàng: /.test(titleControl.value))) {
         titleControl.setValue(`Bán hàng: ${objectName}`);
       }
@@ -813,7 +878,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
 
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: AuthorizedSaleVoucherDetailModel): FormGroup {
-    let newForm = null;
+    let newForm: FormGroup = null;
     newForm = this.formBuilder.group({
       // Id: [''],
       SystemUuid: [''],
@@ -845,6 +910,11 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
         }
         return null;
       }],
+      Container: [''],
+      AccessNumbers: [''],
+      Supplier: [],
+      SupplierAddress: [],
+      PurchasePrice: [],
       // Tax: ['NOTAX', (control: FormControl) => {
       //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
       //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -856,7 +926,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       DiscountPrice: [],
       Image: [[]],
       // Reason: [''],
-      Business: { value: this.accountingBusinessList.filter(f => f.id === 'AUTHORIZEDSALEREVENUEDEBT'), disabled: false },
+      Business: { value: this.accountingBusinessList.filter(f => f.id === 'AUTHORIZEDSALEREVENUEDEBT' || f.id === 'AUTHORIZEDGOODSDELIVERY'), disabled: false },
       // Business: [],
     });
 
@@ -873,6 +943,11 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     }
 
     const imagesFormControl = newForm.get('Image');
+    const supplierControl = newForm.get('Supplier');
+    const supplierAddressControl = newForm.get('SupplierAddress');
+    const containerControl = newForm.get('Container');
+    const purchaePriceControl = newForm.get('PurchasePrice');
+    const businessControl = newForm.get('Business');
     newForm.get('Product').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
       if (value) {
         if (value.Pictures && value.Pictures.length > 0) {
@@ -882,9 +957,88 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
         }
       }
     });
+    newForm.get('Supplier').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value: ContactModel) => {
+      if (value && !this.isProcessing) {
+        if (value.Address) {
+          supplierAddressControl.setValue(value.Address);
+        } else {
+          supplierAddressControl.setValue(null);
+        }
+      }
+    });
+    newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+      if (value && !this.isProcessing) {
+        const type = this.cms.getObjectId(value);
+        if (type) {
+          businessControl.setValue(null);
+          if (type == 'PRODUCT') {
+            businessControl.setValue([
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDGOODSDELIVERY'),
+            ]);
+          }
+          if (type == 'PARTNERPRODUCT') {
+            businessControl.setValue([
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURCHASEDEBT'),
+            ]);
+          }
+          if (type == 'SERVICE') {
+            businessControl.setValue([
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALESVREVENUEDEBT'),
+              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURSV1DEBT'),
+            ]);
+          }
+        }
+      }
+    });
+
+    newForm['IsManageByAccessNumber'] = false;
+    newForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(detail => {
+      // const unit = detail.Unit;
+      this.cms.takeUntil('form_detail_value_change', 300, () => {
+        console.log('form_detail_value_change');
+        if (this.cms.getObjectId(detail.Container) && detail.Unit?.IsManageByAccessNumber) {
+          newForm['IsManageByAccessNumber'] = true;
+        } else {
+          newForm['IsManageByAccessNumber'] = false;
+        }
+
+        supplierControl.enable({ emitEvent: false });
+        containerControl.enable({ emitEvent: false });
+        supplierAddressControl.enable({ emitEvent: false });
+        purchaePriceControl.enable({ emitEvent: false });
+        if (this.cms.getObjectId(detail.Type) == 'PRODUCT') {
+          // supplierControl.setValue(null);
+          // supplierAddressControl.setValue(null);
+          // purchaePriceControl.setValue(null);
+          supplierControl.disable({ emitEvent: false });
+          supplierAddressControl.disable({ emitEvent: false });
+          purchaePriceControl.disable({ emitEvent: false });
+        }
+        if (this.cms.getObjectId(detail.Type) == 'PARTNERPRODUCT') {
+          // containerControl.setValue(null);
+          containerControl.disable({ emitEvent: false });
+        }
+        if (this.cms.getObjectId(detail.Type) == 'SERVICE') {
+          // supplierControl.setValue(null);
+          // supplierAddressControl.setValue(null);
+          // purchaePriceControl.setValue(null);
+          containerControl.setValue(null);
+          supplierControl.disable({ emitEvent: false });
+          supplierAddressControl.disable({ emitEvent: false });
+          purchaePriceControl.disable({ emitEvent: false });
+        }
+      });
+    });
 
     return newForm;
   }
+
+  onDetailSupplierChange(detail: FormGroup, supplier: ContactModel, formItem: FormGroup) {
+    console.log(supplier);
+  }
+
   getDetails(parentFormGroup: FormGroup) {
     return parentFormGroup.get('Details') as FormArray;
   }
@@ -1114,6 +1268,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     console.log(selectedData);
     const priceTable = 'default';
     const unitControl = detail.get('Unit');
+    // detail['ContainerList'] = selectedData.Containers;
     detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
       const detaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
@@ -1124,7 +1279,11 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
           includeUnit: true,
         }).then(rs => {
           console.log(rs);
-          unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+          // detail['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+          detail['UnitList'] = selectedData.Units?.map(unit => {
+            unit.Price = rs.find(f => f.UnitCode == this.cms.getObjectId(unit))?.Price;
+            return unit;
+          });
           // if (selectedData.Units) {
           if (detaultUnit) {
             const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
@@ -1136,11 +1295,11 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
             }, 0);
           }
           // } else {
-          //   detail['unitList'] = this.cms.unitList;
+          //   detail['UnitList'] = this.cms.unitList;
           // }
         });
       } else {
-        unitControl['UnitList'] = selectedData.Units;
+        detail['UnitList'] = selectedData.Units;
         // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
         unitControl.setValue(detaultUnit);
       }
@@ -1149,8 +1308,8 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       // detail.get('Description').setValue('');
       detail.get('Unit').setValue('');
 
-      unitControl['UnitList'] = [];
-      unitControl['UnitList'] = null;
+      detail['UnitList'] = [];
+      detail['UnitList'] = null;
     }
     // Callculate: Doanh thu bán lẻ dựa triên thu chi
     if (selectedData && this.cms.getObjectId(selectedData) == 'BANLE' && detailForm) {
@@ -1221,11 +1380,37 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
   }
 
   /** Choose unit event */
-  onSelectUnit(detail: FormGroup, selectedData: UnitModel, formItem: FormGroup) {
-    if (selectedData && selectedData.Price !== null) {
-      if (selectedData.Price >= 0) {
-        detail.get('Price').setValue(selectedData.Price);
-        this.toMoney(formItem, detail);
+  onSelectUnit(detail: FormGroup, selectedData: ProductUnitModel, formItem: FormGroup) {
+    if (selectedData) {
+      if (selectedData.Containers) {
+        const productId = this.cms.getObjectId(detail.get('Product').value);
+        const containerControl = detail.get('Container');
+        containerControl.disable({ emitEvent: false });
+        this.apiService.getPromise<any[]>('/warehouse/goods-in-containers', { id: selectedData.Containers.map(m => `${productId}-${this.cms.getObjectId(selectedData)}-${this.cms.getObjectId(m)}`), includeAccessNumbers: false }).then(goodsInContainerList => {
+          console.log(goodsInContainerList);
+          for (const goodsInContainer of goodsInContainerList) {
+            // const goods = this.productSearchIndex[`${goodsInContainer.Goods}-${goodsInContainer.Unit}-${goodsInContainer.Container}`];
+            const container: any = selectedData.Containers.find(container => this.cms.getObjectId(productId) === goodsInContainer.Goods && this.cms.getObjectId(selectedData) === goodsInContainer.Unit && this.cms.getObjectId(container) === goodsInContainer.Container);
+            if (container) {
+              container['Inventory'] = goodsInContainer.Inventory;
+              container.text = `[${container.FindOrder}] ${container.WarehouseName}  » ${container.ShelfName} » ${container.Name} > Tồn kho: ${goodsInContainer.Inventory}`;
+            }
+          }
+          detail['ContainerList'] = selectedData.Containers;
+          if (selectedData.Containers.length == 1) {
+            detail.get('Container').setValue(selectedData.Containers[0]);
+          }
+          containerControl.enable({ emitEvent: false });
+        }).catch(err => {
+          containerControl.enable({ emitEvent: false });
+          return Promise.reject(err);
+        });
+      }
+      if (selectedData.Price !== null) {
+        if (selectedData.Price >= 0) {
+          detail.get('Price').setValue(selectedData.Price);
+          this.toMoney(formItem, detail);
+        }
       }
     }
     return false;
@@ -1306,7 +1491,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     const quantity = parseFloat(detail.get('Quantity').value || 0);
     const toMoney = parseFloat(detail.get('ToMoney').value || 0);
     if (source === 'ToMoney' && detail.get('ToMoney').value) {
-      const discountPercent = parseFloat(detail.get('DiscountPrice').value || 0);
+      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
       const discountPrice = toMoney / quantity;
       detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
       const price = discountPrice / (1 - discountPercent / 100);
@@ -1329,10 +1514,10 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
       detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
     } else {
-      const discountPrice = detail.get('DiscountPrice').value;
-      if (discountPrice) {
-        detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
-      }
+      const price = parseFloat(detail.get('Price').value || 0);
+      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
+      const discountPrice = price - (price * discountPercent / 100);
+      detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
     }
     // Call culate total
     const details = this.getDetails(formItem);
@@ -1554,6 +1739,16 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
     return false;
+  }
+
+  duplicateDetail(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    const formDetails = this.getDetails(parentFormGroup);
+    const newDetailFormGroup = this.makeNewDetailFormGroup(parentFormGroup, { ...detail.value, Id: null, SystemUuid: null });
+    newDetailFormGroup['UnitList'] = detail['UnitList'];
+    newDetailFormGroup['ContainerList'] = detail['ContainerList'];
+    newDetailFormGroup['IsManageByAccessNumber'] = detail['IsManageByAccessNumber'];
+    formDetails.controls.splice(index + 1, 0, newDetailFormGroup);
+    // this.onSelectUnit(newDetailFormGroup, null, newDetailFormGroup.get('Unit').value);
   }
 
 }

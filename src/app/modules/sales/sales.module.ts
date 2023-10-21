@@ -1,8 +1,11 @@
+import { AuthorizedSaleVoucherCustomerPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-customer-print/authorized-sale-voucher-customer-print.component";
+import { AuthorizedSaleVoucherDeliveryPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-delivery-print/authorized-sale-voucher-delivery-print.component";
 import { AuthorizedSaleVoucherDetailsReportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-details-report-print/authorized-sale-voucher-details-report-print.component";
 import { AuthorizedSaleVoucherFormComponent } from "./authorized-sale-voucher/authorized-sale-voucher-form/authorized-sale-voucher-form.component";
 import { AuthorizedSaleVoucherListComponent } from "./authorized-sale-voucher/authorized-sale-voucher-list/authorized-sale-voucher-list.component";
 import { AuthorizedSaleVoucherPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-print/authorized-sale-voucher-print.component";
 import { AuthorizedSaleVoucherReportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-report-print/authorized-sale-voucher-report-print.component";
+import { AuthorizedSaleVoucherSupplierPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-supplier-print/authorized-sale-voucher-supplier-print.component";
 import { SalesB2bQuotationFormComponent } from "./b2b-quotation/b2b-quotation-form/sales-b2b-quotation-form.component";
 import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-list/sales-b2b-quotation-list.component";
 import { SalesB2bQuotationPrintComponent } from "./b2b-quotation/b2b-quotation-print/sales-b2b-quotation-print.component";
@@ -90,4 +93,8 @@ export const saleComponents = [
     AuthorizedSaleVoucherPrintComponent,
     AuthorizedSaleVoucherDetailsReportPrintComponent,
     AuthorizedSaleVoucherReportPrintComponent,
+    AuthorizedSaleVoucherCustomerPrintComponent,
+    AuthorizedSaleVoucherSupplierPrintComponent,
+    AuthorizedSaleVoucherDeliveryPrintComponent,
+
 ];

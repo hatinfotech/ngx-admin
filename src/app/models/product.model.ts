@@ -62,7 +62,7 @@ export class ProductInCategoryModel {
   Category?: string | ProductCategoryModel;
 }
 
-export class ProductUnitModel {
+export class ProductUnitModel extends Model {
   id?: string;
   text?: string;
   Code?: string;
@@ -70,6 +70,7 @@ export class ProductUnitModel {
   Symbol?: string;
   FullName?: string;
   Sequence?: string;
+  Containers?: WarehouseGoodsContainerModel[]
 }
 
 export class ProductPictureModel {

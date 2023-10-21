@@ -197,35 +197,6 @@
                         <label class="label label-with-border-below">{{'Voucher.productOrservice' | translate | headtitlecase}}</label>
                         <div class="row dashed-radius-border">
                             <div class="col-sm-12">
-                                <!-- <div class="row">
-                                    <div class="col-sm-2 label">
-                                        <div class="row">
-                                            <div class="col-sm-3 label">{{'Common.type' | translate | headtitlecase}}</div>
-                                            <div class="col-sm-9 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-8 label">
-                                        <div class="row">
-                                            <div class="col-sm-4">
-                                                <div class="row">
-                                                    <div class="col-sm-4 label">{{'Common.type' | translate | headtitlecase}}</div>
-                                                    <div class="col-sm-8 label">{{'Common.goodsOrService' | translate | headtitlecase}}</div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-8">
-                                                <div class="row">
-                                                    <div class="col-sm-3 label align-right">{{'Voucher.quantity' | translate | headtitlecase}}</div>
-                                                    <div class="col-sm-2 label">{{'Voucher.unit' | translate | headtitlecase}}</div>
-                                                    <div class="col-sm-4 label align-right">{{'Giá EU' | translate | headtitlecase}}</div>
-                                                    <div class="col-sm-3 label align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-2 label">
-                                        {{'Số truy xuất' | translate | headtitlecase}}
-                                    </div>
-                                </div> -->
 
                                 <div formArrayName="Details" class="form-details" [sortablejs]="getDetails(formItem)" [sortablejsOptions]="{ handle: '.sorting-handle' }">
                                     <div class="form-detail-item" *ngFor="let detail of getDetails(formItem).controls; let ic=index" [formGroup]="detail">

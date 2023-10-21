@@ -8,6 +8,7 @@ import { CurrencyPipe } from '@angular/common';
 import { CommonService } from '../../services/common.service';
 import { _ } from 'ag-grid-community';
 import { WarehouseGoodsContainerModel } from '../../models/warehouse.model';
+import { UnitModel } from '../../models/unit.model';
 
 @Injectable({
   providedIn: 'root',
@@ -272,7 +273,8 @@ export class AdminProductService {
           goods['Sku'] = productSearchIndex.Sku?.toUpperCase();
           goods['Container'] = {
             id: productSearchIndex.Container,
-            text: productSearchIndex.ContainerName,
+            text: `[${productSearchIndex.ContainerFindOrder}] ${productSearchIndex.WarehouseName} » ${productSearchIndex.ContainerShelfName} » ${productSearchIndex.ContainerName}`,
+            Name: productSearchIndex.ContainerName,
             FindOrder: productSearchIndex.ContainerFindOrder,
             Shelf: productSearchIndex.ContainerShelf,
             ShelfName: productSearchIndex.ContainerShelfName,
@@ -283,13 +285,13 @@ export class AdminProductService {
           goods['Unit'] = {
             id: productSearchIndex.Unit, text: productSearchIndex.UnitLabel,
             Sequence: productSearchIndex.UnitSeq,
-            IsExpirationGoods: !!productSearchIndex.IsExpirationGoods,
-            IsAutoAdjustInventory: !!productSearchIndex.IsAutoAdjustInventory,
-            IsManageByAccessNumber: !!productSearchIndex.IsManageByAccessNumber,
-            IsDefaultSales: !!productSearchIndex.IsDefaultSales,
-            IsDefaultPurchase: !!productSearchIndex.IsDefaultPurchase,
-            ConversionRatio: !!productSearchIndex.ConversionRatio,
-            UnitNo: !!productSearchIndex.UnitNo,
+            IsExpirationGoods: !!parseInt(productSearchIndex.IsExpirationGoods),
+            IsAutoAdjustInventory: !!parseInt(productSearchIndex.IsAutoAdjustInventory),
+            IsManageByAccessNumber: !!parseInt(productSearchIndex.IsManageByAccessNumber),
+            IsDefaultSales: !!parseInt(productSearchIndex.IsDefaultSales),
+            IsDefaultPurchase: !!parseInt(productSearchIndex.IsDefaultPurchase),
+            ConversionRatio: !!parseInt(productSearchIndex.ConversionRatio as any),
+            UnitNo: parseInt(productSearchIndex.UnitNo),
             Price: productSearchIndex.Price,
           };
           goods['Units'] = [];
@@ -315,9 +317,26 @@ export class AdminProductService {
             if (!this.productMap[productSearchIndex.Code].Units) {
               this.productMap[productSearchIndex.Code].Units = [];
             }
-            if (this.productMap[productSearchIndex.Code].Units.findIndex(f => f.id == this.cms.getObjectId(goods.Unit)) < 0) {
-              this.productMap[productSearchIndex.Code].Units.push(goods.Unit);
+
+            let unit: Partial<ProductUnitModel> = this.productMap[productSearchIndex.Code].Units.find(f => f.id == this.cms.getObjectId(goods.Unit));
+            if (!unit) {
+              unit = goods.Unit;
+              this.productMap[productSearchIndex.Code].Units.push(unit);
             }
+            if (unit) {
+
+              // add container to list
+              if (productSearchIndex.Container) {
+                if (!unit.Containers) {
+                  unit.Containers = [];
+                }
+                if (unit.Containers.findIndex(f => this.cms.getObjectId(f) == this.cms.getObjectId(productSearchIndex.Container)) < 0) {
+                  unit.Containers.push(productSearchIndex.Container);
+                }
+              }
+
+            }
+
           }
 
           if (!this.unitMap[productSearchIndex.UnitSeq]) {
