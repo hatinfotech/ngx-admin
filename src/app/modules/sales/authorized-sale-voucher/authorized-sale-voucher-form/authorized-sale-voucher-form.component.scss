@@ -9,10 +9,14 @@
 [name="SubNote"] .scrollable-container {
     height: 5rem;
 }
-[name="Description"] .scrollable-container {
+// [name="Description"] .scrollable-container {
+//     height: 2.5rem;
+// }
+[name="SupplierAddress"] .scrollable-container {
     height: 2.5rem;
 }
-[name="SupplierAddress"] .scrollable-container {
+
+* .scrollable-container.detail {
     height: 2.5rem;
 }
 

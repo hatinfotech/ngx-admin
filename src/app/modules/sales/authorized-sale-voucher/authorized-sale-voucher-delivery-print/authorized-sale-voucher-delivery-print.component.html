@@ -10,11 +10,11 @@
           <table width="100%">
             <tr>
               <td style="line-height: 1rem">
-              <div>NHÀ CUNG CẤP<br>{{data.Supplier | objecttext}}</div>
-              <!-- <div>MST: {{data.SupplierTaxCode}}</div> -->
-              <!-- <div>SĐT: {{data.SupplierPhone}}</div> -->
-              <!-- <div>Email: {{data.SupplierEmail}}</div> -->
-              <!-- <div>ĐC: {{data.SupplierAddress}}</div> -->
+                <div>NHÀ CUNG CẤP<br>{{data.Supplier | objecttext}}</div>
+                <!-- <div>MST: {{data.SupplierTaxCode}}</div> -->
+                <!-- <div>SĐT: {{data.SupplierPhone}}</div> -->
+                <!-- <div>Email: {{data.SupplierEmail}}</div> -->
+                <!-- <div>ĐC: {{data.SupplierAddress}}</div> -->
               </td>
               <td align="right" style="vertical-align: top;">
                 <!-- <img class="voucher-logo-image" [src]="registerInfo.voucherLogo" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}"> -->
@@ -29,7 +29,7 @@
           <div style="flex: 1;">
           </div>
         </div> -->
-        <div class="print-title">{{ 'PHIẾU LẤY HÀNG' | translate:{action: '', definition: ''} |
+        <div class="print-title">{{ 'BẢNG KÊ ĐÓNG GÓI VÀ HƯỚNG DẪN VẬN CHUYỂN' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>
         <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
@@ -61,14 +61,16 @@
 
         </div>
         <div>
+          <br>
+          <div style="font-weight: bold; text-decoration: underline;">Danh sách hàng hóa</div>
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
                 <td>{{'Sku/ID' | translate | headtitlecase}}</td>
-                <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
-                <td>{{'ĐC lấy hàng' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'SL' | translate | headtitlecase}}</td>
+                <td>{{'Common.goods' | translate | headtitlecase}}</td>
+                <!-- <td>{{'Địa chỉ lấy hàng' | translate | headtitlecase}}</td> -->
+                <td class="text-align-right">{{'Số lượng' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right">{{'%CK' | translate | headtitlecase}}</td> -->
@@ -83,7 +85,7 @@
                   <td>{{detail.No}}</td>
                   <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
-                  <td>{{(detail.Type | objectid) == 'PRODUCT' ? (detail.Container| objecttext) : detail.SupplierAddress}}</td>
+                  <!-- <td>{{(detail.Type | objectid) == 'PRODUCT' ? (detail.Container| objecttext) : detail.SupplierAddress}}</td> -->
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                   <!-- <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td> -->
@@ -99,6 +101,34 @@
               </tr> -->
             </table>
           </div>
+
+          <br>
+          <div style="font-weight: bold; text-decoration: underline;">Hành trình vận chuyển</div>
+          <div>
+            <table style="width: 100%;" class="print-voucher-detail-table">
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td>{{'Nhân viên/ĐV Vận chuyển' | translate | headtitlecase}}</td>
+                <td>{{'Common.phone' | translate | headtitlecase}}</td>
+                <td>{{'Common.address' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{'Phí vận chuyển' | translate | headtitlecase}}</td>
+              </thead>
+              <ng-container *ngFor="let transportPoint of data.TransportPoints; let t = index;">
+                <tr class="print-voucher-detail-line">
+                  <td>{{t+1}}</td>
+                  <td>{{transportPoint.ShippingUnit | objecttext}}</td>
+                  <td>{{transportPoint.ShippingUnitPhone}}</td>
+                  <td>{{transportPoint.ShippingUnitAddress}}</td>
+                  <td class="text-align-right">{{transportPoint.TransportCost | currency:'VND'}}</td>
+                </tr>
+              </ng-container>
+              <tr style="font-weight: bold;">
+                <td colspan="2">{{'Common.note' | translate | headtitlecase}}: {{data['DefaultNote']}}</td>
+                <td colspan="2" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td class="text-align-right">{{data['TotalTransportCost'] | currency:'VND'}}</td>
+              </tr>
+            </table>
+          </div>
         </div>
         <!-- <div>
           <div class="under-line" *ngIf="data.Note"><span [innerHTML]="renderValue(data.Note)"></span></div>
@@ -109,7 +139,7 @@
             {{renderValue(data.DirectReceiverName)}}
           </div>
         </div> -->
-        <div>
+        <div class="font-h2-bold">
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="under-line">{{'Người trực tiếp nhận hàng' | translate | headtitlecase}} :
@@ -146,7 +176,7 @@
             <br><br><br>
           </div>
         </div>
-        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_AUTHORIZEDSALEVOUCHER_PRINT_FOOTER"></div>
+        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_AUTHORIZEDSALEVOUCHER_DELIVERY_PRINT_FOOTER"></div>
         <div class="default-probox-one-print-footer">{{cms.env.defaultPrintFooter}}</div>
       </div>
     </nb-card-body>

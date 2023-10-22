@@ -5,68 +5,59 @@
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
-        <ngx-print-header *ngIf="!data.IsAuthorizedObject; else IsAuthorizedObject"></ngx-print-header>
-        <ng-template #IsAuthorizedObject>
-          <table width="100%">
-            <tr>
-              <td style="line-height: 1rem">
-              <div>NHÀ CUNG CẤP<br>{{data.Supplier | objecttext}}</div>
-              <!-- <div>MST: {{data.SupplierTaxCode}}</div> -->
-              <!-- <div>SĐT: {{data.SupplierPhone}}</div> -->
-              <!-- <div>Email: {{data.SupplierEmail}}</div> -->
-              <!-- <div>ĐC: {{data.SupplierAddress}}</div> -->
-              </td>
-              <td align="right" style="vertical-align: top;">
-                <!-- <img class="voucher-logo-image" [src]="registerInfo.voucherLogo" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}"> -->
-              </td>
-            </tr>
-          </table>
-        </ng-template>
-        <div class="print-title">{{ 'ĐƠN ĐẶT HÀNG' | translate:{action: '', definition: ''} |
+        <ngx-print-header></ngx-print-header>
+        <!-- <div style="display: flex;">
+          <div>
+            <img style="margin-top: 2px;" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}" src="{{data.Signature}}">
+          </div>
+          <div style="flex: 1;">
+          </div>
+        </div> -->
+        <div class="print-title">{{ 'PHIẾU LẤY HÀNG' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>
         <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
-        <div>
+        <!-- <div>
           <div style="display: flex;">
             <div style="flex: 1;">
-              <div class="under-line">{{'Voucher.dearSupplier' | translate | headtitlecase}} :
-                {{renderValue(supplier | objecttext)}}
+              <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
+                {{renderValue(data.CustomerName)}}
               </div>
             </div>
             <div>
-              <div class="under-line">{{'Common.supplierId' | translate | headtitlecase}} :
-                {{renderValue(supplier | objectid)}}
+              <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
+                {{renderValue(data.Customer | objectid)}}
               </div>
             </div>
           </div>
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
-                {{renderValue(supplier.Address)}}
+                {{renderValue(data.CustomerAddress)}}
               </div>
             </div>
             <div>
               <div class="under-line">{{'Contact.phone' | translate | headtitlecase}} :
-                {{renderValue(supplier.Phone)}}
+                {{renderValue(data.CustomerPhone)}}
               </div>
             </div>
           </div>
 
-        </div>
-        <div>
+        </div> -->
+        <div class="font-h1-bold">
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">
               <thead class="print-voucher-detail-header">
                 <td>#</td>
                 <td>{{'Sku/ID' | translate | headtitlecase}}</td>
                 <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
+                <td>{{'ĐC lấy hàng' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'SL' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
-                <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td>
-                <!-- <td class="text-align-right">{{'Voucher.tax' | translate | headtitlecase}}</td> -->
+                <!-- <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right">{{'%CK' | translate | headtitlecase}}</td> -->
                 <!-- <td class="text-align-right nowrap">{{'Giá CK' | translate | headtitlecase}}</td> -->
-                <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td>
+                <!-- <td class="text-align-right nowrap">{{'Voucher.toMoney' | translate | headtitlecase}}</td> -->
               </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">
                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
@@ -76,20 +67,20 @@
                   <td>{{detail.No}}</td>
                   <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
+                  <td>{{(detail.Type | objectid) == 'PRODUCT' ? (detail.Container| objecttext) : detail.SupplierAddress}}</td>
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
-                  <td class="text-align-right">{{renderValue(detail.PurchasePrice) | currency:'VND'}}</td>
-                  <!-- <td class="text-align-right">{{detail.Tax | objectstext}}</td> -->
+                  <!-- <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td> -->
                   <!-- <td class="text-align-right">{{detail.DiscountPercent | number}}%</td> -->
                   <!-- <td class="text-align-right">{{detail.DiscountPrice | currency:'VND'}}</td> -->
-                  <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
+                  <!-- <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td> -->
                 </tr>
               </ng-container>
-              <tr style="font-weight: bold;">
+              <!-- <tr style="font-weight: bold;">
                 <td colspan="2">{{'Common.note' | translate | headtitlecase}}: {{data['DefaultNote']}}</td>
-                <td colspan="4" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
+                <td colspan="3" class="text-align-right">{{'Voucher.total' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{data['Total'] | currency:'VND'}}</td>
-              </tr>
+              </tr> -->
             </table>
           </div>
         </div>
@@ -102,6 +93,7 @@
             {{renderValue(data.DirectReceiverName)}}
           </div>
         </div> -->
+       
         <!-- <div>
           <div style="display: flex;">
             <div style="flex: 1;">
@@ -127,19 +119,19 @@
               </div>
             </div>
           </div>
-
         </div> -->
+
         <div style="display: flex; flex-wrap: wrap">
           <div style="text-align: center; flex: 0 0 50%;">
             {{'Common.employee' | translate | headtitlecase}}
             <br><br><br>
           </div>
           <div style="text-align: center; flex: 0 0 50%;">
-            {{'Đại diện NCC' | translate | headtitlecase}}
+            {{'Đại diện kho' | translate | headtitlecase}}
             <br><br><br>
           </div>
         </div>
-        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_AUTHORIZEDSALEVOUCHER_SUPPLIER_PRINT_FOOTER"></div>
+        <div class="default-print-footer" [innerHTML]="cms.systemConfigs$.value.PARAMETERS.DEFAULT_AUTHORIZEDSALEVOUCHER_TRANSPORT_PRINT_FOOTER"></div>
         <div class="default-probox-one-print-footer">{{cms.env.defaultPrintFooter}}</div>
       </div>
     </nb-card-body>

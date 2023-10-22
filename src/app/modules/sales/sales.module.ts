@@ -6,6 +6,7 @@ import { AuthorizedSaleVoucherListComponent } from "./authorized-sale-voucher/au
 import { AuthorizedSaleVoucherPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-print/authorized-sale-voucher-print.component";
 import { AuthorizedSaleVoucherReportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-report-print/authorized-sale-voucher-report-print.component";
 import { AuthorizedSaleVoucherSupplierPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-supplier-print/authorized-sale-voucher-supplier-print.component";
+import { AuthorizedSaleVoucherTransportPrintComponent } from "./authorized-sale-voucher/authorized-sale-voucher-transport-print/authorized-sale-voucher-transport-print.component";
 import { SalesB2bQuotationFormComponent } from "./b2b-quotation/b2b-quotation-form/sales-b2b-quotation-form.component";
 import { SalesB2bQuotationListComponent } from "./b2b-quotation/b2b-quotation-list/sales-b2b-quotation-list.component";
 import { SalesB2bQuotationPrintComponent } from "./b2b-quotation/b2b-quotation-print/sales-b2b-quotation-print.component";
@@ -96,5 +97,5 @@ export const saleComponents = [
     AuthorizedSaleVoucherCustomerPrintComponent,
     AuthorizedSaleVoucherSupplierPrintComponent,
     AuthorizedSaleVoucherDeliveryPrintComponent,
-
+    AuthorizedSaleVoucherTransportPrintComponent,
 ];

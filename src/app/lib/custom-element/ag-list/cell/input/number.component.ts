@@ -10,7 +10,7 @@ import { takeUntil } from "rxjs/operators";
 @Component({
     selector: 'ag-number-cell-input',
     template: `
-      <input type="text" nbInput #inputEle [formControl]="inputControl" fullWidth placeholder="" [inputMask]="towDigitsInputMask" (change)="onChangeHandler($event)">
+      <input type="text" nbInput #inputEle [status]="params.status || 'basic'" [formControl]="inputControl" fullWidth placeholder="" [inputMask]="towDigitsInputMask">
     `,
     providers: [DecimalPipe]
 })
@@ -56,7 +56,7 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, A
             digitsOptional: false,
             digits: this.params.digits || 2
         });
-        
+
         if (params.onInit) {
             params.onInit(params, this);
         }
@@ -66,6 +66,19 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, A
         //     this.params.node.setDataValue(colId, value);
         //     this.params.changed(value, this.params);
         // });
+        setTimeout(() => {
+            this.inputControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+                //     let colId = this.params.column.colId;
+                //     this.params.node.setDataValue(colId, value);
+                //     this.params.changed(value, this.params);
+                // if (typeof value != 'undefined') {
+                this.params.status = 'warning';
+                // }
+                this.cms.takeUntilCallback('ag-number-stop-typing', 1000, () => {
+                    this.onChangeHandler(null);
+                });
+            });
+        }, 500);
     }
 
     onChangeHandler(event) {

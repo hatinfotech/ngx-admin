@@ -37,6 +37,13 @@ export class AuthorizedSaleVoucherDeliveryPrintComponent extends DataManagerPrin
     voucherLogoHeight: 60,
   };
 
+  style = /*css*/`
+    .font-h2-bold * {
+      font-size: 16px !important; 
+      font-weight: bold;
+    }
+  `;
+
   constructor(
     public rsv: RootServices,
     public cms: CommonService,
@@ -279,13 +286,14 @@ export class AuthorizedSaleVoucherDeliveryPrintComponent extends DataManagerPrin
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<AuthorizedSaleVoucherModel[]>(this.apiPath, { 
+    return this.apiService.getPromise<AuthorizedSaleVoucherModel[]>(this.apiPath, {
       id: ids,
-      includeEmployee: true,
       includeDetails: true,
+      includeTransportPoints: true,
+      includeEmployee: true,
       includeRelativeVouchers: true,
       context: 'DELIVERY',
-     }).then(rs => {
+    }).then(rs => {
       for (const item of rs) {
         const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
         item.StateLabel = processMap.label;
@@ -293,6 +301,12 @@ export class AuthorizedSaleVoucherDeliveryPrintComponent extends DataManagerPrin
           this.setDetailsNo(item.Details, (detail: AuthorizedSaleVoucherDetailModel) => detail.Type !== 'CATEGORY');
           for (const detail of item.Details) {
             item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+          }
+        }
+        if (item && item.TransportPoints) {
+          item['TotalTransportCost'] = 0;
+          for (const detail of item.TransportPoints) {
+            item['TotalTransportCost'] += detail['TransportCost'];
           }
         }
       }
@@ -321,7 +335,7 @@ export class AuthorizedSaleVoucherDeliveryPrintComponent extends DataManagerPrin
         // item['TotalCommission'] += detail['Commission'];
         // Update product info
         const refProduct = this.rsv.adminProductService.productMap[this.cms.getObjectId(detail.Product)];
-        if(refProduct) {
+        if (refProduct) {
           detail.Product.Sku = refProduct.Sku;
           detail.Product.FeaturePicture = refProduct.FeaturePicture;
           detail.Product.Pictures = refProduct.Pictures;

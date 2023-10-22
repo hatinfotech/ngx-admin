@@ -1,5 +1,6 @@
 import { WarehouseBookCommitComponent } from "./book/warehouse-book-commit/warehouse-book-commit.component";
 import { WarehouseBookFormComponent } from "./book/warehouse-book-form/warehouse-book-form.component";
+import { WarehouseBookHeadAmountComponent } from "./book/warehouse-book-head-amount/warehouse-book-head-amount.component";
 import { WarehouseBookListComponent } from "./book/warehouse-book-list/warehouse-book-list.component";
 import { WarehouseBookPrintComponent } from "./book/warehouse-book-print/warehouse-book-print.component";
 import { WarehouseGoodsContainerFormComponent } from "./goods-container/warehouse-goods-container-form/warehouse-goods-container-form.component";
@@ -69,5 +70,6 @@ export const warehouseComponents = [
     WarehouseDetailByObjectReportAgComponent,
     ProductionOrderListComponent,
     ProductionOrderFormComponent,
-    ProductionOrderPrintComponent
+    ProductionOrderPrintComponent,
+    WarehouseBookHeadAmountComponent,
 ];

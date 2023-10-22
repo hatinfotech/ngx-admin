@@ -1,7 +1,7 @@
 import { CashVoucherModel } from '../../../../models/accounting.model';
 import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
@@ -14,17 +14,16 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { RootServices } from '../../../../services/root.services';
 import { AuthorizedSaleVoucherDetailModel, AuthorizedSaleVoucherModel } from '../../../../models/sales.model';
-import { ContactModel } from '../../../../models/contact.model';
 
 @Component({
-  selector: 'ngx-authorized-sale-voucher-supplier-print',
-  templateUrl: './authorized-sale-voucher-supplier-print.component.html',
-  styleUrls: ['./authorized-sale-voucher-supplier-print.component.scss'],
+  selector: 'ngx-authorized-sale-voucher-transport-print',
+  templateUrl: './authorized-sale-voucher-transport-print.component.html',
+  styleUrls: ['./authorized-sale-voucher-transport-print.component.scss'],
 })
-export class AuthorizedSaleVoucherSupplierPrintComponent extends DataManagerPrintComponent<AuthorizedSaleVoucherModel> implements OnInit {
+export class AuthorizedSaleVoucherTransportPrintComponent extends DataManagerPrintComponent<AuthorizedSaleVoucherModel> implements OnInit {
 
   /** Component name */
-  componentName = 'AuthorizedSaleVoucherSupplierPrintComponent';
+  componentName = 'AuthorizedSaleVoucherTransportPrintComponent';
   title: string = '';
   env = environment;
   apiPath = '/sales/authorized-sale-vouchers';
@@ -32,20 +31,24 @@ export class AuthorizedSaleVoucherSupplierPrintComponent extends DataManagerPrin
   idKey = ['Code'];
   formDialog = AuthorizedSaleVoucherFormComponent;
 
-  @Input() supplier: ContactModel;
-
   registerInfo: any = {
     voucherInfo: this.cms.translateText('Information.Voucher.register'),
     voucherLogo: environment.register.logo.voucher,
     voucherLogoHeight: 60,
   };
 
+  style = /*css*/`
+  .font-h1-bold * {
+    font-size: 16px !important; 
+  }
+  `;
+
   constructor(
     public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<AuthorizedSaleVoucherSupplierPrintComponent>,
+    public ref: NbDialogRef<AuthorizedSaleVoucherTransportPrintComponent>,
     public datePipe: DatePipe,
   ) {
     super(rsv, cms, router, apiService, ref);
@@ -106,7 +109,7 @@ export class AuthorizedSaleVoucherSupplierPrintComponent extends DataManagerPrin
 
   toMoney(detail: AuthorizedSaleVoucherDetailModel) {
     if (detail.Type !== 'CATEGORY') {
-      let toMoney = detail['Quantity'] * detail['PurchasePrice'];
+      let toMoney = detail['Quantity'] * detail['DiscountPrice'];
       // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       // if (detail.Tax) {
       //   if (typeof detail.Tax.Tax == 'undefined') {
@@ -284,10 +287,10 @@ export class AuthorizedSaleVoucherSupplierPrintComponent extends DataManagerPrin
   async getFormData(ids: string[]) {
     return this.apiService.getPromise<AuthorizedSaleVoucherModel[]>(this.apiPath, {
       id: ids,
-      includeSupplier: true,
+      includeEmployee: true,
       includeDetails: true,
       includeRelativeVouchers: true,
-      context: 'SUPPLIER',
+      context: 'DELIVERY',
     }).then(rs => {
       for (const item of rs) {
         const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
@@ -319,9 +322,6 @@ export class AuthorizedSaleVoucherSupplierPrintComponent extends DataManagerPrin
       //   item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
       // }
 
-      if (this.supplier) {
-        item.Details = item.Details.filter(f => this.cms.getObjectId(f.Supplier) == this.cms.getObjectId(this.supplier));
-      }
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
         // item['TotalCommission'] += detail['Commission'];

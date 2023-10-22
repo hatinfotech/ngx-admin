@@ -1,7 +1,7 @@
 import { ProductUnitModel } from '../../../../models/product.model';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from '../../../../models/chat-room.model';
-import { SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
+import { AuthorizedSaleVoucherTransportPointModel, SalesMasterPriceTableModel, SalesPriceReportModel } from '../../../../models/sales.model';
 import { PriceReportModel } from '../../../../models/price-report.model';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
@@ -236,7 +236,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     },
   };
 
-  selectEmployeeOption = {
+  selectEmployeeOption: Select2Option = {
     placeholder: this.cms.translateText('Common.employee') + '...',
     allowClear: true,
     width: '100%',
@@ -260,6 +260,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
           console.error(err);
           failure();
         });
+        return null;
       },
       delay: 300,
       processResults: (data: any, params: any) => {
@@ -290,6 +291,11 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       id: 'Code',
       text: 'Name',
     },
+  };
+
+  select2OptionForShippingUnit = {
+    ...this.select2OptionForContact,
+    placeholder: 'Nhân viên/ĐV Vận chuyển...',
   };
 
   // customIcons: CustomIcon[] = [{
@@ -622,7 +628,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
   };
   select2OptionForDetailSupplier: Select2Option = {
     ...this.select2OptionForContact,
-    placeholder: 'Chọn kho...'
+    placeholder: 'Chọn nhà cung cấp...'
   };
 
   ngOnInit() {
@@ -684,7 +690,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
   /** Execute api get */
   executeGet(params: any, success: (resources: AuthorizedSaleVoucherModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeDetails'] = true;
-    // params['includeSupplier'] = true;
+    params['includeTransportPoints'] = true;
     // params['includeDetails'] = true;
     // params['includeRelativeVouchers'] = true;
     // params['useBaseTimezone'] = true;
@@ -725,7 +731,6 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
           }
 
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
-          // const unitControl = newDetailFormGroup.get('Unit');
           newDetailFormGroup['UnitList'] = this.adminProductService.productSearchIndexsGroupById.find(f => f.Code == this.cms.getObjectId(detailData.Product))?.Units;
           if (detailData.Unit) {
             detailData.Unit = newDetailFormGroup['UnitList']?.find(unit => this.cms.getObjectId(unit) == this.cms.getObjectId(detailData.Unit)) || detailData.Unit;
@@ -742,15 +747,23 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
             }
           }
 
-
-
           details.push(newDetailFormGroup);
-          // const comIndex = details.length - 1;
           this.onAddDetailFormGroup(newForm, newDetailFormGroup, details.length - 1);
         }
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
-        // itemFormData.Details.forEach(detail => {
-        // });
+      }
+
+      // Load Transport Points Form
+      if (itemFormData?.TransportPoints) {
+        const transportPoints = this.getTransportPoints(newForm);
+        transportPoints.clear();
+
+        for (const detailData of itemFormData.TransportPoints) {
+          const newTransportPointFormGroup = this.makeNewTransportPointFormGroup(newForm, detailData);
+          transportPoints.push(newTransportPointFormGroup);
+          this.onAddTransportPointFormGroup(newForm, newTransportPointFormGroup, transportPoints.length - 1);
+        }
+        this.setNoForArray(transportPoints.controls as FormGroup[], (detail: FormGroup) => true);
       }
 
       // Direct callback
@@ -811,7 +824,12 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       RelativeVouchers: [''],
       // RequireInvoice: [false],
       Details: this.formBuilder.array([]),
+      TransportPoints: this.formBuilder.array([]),
     });
+
+    newForm['Details'] = newForm.get('Details');
+    newForm['TransportPoints'] = newForm.get('TransportPoints');
+
     if (data) {
       // data['Code_old'] = data['Code'];
       if (!((data.DateOfSale as any) instanceof Date)) {
@@ -857,6 +875,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
 
   onAddFormGroup(index: number, newForm: FormGroup, formData?: AuthorizedSaleVoucherModel): void {
     super.onAddFormGroup(index, newForm, formData);
+    this.addTransportPointFormGroup(newForm);
   }
   onRemoveFormGroup(index: number): void {
 
@@ -1066,41 +1085,80 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
   }
   /** End Detail Form */
 
-  /** Action Form */
-  makeNewActionFormGroup(data?: PromotionActionModel): FormGroup {
-    const newForm = this.formBuilder.group({
-      Id: [''],
-      Type: ['', Validators.required],
-      Product: [''],
-      Amount: [''],
-      // Discount: [''],
+  /** Transport Trip Form */
+  makeNewTransportPointFormGroup(parentFormGroup: FormGroup, data?: AuthorizedSaleVoucherTransportPointModel): FormGroup {
+    let newForm: FormGroup = null;
+    newForm = this.formBuilder.group({
+      // Id: [''],
+      SystemUuid: [''],
+      No: [''],
+      ShippingUnit: [],
+      ShippingUnitPhone: [],
+      ShippingUnitAddress: [],
+      // ShippingUnitName: [],
+      // TransportFrom: [],
+      // TransportTo: [],
+      Note: [],
+      TransportCost: [],
     });
 
     if (data) {
-      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
+
+    const shipingUnit = newForm.get('ShippingUnit');
+    const shipingUnitPhone = newForm.get('ShippingUnitPhone');
+    // const shipingUnitEmail = newForm.get('ShippingUnitEmail');
+    const shipingUnitAddress = newForm.get('ShippingUnitAddress');
+    shipingUnit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
+      if (!this.isProcessing) {
+        console.log('Shipping unit change: ', contact);
+        // this.cms.takeUntil('shipingUnit', 300, () => {
+        shipingUnitPhone.setValue(contact?.Phone);
+        // shipingUnitEmail.setValue(contact?.Email);
+        shipingUnitAddress.setValue(contact?.FullAddress);
+        // });
+      }
+    });
     return newForm;
   }
-  getActions(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Actions') as FormArray;
+
+  onTransportPointSupplierChange(detail: FormGroup, supplier: ContactModel, formItem: FormGroup) {
+    console.log(supplier);
   }
-  addActionFormGroup(formGroupIndex: number) {
-    const newFormGroup = this.makeNewActionFormGroup();
-    this.getActions(formGroupIndex).push(newFormGroup);
-    this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
+  onShippingUnitChange(transportPoint: FormGroup, shippingUnit: ContactModel, formItem: FormGroup) {
+    console.log(shippingUnit);
+    // if (shippingUnit) {
+    //   transportPoint.get('ShippingUnitPhone').setValue(shippingUnit.Phone);
+    //   transportPoint.get('ShippingUnitEmail').setValue(shippingUnit.Email);
+    // }
+  }
+
+  getTransportPoints(parentFormGroup: FormGroup) {
+    return parentFormGroup.get('TransportPoints') as FormArray;
+  }
+  addTransportPointFormGroup(parentFormGroup: FormGroup) {
+    const newChildFormGroup = this.makeNewTransportPointFormGroup(parentFormGroup);
+    const detailsFormArray = this.getTransportPoints(parentFormGroup);
+    detailsFormArray.push(newChildFormGroup);
+    const noFormControl = newChildFormGroup.get('No');
+    if (!noFormControl.value) {
+      noFormControl.setValue(detailsFormArray.length);
+    }
+    this.onAddTransportPointFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
-  removeActionGroup(formGroupIndex: number, index: number) {
-    this.getActions(formGroupIndex).removeAt(index);
-    this.onRemoveActionFormGroup(formGroupIndex, index);
+  removeTransportPointGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    this.getTransportPoints(parentFormGroup).removeAt(index);
+    this.onRemoveTransportPointFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  onAddTransportPointFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
   }
-  onRemoveActionFormGroup(mainIndex: number, index: number) {
+  onRemoveTransportPointFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
-  /** End Action Form */
+  /** End TransportPoint Form */
+
 
   onSupplierChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
     // console.info(item);

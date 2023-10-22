@@ -520,6 +520,7 @@ export interface AuthorizedSaleVoucherModel extends Model {
   Permission?: string;
 
   Details?: AuthorizedSaleVoucherDetailModel[];
+  TransportPoints?: AuthorizedSaleVoucherTransportPointModel[];
 }
 export interface AuthorizedSaleVoucherDetailModel extends Model {
   Id?: string;
@@ -540,4 +541,7 @@ export interface AuthorizedSaleVoucherDetailModel extends Model {
   CreditAccount?: string;
   Business?: string;
   Amount?: number;
+}
+export interface AuthorizedSaleVoucherTransportPointModel extends Model {
+  
 }

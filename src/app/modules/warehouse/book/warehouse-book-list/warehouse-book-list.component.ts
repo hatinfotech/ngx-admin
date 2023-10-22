@@ -13,6 +13,7 @@ import { WarehouseBookCommitComponent } from '../warehouse-book-commit/warehouse
 import { FormGroup } from '@angular/forms';
 import { DialogFormComponent } from '../../../dialog/dialog-form/dialog-form.component';
 import { SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
+import { WarehouseBookHeadAmountComponent } from '../warehouse-book-head-amount/warehouse-book-head-amount.component';
 
 @Component({
   selector: 'ngx-warehouse-book-list',
@@ -117,6 +118,33 @@ export class WarehouseBookListComponent extends DataManagerListComponent<Warehou
         //   type: 'datetime',
         //   width: '15%',
         // },
+        HeadAmount: {
+          title: this.cms.translateText('Đầu kỳ'),
+          label: this.cms.translateText('Đầu kỳ'),
+          type: 'custom',
+          width: '5%',
+          renderComponent: SmartTableButtonComponent,
+          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
+            instance.iconPack = 'eva';
+            instance.icon = 'lock-outline';
+            instance.display = true;
+            instance.status = 'primary';
+            instance.label = this.cms.translateText('Đầu kỳ');
+            instance.title = this.cms.translateText('Nhập tồn kho đầu kỳ');
+            instance.valueChange.subscribe(value => {
+              
+            });
+            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: WarehouseBookModel) => {
+              this.cms.openDialog(WarehouseBookHeadAmountComponent, {
+                context: {
+                  height: '95vh',
+                  width: '98vw',
+                  warehouseBook: {...instance.rowData, id: instance.rowData.Code, text: instance.rowData.Note},
+                }
+              });
+            });
+          },
+        },
         Commited: {
           title: this.cms.translateText('Chốt sổ'),
           type: 'custom',

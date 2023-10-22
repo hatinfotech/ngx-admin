@@ -28,6 +28,9 @@ import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcas
 import { AuthorizedSaleVoucherDeliveryPrintComponent } from '../authorized-sale-voucher-delivery-print/authorized-sale-voucher-delivery-print.component';
 import { AuthorizedSaleVoucherSupplierPrintComponent } from '../authorized-sale-voucher-supplier-print/authorized-sale-voucher-supplier-print.component';
 import { AuthorizedSaleVoucherCustomerPrintComponent } from '../authorized-sale-voucher-customer-print/authorized-sale-voucher-customer-print.component';
+import { AuthorizedSaleVoucherTransportPrintComponent } from '../authorized-sale-voucher-transport-print/authorized-sale-voucher-transport-print.component';
+import { Model } from '../../../../models/model';
+import { ContactModel } from '../../../../models/contact.model';
 
 @Component({
   selector: 'ngx-authorized-sale-voucher-list',
@@ -44,7 +47,7 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
   // Use for load settings menu for context
   feature = {
     Module: { id: 'Sales', text: 'Bán hàng' },
-    Feature: { id: 'AuthorizedSaleVoucher', text: 'Phiếu bán hàng danh nghĩa' }
+    Feature: { id: 'AuthorizedSaleVoucher', text: 'Phiếu bán hàng đa năng' }
   };
 
   formDialog = AuthorizedSaleVoucherFormComponent;
@@ -426,15 +429,15 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
                     status: 'basic',
                     outline: true,
                     action: () => {
-                      
+
                       return true;
                     }
                   },
                   {
-                    label: 'Shipper',
+                    label: 'Packing List',
                     status: 'danger',
                     action: () => {
-                      
+
                       this.cms.openDialog(AuthorizedSaleVoucherDeliveryPrintComponent, {
                         // closeOnEsc: false,
                         context: {
@@ -460,10 +463,11 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
                     }
                   },
                   {
-                    label: 'Kho NCC',
-                    status: 'primary',
+                    label: 'Lấy hàng',
+                    status: 'danger',
                     action: () => {
-                      this.cms.openDialog(AuthorizedSaleVoucherSupplierPrintComponent, {
+
+                      this.cms.openDialog(AuthorizedSaleVoucherTransportPrintComponent, {
                         // closeOnEsc: false,
                         context: {
                           showLoadinng: true,
@@ -483,6 +487,115 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
                           },
                         },
                       });
+
+                      return true;
+                    }
+                  },
+                  {
+                    label: 'Đặt hàng',
+                    status: 'primary',
+                    action: async () => {
+
+                      const voucher = await this.apiService.getPromise<AuthorizedSaleVoucherModel[]>(this.apiPath + '/' + data.Code, { includeDetails: true }).then(rs => rs[0])
+
+                      const suppliers: ContactModel[] = voucher.Details.filter(f => f.Supplier).map(detail => detail.Supplier);
+                      if (suppliers.length > 1) {
+                        this.cms.openDialog(DialogFormComponent, {
+                          context: {
+                            title: 'Chọn nhà cung cấp cho phiếu đặt mua hàng',
+                            width: '600px',
+                            onInit: async (form, dialog) => {
+                              return true;
+                            },
+                            controls: [
+                              {
+                                name: 'Supplier',
+                                label: 'Nhà cung cấp',
+                                placeholder: 'Chọn nhà cung cấp',
+                                type: 'select2',
+                                initValue: null,
+                                option: {
+                                  ...this.cms.select2OptionForTemplate,
+                                  data: suppliers,
+                                }
+                              },
+                            ],
+                            actions: [
+                              {
+                                label: 'Trở về',
+                                icon: 'back',
+                                status: 'basic',
+                                action: async () => { return true; },
+                              },
+                              {
+                                label: 'Xem trước',
+                                icon: 'npm-outline',
+                                status: 'info',
+                                action: async (form: FormGroup) => {
+
+                                  let supplier: string[] = form.get('Supplier').value;
+                                  this.cms.openDialog(AuthorizedSaleVoucherSupplierPrintComponent, {
+                                    // closeOnEsc: false,
+                                    context: {
+                                      showLoadinng: true,
+                                      title: 'Xem trước',
+                                      id: [this.makeId(data)],
+                                      sourceOfDialog: 'list',
+                                      mode: 'print',
+                                      idKey: ['Code'],
+                                      supplier: supplier,
+                                      // approvedConfirm: true,
+                                      onChange: (data: AuthorizedSaleVoucherModel) => {
+                                        // this.refresh();
+                                        this.refreshItems([this.makeId(data)]);
+                                      },
+                                      onSaveAndClose: (data: AuthorizedSaleVoucherModel) => {
+                                        // this.refresh();
+                                        this.refreshItems([this.makeId(data)]);
+                                      },
+                                    },
+                                  });
+
+                                  return true;
+                                },
+                              },
+                            ],
+                          },
+                        });
+                      } else if (suppliers.length == 1) {
+                        this.cms.openDialog(AuthorizedSaleVoucherSupplierPrintComponent, {
+                          // closeOnEsc: false,
+                          context: {
+                            showLoadinng: true,
+                            title: 'Xem trước',
+                            id: [this.makeId(data)],
+                            sourceOfDialog: 'list',
+                            mode: 'print',
+                            idKey: ['Code'],
+                            supplier: suppliers[0],
+                            // approvedConfirm: true,
+                            onChange: (data: AuthorizedSaleVoucherModel) => {
+                              // this.refresh();
+                              this.refreshItems([this.makeId(data)]);
+                            },
+                            onSaveAndClose: (data: AuthorizedSaleVoucherModel) => {
+                              // this.refresh();
+                              this.refreshItems([this.makeId(data)]);
+                            },
+                          },
+                        });
+                      } else {
+                        this.cms.showDialog('Phiếu đặt hàng', 'Không có hàng hóa nào cần lấy từ nhà cung cấp !', [
+                          {
+                            status: 'basic',
+                            label: 'Đóng',
+                            outline: true,
+                            action: () => {
+                              return true;
+                            }
+                          }
+                        ]);
+                      }
                       return true;
                     }
                   },
