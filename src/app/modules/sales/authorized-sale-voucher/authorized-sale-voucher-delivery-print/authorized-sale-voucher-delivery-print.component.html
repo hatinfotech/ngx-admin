@@ -58,6 +58,18 @@
               </div>
             </div>
           </div>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="under-line">{{'Nhân viên tạo đơn' | translate | headtitlecase}} :
+                {{renderValue(data.CreatorName)}}
+              </div>
+            </div>
+            <div>
+              <div class="under-line">{{'IDNV' | translate | headtitlecase}} :
+                {{renderValue(data.Creator | objectid)}}
+              </div>
+            </div>
+          </div>
 
         </div>
         <div>
@@ -118,7 +130,12 @@
                   <td>{{t+1}}</td>
                   <td>{{transportPoint.ShippingUnit | objecttext}}</td>
                   <td>{{transportPoint.ShippingUnitPhone}}</td>
-                  <td>{{transportPoint.ShippingUnitAddress}}</td>
+                  <td>
+                    <ng-container *ngIf="transportPoint.ShippingUnitMapLink; else notMapLink">
+                      <a target="_blank" nbTooltip="Xem bản đồ" href="{{transportPoint.ShippingUnitMapLink}}">{{transportPoint.ShippingUnitAddress}}</a>
+                    </ng-container>
+                    <ng-template #notMapLink>{{transportPoint.ShippingUnitAddress}}</ng-template>
+                  </td>
                   <td class="text-align-right">{{transportPoint.TransportCost | currency:'VND'}}</td>
                 </tr>
               </ng-container>
@@ -155,7 +172,9 @@
           <div style="display: flex;">
             <div style="flex: 1;">
               <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
-                {{renderValue(data.FullDeliveryAddress)}}
+                <ng-container *ngIf="data.DeliveryMapLink; else notDeliveryMapLink"><a nbTooltip="Xem bản đồ" target="_blank" [href]="data.DeliveryMapLink">{{renderValue(data.FullDeliveryAddress)}}</a></ng-container>
+                <ng-template #notDeliveryMapLink>{{renderValue(data.FullDeliveryAddress)}}</ng-template>
+                
               </div>
             </div>
             <div>

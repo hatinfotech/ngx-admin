@@ -21,6 +21,7 @@ export class ContactModel {
   FullAddress?: string;
   Address2?: string;
   Address3?: string;
+  MapLink?: string;
   MapUrl?: string;
   TaxCode?: string;
   Email?: string;

@@ -69,6 +69,11 @@
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-12">
+                                <ngx-form-group [formGroup]="formItem" name="MapLink" label="Link bản đồ" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                    <input type="text" nbInput fullWidth formControlName="MapLink" placeholder="{{'Link bản đồ' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Note" label="Contact.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <textarea nbInput fullWidth formControlName="Note" placeholder="{{'Contact.note' | translate | headtitlecase}}"></textarea>
                                 </ngx-form-group>
@@ -269,6 +274,11 @@
                                                         <ngx-select2 formControlName="State" [select2Option]="select2BaseOption" [data]="[{id: 'ACTIVE', text: this.cms.translateText('Hoạt động')}, {id: 'ALTERNATIVE', text: this.cms.translateText('Thay thế')}]"></ngx-select2>
                                                     </ngx-form-group>
                                                 </div>
+                                                <!-- <div class="col-sm-12">
+                                                    <ngx-form-group [hideLabel]="true" [formGroup]="location" name="MapLink" label="Link bản đồ" [array]="getLocations(formItem)" [index]="io" [allowCopy]="false" [required]="true">
+                                                        <input nbInput fullWidth formControlName="MapLink" placeholder="{{'Link bản đồ' | translate | headtitlecase}}">
+                                                    </ngx-form-group>
+                                                </div> -->
                                             </div>
                                             <div class="fit-last-col">
                                                 <div class="form-group" style="text-align: right;">

@@ -5,7 +5,7 @@
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
-        <ngx-print-header></ngx-print-header>
+        <ngx-print-header *ngIf="!data.IsAuthorizedObject"></ngx-print-header>
         <!-- <div style="display: flex;">
           <div>
             <img style="margin-top: 2px;" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}" src="{{data.Signature}}">
@@ -17,20 +17,20 @@
           uppercase }}
         </div>
         <div class="under-title">{{ data.Code }} - {{ data.DateOfSale | date:'short' }}</div>
-        <!-- <div>
+        <div>
           <div style="display: flex;">
             <div style="flex: 1;">
-              <div class="under-line">{{'Voucher.dearCustomer' | translate | headtitlecase}} :
-                {{renderValue(data.CustomerName)}}
+              <div class="under-line">{{'Nhân viên tạo đơn' | translate | headtitlecase}} :
+                {{renderValue(data.CreatorName)}}
               </div>
             </div>
             <div>
-              <div class="under-line">{{'Common.customerId' | translate | headtitlecase}} :
-                {{renderValue(data.Customer | objectid)}}
+              <div class="under-line">{{'IDNV' | translate | headtitlecase}} :
+                {{renderValue(data.Creator | objectid)}}
               </div>
             </div>
           </div>
-          <div style="display: flex;">
+          <!-- <div style="display: flex;">
             <div style="flex: 1;">
               <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
                 {{renderValue(data.CustomerAddress)}}
@@ -41,9 +41,9 @@
                 {{renderValue(data.CustomerPhone)}}
               </div>
             </div>
-          </div>
+          </div> -->
 
-        </div> -->
+        </div>
         <div class="font-h1-bold">
           <div>
             <table style="width: 100%;" class="print-voucher-detail-table">

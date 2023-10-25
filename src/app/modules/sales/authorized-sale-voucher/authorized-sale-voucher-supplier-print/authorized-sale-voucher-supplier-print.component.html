@@ -5,23 +5,7 @@
     </nb-card-header>
     <nb-card-body class="print-body" #printContent>
       <div id="print-area">
-        <ngx-print-header *ngIf="!data.IsAuthorizedObject; else IsAuthorizedObject"></ngx-print-header>
-        <ng-template #IsAuthorizedObject>
-          <table width="100%">
-            <tr>
-              <td style="line-height: 1rem">
-              <div>NHÀ CUNG CẤP<br>{{data.Supplier | objecttext}}</div>
-              <!-- <div>MST: {{data.SupplierTaxCode}}</div> -->
-              <!-- <div>SĐT: {{data.SupplierPhone}}</div> -->
-              <!-- <div>Email: {{data.SupplierEmail}}</div> -->
-              <!-- <div>ĐC: {{data.SupplierAddress}}</div> -->
-              </td>
-              <td align="right" style="vertical-align: top;">
-                <!-- <img class="voucher-logo-image" [src]="registerInfo.voucherLogo" [ngStyle]="{height: registerInfo.voucherLogoHeight + 'px'}"> -->
-              </td>
-            </tr>
-          </table>
-        </ng-template>
+        <ngx-print-header *ngIf="!data.IsAuthorizedObject"></ngx-print-header>
         <div class="print-title">{{ 'ĐƠN ĐẶT HÀNG' | translate:{action: '', definition: ''} |
           uppercase }}
         </div>

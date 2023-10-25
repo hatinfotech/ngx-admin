@@ -368,6 +368,7 @@ export class ContactFormComponent extends DataManagerFormComponent<ContactModel>
       Note: [''],
       Organizations: [''],
       Groups: [''],
+      MapLink: [],
       Details: this.formBuilder.array([]),
       OutsideReferences: this.formBuilder.array([]),
       Locations: this.formBuilder.array([]),

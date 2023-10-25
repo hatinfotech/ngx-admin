@@ -543,5 +543,21 @@ export interface AuthorizedSaleVoucherDetailModel extends Model {
   Amount?: number;
 }
 export interface AuthorizedSaleVoucherTransportPointModel extends Model {
-  
+  Id?: string;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: string;
+  ShippingUnit?: string;
+  ShippingUnitName?: string;
+  ShippingUnitPhone?: string;
+  ShippingUnitEmail?: string;
+  ShippingUnitAddress?: string;
+  ShippingUnitMapLink?: string;
+  ShippingUnitId?: string;
+  Note?: string;
+  TransportCost?: number;
+  Business?: string;
+  DebitAccount?: string;
+  CreditAccount?: string;
+  CostClassification?: string;
 }

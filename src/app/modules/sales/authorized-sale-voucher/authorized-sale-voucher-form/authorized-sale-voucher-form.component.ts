@@ -292,6 +292,22 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       text: 'Name',
     },
   };
+  accountingBusinessListForTransport: BusinessModel[] = [];
+  select2OptionForAccountingBusinessForTransport = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    // multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
 
   select2OptionForShippingUnit = {
     ...this.select2OptionForContact,
@@ -668,6 +684,7 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
     this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
       this.accountingBusinessList = list.filter(f => ['AUTHORIZEDSALE'].indexOf(f.Type) > -1);
+      this.accountingBusinessListForTransport = list.filter(f => ['AUTHORIZEDSALETRSCOSTEMP', 'AUTHORIZEDSALETRSCOSTPARTN'].indexOf(f.Code) > -1);
     });
     this.masterPriceTable = await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { limit: 1 }).then(rs => rs[0]);
     return super.init().then(status => {
@@ -809,10 +826,12 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       DeliveryDistrict: [],
       DeliveryWard: [],
       DeliveryAddress: [],
+      DeliveryMapLink: [],
+
+      DirectReceiverPhone: [],
       DirectReceiver: [],
       DirectReceiverName: [],
       DirectReceiverEmail: [],
-      DirectReceiverPhone: [],
 
 
       Title: ['', Validators.required],
@@ -820,7 +839,8 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       SubNote: [''],
       Thread: [''],
       DateOfSale: [null, Validators.required],
-      _total: [''],
+      _total: [0],
+      // _totalTransportCost: [0],
       RelativeVouchers: [''],
       // RequireInvoice: [false],
       Details: this.formBuilder.array([]),
@@ -828,7 +848,8 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
     });
 
     newForm['Details'] = newForm.get('Details');
-    newForm['TransportPoints'] = newForm.get('TransportPoints');
+    const transportPointsArray = newForm['TransportPoints'] = newForm.get('TransportPoints') as FormArray;
+    newForm['_totalTransportCost'] = 0;
 
     if (data) {
       // data['Code_old'] = data['Code'];
@@ -851,6 +872,17 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       if (dateOfSate) {
         this.cms.lastVoucherDate = dateOfSate;
       }
+    });
+
+    // Auto sum transport cost
+    transportPointsArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((transportPoints: AuthorizedSaleVoucherTransportPointModel[]) => {
+      this.cms.takeUntil('234324_transport_points_change', 300, () => {
+        console.log('234324_transport_points_change: ', transportPoints);
+        newForm['_totalTransportCost'] = 0;
+        for(const transportPoint of transportPoints) {
+          newForm['_totalTransportCost'] += parseFloat(transportPoint.TransportCost as any);
+        }
+      });
     });
     return newForm;
   }
@@ -1095,11 +1127,13 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
       ShippingUnit: [],
       ShippingUnitPhone: [],
       ShippingUnitAddress: [],
+      ShippingUnitMapLink: [],
       // ShippingUnitName: [],
       // TransportFrom: [],
       // TransportTo: [],
       Note: [],
       TransportCost: [],
+      Business: [],
     });
 
     if (data) {
@@ -1108,16 +1142,14 @@ export class AuthorizedSaleVoucherFormComponent extends DataManagerFormComponent
 
     const shipingUnit = newForm.get('ShippingUnit');
     const shipingUnitPhone = newForm.get('ShippingUnitPhone');
-    // const shipingUnitEmail = newForm.get('ShippingUnitEmail');
+    const shipingUnitMapLink = newForm.get('ShippingUnitMapLink');
     const shipingUnitAddress = newForm.get('ShippingUnitAddress');
     shipingUnit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
       if (!this.isProcessing) {
         console.log('Shipping unit change: ', contact);
-        // this.cms.takeUntil('shipingUnit', 300, () => {
         shipingUnitPhone.setValue(contact?.Phone);
-        // shipingUnitEmail.setValue(contact?.Email);
         shipingUnitAddress.setValue(contact?.FullAddress);
-        // });
+        shipingUnitMapLink.setValue(contact?.MapLink);
       }
     });
     return newForm;

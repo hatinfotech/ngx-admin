@@ -197,6 +197,8 @@ import { accountingComponents } from './modules/accounting/accounting.module';
 import { warehouseComponents } from './modules/warehouse/warehouse.module';
 import { systemComponents } from './modules/system/system.module';
 import { userComponents } from './modules/users/users.module';
+import { generalComponents } from './modules/general/general.module';
+import { GoogleMapsModule } from '@angular/google-maps'
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -354,6 +356,9 @@ export class DynamicLocaleId extends String {
     // Collaborator
     ...collaboratorComponents,
 
+    // General
+    ...generalComponents,
+
     DynamicListDialogComponent,
 
     // Commerce POS
@@ -477,6 +482,8 @@ export class DynamicLocaleId extends String {
 
     NgxBarcodeModule.forRoot(),
     NgxQRCodeModule,
+
+    GoogleMapsModule,
 
     // Photo browser
     // AngularImageViewerModule,

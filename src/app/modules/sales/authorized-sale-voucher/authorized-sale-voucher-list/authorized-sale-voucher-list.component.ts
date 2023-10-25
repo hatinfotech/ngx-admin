@@ -411,8 +411,39 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
           cellRenderer: AgDateCellRenderer,
         },
         {
+          headerName: 'Người duyệt',
+          field: 'Approver',
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: AgSelect2Filter,
+          filterParams: {
+            select2Option: {
+              ...this.cms.makeSelect2AjaxOption('/user/users', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+                placeholder: 'Chọn người tạo...', limit: 10, prepareReaultItem: (item) => {
+                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+                  return item;
+                }
+              }),
+              multiple: true,
+              logic: 'OR',
+              allowClear: true,
+            }
+          },
+        },
+        {
+          headerName: 'Ngày duyệt',
+          field: 'DateOfApproved',
+          width: 180,
+          filter: 'agDateColumnFilter',
+          filterParams: {
+            inRangeFloatingFilterDateFormat: 'DD/MM/YY',
+          },
+          cellRenderer: AgDateCellRenderer,
+        },
+        {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Số tiền',
+          headerName: 'Doanh thu',
           field: 'Amount',
           pinned: 'right',
           width: 150,

@@ -11,7 +11,7 @@ import { ActionControlListOption } from '../../../../lib/custom-element/action-c
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
 import { ContactModel } from '../../../../models/contact.model';
-import { ProductModel, ProductObjectReferenceModel } from '../../../../models/product.model';
+import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
 import { PurchaseOrderVoucherDetailModel, PurchaseOrderVoucherModel, PurchaseProductModel } from '../../../../models/purchase.model';
 import { TaxModel } from '../../../../models/tax.model';
@@ -22,7 +22,7 @@ import { ProductFormComponent } from '../../../admin-product/product/product-for
 import { ContactFormComponent } from '../../../contact/contact/contact-form/contact-form.component';
 import { PurchaseOrderVoucherPrintComponent } from '../purchase-order-voucher-print/purchase-order-voucher-print.component';
 import { SmartTableButtonComponent, SmartTableCurrencyComponent, SmartTableTagsComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
-import { filter, take, takeUntil, takeWhile } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 import { ReferenceChoosingDialogComponent } from '../../../dialog/reference-choosing-dialog/reference-choosing-dialog.component';
 import { CommercePosOrderModel } from '../../../../models/commerce-pos.model';
 import * as XLSX from 'xlsx';
@@ -626,17 +626,17 @@ export class PurchaseOrderVoucherFormComponent extends DataManagerFormComponent<
       if (productControl.value?.Type == 'PRODUCT') {
         if (untiConversion?.IsAutoAdjustInventory === false) {
           // if(!businessControl.value || businessControl.value.length == 0){
-          businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASESKIPWAREHOUSE'));
+          businessControl.setValue([this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASESKIPWAREHOUSE')]);
           // }
         }
         if (untiConversion?.IsAutoAdjustInventory === true) {
           // if(!businessControl.value || businessControl.value.length == 0){
-          businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASEWAREHOUSE'));
+          businessControl.setValue([this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASEWAREHOUSE')]);
           // }
         }
       }
       if (productControl.value?.Type == 'SERVICE') {
-        businessControl.setValue(this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASECOST'));
+        businessControl.setValue([this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'PURCHASECOST')]);
       }
     });
   }

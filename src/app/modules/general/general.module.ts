@@ -7,6 +7,8 @@
 // import { RelativeVoucherComponent } from './voucher/relative-voucher/relative-voucher.component';
 // import { FilesViewerComponent } from './files-viewer/files-viewer.component';
 
+import { GoogleMapComponent } from "./google-map/google-map.component";
+
 
 // @NgModule({
 //   declarations: [
@@ -39,3 +41,7 @@
 //   ],
 // })
 // export class GeneralModule { }
+
+export const generalComponents = [
+    GoogleMapComponent,
+];
