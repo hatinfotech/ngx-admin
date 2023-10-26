@@ -1,0 +1,57 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()" (keydown.shift.enter)="onControlEnter($event)"
+  (keydown.enter)="onControlEnter($event)" class="dialog-wrap popup">
+  <div formArrayName="array">
+    <div *ngFor="let formItem of array.controls; let i = index">
+      <nb-card class="small-header popup">
+        <nb-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Contact.Group.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+        </nb-card-header>
+        <nb-card-body>
+          <div [formGroup]="formItem">
+            <div class="row">
+              <input type="hidden" formControlName="Code_old">
+              <div class="col-sm-3">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Code'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.code' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.code')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Code"
+                    placeholder="{{'Common.code' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-9">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Name'), 'warning')">
+                  <label class="label"><span
+                      class="valid">{{'Common.name' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.name')} | headtitlecase }}
+                      (*)</span></label>
+                  <input type="text" nbInput fullWidth formControlName="Name"
+                    placeholder="{{'Common.name' | translate | headtitlecase}}">
+                </div>
+              </div>
+              <div class="col-sm-12">
+                <div class="form-group" [attr.state]="formControlValidate(formItem.get('Description'), 'warning')">
+                  <label class="label"><span class="valid">{{'Common.description' | translate | headtitlecase}}</span><span
+                      class="invalid">{{ 'Form.requireLabel' | translate:{field: cms.translate.instant('Common.description')} | headtitlecase }}
+                      (*)</span></label>
+                  <textarea nbInput fullWidth formControlName="Description" placeholder="{{'Common.description' | translate | headtitlecase}}"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </nb-card-body>
+        <nb-card-footer>
+          <div class="buttons-row" style="text-align: right;">
+            <button nbButton status="warning" (click)="addFormGroup($event)" hero>{{'Common.addOne' | translate | headtitlecase}}</button>
+            <button nbButton status="danger" [disabled]="!form.valid || isProcessing" style="float: right;" hero
+              (click)="saveAndClose()">{{'Common.saveAndClose' | translate | headtitlecase}}</button>
+            <button nbButton status="success" [disabled]="!form.valid || isProcessing" style="float: right;"
+              hero>{{'Common.save' | translate | headtitlecase}}</button>
+          </div>
+        </nb-card-footer>
+      </nb-card>
+
+    </div>
+  </div>
+</form>

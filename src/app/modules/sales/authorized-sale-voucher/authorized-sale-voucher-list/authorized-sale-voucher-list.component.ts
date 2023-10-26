@@ -529,7 +529,13 @@ export class AuthorizedSaleVoucherListComponent extends AgGridDataManagerListCom
 
                       const voucher = await this.apiService.getPromise<AuthorizedSaleVoucherModel[]>(this.apiPath + '/' + data.Code, { includeDetails: true }).then(rs => rs[0])
 
-                      const suppliers: ContactModel[] = voucher.Details.filter(f => f.Supplier).map(detail => detail.Supplier);
+                      const suppliers: ContactModel[] = voucher.Details.filter(f => f.Supplier).map(detail => detail.Supplier)?.reduce((result: ContactModel[], current, index) => {
+                        // result[this.cms.getObjectId(current)] = current;
+                        if (result.findIndex(f => this.cms.getObjectId(current) == this.cms.getObjectId(f)) < 0) {
+                          result.push(current);
+                        }
+                        return result;
+                      }, []);
                       if (suppliers.length > 1) {
                         this.cms.openDialog(DialogFormComponent, {
                           context: {

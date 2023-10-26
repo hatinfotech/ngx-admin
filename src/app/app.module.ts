@@ -27,7 +27,6 @@ import {
   NbWindowModule,
 } from '@nebular/theme';
 import { ECommerceComponent } from './modules/e-commerce/e-commerce.component';
-import { ContactListComponent } from './modules/contact/contact/contact-list/contact-list.component';
 import { ShowcaseDialogComponent } from './modules/dialog/showcase-dialog/showcase-dialog.component';
 import { ContactFormComponent } from './modules/contact/contact/contact-form/contact-form.component';
 import { AgGridModule } from '@ag-grid-community/angular';
@@ -44,11 +43,6 @@ import { RouteReuseStrategy } from '@angular/router';
 import { TimingPipe } from './@theme/pipes';
 import { CustomRouteReuseStrategy } from './custom-route-reuse-stratery';
 import { ApiInterceptor } from './services/api.service';
-import { ContactAllListComponent } from './modules/contact/contact-all-list/contact-all-list.component';
-import { ContactCustomerListComponent } from './modules/contact/contact-customer-list/contact-customer-list.component';
-import { ContactEmployeeListComponent } from './modules/contact/contact-employee-list/contact-employee-list.component';
-import { ContactRemovedListComponent } from './modules/contact/contact-removed-list/contact-removed-list.component';
-import { ContactSupplierListComponent } from './modules/contact/contact-supplier-list/contact-supplier-list.component';
 import { ProductCategoryFormComponent } from './modules/admin-product/category/product-category-form/product-category-form.component';
 import { ProductCategoryListComponent } from './modules/admin-product/category/product-category-list/product-category-list.component';
 import { ProductGroupFormComponent } from './modules/admin-product/product-group/product-group-form/product-group-form.component';
@@ -198,7 +192,8 @@ import { warehouseComponents } from './modules/warehouse/warehouse.module';
 import { systemComponents } from './modules/system/system.module';
 import { userComponents } from './modules/users/users.module';
 import { generalComponents } from './modules/general/general.module';
-import { GoogleMapsModule } from '@angular/google-maps'
+import { GoogleMapsModule } from '@angular/google-maps';
+import { contactComponents } from './modules/contact/contact.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -290,13 +285,8 @@ export class DynamicLocaleId extends String {
     CommerceServiceByCycleFormComponent,
 
     // Contact components
-    ContactFormComponent,
-    ContactListComponent,
-    ContactSupplierListComponent,
-    ContactCustomerListComponent,
-    ContactEmployeeListComponent,
-    ContactRemovedListComponent,
-    ContactAllListComponent,
+    ...contactComponents,
+
     ClusterAuthorizedKeyListComponent,
     ClusterAuthorizedKeyFormComponent,
     CollaboratorPageListComponent,

@@ -56,6 +56,7 @@ import { accoutingRoutes } from './modules/accounting/accounting.routing';
 import { warehouseRoutes } from './modules/warehouse/warehouse.routing';
 import { systemRoutes } from './modules/system/system-routing.module';
 import { userRoutes } from './modules/users/users-routing.module';
+import { contactRoutes } from './modules/contact/contact-routing.module';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -464,56 +465,7 @@ const routes: Routes = [
 
 
   // Contact routes
-  {
-    path: 'contact',
-    canActivate: [AuthGuardService],
-    component: ContactListComponent,
-    // data: {
-    //   reuse: true,
-    // },
-    children: [
-      {
-        path: '',
-        redirectTo: 'all',
-        pathMatch: 'full',
-      },
-      {
-        path: 'all',
-        component: ContactAllListComponent,
-        data: {
-          reuse: true,
-        },
-      },
-      {
-        path: 'customer',
-        component: ContactCustomerListComponent,
-        data: {
-          reuse: true,
-        },
-      },
-      {
-        path: 'supplier',
-        component: ContactSupplierListComponent,
-        data: {
-          reuse: true,
-        },
-      },
-      {
-        path: 'employee',
-        component: ContactEmployeeListComponent,
-        data: {
-          reuse: true,
-        },
-      },
-      {
-        path: 'removed',
-        component: ContactRemovedListComponent,
-        data: {
-          reuse: true,
-        },
-      },
-    ],
-  },
+  ...contactRoutes,
   // {
   //   path: 'contact/form',
   //   canActivate: [AuthGuardService],

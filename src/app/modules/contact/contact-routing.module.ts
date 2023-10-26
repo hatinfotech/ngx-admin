@@ -1,51 +1,69 @@
-// import { NgModule } from '@angular/core';
-// import { Routes, RouterModule } from '@angular/router';
-// import { ContactComponent } from './contact.component';
-// import { AuthGuardService } from '../../services/auth-guard.service';
-// import { ContactFormComponent } from './contact/contact-form/contact-form.component';
-// import { ContactListComponent } from './contact/contact-list/contact-list.component';
+import { Routes } from "@angular/router";
+import { AuthGuardService } from "../../services/auth-guard.service";
+import { ContactAllListComponent } from "./contact-all-list/contact-all-list.component";
+import { ContactCustomerListComponent } from "./contact-customer-list/contact-customer-list.component";
+import { ContactEmployeeListComponent } from "./contact-employee-list/contact-employee-list.component";
+import { ContactRemovedListComponent } from "./contact-removed-list/contact-removed-list.component";
+import { ContactSupplierListComponent } from "./contact-supplier-list/contact-supplier-list.component";
+import { ContactListComponent } from "./contact/contact-list/contact-list.component";
+import { ContactGroupListComponent } from "./contact-group/contact-group-list/contact-group-list.component";
 
-// const routes: Routes = [{
-//   path: '',
-//   component: ContactComponent,
-//   children: [
-//     // {
-//     //   path: '',
-//     //   redirectTo: 'dashboard',
-//     //   pathMatch: 'full',
-//     // },
-//     // {
-//     //   path: 'dashboard',
-//     //   canActivate: [AuthGuardService],
-//     //   component: IvoipDashboardComponent,
-//     //   data: {
-//     //     reuse: true,
-//     //   },
-//     // },
-//     {
-//       path: 'contact/list',
-//       canActivate: [AuthGuardService],
-//       component: ContactListComponent,
-//       data: {
-//         reuse: true,
-//       },
-//     },
-//     {
-//       path: 'contact/form',
-//       canActivate: [AuthGuardService],
-//       component: ContactFormComponent,
-//     },
-//     {
-//       path: 'contact/form/:id',
-//       canActivate: [AuthGuardService],
-//       component: ContactFormComponent,
-//     },
-//   ],
-// }];
-
-// @NgModule({
-//   imports: [RouterModule.forChild(routes)],
-//   exports: [RouterModule],
-// })
-// export class ContactRoutingModule {
-// }
+export const contactRoutes: Routes = [
+    {
+        path: 'contact',
+        canActivate: [AuthGuardService],
+        component: ContactListComponent,
+        // data: {
+        //   reuse: true,
+        // },
+        children: [
+            {
+                path: '',
+                redirectTo: 'all',
+                pathMatch: 'full',
+            },
+            {
+                path: 'all',
+                component: ContactAllListComponent,
+                data: {
+                    reuse: true,
+                },
+            },
+            {
+                path: 'customer',
+                component: ContactCustomerListComponent,
+                data: {
+                    reuse: true,
+                },
+            },
+            {
+                path: 'supplier',
+                component: ContactSupplierListComponent,
+                data: {
+                    reuse: true,
+                },
+            },
+            {
+                path: 'employee',
+                component: ContactEmployeeListComponent,
+                data: {
+                    reuse: true,
+                },
+            },
+            {
+                path: 'removed',
+                component: ContactRemovedListComponent,
+                data: {
+                    reuse: true,
+                },
+            },
+        ],
+    },
+    {
+        path: 'contact/group/list',
+        component: ContactGroupListComponent,
+        data: {
+            reuse: true,
+        },
+    },
+];

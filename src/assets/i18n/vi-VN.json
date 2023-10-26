@@ -462,6 +462,9 @@
         "Removed": {
             "title": "{{definition}}{{action}} đã xóa"
         },
+        "Group": {
+            "title": "{{definition}}{{action}} nhóm liên hệ"
+        },
         "title": "{{definition}}{{action}} liên hệ",
         "id": "ID liên hệ",
         "code": "mã liên hệ",
