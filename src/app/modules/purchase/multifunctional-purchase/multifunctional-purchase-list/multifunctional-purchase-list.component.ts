@@ -27,6 +27,7 @@ import { MultifunctionalPurchaseTransportPrintComponent } from '../multifunction
 import { Model } from '../../../../models/model';
 import { ContactModel } from '../../../../models/contact.model';
 import { MultifunctionalPurchaseModel } from '../../../../models/purchase.model';
+import { MultifunctionalPurchaseGoodsReceiptPrintComponent } from '../multifunctional-purchase-goods-receipt-print/multifunctional-purchase-goods-receipt-print.component';
 
 @Component({
   selector: 'ngx-multifunctional-purchase-list',
@@ -308,48 +309,48 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
           filter: 'agTextColumnFilter',
           pinned: 'left',
         },
-        {
-          headerName: 'Nhà cung cấp',
-          field: 'Supplier',
-          pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
-        {
-          headerName: 'Khách hàng',
-          field: 'Customer',
-          pinned: 'left',
-          width: 200,
-          cellRenderer: AgTextCellRenderer,
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
-                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
-        },
+        // {
+        //   headerName: 'Nhà cung cấp',
+        //   field: 'Supplier',
+        //   pinned: 'left',
+        //   width: 200,
+        //   cellRenderer: AgTextCellRenderer,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+        //         placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
+        // {
+        //   headerName: 'Khách hàng',
+        //   field: 'Customer',
+        //   pinned: 'left',
+        //   width: 200,
+        //   cellRenderer: AgTextCellRenderer,
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/contact/contacts', { includeIdText: true, includeGroups: true, sort_SearchRank: 'desc' }, {
+        //         placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
         {
           headerName: 'Tiêu đề',
           field: 'Title',
@@ -358,8 +359,8 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
           autoHeight: true,
         },
         {
-          headerName: 'Ngày bán hàng',
-          field: 'DateOfSale',
+          headerName: 'Ngày mua hàng',
+          field: 'DateOfPurchase',
           width: 180,
           filter: 'agDateColumnFilter',
           filterParams: {
@@ -439,7 +440,7 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
         },
         {
           ...agMakeCurrencyColDef(this.cms),
-          headerName: 'Doanh thu',
+          headerName: 'Tổng giá trị',
           field: 'Amount',
           pinned: 'right',
           width: 150,
@@ -490,8 +491,37 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
                   //   }
                   // },
                   {
-                    label: 'Lấy hàng',
+                    label: 'Nhập kho',
                     status: 'danger',
+                    action: () => {
+
+                      this.cms.openDialog(MultifunctionalPurchaseGoodsReceiptPrintComponent, {
+                        // closeOnEsc: false,
+                        context: {
+                          showLoadinng: true,
+                          title: 'Xem trước',
+                          id: [this.makeId(data)],
+                          sourceOfDialog: 'list',
+                          mode: 'print',
+                          idKey: ['Code'],
+                          // approvedConfirm: true,
+                          onChange: (data: MultifunctionalPurchaseModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                          onSaveAndClose: (data: MultifunctionalPurchaseModel) => {
+                            // this.refresh();
+                            this.refreshItems([this.makeId(data)]);
+                          },
+                        },
+                      });
+
+                      return true;
+                    }
+                  },
+                  {
+                    label: 'Lấy hàng',
+                    status: 'warning',
                     action: () => {
 
                       this.cms.openDialog(MultifunctionalPurchaseTransportPrintComponent, {

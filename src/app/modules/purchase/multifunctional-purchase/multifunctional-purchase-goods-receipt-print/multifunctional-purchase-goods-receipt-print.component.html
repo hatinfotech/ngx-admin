@@ -1,0 +1,152 @@
+<div class="dialog-wrap {{inputMode}}" #dialogWrap>
+  <nb-card [nbSpinner]="loading" *ngFor="let data of this.data; let i=index;" style="max-height: initial; margin: 0 auto; width: 22cm;" class="small-header">
+    <nb-card-header>
+      <ngx-card-header [option]="{controlOption: {index: i}}" [size]="size" [icon]="favicon" [title]="data['Title'] || ('Warehouse.GoodsDeliveryNote.title' | translate:{definition: '', action: cms.translate.instant('Common.print')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+    </nb-card-header>
+    <nb-card-body class="print-body" #printContent>
+      <div id="print-area">
+        <ngx-print-header></ngx-print-header>
+        <div>
+          <div class="print-title">{{ 'Warehouse.GoodsReceiptNote.title' | translate:{action: '', definition: ''} |
+            uppercase }}
+          </div>
+          <div class="under-title">{{ data.Code }} - {{ data.DateOfReceipted | date:'short' }}</div>
+        </div>
+        <!-- <div>
+          <div style="display: flex;">
+            <div style="flex: 1;">
+              <div class="under-line">{{'Common.contact' | translate | headtitlecase}} :
+                {{renderValue(data.ObjectName)}}
+              </div>
+            </div>
+            <div>
+              <div class="under-line">{{'Common.contactId' | translate | headtitlecase}} :
+                {{renderValue(data.Object | objectid)}}
+              </div>
+            </div>
+          </div>
+          <div class="under-line">{{'Common.address' | translate | headtitlecase}} :
+            {{renderValue(data.ObjectAddress)}}
+          </div>
+        </div> -->
+        <div>
+          <div>
+            <table style="width: 100%;" class="print-voucher-detail-table">
+              <thead class="print-voucher-detail-header">
+                <td>#</td>
+                <td class="nowrap" style="min-width: 10rem;">{{'Common.description' | translate | headtitlecase}}</td>
+                <td class="nowrap">{{'Warehouse.accessNumber' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.quantity' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="text-align-right nowrap">{{'Kệ' | translate | headtitlecase}}</td>
+              </thead>
+              <ng-container *ngFor="let detail of data.Details; let i = index;">
+                <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
+                  <td colspan="7" style="font-weight: bold;" [innerHTML]="renderValue(detail.Description)"></td>
+                </tr>
+                <tr class="print-voucher-detail-line" *ngIf="detail.Type !== 'CATEGORY'">
+                  <td>{{detail.No}}</td>
+                  <td>
+                    <div style="border: 1px #000 dashed; padding: 3px;">
+                      <div style="line-height: 14px;
+                      font-weight: bold;">
+                        <span [innerHTML]="renderValue(detail.Description)"></span>/{{detail.Unit | objecttext}}
+                      </div>
+                      <div>
+                        <div style="display: flex;">
+                          <div class="find-order" style="line-height: 30px;
+                          font-weight: bold;
+                          font-size: 16px;">{{detail.Container.FindOrder}}</div>
+                          <div class="barcode" style="flex: 1;">
+                            <img nbTooltip="Click vào để in tem vị trí" (click)="printContainerTemp(detail)" style="margin-left: 5px; cursor: pointer;" [src]="detail.BarCode">
+                          </div>
+                        </div>
+                        <div style="display: flex;">
+                          <div style="flex: 1;
+                          font-size: 10px !important;
+                          font-weight: bold;
+                          line-height: 12px;
+                          white-space: nowrap;">SKU: {{detail.Product?.Sku}}</div>
+                          <div style="flex: 1;
+                          font-size: 10px !important;
+                          font-weight: bold;
+                          line-height: 12px;
+                          white-space: nowrap; text-align: right;">ID: {{detail.Product?.Code}}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <div *ngIf="detail.DateOfManufacture">NSX: {{detail.DateOfManufacture | date:'shortDate'}}</div>
+                    <div *ngIf="detail.ExpiryDate">HSD: {{detail.ExpiryDate | date:'shortDate'}}</div>
+                    <span style="font-size: 10px;">{{detail.AccessNumbers | objectsid}}</span>
+                  </td>
+                  <td class="text-align-right" style="font-weight: bold;
+                  font-size: 24px;
+                  line-height: 32px;">{{renderValue(detail.Quantity) | number}}</td>
+                  <td class="text-align-right" style="font-weight: bold;
+                  font-size: 24px;
+                  line-height: 32px;">{{detail.Unit | objecttext}}</td>
+                  <td class="text-align-right">
+                    <div style="font-weight: bold;
+                    font-size: 24px;
+                    min-width: 130px;
+                    line-height: 32px;">{{detail.Shelf | objecttext}}</div>
+                  </td>
+                </tr>
+              </ng-container>
+              <tr>
+                <td colspan="5">{{'Common.note' | translate | headtitlecase}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="under-line" *ngIf="data.Note"><span [innerHTML]="renderValue(data.Note)"></span></div>
+          <div class="under-line">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
+            {{renderValue(data.DeliveryAddress)}}
+          </div>
+          <div class="under-line">{{'Sales.directReceiver' | translate | headtitlecase}}:
+            {{renderValue(data.DirectReceiverName)}}
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap">
+          <div style="text-align: center; flex: 0 0 50%;">
+            <br> {{'Thủ kho' | translate | headtitlecase}}
+            <br><br><br>
+          </div>
+          <div style="text-align: center; flex: 0 0 50%;">
+            <br> {{'Người giao hàng' | translate | headtitlecase}}
+            <br><br><br>
+          </div>
+        </div>
+        <div class="default-probox-one-print-footer">{{cms.env.defaultPrintFooter}}</div>
+      </div>
+    </nb-card-body>
+    <nb-card-footer *ngIf="data.RelativeVouchers && data.RelativeVouchers.length > 0" class="print-relative-vouchers">
+      <span class="tag" *ngFor="let relationVoucher of data.RelativeVouchers" nbTooltip="{{relationVoucher.type?.text}}: {{relationVoucher | objectstext}}">
+        <nb-icon pack="eva" icon="pricetags-outline" class="icon"></nb-icon><span class="label" (click)="openRelativeVoucher(relationVoucher)">{{relationVoucher.type?.symbol | objectid}}:{{relationVoucher | objectid}}</span>
+        <nb-icon pack="eva" icon="close-outline" class="close-btn"></nb-icon>
+      </span>
+    </nb-card-footer>
+    <nb-card-footer>
+      <div class="buttons-row">
+        <button *ngIf="mode === 'print'" nbButton hero status="info" (click)="edit(data);">
+          <nb-icon pack="eva" icon="edit"></nb-icon>{{'Common.edit' | translate | headtitlecase}}
+        </button>
+        <button nbButton hero status="info" (click)="prepareCopy(data);" style="float: left;">
+          <nb-icon pack="eva" icon="copy"></nb-icon>{{'Common.copy' | translate | headtitlecase}}
+        </button>
+        <!-- <button nbButton hero status="danger" (click)="approvedConfirm(data, i);">{{(processMapList[i]?.nextStateLabel || '') | translate | headtitlecase}}<nb-icon pack="eva" icon="skip-forward"></nb-icon></button> -->
+
+        <!--State process buttons-->
+        <button *ngFor="let nextState of processMapList[i]?.nextStates" nbButton hero status="{{nextState.status}}" (click)="stateActionConfirm(data, nextState);">{{nextState.confirmLabel | translate | headtitlecase}}<nb-icon pack="{{nextState.iconPack || 'eva'}}" icon="{{nextState.icon || 'skip-forward'}}"></nb-icon></button>
+        <!--End State process buttons-->
+
+        <button *ngIf="!sourceOfDialog || sourceOfDialog === 'form'" nbButton hero status="success" (click)="saveAndClose(data);">
+          <nb-icon pack="eva" icon="save"></nb-icon>{{'Common.saveAndClose' | translate | headtitlecase}}
+        </button>
+      </div>
+    </nb-card-footer>
+  </nb-card>
+</div>

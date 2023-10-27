@@ -1,4 +1,4 @@
-import { ProductUnitModel } from '../../../../models/product.model';
+import { ProductUnitConversoinModel, ProductUnitModel } from '../../../../models/product.model';
 import { filter, take, takeUntil } from 'rxjs/operators';
 import { ChatRoomModel } from '../../../../models/chat-room.model';
 import { PriceReportModel } from '../../../../models/price-report.model';
@@ -525,7 +525,7 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
   // Type field option
   select2OptionForType = {
     placeholder: 'Chọn loại...',
-    allowClear: true,
+    allowClear: false,
     width: '100%',
     dropdownAutoWidth: true,
     minimumInputLength: 0,
@@ -535,9 +535,9 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
     },
   };
   select2DataForType = [
-    { id: 'PRODUCT', text: 'Hàng trong kho' },
-    { id: 'PARTNERPRODUCT', text: 'Hàng của đối tác' },
-    { id: 'SERVICE', text: 'Dịch vụ' },
+    { id: 'PRODUCT', text: 'Hàng hóa' },
+    // { id: 'PARTNERPRODUCT', text: 'Hàng của đối tác' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
     { id: 'CATEGORY', text: 'Danh mục' },
   ];
 
@@ -683,8 +683,8 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
 
     // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: 'SALES', select: 'id=>Code,text=>Name,type=>Type' });
     this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
-      this.accountingBusinessList = list.filter(f => ['AUTHORIZEDSALE'].indexOf(f.Type) > -1);
-      this.accountingBusinessListForTransport = list.filter(f => ['AUTHORIZEDSALETRSCOSTEMP', 'AUTHORIZEDSALETRSCOSTPARTN'].indexOf(f.Code) > -1);
+      this.accountingBusinessList = list.filter(f => ['PURCHASEWAREHOUSE'].indexOf(f.Code) > -1);
+      this.accountingBusinessListForTransport = list.filter(f => ['PURCHASECOST'].indexOf(f.Code) > -1);
     });
     this.masterPriceTable = await this.apiService.getPromise<SalesMasterPriceTableModel[]>('/sales/master-price-tables', { limit: 1 }).then(rs => rs[0]);
     return super.init().then(status => {
@@ -739,6 +739,7 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
         });
 
         for (const detailData of itemFormData.Details) {
+          detailData.AccessNumbers = (Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n')) : '') as any;
           const productId = this.cms.getObjectId(detailData.Product);
           const unitId = this.cms.getObjectId(detailData.Unit);
           const containerId = this.cms.getObjectId(detailData.Container);
@@ -796,51 +797,36 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
 
     const newForm = this.formBuilder.group({
       Code: { disabled: true, value: '' },
-      IsAuthorizedObject: [true],
-      Supplier: [null, Validators.required],
-      SupplierName: [null, Validators.required],
-      SupplierEmail: [],
-      SupplierPhone: [],
-      SupplierAddress: [],
-      // SupplierIdentifiedNumber: [''],
-      // Recipient: [''],
-      // SupplierTaxCode: [''],
-      // DirectReceiverName: [''],
-      // SupplierBankName: [''],
-      // SupplierBankCode: [''],
-      Customer: [null, Validators.required],
-      CustomerName: [null, Validators.required],
-      CustomerPhone: [],
-      CustomerEmail: [],
-      CustomerAddress: [],
-      // CustomerIdentifiedNumber: [''],
-      // DateOfDelivery: [''],
-      // DeliveryAddress: [''],
-      // PriceTable: [this.masterPriceTable ? { id: this.masterPriceTable.Code, text: (this.masterPriceTable['DateOfApproved'] ? ('[' + this.datePipe.transform(this.masterPriceTable['DateOfApproved'], 'short') + '] ') : '') + (this.masterPriceTable['text'] || this.masterPriceTable['Title']) } : ''],
-      // IsSupplierRevenue: [false],
-      // PriceReportVoucher: [''],
-      // PriceReport: [''],
-      // Employee: [''],
+      // IsAuthorizedObject: [true],
+      // Supplier: [null, Validators.required],
+      // SupplierName: [null, Validators.required],
+      // SupplierEmail: [],
+      // SupplierPhone: [],
+      // SupplierAddress: [],
+      // Customer: [null, Validators.required],
+      // CustomerName: [null, Validators.required],
+      // CustomerPhone: [],
+      // CustomerEmail: [],
+      // CustomerAddress: [],
 
-      DeliveryProvince: [],
-      DeliveryDistrict: [],
-      DeliveryWard: [],
-      DeliveryAddress: [],
-      DeliveryMapLink: [],
+      // DeliveryProvince: [],
+      // DeliveryDistrict: [],
+      // DeliveryWard: [],
+      // DeliveryAddress: [],
+      // DeliveryMapLink: [],
 
-      DirectReceiverPhone: [],
-      DirectReceiver: [],
-      DirectReceiverName: [],
-      DirectReceiverEmail: [],
+      // DirectReceiverPhone: [],
+      // DirectReceiver: [],
+      // DirectReceiverName: [],
+      // DirectReceiverEmail: [],
 
 
       Title: ['', Validators.required],
       Note: [''],
       SubNote: [''],
       Thread: [''],
-      DateOfSale: [null, Validators.required],
+      DateOfPurchase: [null, Validators.required],
       _total: [0],
-      // _totalTransportCost: [0],
       RelativeVouchers: [''],
       // RequireInvoice: [false],
       Details: this.formBuilder.array([]),
@@ -853,8 +839,8 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
 
     if (data) {
       // data['Code_old'] = data['Code'];
-      if (!((data.DateOfSale as any) instanceof Date)) {
-        data.DateOfSale = new Date(data.DateOfSale) as any;
+      if (!((data.DateOfPurchase as any) instanceof Date)) {
+        data.DateOfPurchase = new Date(data.DateOfPurchase) as any;
       }
       this.patchFormGroupValue(newForm, data);
     } else {
@@ -862,13 +848,13 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
     }
 
     const titleControl = newForm.get('Title');
-    newForm.get('CustomerName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
-      if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Bán hàng: /.test(titleControl.value))) {
-        titleControl.setValue(`Bán hàng: ${objectName}`);
-      }
-    });
+    // newForm.get('CustomerName').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(objectName => {
+    //   if (objectName && (!titleControl.touched || !titleControl.value) && (!titleControl.value || /^Bán hàng: /.test(titleControl.value))) {
+    //     titleControl.setValue(`Bán hàng: ${objectName}`);
+    //   }
+    // });
 
-    newForm.get('DateOfSale').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
+    newForm.get('DateOfPurchase').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(dateOfSate => {
       if (dateOfSate) {
         this.cms.lastVoucherDate = dateOfSate;
       }
@@ -879,7 +865,7 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
       this.cms.takeUntil('234324_transport_points_change', 300, () => {
         console.log('234324_transport_points_change: ', transportPoints);
         newForm['_totalTransportCost'] = 0;
-        for(const transportPoint of transportPoints) {
+        for (const transportPoint of transportPoints) {
           newForm['_totalTransportCost'] += parseFloat(transportPoint.TransportCost as any);
         }
       });
@@ -890,15 +876,15 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
   patchFormGroupValue = (formGroup: FormGroup, data: MultifunctionalPurchaseModel) => {
 
     if (data) {
-      formGroup.get('SupplierPhone')['placeholder'] = data['SupplierPhone'];
-      formGroup.get('SupplierAddress')['placeholder'] = data['SupplierAddress'];
-      data['SupplierPhone'] = null;
-      data['SupplierAddress'] = null;
+      // formGroup.get('SupplierPhone')['placeholder'] = data['SupplierPhone'];
+      // formGroup.get('SupplierAddress')['placeholder'] = data['SupplierAddress'];
+      // data['SupplierPhone'] = null;
+      // data['SupplierAddress'] = null;
 
-      formGroup.get('CustomerPhone')['placeholder'] = data['CustomerPhone'];
-      formGroup.get('CustomerAddress')['placeholder'] = data['CustomerAddress'];
-      data['CustomerPhone'] = null;
-      data['CustomerAddress'] = null;
+      // formGroup.get('CustomerPhone')['placeholder'] = data['CustomerPhone'];
+      // formGroup.get('CustomerAddress')['placeholder'] = data['CustomerAddress'];
+      // data['CustomerPhone'] = null;
+      // data['CustomerAddress'] = null;
 
       formGroup.patchValue(data);
     }
@@ -931,7 +917,6 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: MultifunctionalPurchaseDetailModel): FormGroup {
     let newForm: FormGroup = null;
     newForm = this.formBuilder.group({
-      // Id: [''],
       SystemUuid: [''],
       No: [''],
       Type: ['PRODUCT', Validators.required],
@@ -942,7 +927,6 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
         return null;
       }],
       Description: ['', Validators.required],
-      // RelateDetail: [''],
       Quantity: [1, (control: FormControl) => {
         if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -962,26 +946,27 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
         return null;
       }],
       Container: [''],
-      AccessNumbers: [''],
+      AccessNumbers: [[]],
       Supplier: [],
       SupplierAddress: [],
-      PurchasePrice: [],
-      // Tax: ['NOTAX', (control: FormControl) => {
-      //   if (newForm && this.cms.getObjectId(newForm.get('Type').value) === 'PRODUCT' && !this.cms.getObjectId(control.value)) {
-      //     return { invalidName: true, required: true, text: 'trường bắt buộc' };
-      //   }
-      //   return null;
-      // }],
+      // PurchasePrice: [],
       ToMoney: [0],
-      DiscountPercent: [],
-      DiscountPrice: [],
+      // DiscountPercent: [],
+      // DiscountPrice: [],
       Image: [[]],
-      // Reason: [''],
       Business: { value: this.accountingBusinessList.filter(f => f.id === 'AUTHORIZEDSALEREVENUEDEBT' || f.id === 'AUTHORIZEDGOODSDELIVERY'), disabled: false },
-      // Business: [],
     });
 
     if (data) {
+
+      if (data?.AccessNumbers && this.cms.getObjectId(data?.Product)) {
+        for (const accessNumber of data?.AccessNumbers) {
+          if (accessNumber?.id && accessNumber.id == accessNumber?.text) {
+            accessNumber.text += ' (' + this.cms.compileAccessNumber(accessNumber.id, this.cms.getObjectId(data?.Product)) + ')';
+          }
+        }
+      }
+
       newForm.patchValue(data);
 
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
@@ -1017,32 +1002,32 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
         }
       }
     });
-    newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      if (value && !this.isProcessing) {
-        const type = this.cms.getObjectId(value);
-        if (type) {
-          businessControl.setValue(null);
-          if (type == 'PRODUCT') {
-            businessControl.setValue([
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDGOODSDELIVERY'),
-            ]);
-          }
-          if (type == 'PARTNERPRODUCT') {
-            businessControl.setValue([
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURCHASEDEBT'),
-            ]);
-          }
-          if (type == 'SERVICE') {
-            businessControl.setValue([
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALESVREVENUEDEBT'),
-              this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURSV1DEBT'),
-            ]);
-          }
-        }
-      }
-    });
+    // newForm.get('Type').valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
+    //   if (value && !this.isProcessing) {
+    //     const type = this.cms.getObjectId(value);
+    //     if (type) {
+    //       businessControl.setValue(null);
+    //       if (type == 'PRODUCT') {
+    //         businessControl.setValue([
+    //           this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
+    //           this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDGOODSDELIVERY'),
+    //         ]);
+    //       }
+    //       // if (type == 'PARTNERPRODUCT') {
+    //       //   businessControl.setValue([
+    //       //     this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEREVENUEDEBT'),
+    //       //     this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURCHASEDEBT'),
+    //       //   ]);
+    //       // }
+    //       // if (type == 'SERVICE') {
+    //       //   businessControl.setValue([
+    //       //     this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALESVREVENUEDEBT'),
+    //       //     this.accountingBusinessList.find(f => this.cms.getObjectId(f) == 'AUTHORIZEDSALEPURSV1DEBT'),
+    //       //   ]);
+    //       // }
+    //     }
+    //   }
+    // });
 
     newForm['IsManageByAccessNumber'] = false;
     newForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(detail => {
@@ -1055,31 +1040,31 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
           newForm['IsManageByAccessNumber'] = false;
         }
 
-        supplierControl.enable({ emitEvent: false });
-        containerControl.enable({ emitEvent: false });
-        supplierAddressControl.enable({ emitEvent: false });
-        purchaePriceControl.enable({ emitEvent: false });
+        // supplierControl.enable({ emitEvent: false });
+        // containerControl.enable({ emitEvent: false });
+        // supplierAddressControl.enable({ emitEvent: false });
+        // purchaePriceControl.enable({ emitEvent: false });
         if (this.cms.getObjectId(detail.Type) == 'PRODUCT') {
           // supplierControl.setValue(null);
           // supplierAddressControl.setValue(null);
           // purchaePriceControl.setValue(null);
-          supplierControl.disable({ emitEvent: false });
-          supplierAddressControl.disable({ emitEvent: false });
-          purchaePriceControl.disable({ emitEvent: false });
+          // supplierControl.disable({ emitEvent: false });
+          // supplierAddressControl.disable({ emitEvent: false });
+          // purchaePriceControl.disable({ emitEvent: false });
         }
-        if (this.cms.getObjectId(detail.Type) == 'PARTNERPRODUCT') {
-          // containerControl.setValue(null);
-          containerControl.disable({ emitEvent: false });
-        }
-        if (this.cms.getObjectId(detail.Type) == 'SERVICE') {
-          // supplierControl.setValue(null);
-          // supplierAddressControl.setValue(null);
-          // purchaePriceControl.setValue(null);
-          containerControl.setValue(null);
-          supplierControl.disable({ emitEvent: false });
-          supplierAddressControl.disable({ emitEvent: false });
-          purchaePriceControl.disable({ emitEvent: false });
-        }
+        // if (this.cms.getObjectId(detail.Type) == 'PARTNERPRODUCT') {
+        //   // containerControl.setValue(null);
+        //   containerControl.disable({ emitEvent: false });
+        // }
+        // if (this.cms.getObjectId(detail.Type) == 'SERVICE') {
+        //   // supplierControl.setValue(null);
+        //   // supplierAddressControl.setValue(null);
+        //   // purchaePriceControl.setValue(null);
+        //   containerControl.setValue(null);
+        //   supplierControl.disable({ emitEvent: false });
+        //   supplierAddressControl.disable({ emitEvent: false });
+        //   purchaePriceControl.disable({ emitEvent: false });
+        // }
       });
     });
 
@@ -1470,8 +1455,16 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
   }
 
   /** Choose unit event */
-  onSelectUnit(detail: FormGroup, selectedData: ProductUnitModel, formItem: FormGroup) {
+  onSelectUnit(detail: FormGroup, selectedData: ProductUnitConversoinModel, formItem: FormGroup) {
     if (selectedData) {
+
+      if (typeof nextUnit?.IsManageByAccessNumber !== 'undefined') {
+        detail['IsManageByAccessNumber'] = nextUnit.IsManageByAccessNumber;
+        if (!this.isProcessing) {
+          detail.get('AccessNumbers').setValue(null);
+        }
+      }
+      
       if (selectedData.Containers) {
         const productId = this.cms.getObjectId(detail.get('Product').value);
         const containerControl = detail.get('Container');
@@ -1581,40 +1574,40 @@ export class MultifunctionalPurchaseFormComponent extends DataManagerFormCompone
     const quantity = parseFloat(detail.get('Quantity').value || 0);
     const toMoney = parseFloat(detail.get('ToMoney').value || 0);
     if (source === 'ToMoney' && detail.get('ToMoney').value) {
-      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
-      const discountPrice = toMoney / quantity;
-      detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
-      const price = discountPrice / (1 - discountPercent / 100);
+      // const discountPercent = 0;
+      const price = toMoney / quantity;
+      // detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
+      // const price = discountPrice / (1 - discountPercent / 100);
       detail.get('Price').setValue(price, { emitEvent: false });
-    } else if (source === 'DiscountPercent') {
-      const price = parseFloat(detail.get('Price').value || 0);
-      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
-      const discountPrice = price - price * discountPercent / 100;
-      detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
-      detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
-    } else if (source === 'DiscountPrice' && detail.get('DiscountPrice').value) {
-      const price = parseFloat(detail.get('Price').value || 0);
-      const discountPrice = parseFloat(detail.get('DiscountPrice').value || 0);
-      detail.get('DiscountPercent').setValue((price - discountPrice) * 100 / price, { emitEvent: false });
-      detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
+      // } else if (source === 'DiscountPercent') {
+      //   const price = parseFloat(detail.get('Price').value || 0);
+      //   const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
+      //   const discountPrice = price - price * discountPercent / 100;
+      //   detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
+      //   detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
+      // } else if (source === 'DiscountPrice' && detail.get('DiscountPrice').value) {
+      //   const price = parseFloat(detail.get('Price').value || 0);
+      //   const discountPrice = parseFloat(detail.get('DiscountPrice').value || 0);
+      //   detail.get('DiscountPercent').setValue((price - discountPrice) * 100 / price, { emitEvent: false });
+      //   detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
     } else if (source === 'Price' && detail.get('Price').value) {
       const price = parseFloat(detail.get('Price').value || 0);
-      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
-      const discountPrice = price - price * discountPercent / 100;
-      detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
-      detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
+      // const discountPercent = 0;
+      // const discountPrice = price - price * discountPercent / 100;
+      // detail.get('DiscountPrice').setValue(discountPrice, { emitEvent: false });
+      detail.get('ToMoney').setValue(quantity * price, { emitEvent: false });
     } else {
       const price = parseFloat(detail.get('Price').value || 0);
-      const discountPercent = parseFloat(detail.get('DiscountPercent').value || 0);
-      const discountPrice = price - (price * discountPercent / 100);
-      detail.get('ToMoney').setValue(quantity * discountPrice, { emitEvent: false });
+      // const discountPercent = 0;
+      // const discountPrice = price - (price * discountPercent / 100);
+      detail.get('ToMoney').setValue(quantity * price, { emitEvent: false });
     }
     // Call culate total
     const details = this.getDetails(formItem);
     let total = 0;
     for (let i = 0; i < details.controls.length; i++) {
       const quantity = ((details.controls[i] as FormGroup).get('Quantity').value || 0);
-      const discoutnPrice = ((details.controls[i] as FormGroup).get('DiscountPrice').value || 0);
+      const discoutnPrice = ((details.controls[i] as FormGroup).get('Price').value || 0);
       total += quantity * discoutnPrice;
     }
     formItem.get('_total').setValue(total);

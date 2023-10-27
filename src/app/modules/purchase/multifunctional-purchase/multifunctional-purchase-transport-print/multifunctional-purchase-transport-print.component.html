@@ -52,6 +52,7 @@
                 <td>{{'Sku/ID' | translate | headtitlecase}}</td>
                 <td>{{'Common.goodsOrService' | translate | headtitlecase}}</td>
                 <td>{{'ĐC lấy hàng' | translate | headtitlecase}}</td>
+                <!-- <td>{{'Ví trí nhập hàng' | translate | headtitlecase}}</td> -->
                 <td class="text-align-right">{{'SL' | translate | headtitlecase}}</td>
                 <td class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <!-- <td class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</td> -->
@@ -67,7 +68,8 @@
                   <td>{{detail.No}}</td>
                   <td><span>{{detail.Product?.Sku}}</span><span style="font-style: italic; font-size: 0.5rem;"> - ID: {{renderValue(detail.Product | objectid)}}</span></td>
                   <td [innerHTML]="renderValue(detail.Description)"></td>
-                  <td>{{(detail.Type | objectid) == 'PRODUCT' ? (detail.Container| objecttext) : detail.SupplierAddress}}</td>
+                  <td>{{detail.SupplierAddress}}</td>
+                  <!-- <td>{{detail.Container| objecttext}}</td> -->
                   <td class="text-align-right">{{renderValue(detail.Quantity) | number}}</td>
                   <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                   <!-- <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td> -->
@@ -93,7 +95,7 @@
             {{renderValue(data.DirectReceiverName)}}
           </div>
         </div> -->
-       
+
         <!-- <div>
           <div style="display: flex;">
             <div style="flex: 1;">

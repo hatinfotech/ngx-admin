@@ -2,6 +2,7 @@ import { PurchaseGoodsFormComponent } from "./goods/purchase-goods-form/warehous
 import { PurchaseGoodsListComponent } from "./goods/purchase-goods-list/purchase-goods-list.component";
 import { PurchaseGoodsPrintComponent } from "./goods/purchase-goods-print/purchase-goods-print.component";
 import { MultifunctionalPurchaseFormComponent } from "./multifunctional-purchase/multifunctional-purchase-form/multifunctional-purchase-form.component";
+import { MultifunctionalPurchaseGoodsReceiptPrintComponent } from "./multifunctional-purchase/multifunctional-purchase-goods-receipt-print/multifunctional-purchase-goods-receipt-print.component";
 import { MultifunctionalPurchaseListComponent } from "./multifunctional-purchase/multifunctional-purchase-list/multifunctional-purchase-list.component";
 import { MultifunctionalPurchasePrintComponent } from "./multifunctional-purchase/multifunctional-purchase-print/multifunctional-purchase-print.component";
 import { MultifunctionalPurchaseSupplierPrintComponent } from "./multifunctional-purchase/multifunctional-purchase-supplier-print/multifunctional-purchase-supplier-print.component";
@@ -45,4 +46,5 @@ export const purchaseComponents = [
     MultifunctionalPurchasePrintComponent,
     MultifunctionalPurchaseTransportPrintComponent,
     MultifunctionalPurchaseSupplierPrintComponent,
+    MultifunctionalPurchaseGoodsReceiptPrintComponent,
 ];
