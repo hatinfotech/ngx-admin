@@ -57,6 +57,7 @@ import { warehouseRoutes } from './modules/warehouse/warehouse.routing';
 import { systemRoutes } from './modules/system/system-routing.module';
 import { userRoutes } from './modules/users/users-routing.module';
 import { contactRoutes } from './modules/contact/contact-routing.module';
+import { purchaseRoutes } from './modules/purchase/purchase.routing';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -205,88 +206,7 @@ const routes: Routes = [
   ...salesRoutes,
 
   // Purchase routes
-  // Sales price table
-  {
-    path: 'purchase/price-table/list',
-    canActivate: [AuthGuardService],
-    component: PurchasePriceTableListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  {
-    path: 'purchase/price-table/form',
-    canActivate: [AuthGuardService],
-    component: PurchasePriceTableFormComponent,
-  },
-  {
-    path: 'purchase/price-table/form/:id',
-    canActivate: [AuthGuardService],
-    component: PurchasePriceTableFormComponent,
-  },
-  // Purchase voucher
-  {
-    path: 'purchase/voucher/list',
-    canActivate: [AuthGuardService],
-    component: PurchaseVoucherListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  {
-    path: 'purchase/voucher/form',
-    canActivate: [AuthGuardService],
-    component: PurchaseVoucherFormComponent,
-  },
-  {
-    path: 'purchase/voucher/form/:id',
-    canActivate: [AuthGuardService],
-    component: PurchaseVoucherFormComponent,
-  },
-  // Purchase Order voucher
-  {
-    path: 'purchase/order-voucher/list',
-    canActivate: [AuthGuardService],
-    component: PurchaseOrderVoucherListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  {
-    path: 'purchase/order-voucher/form',
-    canActivate: [AuthGuardService],
-    component: PurchaseOrderVoucherFormComponent,
-  },
-  {
-    path: 'purchase/order-voucher/form/:id',
-    canActivate: [AuthGuardService],
-    component: PurchaseOrderVoucherFormComponent,
-  },
-  // Goods list
-  {
-    path: 'purchase/goods/list',
-    canActivate: [AuthGuardService],
-    component: PurchaseGoodsListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  {
-    path: 'purchase/products/list',
-    canActivate: [AuthGuardService],
-    component: PurchaseProductListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  {
-    path: 'purchase/dashboard',
-    canActivate: [AuthGuardService],
-    component: PurchaseDashboardComponent,
-    data: {
-      reuse: true,
-    },
-  },
+  ...purchaseRoutes,
 
   // Accounting routes
   ...accoutingRoutes,

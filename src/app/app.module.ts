@@ -194,6 +194,7 @@ import { userComponents } from './modules/users/users.module';
 import { generalComponents } from './modules/general/general.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { contactComponents } from './modules/contact/contact.module';
+import { purchaseComponents } from './modules/purchase/purchase.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -226,24 +227,7 @@ export class DynamicLocaleId extends String {
     ...saleComponents,
 
     // Purchase components
-    PurchasePriceTableListComponent,
-    PurchasePriceTableFormComponent,
-    PurchasePriceTablePrintComponent,
-    // PurchaseComponent,
-    PurchasePriceTableImportComponent,
-    PurchaseVoucherListComponent,
-    PurchaseVoucherFormComponent,
-    PurchaseVoucherPrintComponent,
-    PurchaseSimpleVoucherFormComponent,
-    PurchaseOrderVoucherListComponent,
-    PurchaseOrderVoucherFormComponent,
-    PurchaseOrderVoucherPrintComponent,
-    PurchaseGoodsFormComponent,
-    PurchaseGoodsListComponent,
-    PurchaseGoodsPrintComponent,
-    PurchaseDashboardComponent,
-    PurchaseProductListComponent,
-    PurchaseProductFormComponent,
+    ...purchaseComponents,
 
     // Warehouse components
     ...warehouseComponents,

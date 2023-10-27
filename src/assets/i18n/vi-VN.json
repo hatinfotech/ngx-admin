@@ -627,6 +627,9 @@
             "title": "{{definition}}{{action}} phiếu mua hàng",
             "suggestedSalesPrice": "gợi ý giá bán"
         },
+        "MultifunctionalPurchase": {
+            "title": "{{definition}}{{action}} phiếu mua hàng đa năng"
+        },
         "Order": {
             "title": "{{definition}}{{action}} phiếu đặt mua hàng"
         },

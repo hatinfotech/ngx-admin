@@ -1,7 +1,7 @@
 import { IdTextModel } from './common.model';
 import { FileModel } from './file.model';
 import { TaxModel } from './tax.model';
-import { ProductModel } from './product.model';
+import { ProductModel, ProductUnitModel } from './product.model';
 import { ContactModel } from './contact.model';
 import { UnitModel } from './unit.model';
 import { Model } from './model';
@@ -179,4 +179,77 @@ export interface PurchaseProductModel {
   LastUpdate?: string;
   FeaturePicture?: FileModel;
   Pictures?: FileModel[];
+}
+
+
+export interface MultifunctionalPurchaseModel extends Model {
+  Id?: string;
+  Code?: string;
+  Title?: string;
+  Note?: string;
+  SubNote?: string;
+  Supplier?: string;
+  SupplierName?: string;
+  SupplierPhone?: string;
+  SupplierEmail?: string;
+  SupplierAddress?: string;
+  Customer?: string;
+  CustomerName?: string;
+  CustomerPhone?: string;
+  CustomerEmail?: string;
+  CustomerAddress?: string;
+  Employee?: string;
+  EmployeeName?: string;
+  Creator?: string;
+  CreatorName?: string;
+  Approver?: string;
+  ApproverName?: string;
+  DateOfCreated?: string;
+  DateOfApproved?: string;
+  DateOfSale?: string;
+  State?: string;
+  Thread?: string;
+  Permission?: string;
+
+  Details?: MultifunctionalPurchaseDetailModel[];
+  TransportPoints?: MultifunctionalPurchaseTransportPointModel[];
+}
+export interface MultifunctionalPurchaseDetailModel extends Model {
+  Id?: string;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: string;
+  Image?: string;
+  Product?: Partial<ProductModel>;
+  ProductName?: string;
+  Description?: string;
+  Quantity?: number;
+  Price?: number;
+  Unit?: Partial<ProductUnitModel>;
+  UnitLabel?: string;
+  Supplier?: Partial<ContactModel>;
+  SupplierAddress?: Partial<ProductUnitModel>;
+  DebitAccount?: string;
+  CreditAccount?: string;
+  Business?: string;
+  Amount?: number;
+}
+export interface MultifunctionalPurchaseTransportPointModel extends Model {
+  Id?: string;
+  SystemUuid?: string;
+  Voucher?: string;
+  No?: string;
+  ShippingUnit?: string;
+  ShippingUnitName?: string;
+  ShippingUnitPhone?: string;
+  ShippingUnitEmail?: string;
+  ShippingUnitAddress?: string;
+  ShippingUnitMapLink?: string;
+  ShippingUnitId?: string;
+  Note?: string;
+  TransportCost?: number;
+  Business?: string;
+  DebitAccount?: string;
+  CreditAccount?: string;
+  CostClassification?: string;
 }
