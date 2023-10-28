@@ -231,15 +231,18 @@ export interface MultifunctionalPurchaseDetailModel extends Model {
   SupplierAddress?: Partial<ProductUnitModel>;
   DebitAccount?: string;
   CreditAccount?: string;
-  Business?: string;
+  Business?: any[];
   Amount?: number;
+  ShippingUnit?: Partial<ContactModel>;
+  ShippingCost?: number;
+  ShippingCostWeight?: number;
 }
 export interface MultifunctionalPurchaseTransportPointModel extends Model {
   Id?: string;
   SystemUuid?: string;
   Voucher?: string;
   No?: string;
-  ShippingUnit?: string;
+  ShippingUnit?: Partial<ContactModel>;
   ShippingUnitName?: string;
   ShippingUnitPhone?: string;
   ShippingUnitEmail?: string;

@@ -1,19 +1,20 @@
-import { CashVoucherModel } from '../../../../models/accounting.model';
-import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
-// import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { WarehouseGoodsReceiptNoteDetailModel } from '../../../../models/warehouse.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
-import { MultifunctionalPurchaseFormComponent } from '../multifunctional-purchase-form/multifunctional-purchase-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
+// import { AppModule } from '../../warehouse.module';
 import { RootServices } from '../../../../services/root.services';
 import { MultifunctionalPurchaseDetailModel, MultifunctionalPurchaseModel } from '../../../../models/purchase.model';
+import { MultifunctionalPurchaseFormComponent } from '../multifunctional-purchase-form/multifunctional-purchase-form.component';
+import { WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent } from '../../../warehouse/goods-receipt-note/warehouse-goods-access-number-print/warehouse-goods-access-number-print.component';
+import { WarehouseGoodsFindOrderTempPrintComponent } from '../../../warehouse/goods/warehouse-goods-find-order-temp-print/warehouse-goods-find-order-temp-print.component';
 
 @Component({
   selector: 'ngx-multifunctional-purchase-goods-receipt-print',
@@ -23,25 +24,12 @@ import { MultifunctionalPurchaseDetailModel, MultifunctionalPurchaseModel } from
 export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManagerPrintComponent<MultifunctionalPurchaseModel> implements OnInit {
 
   /** Component name */
-  componentName = 'MultifunctionalPurchaseGoodsReceiptPrintComponent';
+  componentName = 'WarehouseGoodsReceiptNotePrintComponent';
   title: string = '';
   env = environment;
   apiPath = '/purchase/multifunctional-purchases';
   processMapList: ProcessMap[] = [];
-  idKey = ['Code'];
   formDialog = MultifunctionalPurchaseFormComponent;
-
-  registerInfo: any = {
-    voucherInfo: this.cms.translateText('Information.Voucher.register'),
-    voucherLogo: environment.register.logo.voucher,
-    voucherLogoHeight: 60,
-  };
-
-  style = /*css*/`
-  .font-h1-bold * {
-    font-size: 16px !important; 
-  }
-  `;
 
   constructor(
     public rsv: RootServices,
@@ -52,13 +40,6 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     public datePipe: DatePipe,
   ) {
     super(rsv, cms, router, apiService, ref);
-    this.cms.systemConfigs$.subscribe(settings => {
-      if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
-        this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
-        this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
-        this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
-      }
-    });
   }
 
   ngOnInit() {
@@ -68,26 +49,51 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
 
   async init() {
     const result = await super.init();
-    // this.title = `MultifunctionalPurchase_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
+    // this.title = `PurchaseVoucher_${this.identifier}` + (this.data.DateOfPurchase ? ('_' + this.datePipe.transform(this.data.DateOfPurchase, 'short')) : '');
 
-    // if (this.data && this.data.length > 0) {
-    //   for (const i in this.data) {
-    //     const data = this.data[i];
-    //     data['Total'] = 0;
-    //     data['Title'] = this.renderTitle(data);
-    //     for (const detail of data.Details) {
-    //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
-    //     }
-    //     this.processMapList[i] = AppModule.processMaps.salesVoucher[data.State || ''];
+    // for (const i in this.data) {
+    //   const data = this.data[i];
+    //   this.setDetailsNo(data?.Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+    //   data['Total'] = 0;
+    //   data['Title'] = this.renderTitle(data);
+    //   for (const detail of data.Details) {
+    //     data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //   }
+    //   this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
     // }
+    this.actionButtonList.unshift({
+      name: 'print-access-numbers',
+      status: 'danger',
+      label: this.cms.textTransform(this.cms.translate.instant('Common.printBarCode'), 'head-title'),
+      icon: 'grid-outline',
+      title: this.cms.textTransform(this.cms.translate.instant('In mã vạch cho hàng hóa quản lý bằng số truy xuất'), 'head-title'),
+      size: 'medium',
+      disabled: () => {
+        return false;
+      },
+      click: (event: any, option: any) => {
+        const item = this.data[option.index];
+
+
+        const productList = item.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => ({ id: m.Product.id + '/' + m.Product.Sku + ': ' + this.cms.getObjectId(m.Product) + '-' + this.cms.getObjectId(m.Unit), text: m.Description + ' (' + this.cms.getObjectText(m.Unit) + ')', ...m }));
+
+        this.cms.openDialog(WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent, {
+          context: {
+            voucher: item.Code,
+            id: ['xxx'],
+            productList,
+          }
+        });
+        return false;
+      },
+    });
     this.summaryCalculate(this.data);
 
     return result;
   }
 
   renderTitle(data: MultifunctionalPurchaseModel) {
-    return `PhieuBanHang_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
+    return `Phieu_Nhap_Kho_${this.getIdentified(data).join('-')}` + (data.DateOfReceipted ? ('_' + this.datePipe.transform(data.DateOfReceipted, 'short')) : '');
   }
 
   close() {
@@ -95,28 +101,22 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
   }
 
   renderValue(value: any) {
-    let html = value;
     if (value && value['text']) {
-      html = value['text'];
+      return value['text'];
     }
-    try {
-      return (html && html?.placeholder || html || '').toString().replace(/\n/g, '<br>');
-    } catch (e) {
-      console.error(e);
-      return '';
-    }
+    return value;
   }
 
   toMoney(detail: MultifunctionalPurchaseDetailModel) {
-    if (detail.Type !== 'CATEGORY') {
-      let toMoney = detail['Quantity'] * detail['DiscountPrice'];
-      // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
-      // if (detail.Tax) {
-      //   if (typeof detail.Tax.Tax == 'undefined') {
-      //     throw Error('tax not as tax model');
-      //   }
-      //   toMoney += toMoney * detail.Tax.Tax / 100;
-      // }
+    if (detail.Type === 'PRODUCT') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      if (detail.Tax) {
+        if (typeof detail.Tax.Tax == 'undefined') {
+          throw Error('tax not as tax model');
+        }
+        toMoney += toMoney * detail.Tax.Tax / 100;
+      }
       return toMoney;
     }
     return 0;
@@ -128,7 +128,7 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     // for (let i = 0; i < details.length; i++) {
     //   total += this.toMoney(details[i]);
     // }
-    // return total;
+    return total;
   }
 
   saveAndClose() {
@@ -149,28 +149,33 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     return '';
   }
 
-  prepareCopy(data: MultifunctionalPurchaseModel) {
-    this.close();
-    this.cms.openDialog(MultifunctionalPurchaseFormComponent, {
-      context: {
-        inputMode: 'dialog',
-        inputId: [data.Code],
-        isDuplicate: true,
-        onDialogSave: (newData: MultifunctionalPurchaseModel[]) => {
-          // if (onDialogSave) onDialogSave(row);
-          this.onClose(newData[0]);
-        },
-        onDialogClose: () => {
-          // if (onDialogClose) onDialogClose();
-          this.refresh();
-
-        },
-      },
+  async getFormData(ids: string[]) {
+    return this.apiService.getPromise<MultifunctionalPurchaseModel[]>(this.apiPath, {
+      id: ids,
+      includeContact: true,
+      includeDetails: true,
+      includeRelativeVouchers: true,
+      includeAccessNumbers: true,
+      detailIncludeShelf: true,
+      detailRenderFindOrderLabel: true,
+      detailIncludeContainer: true,
+    }).then(rs => {
+      if (rs[0] && rs[0].Details) {
+        this.setDetailsNo(rs[0].Details, (detail: WarehouseGoodsReceiptNoteDetailModel) => detail.Type === 'PRODUCT');
+        // let no = 1;
+        // for (const detail of rs[0].Details) {
+        //   if (detail.Type === 'PRODUCT') {
+        //     detail.No = no++;
+        //   }
+        // }
+      }
+      this.summaryCalculate(rs);
+      return rs;
     });
   }
 
-  approvedConfirm(data: MultifunctionalPurchaseModel) {
-    // if (['COMPLETE'].indexOf(data.State) > -1) {
+  approvedConfirm(data: MultifunctionalPurchaseModel, index: number) {
+    // if (['BOOKKEEPING'].indexOf(data.State) > -1) {
     //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
     //       label: this.cms.translateText('Common.close'),
@@ -183,8 +188,8 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.salesVoucher[data.State || ''];
-    params['changeState'] = processMap.nextState;
+    const processMap = AppModule.processMaps.warehouseReceiptGoodsNote[data.State || ''];
+    params['changeState'] = this.processMapList[index]?.nextState;
     // let confirmText = '';
     // let responseText = '';
     // switch (data.State) {
@@ -209,7 +214,7 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
         },
       },
       {
-        label: this.cms.translateText(processMap?.nextStateLabel),
+        label: this.cms.translateText(this.processMapList[index].nextStateLabel),
         status: 'danger',
         action: () => {
           this.loading = true;
@@ -218,7 +223,7 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
             this.close();
-            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
+            this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('Purchase.PrucaseVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
               status: 'success',
             });
             // this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText(responseText, { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
@@ -237,76 +242,6 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     ]);
   }
 
-  approvedConfirmX(data: MultifunctionalPurchaseModel) {
-    if (data.State === 'COMPLETE') {
-      this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.MultifunctionalPurchase.title', { action: '', definition: '' }) }), [
-        {
-          label: this.cms.translateText('Common.ok'),
-          status: 'success',
-        }
-      ]);
-      return;
-    }
-    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.cms.translateText('Sales.MultifunctionalPurchase.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-      {
-        label: this.cms.translateText('Common.cancel'),
-        status: 'primary',
-        action: () => {
-
-        },
-      },
-      {
-        label: this.cms.translateText(!data.State ? 'Common.approve' : (data.State === 'APPROVED' ? 'Common.complete' : '')),
-        status: 'danger',
-        action: () => {
-          const params = { id: [data.Code] };
-          if (!data.State) {
-            params['approve'] = true;
-          } else if (data.State === 'APPROVED') {
-            params['complete'] = true;
-          }
-          this.apiService.putPromise<MultifunctionalPurchaseModel[]>('/sales/multifunctional-purchases', params, [{ Code: data.Code }]).then(rs => {
-            this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedSuccess', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-              {
-                label: this.cms.translateText('Common.close'),
-                status: 'success',
-                action: () => {
-                  this.onClose(data);
-                  this.close();
-                },
-              },
-            ]);
-          }).catch(err => {
-
-          });
-        },
-      },
-    ]);
-  }
-
-  async getFormData(ids: string[]) {
-    return this.apiService.getPromise<MultifunctionalPurchaseModel[]>(this.apiPath, {
-      id: ids,
-      includeEmployee: true,
-      includeDetails: true,
-      includeRelativeVouchers: true,
-      context: 'DELIVERY',
-    }).then(rs => {
-      for (const item of rs) {
-        const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
-        item.StateLabel = processMap.label;
-        if (item && item.Details) {
-          this.setDetailsNo(item.Details, (detail: MultifunctionalPurchaseDetailModel) => detail.Type !== 'CATEGORY');
-          for (const detail of item.Details) {
-            item['Total'] += detail['ToMoney'] = this.toMoney(detail);
-          }
-        }
-      }
-      this.summaryCalculate(rs);
-      return rs;
-    });
-  }
-
   getItemDescription(item: MultifunctionalPurchaseModel) {
     return item?.Description;
   }
@@ -315,43 +250,28 @@ export class MultifunctionalPurchaseGoodsReceiptPrintComponent extends DataManag
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
-      // item['TotalCommission'] = 0;
       item['Title'] = this.renderTitle(item);
-
-      // if (this.cms.getObjectId(item['State']) !== 'COMPLETE') {
-      //   item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
-      // }
-
       for (const detail of item.Details) {
+        const productInfo = this.rsv.adminProductService.productMap[this.cms.getObjectId(detail.Product)];
+        detail.Product = {
+          ...detail.Product,
+          Sku: productInfo.Sku,
+          Code: productInfo.Code,
+        };
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);
-        // item['TotalCommission'] += detail['Commission'];
-        // Update product info
-        const refProduct = this.rsv.adminProductService.productMap[this.cms.getObjectId(detail.Product)];
-        if (refProduct) {
-          detail.Product.Sku = refProduct.Sku;
-          detail.Product.FeaturePicture = refProduct.FeaturePicture;
-          detail.Product.Pictures = refProduct.Pictures;
-        }
       }
-      this.processMapList[i] = AppModule.processMaps.salesVoucher[item.State || ''];
-
+      this.processMapList[i] = AppModule.processMaps.warehouseReceiptGoodsNote[item.State || ''];
     }
     return data;
   }
 
-  receipt(item: MultifunctionalPurchaseModel) {
-    this.cms.openDialog(CashReceiptVoucherFormComponent, {
+  printContainerTemp(detail: MultifunctionalPurchaseDetailModel) {
+    this.cms.openDialog(WarehouseGoodsFindOrderTempPrintComponent, {
       context: {
-        onDialogSave: (items: CashVoucherModel[]) => {
-          this.refresh();
-          this.onChange && this.onChange(item, this);
-        },
-        onAfterInit: (formComponent: CashReceiptVoucherFormComponent) => {
-          formComponent.addRelativeVoucher(item, 'SALES');
-        },
+        priceTable: 'default',
+        id: [`${this.cms.getObjectId(detail.Product)}-${this.cms.getObjectId(detail.Unit)}-${this.cms.getObjectId(detail.Container)}`],
       }
-    })
-    return false;
+    });
   }
 
 }

@@ -1,7 +1,7 @@
 import { CashVoucherModel } from '../../../../models/accounting.model';
 import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receipt/cash-receipt-voucher-form/cash-receipt-voucher-form.component';
 // import { SalesModule } from './../../sales.module';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
@@ -14,6 +14,7 @@ import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
 import { RootServices } from '../../../../services/root.services';
 import { MultifunctionalPurchaseDetailModel, MultifunctionalPurchaseModel } from '../../../../models/purchase.model';
+import { ContactModel } from '../../../../models/contact.model';
 
 @Component({
   selector: 'ngx-multifunctional-purchase-transport-print',
@@ -30,6 +31,8 @@ export class MultifunctionalPurchaseTransportPrintComponent extends DataManagerP
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
   formDialog = MultifunctionalPurchaseFormComponent;
+
+  @Input() shippingUnit: ContactModel;
 
   registerInfo: any = {
     voucherInfo: this.cms.translateText('Information.Voucher.register'),
@@ -321,6 +324,10 @@ export class MultifunctionalPurchaseTransportPrintComponent extends DataManagerP
       // if (this.cms.getObjectId(item['State']) !== 'COMPLETE') {
       //   item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
       // }
+
+      if (this.shippingUnit) {
+        item.Details = item.Details.filter(f => this.cms.getObjectId(f.ShippingUnit) == this.cms.getObjectId(this.shippingUnit));
+      }
 
       for (const detail of item.Details) {
         item['Total'] += detail['ToMoney'] = this.toMoney(detail);

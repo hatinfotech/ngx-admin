@@ -106,7 +106,7 @@ export class MultifunctionalPurchaseSupplierPrintComponent extends DataManagerPr
 
   toMoney(detail: MultifunctionalPurchaseDetailModel) {
     if (detail.Type !== 'CATEGORY') {
-      let toMoney = detail['Quantity'] * detail['PurchasePrice'];
+      let toMoney = detail['Quantity'] * detail['Price'];
       // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
       // if (detail.Tax) {
       //   if (typeof detail.Tax.Tax == 'undefined') {

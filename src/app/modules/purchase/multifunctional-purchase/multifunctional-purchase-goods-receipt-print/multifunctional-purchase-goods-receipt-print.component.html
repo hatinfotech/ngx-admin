@@ -10,7 +10,7 @@
           <div class="print-title">{{ 'Warehouse.GoodsReceiptNote.title' | translate:{action: '', definition: ''} |
             uppercase }}
           </div>
-          <div class="under-title">{{ data.Code }} - {{ data.DateOfReceipted | date:'short' }}</div>
+          <div class="under-title">{{ data.Code }} - {{ data.DateOfPurchase | date:'short' }}</div>
         </div>
         <!-- <div>
           <div style="display: flex;">
@@ -37,7 +37,7 @@
                 <td class="nowrap" style="min-width: 10rem;">{{'Common.description' | translate | headtitlecase}}</td>
                 <td class="nowrap">{{'Warehouse.accessNumber' | translate | headtitlecase}}</td>
                 <td class="text-align-right nowrap">{{'Voucher.quantity' | translate | headtitlecase}}</td>
-                <td class="text-align-right nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
+                <td class="nowrap">{{'Voucher.shortUnit' | translate | headtitlecase}}</td>
                 <td class="text-align-right nowrap">{{'Kệ' | translate | headtitlecase}}</td>
               </thead>
               <ng-container *ngFor="let detail of data.Details; let i = index;">

@@ -491,7 +491,7 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
                   //   }
                   // },
                   {
-                    label: 'Nhập kho',
+                    label: 'Phiếu nhập kho',
                     status: 'danger',
                     action: () => {
 
@@ -522,28 +522,135 @@ export class MultifunctionalPurchaseListComponent extends AgGridDataManagerListC
                   {
                     label: 'Lấy hàng',
                     status: 'warning',
-                    action: () => {
+                    action: async () => {
 
-                      this.cms.openDialog(MultifunctionalPurchaseTransportPrintComponent, {
-                        // closeOnEsc: false,
-                        context: {
-                          showLoadinng: true,
-                          title: 'Xem trước',
-                          id: [this.makeId(data)],
-                          sourceOfDialog: 'list',
-                          mode: 'print',
-                          idKey: ['Code'],
-                          // approvedConfirm: true,
-                          onChange: (data: MultifunctionalPurchaseModel) => {
-                            // this.refresh();
-                            this.refreshItems([this.makeId(data)]);
+                      // this.cms.openDialog(MultifunctionalPurchaseTransportPrintComponent, {
+                      //   // closeOnEsc: false,
+                      //   context: {
+                      //     showLoadinng: true,
+                      //     title: 'Xem trước',
+                      //     id: [this.makeId(data)],
+                      //     sourceOfDialog: 'list',
+                      //     mode: 'print',
+                      //     idKey: ['Code'],
+                      //     // approvedConfirm: true,
+                      //     onChange: (data: MultifunctionalPurchaseModel) => {
+                      //       // this.refresh();
+                      //       this.refreshItems([this.makeId(data)]);
+                      //     },
+                      //     onSaveAndClose: (data: MultifunctionalPurchaseModel) => {
+                      //       // this.refresh();
+                      //       this.refreshItems([this.makeId(data)]);
+                      //     },
+                      //   },
+                      // });
+
+                      const voucher = await this.apiService.getPromise<MultifunctionalPurchaseModel[]>(this.apiPath + '/' + data.Code, { includeDetails: true }).then(rs => rs[0])
+
+                      const shippingUnits: ContactModel[] = voucher.Details.filter(f => f.ShippingUnit).map(detail => detail.ShippingUnit)?.reduce((result: ContactModel[], current, index) => {
+                        // result[this.cms.getObjectId(current)] = current;
+                        if (result.findIndex(f => this.cms.getObjectId(current) == this.cms.getObjectId(f)) < 0) {
+                          result.push(current);
+                        }
+                        return result;
+                      }, []);
+                      if (shippingUnits.length > 1) {
+                        this.cms.openDialog(DialogFormComponent, {
+                          context: {
+                            title: 'Chọn nhà cung cấp cho phiếu đặt mua hàng',
+                            width: '600px',
+                            onInit: async (form, dialog) => {
+                              return true;
+                            },
+                            controls: [
+                              {
+                                name: 'Supplier',
+                                label: 'Nhà cung cấp',
+                                placeholder: 'Chọn nhà cung cấp',
+                                type: 'select2',
+                                initValue: null,
+                                option: {
+                                  ...this.cms.select2OptionForTemplate,
+                                  data: shippingUnits,
+                                }
+                              },
+                            ],
+                            actions: [
+                              {
+                                label: 'Trở về',
+                                icon: 'back',
+                                status: 'basic',
+                                action: async () => { return true; },
+                              },
+                              {
+                                label: 'Xem trước',
+                                icon: 'npm-outline',
+                                status: 'info',
+                                action: async (form: FormGroup) => {
+
+                                  let shippingUnit: string[] = form.get('Supplier').value;
+                                  this.cms.openDialog(MultifunctionalPurchaseTransportPrintComponent, {
+                                    // closeOnEsc: false,
+                                    context: {
+                                      showLoadinng: true,
+                                      title: 'Xem trước',
+                                      id: [this.makeId(data)],
+                                      sourceOfDialog: 'list',
+                                      mode: 'print',
+                                      idKey: ['Code'],
+                                      shippingUnit: shippingUnit,
+                                      // approvedConfirm: true,
+                                      onChange: (data: MultifunctionalPurchaseModel) => {
+                                        // this.refresh();
+                                        this.refreshItems([this.makeId(data)]);
+                                      },
+                                      onSaveAndClose: (data: MultifunctionalPurchaseModel) => {
+                                        // this.refresh();
+                                        this.refreshItems([this.makeId(data)]);
+                                      },
+                                    },
+                                  });
+
+                                  return true;
+                                },
+                              },
+                            ],
                           },
-                          onSaveAndClose: (data: MultifunctionalPurchaseModel) => {
-                            // this.refresh();
-                            this.refreshItems([this.makeId(data)]);
+                        });
+                      } else if (shippingUnits.length == 1) {
+                        this.cms.openDialog(MultifunctionalPurchaseTransportPrintComponent, {
+                          // closeOnEsc: false,
+                          context: {
+                            showLoadinng: true,
+                            title: 'Xem trước',
+                            id: [this.makeId(data)],
+                            sourceOfDialog: 'list',
+                            mode: 'print',
+                            idKey: ['Code'],
+                            shippingUnit: shippingUnits[0],
+                            // approvedConfirm: true,
+                            onChange: (data: MultifunctionalPurchaseModel) => {
+                              // this.refresh();
+                              this.refreshItems([this.makeId(data)]);
+                            },
+                            onSaveAndClose: (data: MultifunctionalPurchaseModel) => {
+                              // this.refresh();
+                              this.refreshItems([this.makeId(data)]);
+                            },
                           },
-                        },
-                      });
+                        });
+                      } else {
+                        this.cms.showDialog('Phiếu đặt hàng', 'Không có hàng hóa nào cần lấy từ nhà cung cấp !', [
+                          {
+                            status: 'basic',
+                            label: 'Đóng',
+                            outline: true,
+                            action: () => {
+                              return true;
+                            }
+                          }
+                        ]);
+                      }
 
                       return true;
                     }
