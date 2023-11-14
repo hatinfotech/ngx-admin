@@ -13,7 +13,7 @@ import { ChatRoomMemberModel, ChatRoomModel } from '../../../../models/chat-room
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesPriceReportModel, SalesPriceReportDetailModel } from '../../../../models/sales.model';
+import { SalesPriceReportDetailModel, AuthorizedSaleVoucherTransportPointModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -28,6 +28,7 @@ import { Select2Option } from '../../../../lib/custom-element/select2/select2.co
 import { CurrencyPipe } from '@angular/common';
 import { RootServices } from '../../../../services/root.services';
 import { filter, takeUntil } from 'rxjs/operators';
+import { CollaboratorOrderDetailModel, CollaboratorOrderModel, CollaboratorOrderTransportPointModel } from '../../../../models/collaborator.model';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -35,7 +36,7 @@ import { filter, takeUntil } from 'rxjs/operators';
   styleUrls: ['./collaborator-order-form.component.scss'],
   providers: [CurrencyPipe]
 })
-export class CollaboratorOrderFormComponent extends DataManagerFormComponent<SalesPriceReportModel> implements OnInit {
+export class CollaboratorOrderFormComponent extends DataManagerFormComponent<CollaboratorOrderModel> implements OnInit {
 
   constructor(
     public rsv: RootServices,
@@ -486,6 +487,138 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       formGroup
     }
   }
+  // select2OptionForProvince = {
+  //   placeholder: 'Chọn tỉnh/TP...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     // url: (params, options: any) => {
+  //     //   return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' });
+  //     // },
+  //     transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+  //       console.log(settings);
+  //       const params = settings.data;
+  //       this.apiService.getPromise('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' }).then(rs => {
+  //         success(rs);
+  //       }).catch(err => {
+  //         console.error(err);
+  //         failure();
+  //       });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       // console.info(data, params);
+  //       return {
+  //         results: data
+  //       };
+  //     },
+  //   },
+  // };
+  // select2OptionForDistrict = {
+  //   placeholder: 'Chọn quận/huyện...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     url: (params, options: any) => {
+  //       const formGroup = options?.formGroup;
+  //       const provice = formGroup && this.cms.getObjectId(formGroup.get('Province').value);
+  //       return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       console.info(data, params);
+  //       return {
+  //         results: data
+  //       };
+  //     },
+  //   },
+  // };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForTax = {
+    placeholder: 'Chọn thuế...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
+  // Type field option
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
+  accountingBusinessListForTransport: BusinessModel[] = [];
+  select2OptionForAccountingBusinessForTransport = {
+    placeholder: 'Nghiệp vụ kế toán...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    dropdownCssClass: 'is_tags',
+    // multiple: true,
+    // maximumSelectionLength: 1,
+    // tags: true,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
+  select2OptionForShippingUnit = {
+    ...this.select2OptionForContact,
+    placeholder: 'Nhân viên/ĐV Vận chuyển...',
+  };
+
   select2OptionForProvince = {
     placeholder: 'Chọn tỉnh/TP...',
     allowClear: false,
@@ -532,7 +665,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     ajax: {
       url: (params, options: any) => {
         const formGroup = options?.formGroup;
-        const provice = formGroup && this.cms.getObjectId(formGroup.get('Province').value);
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('DeliveryProvince').value);
         return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
       },
       delay: 300,
@@ -545,56 +678,32 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     },
   };
 
-  select2OptionForWard = {
-    placeholder: 'Chọn phường/xã/thị trấn...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      url: (params: any, options: any) => {
-        const formGroup = options?.formGroup;
-        const district = formGroup && this.cms.getObjectId(formGroup.get('District').value);
-        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-        };
-      },
-    },
-  };
+  // select2OptionForWard = {
+  //   placeholder: 'Chọn phường/xã/thị trấn...',
+  //   allowClear: false,
+  //   width: '100%',
+  //   dropdownAutoWidth: true,
+  //   minimumInputLength: 0,
+  //   keyMap: {
+  //     id: 'id',
+  //     text: 'text',
+  //   },
+  //   ajax: {
+  //     url: (params: any, options: any) => {
+  //       const formGroup = options?.formGroup;
+  //       const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
+  //       return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+  //     },
+  //     delay: 300,
+  //     processResults: (data: any, params: any) => {
+  //       // console.info(data, params);
+  //       return {
+  //         results: data
+  //       };
+  //     },
+  //   },
+  // };
 
-  select2OptionForTax = {
-    placeholder: 'Chọn thuế...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-  };
-
-  // Type field option
-  select2OptionForType = {
-    placeholder: 'Chọn loại...',
-    allowClear: true,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'Code',
-      text: 'Name',
-    },
-  };
   select2DataForType = [
     { id: 'PRODUCT', text: 'Sản phẩm' },
     { id: 'SERVICE', text: 'Dịch vụ' },
@@ -610,6 +719,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     // this.accountingBusinessList = await this.apiService.getPromise<BusinessModel[]>('/accounting/business', { eq_Type: '[SALES,WAREHOUSEDELIVERY]', select: 'id=>Code,text=>Name,type=>Type' });
     this.rsv.accountingService.accountingBusinessList$.pipe(filter(f => !!f), takeUntil(this.destroy$)).subscribe(list => {
       this.accountingBusinessList = list.filter(f => ['SALES', 'WAREHOUSEDELIVERY'].indexOf(f.Type) > -1);
+      this.accountingBusinessListForTransport = list.filter(f => ['AUTHORIZEDSALETRSCOSTEMP', 'AUTHORIZEDSALETRSCOSTPARTN'].indexOf(f.Code) > -1);
     });
     return super.init().then(status => {
       if (this.isDuplicate) {
@@ -800,9 +910,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
 
   /** Execute api get */
-  executeGet(params: any, success: (resources: SalesPriceReportModel[]) => void, error?: (e: HttpErrorResponse) => void) {
+  executeGet(params: any, success: (resources: CollaboratorOrderModel[]) => void, error?: (e: HttpErrorResponse) => void) {
     params['includeContact'] = true;
     params['includeDetails'] = true;
+    params['includeTransportPoints'] = true;
     params['includeProductUnitList'] = true;
     params['includeProductPrice'] = true;
     params['useBaseTimezone'] = true;
@@ -824,7 +935,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     return super.executePost(params, data, success, error);
   }
 
-  async formLoad(formData: SalesPriceReportModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: SalesPriceReportModel) => void) {
+  async formLoad(formData: CollaboratorOrderModel[], formItemLoadCallback?: (index: number, newForm: FormGroup, formData: CollaboratorOrderModel) => void) {
     return super.formLoad(formData, async (index, newForm, itemFormData) => {
 
       // Details form load
@@ -855,7 +966,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         for (const detailData of itemFormData.Details) {
           const newDetailFormGroup = this.makeNewDetailFormGroup(newForm, detailData);
           detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
-          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].Units?.map(m => {
+          newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)]?.Units?.map(m => {
             // m.Price = unitPriceMap[this.cms.getObjectId(detailData.Product) + '-' + this.cms.getObjectId(m)];
             return m;
           });
@@ -866,6 +977,45 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         this.setNoForArray(details.controls as FormGroup[], (detail: FormGroup) => detail.get('Type').value === 'PRODUCT');
       }
 
+      // Transport point form load
+      if (itemFormData.TransportPoints) {
+        const transportPoints = this.getTransportPoints(newForm);
+        transportPoints.clear();
+
+        // const productIds = itemFormData.Details.filter(f => this.cms.getObjectId(f.Type) != 'CATEGORY').map(m => this.cms.getObjectId(m.Product));
+        // const productInfoMap: { [key: string]: ProductModel } = await this.apiService.getPromise<ProductModel[]>('/collaborator/products', {
+        //   id: productIds,
+        //   includeIdText: true,
+        //   includeProduct: true,
+        //   includeUnit: true,
+        //   includeUnits: true,
+        //   includeUnitPrices: true,
+        //   // productOfPage: true,
+        //   includePrice: true,
+        // }).then(rs => rs.reduce((prev, next, i) => {
+        //   prev[next.Code] = next;
+        //   return prev;
+        // }, {}));
+
+        // const unitPriceMap = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-table-details', {
+        //   priceTable: 'default',
+        //   eq_Code: '[' + productIds.join(',') + ']',
+        // }).then(rs => rs.reduce((result, current, index) => { result[current.Code + '-' + this.cms.getObjectId(current.Unit)] = current.Price; return result; }, {}));
+
+        for (const detailData of itemFormData.TransportPoints) {
+          const newTransportPointFormGroup = this.makeNewTransportPointFormGroup(newForm, detailData);
+          // detailData.AccessNumbers = Array.isArray(detailData.AccessNumbers) && detailData.AccessNumbers.length > 0 ? (detailData.AccessNumbers.map(ac => this.cms.getObjectId(ac)).join('\n') + '\n') : '';
+          // newDetailFormGroup['UnitList'] = productInfoMap[this.cms.getObjectId(detailData.Product)].Units?.map(m => {
+          // m.Price = unitPriceMap[this.cms.getObjectId(detailData.Product) + '-' + this.cms.getObjectId(m)];
+          // return m;
+          // });
+          transportPoints.push(newTransportPointFormGroup);
+          const comIndex = transportPoints.length - 1;
+          this.onAddTransportPointFormGroup(newForm, newTransportPointFormGroup, comIndex);
+        }
+        this.setNoForArray(transportPoints.controls as FormGroup[], (detail: FormGroup) => true);
+      }
+
       // Direct callback
       if (formItemLoadCallback) {
         formItemLoadCallback(index, newForm, itemFormData);
@@ -874,7 +1024,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
   }
 
-  makeNewFormGroup(data?: SalesPriceReportModel): FormGroup {
+  makeNewFormGroup(data?: CollaboratorOrderModel): FormGroup {
     const newForm = this.formBuilder.group({
       Page: [this.collaboratorService.currentpage$.value, Validators.required],
       Code: { disabled: false, value: null },
@@ -901,15 +1051,28 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       // ShipperPhone: [''],
       // ShipperEmail: [''],
       // ShipperAddress: [''],
-      Publisher: ['', Validators.required],
+      Publisher: [],
       PublisherName: { value: null, disabled: true },
       PublisherPhone: { value: null, disabled: true },
       PublisherEmail: { value: null, disabled: true },
       PublisherAddress: { value: null, disabled: true },
-      Province: [],
-      District: [],
-      Ward: [],
+      // Province: [],
+      // District: [],
+      // Ward: [],
+      // DeliveryAddress: [],
+
+
+      DeliveryProvince: [],
+      DeliveryDistrict: [],
+      DeliveryWard: [],
       DeliveryAddress: [],
+      DeliveryMapLink: [],
+
+      DirectReceiver: [],
+      DirectReceiverName: [],
+      DirectReceiverPhone: [],
+      DirectReceiverEmail: [],
+
       DeliveryCost: [],
       OriginDeliveryCost: [],
       DateOfOrder: [new Date(), Validators.required],
@@ -923,7 +1086,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
       RelativeVouchers: [''],
       State: [],
       Details: this.formBuilder.array([]),
+      TransportPoints: this.formBuilder.array([]),
       _total: [''],
+
     });
     if (data) {
       // data['Code_old'] = data['Code'];
@@ -933,10 +1098,25 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     } else {
       this.addDetailFormGroup(newForm);
     }
+
+
+    const transportPointsArray = newForm['TransportPoints'] = newForm.get('TransportPoints') as FormArray;
+
+
+    // Auto sum transport cost
+    transportPointsArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((transportPoints: CollaboratorOrderTransportPointModel[]) => {
+      this.cms.takeUntil('234324_transport_points_change', 300, () => {
+        console.log('234324_transport_points_change: ', transportPoints);
+        newForm['_totalTransportCost'] = 0;
+        for (const transportPoint of transportPoints) {
+          newForm['_totalTransportCost'] += parseFloat(transportPoint.TransportCost as any);
+        }
+      });
+    });
     return newForm;
   }
 
-  patchFormGroupValue = (formGroup: FormGroup, data: SalesPriceReportModel) => {
+  patchFormGroupValue = (formGroup: FormGroup, data: CollaboratorOrderModel) => {
 
     // for (const propName in data) {
     //   const prop = data[propName];
@@ -968,7 +1148,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
     return true;
   }
 
-  onAddFormGroup(index: number, newForm: FormGroup, formData?: SalesPriceReportModel): void {
+  onAddFormGroup(index: number, newForm: FormGroup, formData?: CollaboratorOrderModel): void {
     super.onAddFormGroup(index, newForm, formData);
   }
   onRemoveFormGroup(index: number): void {
@@ -990,7 +1170,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   onUndoPastFormData(aPastFormData: { formData: any; meta: any; }): void { }
 
   /** Detail Form */
-  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: SalesPriceReportDetailModel): FormGroup {
+  makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CollaboratorOrderDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Id: [''],
       No: [''],
@@ -1048,41 +1228,81 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
   }
   /** End Detail Form */
 
-  /** Action Form */
-  makeNewActionFormGroup(data?: PromotionActionModel): FormGroup {
-    const newForm = this.formBuilder.group({
-      Id: [''],
-      Type: ['', Validators.required],
-      Product: [''],
-      Amount: [''],
-      // Discount: [''],
+
+
+  /** Transport Trip Form */
+  makeNewTransportPointFormGroup(parentFormGroup: FormGroup, data?: AuthorizedSaleVoucherTransportPointModel): FormGroup {
+    let newForm: FormGroup = null;
+    newForm = this.formBuilder.group({
+      // Id: [''],
+      SystemUuid: [''],
+      No: [''],
+      ShippingUnit: [],
+      ShippingUnitPhone: [],
+      ShippingUnitAddress: [],
+      ShippingUnitMapLink: [],
+      // ShippingUnitName: [],
+      // TransportFrom: [],
+      // TransportTo: [],
+      Note: [],
+      TransportCost: [],
+      Business: [],
     });
 
     if (data) {
-      // data['Id_old'] = data['Id'];
       newForm.patchValue(data);
     }
+
+    const shipingUnit = newForm.get('ShippingUnit');
+    const shipingUnitPhone = newForm.get('ShippingUnitPhone');
+    const shipingUnitMapLink = newForm.get('ShippingUnitMapLink');
+    const shipingUnitAddress = newForm.get('ShippingUnitAddress');
+    shipingUnit.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((contact: ContactModel) => {
+      if (!this.isProcessing) {
+        console.log('Shipping unit change: ', contact);
+        shipingUnitPhone.setValue(contact?.Phone);
+        shipingUnitAddress.setValue(contact?.FullAddress);
+        shipingUnitMapLink.setValue(contact?.MapLink);
+      }
+    });
     return newForm;
   }
-  getActions(formGroupIndex: number) {
-    return this.array.controls[formGroupIndex].get('Actions') as FormArray;
+
+  onTransportPointSupplierChange(detail: FormGroup, supplier: ContactModel, formItem: FormGroup) {
+    console.log(supplier);
   }
-  addActionFormGroup(formGroupIndex: number) {
-    const newFormGroup = this.makeNewActionFormGroup();
-    this.getActions(formGroupIndex).push(newFormGroup);
-    this.onAddActionFormGroup(formGroupIndex, this.getActions(formGroupIndex).length - 1, newFormGroup);
+  onShippingUnitChange(transportPoint: FormGroup, shippingUnit: ContactModel, formItem: FormGroup) {
+    console.log(shippingUnit);
+    // if (shippingUnit) {
+    //   transportPoint.get('ShippingUnitPhone').setValue(shippingUnit.Phone);
+    //   transportPoint.get('ShippingUnitEmail').setValue(shippingUnit.Email);
+    // }
+  }
+
+  getTransportPoints(parentFormGroup: FormGroup) {
+    return parentFormGroup.get('TransportPoints') as FormArray;
+  }
+  addTransportPointFormGroup(parentFormGroup: FormGroup) {
+    const newChildFormGroup = this.makeNewTransportPointFormGroup(parentFormGroup);
+    const detailsFormArray = this.getTransportPoints(parentFormGroup);
+    detailsFormArray.push(newChildFormGroup);
+    const noFormControl = newChildFormGroup.get('No');
+    if (!noFormControl.value) {
+      noFormControl.setValue(detailsFormArray.length);
+    }
+    this.onAddTransportPointFormGroup(parentFormGroup, newChildFormGroup, detailsFormArray.length - 1);
     return false;
   }
-  removeActionGroup(formGroupIndex: number, index: number) {
-    this.getActions(formGroupIndex).removeAt(index);
-    this.onRemoveActionFormGroup(formGroupIndex, index);
+  removeTransportPointGroup(parentFormGroup: FormGroup, detail: FormGroup, index: number) {
+    this.getTransportPoints(parentFormGroup).removeAt(index);
+    this.onRemoveTransportPointFormGroup(parentFormGroup, detail);
     return false;
   }
-  onAddActionFormGroup(mainIndex: number, index: number, newFormGroup: FormGroup) {
+  onAddTransportPointFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
   }
-  onRemoveActionFormGroup(mainIndex: number, index: number) {
+  onRemoveTransportPointFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {
   }
-  /** End Action Form */
+  /** End TransportPoint Form */
 
   onObjectChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
     // console.info(item);
@@ -1293,7 +1513,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
 
 
   async preview(formItem: FormGroup) {
-    const data: SalesPriceReportModel = formItem.value;
+    const data: CollaboratorOrderModel = formItem.value;
     for (const detail of data.Details) {
       detail['Tax'] = this.cms.getObjectText(this.taxList.find(t => t.Code === this.cms.getObjectId(detail['Tax'])), 'Lable2');
       detail['Unit'] = this.cms.getObjectText(this.unitList.find(f => f.id === this.cms.getObjectId(detail['Unit'])));
@@ -1304,10 +1524,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Sal
         mode: 'preview',
         sourceOfDialog: 'form',
         data: [data],
-        onSaveAndClose: (priceReport: SalesPriceReportModel) => {
+        onSaveAndClose: (priceReport: CollaboratorOrderModel) => {
           this.saveAndClose();
         },
-        onSaveAndPrint: (priceReport: SalesPriceReportModel) => {
+        onSaveAndPrint: (priceReport: CollaboratorOrderModel) => {
           this.save();
         },
       },

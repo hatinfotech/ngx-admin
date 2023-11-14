@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { NbDialogService, NbToastrService, NbDialogRef } from '@nebular/theme';
+import { NbDialogService, NbToastrService, NbDialogRef, NbThemeService } from '@nebular/theme';
 import { takeUntil } from 'rxjs/operators';
 import { AppModule } from '../../../../app.module';
 import { SmartTableTagsComponent, SmartTableButtonComponent } from '../../../../lib/custom-element/smart-table/smart-table.component';
@@ -18,13 +18,18 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorPageFormComponent } from '../collaborator-page-form/collaborator-page-form.component';
 import { ShowcaseDialogComponent } from '../../../dialog/showcase-dialog/showcase-dialog.component';
 import { PageModel } from '../../../../models/page.model';
+import { ColDef, IGetRowsParams } from '@ag-grid-community/core';
+import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-grid-data-manger-list.component';
+import { DatePipe } from '@angular/common';
+import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
+import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 
 @Component({
   selector: 'ngx-collaborator-page-list',
   templateUrl: './collaborator-page-list.component.html',
   styleUrls: ['./collaborator-page-list.component.scss']
 })
-export class CollaboratorPageListComponent extends ServerDataManagerListComponent<PageModel> implements OnInit {
+export class CollaboratorPageListComponent extends AgGridDataManagerListComponent<PageModel, CollaboratorPageFormComponent> implements OnInit {
 
   componentName: string = 'CollaboratorPageListComponent';
   formPath = '/collaborator/page/form';
@@ -32,14 +37,12 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
   idKey = 'Code';
   formDialog = CollaboratorPageFormComponent;
 
-  reuseDialog = true;
+  // AG-Grid config
+  public rowHeight: number = 50;
+  // @Input() suppressRowClickSelection = false;
 
-  // Smart table
-  static filterConfig: any;
-  static sortConf: any;
-  static pagingConf = { page: 1, perPage: 40 };
-  cycleMap: { [key: string]: string };
-  stateList: { id: string, text: string }[];
+  // @Input() gridHeight: string;
+
 
   constructor(
     public rsv: RootServices,
@@ -48,344 +51,214 @@ export class CollaboratorPageListComponent extends ServerDataManagerListComponen
     public cms: CommonService,
     public dialogService: NbDialogService,
     public toastService: NbToastrService,
-    public _http: HttpClient,
+    public themeService: NbThemeService,
     public ref: NbDialogRef<CollaboratorPageListComponent>,
-    public mobileAppService: MobileAppService
+    public datePipe: DatePipe,
   ) {
-    super(rsv, apiService, router, cms, dialogService, toastService, ref);
+    super(rsv, apiService, router, cms, dialogService, toastService, themeService, ref);
+
+    this.defaultColDef = {
+      ...this.defaultColDef,
+      cellClass: 'ag-cell-items-center',
+    }
+
+    this.pagination = false;
+    // this.maxBlocksInCache = 5;
+    this.paginationPageSize = 100;
+    this.cacheBlockSize = 100;
   }
 
   async init() {
-    // await this.loadCache();
-    await this.cms.waitForReady();
-    this.cycleMap = {
-      MONTHLY: this.cms.translateText('Common.monthly'),
-      YEARLY: this.cms.translateText('Common.yearly'),
-    };
-    this.stateList = [
-      {
-        id: 'ACTIVE',
-        text: this.cms.translateText('Common.activated'),
-      },
-      {
-        id: 'INACTIVE',
-        text: this.cms.translateText('Common.inactivated'),
-      },
-      {
-        id: 'EXPIREDSOON',
-        text: this.cms.translateText('Common.expiredSoon'),
-      },
-      {
-        id: 'OVEREXPIRED',
-        text: this.cms.translateText('Common.overExpired'),
-      },
-      {
-        id: 'EXPIRED',
-        text: this.cms.translateText('Common.expired'),
-      },
-    ];
-    return super.init().then(rs => {
+    return super.init().then(async state => {
 
-      this.actionButtonList.unshift({
-        type: 'button',
-        name: 'generateConnectionString',
-        label: this.cms.translateText(''),
-        icon: 'cloud-upload-outline',
-        status: 'danger',
-        size: 'medium',
-        title: this.cms.translateText('Tạo chuỗi kết nối'),
-        click: () => {
-          this.apiService.postPromise(this.apiPath, { generateConnectionString: true }, []).then(rs => {
-            this.cms.showDialog('Chuỗi kết nối core', rs['data'], [
-              {
-                label: 'Đóng',
-                status: 'basic',
-                action: () => {
 
-                },
-              },
-              {
-                label: 'Copy',
-                status: 'success',
-                action: () => {
+      // const processingMap = AppModule.processMaps['purchaseOrder'];
+      await this.cms.waitForLanguageLoaded();
+      this.columnDefs = this.configSetting([
+        {
+          ...agMakeSelectionColDef(this.cms),
+          headerName: 'ID',
+          field: 'Id',
+          width: 100,
+          valueGetter: 'node.data.Id',
+          // sortingOrder: ['desc', 'asc'],
+          initialSort: 'desc',
+        },
+        {
+          headerName: 'Mã',
+          field: 'Code',
+          width: 200,
+          filter: 'agTextColumnFilter',
+          // pinned: 'left',
+        },
+        {
+          headerName: 'Tên',
+          field: 'Name',
+          width: 300,
+          filter: 'agTextColumnFilter',
+          // autoHeight: true,
+          // pinned: 'left',
+        },
+        {
+          headerName: 'Mô tả',
+          field: 'Description',
+          width: 1024,
+          filter: 'agTextColumnFilter',
+          // autoHeight: true,
+          // pinned: 'left',
+        },
+        {
+          ...agMakeCommandColDef(this, this.cms, true, true, false, [
+            {
+              name: 'genrerateRegisterRefLink',
+              label: '',
+              title: 'Tạo link đăng ký CTV Bán hàng',
+              icon: 'link-2-outline',
+              status: 'primary',
+              appendTo: 'head',
+              outline: false,
+              action: async (params, buttonConfigs) => {
+                if (params?.node?.data?.Code) {
+                  await this.apiService.putPromise(this.apiPath + '/' + params.node.data.Code, { genrerateRegisterRefLink: true }, [{ Code: params.node.data.Code }]).then(rs => {
+                    console.log(rs);
+                    this.cms.showDialog('Link đăng ký CTV Bán hàng', rs['data'], [
+                      {
+                        label: 'Đóng',
+                        status: 'basic',
+                        action: () => {
 
-                },
-              },
-            ])
-          });
-        },
-      });
-
-      return rs;
-    });
-  }
-
-  editing = {};
-  rows = [];
-
-  loadListSetting(): SmartTableSetting {
-    return this.configSetting({
-      columns: {
-        Code: {
-          title: this.cms.translateText('Common.code'),
-          type: 'string',
-          width: '10%',
-        },
-        Name: {
-          title: this.cms.translateText('Common.name'),
-          type: 'string',
-          width: '20%',
-        },
-        Description: {
-          title: this.cms.translateText('Common.description'),
-          type: 'string',
-          width: '40%',
-        },
-        PriceTable: {
-          title: this.cms.translateText('Sales.priceTable '),
-          type: 'string',
-          width: '10%',
-        },
-        Created: {
-          title: this.cms.translateText('Common.created'),
-          type: 'datetime',
-          width: '15%',
-        },
-        Push: {
-          title: this.cms.translateText('Collaborator.Page.pushProductLabel'),
-          type: 'custom',
-          width: '10%',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'cloud-upload-outline';
-            instance.display = true;
-            instance.status = 'danger';
-            instance.disabled = this.isChoosedMode;
-            instance.title = this.cms.translateText('Collaborator.Page.pushProductLabel');
-            instance.label = this.cms.translateText('Collaborator.Page.pushProductLabel');
-            instance.init.subscribe((page: PageModel) => {
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-              this.cms.openDialog(ShowcaseDialogComponent, {
-                closeOnBackdropClick: false,
-                closeOnEsc: false,
-                context: {
-                  title: this.cms.translateText('Common.subscribe'),
-                  content: this.cms.translateText('Collaborator.Page.pushProductConfirmText'),
-                  actions: [
-                    {
-                      label: this.cms.translateText('Common.close'),
-                      icon: 'arrow-ios-back-outline',
-                      status: 'primary',
-                    },
-                    {
-                      label: this.cms.translateText('Collaborator.Page.pushProductLabel'),
-                      status: 'danger',
-                      icon: 'cloud-upload-outline',
-                      action: async (item, dialog) => {
-                        dialog.setLoading(true);
-                        try {
-                          await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [rowData.Code], push: true }, [{ Code: rowData.Code }]).then(rs => {
-                            this.cms.toastService.show(this.cms.translateText('Common.success'), this.cms.translateText('Collaborator.Page.pushProductSuccessText'), {
-                              status: 'success',
-                            });
-                          });
-                        } catch (err) {
-                          dialog.setLoading(false);
-                          this.cms.toastService.show('Lỗi đồng bộ', err?.logs?.join(', '), { status: 'dander' });
-                        }
-                        dialog.setLoading(false);
-                        this.refresh();
-                      }
-                    },
-                  ],
-                },
-              });
-            });
-          },
-        },
-        // Token: {
-        //   title: this.cms.translateText('Common.token'),
-        //   type: 'custom',
-        //   width: '5%',
-        //   // class: 'align-right',
-        //   renderComponent: SmartTableButtonComponent,
-        //   onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-        //     instance.iconPack = 'eva';
-        //     instance.icon = 'award-outline';
-        //     instance.display = true;
-        //     instance.status = 'primary';
-        //     instance.disabled = this.isChoosedMode;
-        //     instance.title = this.cms.translateText('Common.generateToken');
-        //     instance.label = this.cms.translateText('Common.generateToken');
-        //     instance.init.subscribe(value => {
-        //       // const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-        //       // instance.label = this.cms.translateText(processMap?.label);
-        //       // instance.status = processMap?.status;
-        //       // instance.outline = processMap?.outline;
-        //     });
-        //     instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-        //       this.apiService.putPromise<PageModel[]>(this.apiPath, { generateToken: true }, [{ Code: rowData.Code }]).then(rs => {
-        //         this.cms.showDialog('Collaborator', rs[0].PlatformApiToken, [
-        //           {
-        //             label: 'Close',
-        //             status: 'danger',
-        //             action: () => { },
-        //           }
-        //         ])
-        //       });
-        //     });
-        //   },
-        // },
-        State: {
-          title: this.cms.translateText('Common.state'),
-          type: 'custom',
-          width: '5%',
-          // class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'checkmark-circle';
-            instance.display = true;
-            instance.status = 'success';
-            instance.disabled = this.isChoosedMode;
-            instance.title = this.cms.translateText('Common.state');
-            instance.label = this.cms.translateText('Common.state');
-            instance.valueChange.subscribe(value => {
-              const processMap = AppModule.processMaps.commerceServiceByCycle[value || ''];
-              instance.label = this.cms.translateText(processMap?.label);
-              instance.status = processMap?.status;
-              instance.outline = processMap?.outline;
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-              this.changeStateConfirm(instance.rowData).then(status => {
-                if (status) this.refresh();
-              });
-            });
-          },
-          filter: {
-            type: 'custom',
-            component: SmartTableSelect2FilterComponent,
-            config: {
-              delay: 0,
-              condition: 'eq',
-              select2Option: {
-                placeholder: this.cms.translateText('Common.state') + '...',
-                allowClear: true,
-                width: '100%',
-                dropdownAutoWidth: true,
-                minimumInputLength: 0,
-                keyMap: {
-                  id: 'id',
-                  text: 'text',
-                },
-                // multiple: true,
-                ajax: {
-                  url: (params: any) => {
-                    return 'data:text/plan,[]';
-                  },
-                  delay: 0,
-                  processResults: (data: any, params: any) => {
-                    return {
-                      results: this.stateList.filter(cate => !params.term || this.cms.smartFilter(cate.text, params.term)),
-                    };
-                  },
-                },
-              },
-            },
-          },
-        },
-        Permission: {
-          title: this.cms.translateText('Common.permission'),
-          type: 'custom',
-          width: '5%',
-          class: 'align-right',
-          renderComponent: SmartTableButtonComponent,
-          onComponentInitFunction: (instance: SmartTableButtonComponent) => {
-            instance.iconPack = 'eva';
-            instance.icon = 'shield';
-            instance.display = true;
-            instance.status = 'danger';
-            instance.style = 'text-align: right';
-            instance.class = 'align-right';
-            instance.title = this.cms.translateText('Common.preview');
-            instance.valueChange.subscribe(value => {
-            });
-            instance.click.pipe(takeUntil(this.destroy$)).subscribe((rowData: PageModel) => {
-
-              this.cms.openDialog(ResourcePermissionEditComponent, {
-                context: {
-                  inputMode: 'dialog',
-                  inputId: [rowData.Code],
-                  note: 'Click vào nút + để thêm 1 phân quyền, mỗi phân quyền bao gồm người được phân quyền và các quyền mà người đó được thao tác',
-                  resourceName: this.cms.translateText('Sales.PriceReport.title', { action: '', definition: '' }) + ` ${rowData.Title || ''}`,
-                  apiPath: this.apiPath,
+                        },
+                      },
+                      {
+                        label: 'Copy',
+                        status: 'success',
+                        action: () => {
+                          this.cms.copyTextToClipboard(rs['data']);
+                        },
+                      },
+                    ]);
+                  });
                 }
-              });
-            });
-          },
-        },
-      },
+                return true;
+              }
+            },
+            {
+              name: 'pushPageInfo',
+              label: '',
+              title: 'Đẩy thông tin trang lên app ProBox',
+              icon: 'cloud-upload-outline',
+              status: 'warning',
+              appendTo: 'head',
+              outline: false,
+              action: async (params, buttonConfigs) => {
+                if (params?.node?.data?.Code) {
+                  this.cms.openDialog(ShowcaseDialogComponent, {
+                    closeOnBackdropClick: false,
+                    closeOnEsc: false,
+                    context: {
+                      title: this.cms.translateText('Common.subscribe'),
+                      content: this.cms.translateText('Collaborator.Page.pushProductConfirmText'),
+                      actions: [
+                        {
+                          label: this.cms.translateText('Common.close'),
+                          icon: 'arrow-ios-back-outline',
+                          status: 'primary',
+                        },
+                        {
+                          label: this.cms.translateText('Collaborator.Page.pushProductLabel'),
+                          status: 'danger',
+                          icon: 'cloud-upload-outline',
+                          action: async (item, dialog) => {
+                            dialog.setLoading(true);
+                            try {
+                              await this.apiService.putPromise<PageModel[]>('/collaborator/pages', { id: [params.node.data.Code], push: true }, [{ Code: params.node.data.Code }]).then(rs => {
+                                this.cms.toastService.show(this.cms.translateText('Common.success'), this.cms.translateText('Collaborator.Page.pushProductSuccessText'), {
+                                  status: 'success',
+                                });
+                              });
+                            } catch (err) {
+                              dialog.setLoading(false);
+                              this.cms.toastService.show('Lỗi đồng bộ', err?.logs?.join(', '), { status: 'dander' });
+                            }
+                            dialog.setLoading(false);
+                            this.refresh();
+                          }
+                        },
+                      ],
+                    },
+                  });
+                }
+                return true;
+              }
+            },
+            // {
+            //   name: 'generateConnectionString',
+            //   label: '',
+            //   title: 'Tạo chuỗi kết nối',
+            //   icon: 'cloud-upload-outline',
+            //   status: 'danger',
+            //   appendTo: 'head',
+            //   outline: false,
+            //   action: async (params, buttonConfigs) => {
+            //     this.apiService.postPromise(this.apiPath, { generateConnectionString: true }, []).then(rs => {
+            //       this.cms.showDialog('Chuỗi kết nối core', rs['data'], [
+            //         {
+            //           label: 'Đóng',
+            //           status: 'basic',
+            //           action: () => {
+
+            //           },
+            //         },
+            //         {
+            //           label: 'Copy',
+            //           status: 'success',
+            //           action: () => {
+
+            //           },
+            //         },
+            //       ])
+            //     });
+            //     return true;
+            //   }
+            // },
+          ]),
+        }
+      ] as ColDef[]);
+
+      return state;
     });
   }
 
   ngOnInit() {
-    this.restrict();
     super.ngOnInit();
   }
 
-  initDataSource() {
-    const source = super.initDataSource();
+  // @Input() getRowHeight = (params: RowHeightParams<CommercePosOrderModel>) => {
+  //   return 123;
+  // }
 
-    // Set DataSource: prepareParams
-    source.prepareParams = (params: any) => {
-      params['includeParent'] = true;
-      params['includeRelativeVouchers'] = true;
-      params['sort_DateOfStart'] = 'asc';
-      return params;
-    };
-
-    return source;
+  @Input() prepareApiParams(params: any, getRowParams: IGetRowsParams) {
+    return params;
   }
 
-  changeStateConfirm(data: PageModel) {
-    const params = { id: [data.Code] };
-    const processMap: ProcessMap = AppModule.processMaps.commerceServiceByCycle[data.State || ''];
-    params['changeState'] = processMap?.nextState;
-
-    return new Promise(resolve => {
-      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
-        {
-          label: this.cms.translateText('Common.goback'),
-          status: 'primary',
-          action: () => {
-            resolve(false);
-          },
+  /** Implement required */
+  openFormDialplog(ids?: string[], onDialogSave?: (newData: PageModel[]) => void, onDialogClose?: () => void) {
+    this.cms.openDialog(CollaboratorPageFormComponent, {
+      context: {
+        inputMode: 'dialog',
+        inputId: ids,
+        onDialogSave: (newData: PageModel[]) => {
+          if (onDialogSave) onDialogSave(newData);
         },
-        {
-          label: this.cms.translateText(processMap?.nextStateLabel),
-          status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
-          action: async () => {
-            this.loading = true;
-            return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
-              this.loading = false;
-              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
-                status: 'success',
-              });
-              resolve(true);
-              return true;
-            }).catch(err => {
-              this.loading = false;
-              resolve(false);
-              return false;
-            });
-          },
+        onDialogClose: () => {
+          if (onDialogClose) onDialogClose();
         },
-      ], () => {
-        resolve(false);
-      });
+      },
     });
+    return false;
   }
 
+  onGridReady(params) {
+    super.onGridReady(params);
+  }
 }

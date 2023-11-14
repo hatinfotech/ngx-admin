@@ -10,6 +10,7 @@ export interface AgCellButton {
     outline?: boolean;
     icon?: string;
     appendTo?: 'head' | 'tail';
+    processing?: boolean;
     disabled?: (data: any, params?: any) => boolean;
     action: (params: any, buttonConfig?: any) => Promise<boolean>;
 }

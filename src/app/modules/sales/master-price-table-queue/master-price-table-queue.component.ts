@@ -85,17 +85,28 @@ export class MasterPriceTableQueueComponent extends AgGridDataManagerListCompone
               data: [
                 {
                   Title: 'Cập nhật giá ' + new Date().toUTCString(),
-                  Details: this.selectedItems.reverse().map(m => ({
-                    Image: m.Product.Pictures,
-                    Product: m.Product as any,
-                    Unit: m.Unit as any,
-                    Description: this.cms.getObjectText(m.Product),
-                    Price: m.RequestPrice || m.OldPrice,
-                    PurchasePrice: m.PurchasePrice,
+                  Details: [...this.selectedItems].reverse().map(m => {
+                    let salePrice = m.RequestPrice || m.OldPrice;
+                    let profitMargin = 30;
+                    if (salePrice) {
+                      profitMargin = 100 * (salePrice / m.PurchasePrice - 1);
+                    } else {
+                      salePrice = m.PurchasePrice + m.PurchasePrice * profitMargin / 100;
+                    }
+                    return {
+                      Image: m.Product.Pictures,
+                      Product: m.Product as any,
+                      Unit: m.Unit as any,
+                      Description: this.cms.getObjectText(m.Product),
+                      PurchasePrice: m.PurchasePrice,
+                      OldPrice: m.OldPrice,
+                      Price: salePrice,
+                      ProfitMargin: profitMargin,
 
-                    // RelateDetail: m.RelativeDetail,
-                    RelativeQueueItem: m.Id,
-                  })) as any
+                      // RelateDetail: m.RelativeDetail,
+                      RelativeQueueItem: m.Id,
+                    };
+                  }) as any
                 }
               ],
               onDialogSave: (newData) => {

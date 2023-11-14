@@ -723,7 +723,7 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
     });
 
     if (data) {
-      data['OldPrice'] = data['Price'];
+      // data['OldPrice'] = data['Price'];
       newForm.patchValue(data);
 
       if (data.Product?.Units && data.Product?.Units?.length > 0) {
@@ -769,8 +769,16 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
   }
   onAddDetailFormGroup(parentFormGroup: FormGroup, newChildFormGroup: FormGroup, index: number) {
     this.updateInitialFormPropertiesCache(newChildFormGroup);
-    newChildFormGroup.get('ProfitMargin').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'ProfitMargin'));
-    newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => this.toMoney(parentFormGroup, newChildFormGroup, 'Price'));
+    newChildFormGroup.get('ProfitMargin').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (!this.isProcessing) {
+        this.toMoney(parentFormGroup, newChildFormGroup, 'ProfitMargin');
+      }
+    });
+    newChildFormGroup.get('Price').valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
+      if (!this.isProcessing) {
+        this.toMoney(parentFormGroup, newChildFormGroup, 'Price');
+      }
+    });
     // this.toMoney(parentFormGroup, newChildFormGroup, null, index);
   }
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, detailFormGroup: FormGroup) {

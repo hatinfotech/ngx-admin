@@ -201,6 +201,39 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
         },
       });
 
+      this.actionButtonList.unshift({
+        name: 'rebuildCache',
+        status: 'info',
+        label: this.cms.textTransform(this.cms.translate.instant('Lập chỉ mục'), 'head-title'),
+        icon: 'layers-outline',
+        title: this.cms.textTransform(this.cms.translate.instant('Gửi yêu cầu lập chỉ mục tìm kiếm sản phẩm'), 'head-title'),
+        size: 'medium',
+        disabled: () => false,
+        hidden: () => false,
+        click: () => {
+          this.cms.showDialog('Cập nhật chỉ mục tìm kiếm sản phẩm', 'Gửi yêu cầu cập nhật chỉ mục tìm kiếm sản phẩm, hệ thống sẽ tự động lập chỉ mục vào thông báo thay đổi đến các máy bán hàng POS và app Smart-BOT', [
+            {
+              label: 'Đóng',
+              status: 'basic',
+              outline: true,
+              action: () => {
+                return true;
+              },
+            },
+            {
+              label: 'Gửi yêu cầu',
+              status: 'primary',
+              action: () => {
+                this.apiService.postPromise('/admin-product/products', { requestRebuildSearchIndex: true }, []).then(rs => {
+                  this.cms.showToast('Đã gửi yêu cầu lập chỉ mục tìm kiếm sản phẩm, hệ thống sẽ tự động lập chỉ mục vào thông báo thay đổi đến các máy bán hàng POS và app Smart-BOT', 'Đã gửi yêu cầu', { status: 'success' });
+                });
+              },
+            },
+          ])
+          return false;
+        },
+      });
+
       const processingMap = AppModule.processMaps['commercePos'];
       await this.cms.waitForLanguageLoaded();
       this.columnDefs = this.configSetting([
@@ -467,7 +500,7 @@ export class ProductListComponent extends AgGridDataManagerListComponent<Product
     params['includeLastUpdateBy'] = true;
     // params['sort_Id'] = 'desc';
     if (this.inputQuery) {
-      for(const key in this.inputQuery) {
+      for (const key in this.inputQuery) {
         params[key] = this.inputQuery[key];
       }
     }

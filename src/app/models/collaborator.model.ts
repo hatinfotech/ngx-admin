@@ -1,4 +1,6 @@
 import { IdTextModel } from "./common.model";
+import { Model } from "./model";
+import { ProductModel } from "./product.model";
 
 export interface CollaboratorPublisherModel {
     [key: string]: any;
@@ -46,6 +48,8 @@ export interface CollaboratorOrderModel {
     PriceTable?: string;
     Thread?: string;
     RelativeVouchers?: any[];
+    Details?: CollaboratorOrderDetailModel[];
+    TransportPoints?: CollaboratorOrderTransportPointModel[];
 }
 
 export interface CollaboratorOrderDetailModel {
@@ -55,7 +59,7 @@ export interface CollaboratorOrderDetailModel {
     Type?: string;
     No?: number;
     Image?: string;
-    Product?: string;
+    Product?: Partial<ProductModel>;
     Description?: string;
     Quantity?: number;
     Price?: number;
@@ -63,6 +67,27 @@ export interface CollaboratorOrderDetailModel {
     Currency?: string;
     Unit?: string;
 }
+
+export interface CollaboratorOrderTransportPointModel extends Model {
+    Id?: string;
+    SystemUuid?: string;
+    Voucher?: string;
+    No?: string;
+    ShippingUnit?: string;
+    ShippingUnitName?: string;
+    ShippingUnitPhone?: string;
+    ShippingUnitEmail?: string;
+    ShippingUnitAddress?: string;
+    ShippingUnitMapLink?: string;
+    ShippingUnitId?: string;
+    Note?: string;
+    TransportCost?: number;
+    Business?: string;
+    DebitAccount?: string;
+    CreditAccount?: string;
+    CostClassification?: string;
+  }
+
 export interface CollaboratorCommissionIncurredModel {
     [key: string]: any;
     Id?: string;

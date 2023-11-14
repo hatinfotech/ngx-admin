@@ -25,6 +25,9 @@ import { FormGroup } from "@angular/forms";
 import { ShowcaseDialogComponent } from "../../../dialog/showcase-dialog/showcase-dialog.component";
 import QRCode from 'qrcode';
 import { environment } from "../../../../../environments/environment";
+import { AppModule } from "../../../../app.module";
+import { agMakeStateColDef } from "../../../../lib/custom-element/ag-list/column-define/state.define";
+import { ProcessMap } from "../../../../models/process-map.model";
 
 @Component({
   selector: 'ngx-collaborator-publisher-list',
@@ -74,7 +77,9 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
   async init() {
     return super.init().then(async state => {
 
-      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      this.actionButtonList = this.actionButtonList.filter(f => ['add'].indexOf(f.name) < 0);
+
+      this.collaboratorService.pageList$.pipe(filter(f => f && f.length > 0), take(1)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
           type: 'select2',
           name: 'pbxdomain',
@@ -108,6 +113,71 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
             return false;
           },
         });
+
+        this.actionButtonList.unshift({
+          name: 'genrerateRegisterRefLink',
+          status: 'info',
+          label: this.cms.textTransform(this.cms.translate.instant('Tạo link đăng ký CTV Bán hàng'), 'head-title'),
+          icon: 'link-2-outline',
+          title: this.cms.textTransform(this.cms.translate.instant('Tạo link đăng ký CTV Bán hàng'), 'head-title'),
+          size: 'medium',
+          disabled: () => false,
+          hidden: () => false,
+          click: async () => {
+            await this.apiService.putPromise('/collaborator/pages/' + this.cms.getObjectId(this.collaboratorService.currentpage$.value), { genrerateRegisterRefLink: true }, [{ Code: this.cms.getObjectId(this.collaboratorService.currentpage$.value) }]).then(rs => {
+              console.log(rs);
+              this.cms.openDialog(ShowcaseDialogComponent, {
+                context: {
+                  title: '',
+                  content: `
+                  Link Ref: <a target="_blank" href="${rs['SalerRefLink']}">${rs['SalerRefLink']}</a><br>
+                  Link BM: <a target="_blank" href="${rs['BmRefLink']}">${rs['BmRefLink']}</a><br>
+                  `,
+                  actions: [
+                    {
+                      label: 'Đóng',
+                      status: 'basic',
+                      action: () => {
+      
+                      },
+                    },
+                    {
+                      label: 'Copy link ref',
+                      status: 'primary',
+                      action: () => {
+                        this.cms.copyTextToClipboard(rs['SalerRefLink']);
+                      },
+                    },
+                    {
+                      label: 'Copy link BM',
+                      status: 'info',
+                      action: () => {
+                        this.cms.copyTextToClipboard(rs['BmRefLink']);
+                      },
+                    },
+                  ],
+                }
+              })
+              // this.cms.showDialog('Link đăng ký CTV Bán hàng', `${rs['SalerRefLink']}`, [
+              //   {
+              //     label: 'Đóng',
+              //     status: 'basic',
+              //     action: () => {
+  
+              //     },
+              //   },
+              //   {
+              //     label: 'Copy',
+              //     status: 'success',
+              //     action: () => {
+              //       this.cms.copyTextToClipboard(rs['data']);
+              //     },
+              //   },
+              // ]);
+            });
+            return false;
+          },
+        });
       });
 
       // const processingMap: {[key: string]: ProcessMap} = {
@@ -116,6 +186,32 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
       //   }
       // };
       await this.cms.waitForLanguageLoaded();
+      const processingMap: { [key: string]: ProcessMap } = {
+        PENDING: {
+          state: 'PENDING',
+          label: 'Chờ kích hoạt',
+          confirmLabel: 'xxx',
+          status: 'basic',
+          outline: true,
+          confirmTitle: 'xxx',
+          confirmText: 'xxx',
+          responseTitle: 'xxx',
+          responseText: 'xxx',
+          icon: 'clock-outline'
+        },
+        REGISTERED: {
+          state: 'REGISTERED',
+          label: 'Đã kích hoạt',
+          confirmLabel: 'xxx',
+          status: 'success',
+          outline: true,
+          confirmTitle: 'xxx',
+          confirmText: 'xxx',
+          responseTitle: 'xxx',
+          responseText: 'xxx',
+          icon: 'checkmark-circle-2-outline'
+        },
+      };
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
@@ -361,97 +457,110 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
           pinned: 'right',
         },
         {
+          ...agMakeStateColDef(this.cms, processingMap, (data) => {
+            // this.preview([data]);
+            // if (this.cms.getObjectId(data.State) == 'PROCESSING') {
+            //   this.openForm([data.Code]);
+            // } else {
+            //   this.preview([data]);
+            // }
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          width: 200,
+        },
+        {
           ...agMakeCommandColDef(this, this.cms, true, true, false, [
-            {
-              name: 'createReferredCode',
-              appendTo: 'head',
-              title: 'Tạo Ref Code ',
-              status: 'success',
-              icon: 'share-outline',
-              outline: false,
-              action: async (params: { node: { data: ContactModel } }) => {
-                if (!params?.node?.data?.Id) {
-                  this.cms.showError('Không đủ điều kiện tạo Ref Code');
-                  return;
-                }
-                const publisher = params.node.data;
-                // const referredToken = await this.apiService.putPromise(this.apiPath + '/', { createReferredCode: true }, [{ Id: params.node.data.Id }]).then(rs => rs[0]['ReferredCode']);
-                const pageId = this.cms.getObjectId(publisher.Page) as string;
-                // const referredCode = pageId.length.toString().padStart(2, '0') + pageId + publisher.Id;
-                const referredLink = `${environment.proboxApp.deepLink}/${pageId}/refcode/${publisher.Id}`;
+            // {
+            //   name: 'createReferredCode',
+            //   appendTo: 'head',
+            //   title: 'Tạo Ref Code ',
+            //   status: 'success',
+            //   icon: 'share-outline',
+            //   outline: false,
+            //   action: async (params: { node: { data: ContactModel } }) => {
+            //     if (!params?.node?.data?.Id) {
+            //       this.cms.showError('Không đủ điều kiện tạo Ref Code');
+            //       return;
+            //     }
+            //     const publisher = params.node.data;
+            //     // const referredToken = await this.apiService.putPromise(this.apiPath + '/', { createReferredCode: true }, [{ Id: params.node.data.Id }]).then(rs => rs[0]['ReferredCode']);
+            //     const pageId = this.cms.getObjectId(publisher.Page) as string;
+            //     // const referredCode = pageId.length.toString().padStart(2, '0') + pageId + publisher.Id;
+            //     const referredLink = `${environment.proboxApp.deepLink}/${pageId}/refcode/${publisher.Id}`;
 
-                const qrCodeImage = await QRCode.toDataURL(referredLink,
-                  {
-                    // version: this.version,
-                    // errorCorrectionLevel: this.errorCorrectionLevel,
-                    // margin: this.margin,
-                    // scale: this.scale,
-                    width: 250,
-                    // color: {
-                    //   dark: this.colorDark,
-                    //   light: this.colorLight
-                    // }
-                  })
+            //     const qrCodeImage = await QRCode.toDataURL(referredLink,
+            //       {
+            //         // version: this.version,
+            //         // errorCorrectionLevel: this.errorCorrectionLevel,
+            //         // margin: this.margin,
+            //         // scale: this.scale,
+            //         width: 250,
+            //         // color: {
+            //         //   dark: this.colorDark,
+            //         //   light: this.colorLight
+            //         // }
+            //       })
 
-                this.cms.openDialog(ShowcaseDialogComponent, {
-                  context: {
-                    title: 'Link REF đăng ký cho CTV trên app ProBox',
-                    // width: '600px',
-                    content: `<img src="${qrCodeImage}">`,
-                    // controls: [
-                    //   {
-                    //     name: 'ReferredToken',
-                    //     label: 'Mã Referred',
-                    //     placeholder: 'Mã Referred...',
-                    //     type: 'text',
-                    //     focus: true,
-                    //     initValue: referredLink,
-                    //   },
-                    // ],
-                    actions: [
-                      {
-                        label: 'Trở về',
-                        icon: 'chevron-left-outline',
-                        status: 'basic',
-                        action: async () => { return true; },
-                      },
-                      {
-                        label: 'Copy',
-                        icon: 'copy-outline',
-                        status: 'primary',
-                        action: async () => {
+            //     this.cms.openDialog(ShowcaseDialogComponent, {
+            //       context: {
+            //         title: 'Link REF đăng ký cho CTV trên app ProBox',
+            //         // width: '600px',
+            //         content: `<img src="${qrCodeImage}">`,
+            //         // controls: [
+            //         //   {
+            //         //     name: 'ReferredToken',
+            //         //     label: 'Mã Referred',
+            //         //     placeholder: 'Mã Referred...',
+            //         //     type: 'text',
+            //         //     focus: true,
+            //         //     initValue: referredLink,
+            //         //   },
+            //         // ],
+            //         actions: [
+            //           {
+            //             label: 'Trở về',
+            //             icon: 'chevron-left-outline',
+            //             status: 'basic',
+            //             action: async () => { return true; },
+            //           },
+            //           {
+            //             label: 'Copy',
+            //             icon: 'copy-outline',
+            //             status: 'primary',
+            //             action: async () => {
 
-                          this.cms.copyTextToClipboard(referredLink);
-                          this.cms.showToast('Đã copy Ref Code', 'Đã copy Ref Code, gửi mã này cho CTV Bán Hàng để đăng ký', { status: 'success', duration: 10000 });
+            //               this.cms.copyTextToClipboard(referredLink);
+            //               this.cms.showToast('Đã copy Ref Code', 'Đã copy Ref Code, gửi mã này cho CTV Bán Hàng để đăng ký', { status: 'success', duration: 10000 });
 
-                          return true;
-                        },
-                      },
-                      {
-                        label: 'Download',
-                        icon: 'copy-outline',
-                        status: 'success',
-                        action: async () => {
+            //               return true;
+            //             },
+            //           },
+            //           {
+            //             label: 'Download',
+            //             icon: 'copy-outline',
+            //             status: 'success',
+            //             action: async () => {
 
-                          fetch(qrCodeImage)
-                            .then(response => response.blob())
-                            .then(blob => {
-                              const link = document.createElement("a");
-                              link.href = URL.createObjectURL(blob);
-                              link.download = 'reflink.png';
-                              link.click();
-                            })
-                            .catch(console.error);
+            //               fetch(qrCodeImage)
+            //                 .then(response => response.blob())
+            //                 .then(blob => {
+            //                   const link = document.createElement("a");
+            //                   link.href = URL.createObjectURL(blob);
+            //                   link.download = 'reflink.png';
+            //                   link.click();
+            //                 })
+            //                 .catch(console.error);
 
-                          return true;
-                        },
-                      },
-                    ],
-                  },
-                });
-                return true;
-              }
-            }
+            //               return true;
+            //             },
+            //           },
+            //         ],
+            //       },
+            //     });
+            //     return true;
+            //   }
+            // }
           ]),
           headerName: 'Lệnh',
         },

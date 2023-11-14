@@ -27,6 +27,7 @@ export const agMakeStateColDef = (
           params.label = processingMap[value].label;
           params.status = processingMap[value].status;
           params.outline = processingMap[value].outline;
+          params.icon = processingMap[value].icon;
         }
       },
       onRefresh: (params: any, component: AgButtonCellRenderer) => {

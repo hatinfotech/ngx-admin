@@ -6,7 +6,11 @@
 export const environment = {
   // Version structure s.m.f.b.e: Upgrade system . Add/Update module . Add/update feature . Build of upgrade/update/hotfix . Environment
   // version: '6.5.0.1',
-  version: '6.12.4.4',
+  version: '6.13.1.4',
+  // 6.13.1.4:   collaborator-v4: probox app register by ref link v2
+  // 6.13.1.2:   hotfix product categories cache
+  // 6.13.1.1:   collaborator-v4: probox app register by ref link
+  // 6.13.0.1:   collaborator-v4
   // 6.12.4.4:   multifuncational purchase v2
   // 6.12.4.1:   multifuncational purchase v1
   // 6.12.3.1:   import contact

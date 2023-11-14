@@ -56,7 +56,7 @@
                                             </div>
                                         </div>
                                     </nb-tab>
-                                    <nb-tab tabTitle="{{'Cộng tác viên' | translate | headtitlecase}} (*)">
+                                    <nb-tab tabTitle="{{'Cộng tác viên' | translate | headtitlecase}}">
                                         <div class="row">
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Publisher" label="Cộng tác viên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="publisherControlIcons" [touchedValidate]="false">
@@ -64,7 +64,7 @@
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-6">
-                                                <ngx-form-group [formGroup]="formItem" name="PublisherName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
+                                                <ngx-form-group [formGroup]="formItem" name="PublisherName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                                     <input type="text" nbInput fullWidth formControlName="PublisherName" placeholder="{{'Common.name' | translate | headtitlecase}}">
                                                 </ngx-form-group>
                                             </div>
@@ -84,6 +84,171 @@
                                                 </ngx-form-group>
                                             </div>
                                         </div>
+                                    </nb-tab>
+
+                                    <nb-tab tabTitle="{{'Giao vận' | translate | headtitlecase}}">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiver" label="Người trực tiếp nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="contactControlIcons">
+                                                    <ngx-select2 formControlName="DirectReceiver" [select2Option]="select2OptionForContact" (selectChange)="onDirectReceiverChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverName" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverName" placeholder="{{'Common.name' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverPhone" label="Common.phone" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DirectReceiverEmail" label="Common.email" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DirectReceiverEmail" placeholder="{{'Common.email' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryProvince" label="Địa chỉ nhận hàng, mục tiêu phải đến: Tỉnh/TP" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryProvince" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryDistrict" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryDistrict" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryWard" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="DeliveryWard" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Địa chỉ nhận hàng" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Số nhà, tên đường...' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <ngx-form-group [formGroup]="formItem" name="DeliveryMapLink" label="Link bản đồ" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
+                                                    <input type="text" nbInput fullWidth formControlName="DeliveryMapLink" placeholder="{{'Link bản đồ...' | translate | headtitlecase}}">
+                                                </ngx-form-group>
+                                            </div>
+                                        </div>
+
+                                        <!--Trnsportation-->
+                                        <hr>
+                                        <label class="label">{{'Hành trình vận chuyển' | translate | headtitlecase}}</label>
+                                        <div class="row fit-row form-detail-header">
+                                            <div class="fit-fist-col label column">Stt</div>
+                                            <!-- <div class="row"> -->
+                                            <!-- <div class="col-sm-12"> -->
+                                            <div class="row fit-content-column">
+                                                <div class="col-sm-2 label column">{{'Nhân viên/ĐV vận chuyển' | translate | headtitlecase}}</div>
+                                                <div class="col-sm-2 label column">{{'Common.phone' | translate | headtitlecase}}</div>
+                                                <!-- <div class="col-sm-2 label column">{{'Điểm đi' | translate | headtitlecase}}</div>
+                                                 -->
+                                                <div class="col-sm-2 label column">{{'Common.address' | translate | headtitlecase}}</div>
+                                                <div class="col-sm-2 label column">{{'Link bản đồ' | translate | headtitlecase}}</div>
+                                                <div class="col-sm-2 label column">{{'Nghiệp vụ kế toán' | translate | headtitlecase}}</div>
+                                                <div class="col-sm-2 label column align-right">{{'Phí vận chuyển' | translate | headtitlecase}}</div>
+                                            </div>
+                                            <!-- </div> -->
+                                            <!-- </div> -->
+                                            <div class="fit-last-col column">
+                                                <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addTransportPointFormGroup(formItem)" size="medium" hero>
+                                                    <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div formArrayName="TransportPoints" class="form-details">
+                                            <div class="form-detail-item" *ngFor="let transportPoint of formItem.TransportPoints.controls; let ip=index" [formGroup]="transportPoint">
+                                                <div class="row fit-row">
+                                                    <div class="fit-fist-col label">
+                                                        <div class="form-group">
+                                                            <!-- <label class="label">Stt</label> -->
+                                                            <input class="fit-sequence" nbInput fullWidth disabled="true" value="{{ ip + 1 }}">
+                                                            <!-- <input type="hidden" formControlName="Id"> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="row fit-content-column">
+                                                        <div class="col-sm-12">
+                                                            <div class="row">
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="ShippingUnit" label="Nhân viên/ĐV vận chuyển" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="false" [hideLabel]="true">
+                                                                        <ngx-select2 formControlName="ShippingUnit" [select2Option]="select2OptionForShippingUnit" (selectChange)="onShippingUnitChange(transportPoint, $event, ip)"></ngx-select2>
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="ShippingUnitPhone" label="Common.phone" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
+                                                                        <input type="text" nbInput fullWidth formControlName="ShippingUnitPhone" placeholder="{{'Common.phone' | translate | headtitlecase}}">
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="ShippingUnitAddress" label="Common.address" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
+                                                                        <input type="text" nbInput fullWidth formControlName="ShippingUnitAddress" placeholder="{{'Common.address' | translate | headtitlecase}}">
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="ShippingUnitMapLink" label="Link bản đồ" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
+                                                                        <input type="text" nbInput fullWidth formControlName="ShippingUnitMapLink" placeholder="{{'Link bản đồ' | translate | headtitlecase}}">
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="Business" label="Common.accountingBusiness" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
+                                                                        <ngx-select2 [data]="accountingBusinessListForTransport" formControlName="Business" [select2Option]="select2OptionForAccountingBusinessForTransport"></ngx-select2>
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                                <div class="col-sm-2">
+                                                                    <ngx-form-group [formGroup]="transportPoint" name="TransportCost" label="Phí vận chuyển" [array]="formItem.TransportPoints" [index]="ip" [allowCopy]="true" [required]="true" [hideLabel]="true" [touchedValidate]="false">
+                                                                        <input type="text" nbInput fullWidth formControlName="TransportCost" placeholder="Phí vận chuyển" class="align-right" currencyMask [options]="toMoneyCurencyFormat" (focus)="currencyMaskFocus($event, toMoneyCurencyFormat)" (keydown)="currencyMastKeydown($event, toMoneyCurencyFormat)" (paste)="onPasteNumber($event, toMoneyCurencyFormat)">
+                                                                    </ngx-form-group>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fit-last-col">
+                                                        <div class="form-group" style="text-align: right;">
+                                                            <!-- <label class="label">CM</label> -->
+                                                            <button class="fit-control-button" nbButton status="danger" hero size="medium" (click)="removeTransportPointGroup(formItem, ip)">
+                                                                <nb-icon pack="eva" icon="close-circle-outline"></nb-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-detail-item">
+                                                <div class="row fit-row form-detail-footer">
+                                                    <div class="fit-fist-col label">
+
+                                                    </div>
+                                                    <div class="row fit-content-column">
+                                                        <div class="col-sm-12">
+                                                            <div class="row">
+                                                                <div class="col-sm-4">
+
+                                                                </div>
+                                                                <div class="col-sm-6" style="text-align: right; font-weight: bold;">Tổng cộng:</div>
+                                                                <div class="col-sm-2" style="text-align: right; font-weight: bold; padding-right: 1.7rem;">
+                                                                    {{formItem._totalTransportCost | currency:'VND'}}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="fit-last-col">
+                                                        <div class="form-group" style="text-align: right;">
+                                                            <!-- <label class="label">CM</label> -->
+                                                            <button class="fit-control-button" nbButton [outline]="true" status="success" (click)="addTransportPointFormGroup(formItem)" size="medium" hero>
+                                                                <nb-icon pack="eva" icon="plus-circle-outline"></nb-icon>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--End Trnsportation-->
                                     </nb-tab>
                                     <!-- <nb-tab tabTitle="{{'Shippper' | translate | headtitlecase}} (*)">
                                         <div class="row">
@@ -120,9 +285,14 @@
 
                         <label class="label label-with-border-below">{{'Common.deliveryAndPayment' | translate | headtitlecase}}</label>
                         <div class="row dashed-radius-border">
-                            <div class="col-sm-12">
+                            <div class="col-sm-9">
                                 <ngx-form-group [formGroup]="formItem" name="Title" label="Common.title" [array]="array" [index]="i" [allowCopy]="false" [required]="true" [touchedValidate]="false">
                                     <input type="text" nbInput fullWidth formControlName="Title" placeholder="{{'Common.title' | translate | headtitlecase}}">
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
@@ -150,7 +320,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
+                            <!-- <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Province" label="Common.province" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Province" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
                                 </ngx-form-group>
@@ -164,13 +334,8 @@
                                 <ngx-form-group [formGroup]="formItem" name="Ward" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Ward" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
                                 </ngx-form-group>
-                            </div>
-                            <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
-                                </ngx-form-group>
-                            </div>
-                            <div class="col-sm-6">
+                            </div> -->
+                            <!-- <div class="col-sm-6">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                                 </ngx-form-group>
@@ -184,7 +349,7 @@
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryCost" label="Phí vận chuyển" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryCost" placeholder="{{'Phí vận chuyển' | translate | headtitlecase}}" class="align-right" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                 </ngx-form-group>
-                            </div>
+                            </div> -->
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Note" label="Common.note" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <textarea class="scrollable-container" nbInput fullWidth formControlName="Note" placeholder="{{'Common.note' | translate | headtitlecase}}" rows="4"></textarea>
