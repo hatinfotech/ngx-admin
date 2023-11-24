@@ -108,7 +108,7 @@ export class CollaboratorPageListComponent extends AgGridDataManagerListComponen
           // pinned: 'left',
         },
         {
-          ...agMakeCommandColDef(this, this.cms, true, true, false, [
+          ...agMakeCommandColDef(this, this.cms, true, true, true, [
             {
               name: 'genrerateRegisterRefLink',
               label: '',

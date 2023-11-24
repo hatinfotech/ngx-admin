@@ -780,6 +780,17 @@ export class AppModule {
     responseTitle: 'Đã phát hành',
     responseText: 'Đã phát hành',
   };
+  static pendingState: ProcessMap = {
+    state: 'PENDING',
+    label: 'Đang chờ',
+    confirmLabel: 'Bạn có muốn chuyển sang trạng thái đang chờ',
+    status: 'info',
+    outline: true,
+    confirmTitle: 'Chuyển trạng thái đang chờ',
+    confirmText: 'Bạn có muốn chuyển sang trạng thái đang chờ',
+    responseTitle: 'Đã chuyển sang trạng thái đang chờ',
+    responseText: 'Đã chuyển sang trạng thái đang chờ',
+  };
   static assignedState: ProcessMap = {
     state: 'ASSIGNED',
     label: 'Đã cấp phát',
@@ -810,6 +821,28 @@ export class AppModule {
     confirmText: 'Bạn có muốn khóa ?',
     responseTitle: 'Đã khóa',
     responseText: 'Đã khóa',
+  };
+  static blockedState: ProcessMap = {
+    state: 'BLOCKED',
+    status: 'danger',
+    label: 'Bị chặn',
+    confirmLabel: 'Chặn',
+    outline: true,
+    confirmTitle: 'Bạn có muốn chặn ?',
+    confirmText: 'Bạn có muốn chặn ?',
+    responseTitle: 'Đã chặn',
+    responseText: 'Đã chặn',
+  };
+  static registeredState: ProcessMap = {
+    state: 'BLOCKED',
+    status: 'primary',
+    label: 'Đã đăng ký',
+    outline: true,
+    confirmLabel: 'Đăng ký',
+    confirmTitle: 'Bạn có muốn đăng ký ?',
+    confirmText: 'Bạn có muốn đăng ký ?',
+    responseTitle: 'Đã đăng ký',
+    responseText: 'Đã đã đăng ký',
   };
 
   static processMaps = {
@@ -1697,6 +1730,40 @@ export class AppModule {
         nextStates: [
           AppModule.distributedState,
           AppModule.lockedState,
+        ],
+      },
+    },
+    publisher: {
+      "PENDING": {
+        ...AppModule.pendingState,
+        nextState: 'REGISTERED',
+        nextStates: [
+          AppModule.registeredState,
+          AppModule.blockedState,
+        ],
+      },
+      "REGISTERED": {
+        ...AppModule.registeredState,
+        nextState: 'APPROVED',
+        nextStates: [
+          AppModule.approvedState,
+          AppModule.blockedState,
+        ],
+      },
+      "APPROVED": {
+        ...AppModule.approvedState,
+        nextState: 'BLOCKED',
+        nextStates: [
+          AppModule.blockedState,
+          AppModule.pendingState,
+        ],
+      },
+      "BLOCKED": {
+        ...AppModule.blockedState,
+        nextState: 'PENDING',
+        nextStates: [
+          AppModule.pendingState,
+          AppModule.registeredState,
         ],
       },
     },

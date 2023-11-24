@@ -85,7 +85,7 @@
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-2 col-md-4 col-sm-3 col-is-12">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ProfitMargin" label="% lợi nhuận" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="ProfitMargin" label="% lợi nhuận" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false" [touchedValidate]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="ProfitMargin" placeholder="{{'% lợi nhuận' | translate | headtitlecase}}" class="align-right" [inputMask]="towDigitsInputMask" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                                                 </ngx-form-group>
                                                             </div>
@@ -95,7 +95,7 @@
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-3 col-md-4 col-sm-3 col-is-12">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Giá EU" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="false" [touchedValidate]="false" [align]="'right'">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Price" label="Giá EU" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="true" [required]="false" [touchedValidate]="false" [align]="'right'">
                                                                     <input type="text" nbInput fullWidth formControlName="Price" placeholder="{{'Giá EU' | translate | headtitlecase}}" class="align-right" currencyMask [options]="priceCurencyFormat" (focus)="currencyMaskFocus($event, priceCurencyFormat)" (keydown)="currencyMastKeydown($event, priceCurencyFormat)" (paste)="onPasteNumber($event, priceCurencyFormat)">
                                                                 </ngx-form-group>
                                                             </div>

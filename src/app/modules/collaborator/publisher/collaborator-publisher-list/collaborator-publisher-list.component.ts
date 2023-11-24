@@ -186,32 +186,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
       //   }
       // };
       await this.cms.waitForLanguageLoaded();
-      const processingMap: { [key: string]: ProcessMap } = {
-        PENDING: {
-          state: 'PENDING',
-          label: 'Chờ kích hoạt',
-          confirmLabel: 'xxx',
-          status: 'basic',
-          outline: true,
-          confirmTitle: 'xxx',
-          confirmText: 'xxx',
-          responseTitle: 'xxx',
-          responseText: 'xxx',
-          icon: 'clock-outline'
-        },
-        REGISTERED: {
-          state: 'REGISTERED',
-          label: 'Đã kích hoạt',
-          confirmLabel: 'xxx',
-          status: 'success',
-          outline: true,
-          confirmTitle: 'xxx',
-          confirmText: 'xxx',
-          responseTitle: 'xxx',
-          responseText: 'xxx',
-          icon: 'checkmark-circle-2-outline'
-        },
-      };
+      const processingMap: { [key: string]: ProcessMap } = AppModule.processMaps['publisher'];
       this.columnDefs = this.configSetting([
         {
           ...agMakeSelectionColDef(this.cms),
@@ -458,12 +433,50 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
         },
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
-            // this.preview([data]);
-            // if (this.cms.getObjectId(data.State) == 'PROCESSING') {
-            //   this.openForm([data.Code]);
-            // } else {
-            //   this.preview([data]);
-            // }
+            const stateId = this.cms.getObjectId(data.State);
+            if (stateId == 'REGISTERED') {
+              this.cms.showDialog('Phê duyệt hồ sơ CTV Bán Hàng', 'Bạn có muốn phê duyệt hồ sơ CTV Bán Hàng của  "' + data.Name + '" không ?', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Duyệt hồ sơ',
+                  status: 'success',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Id: data.Id }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã phê duyệt hồ sơ CTV Bán Hàng !', { status: 'success' });
+                    });
+                  }
+                }
+              ]);
+            } else if (stateId == 'APPROVED') {
+              this.cms.showDialog('Yêu cầu xác thực lại hồ sơ CTV Bán Hàng', 'Bạn có muốn yêu cầu "' + data.Name + '" xác thực lại hồ sơ CTV Bán Hàng không ?', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Yêu cầu xác thực',
+                  status: 'primary',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'PENDING' }, [{ Id: data.Id }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã chuyển sang trạng thái chờ xác thực !', { status: 'success' });
+                    });
+                  }
+                },
+              ]);
+            }  else {
+              this.cms.toastService.show(data.Title, 'Không thể thay đổi trạng thái này !', { status: 'warning' });
+            }
           }),
           headerName: 'Trạng thái',
           field: 'State',

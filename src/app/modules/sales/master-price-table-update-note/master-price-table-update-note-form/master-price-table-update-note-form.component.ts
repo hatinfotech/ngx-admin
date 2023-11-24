@@ -701,12 +701,12 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
         }
         return null;
       }],
-      Description: ['', Validators.required],
+      Description: [],
       RelateDetail: [],
       RelativeQueueItem: [],
       ProfitMargin: [30],
       OldPrice: { disabled: true, value: null },
-      PurchasePrice: { disabled: true, value: null },
+      PurchasePrice: [],
       Price: ['', (control: FormControl) => {
         if (newForm && !this.cms.getObjectId(control.value)) {
           return { invalidName: true, required: true, text: 'trường bắt buộc' };
@@ -825,7 +825,7 @@ export class MasterPriceTableUpdateNoteFormComponent extends DataManagerFormComp
     console.log(selectedData);
     // const priceTable = this.cms.getObjectId(parentForm.get('PriceTable').value);
     const unitControl = detail.get('Unit');
-    detail.get('Description').setValue(selectedData.Name);
+    // detail.get('Description').setValue(selectedData.Name);
     if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
 
     } else {

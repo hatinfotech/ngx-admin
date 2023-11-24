@@ -210,6 +210,14 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
           },
         },
         {
+          headerName: 'Mô tả',
+          field: 'Description',
+          width: 1024,
+          // pinned: 'left',
+          filter: 'agTextColumnFilter',
+          autoHeight: true,
+        },
+        {
           headerName: 'Cập nhật cuối',
           field: 'LastUpdate',
           width: 180,
@@ -294,7 +302,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                       {
                         headerName: 'Ngày cập nhật',
                         field: 'NoteDate',
-                        pinned: 'left',
+                        // pinned: 'left',
                         width: 180,
                         filterParams: {
                           inRangeFloatingFilterDateFormat: 'DD/MM/YY',
@@ -306,8 +314,8 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                       {
                         headerName: 'Sản phẩm',
                         field: 'Product',
-                        pinned: 'left',
-                        width: 400,
+                        // pinned: 'left',
+                        width: 300,
                         filter: 'agTextColumnFilter',
                         cellRenderer: AgTextCellRenderer,
                         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
@@ -325,7 +333,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                         headerName: 'ĐVT',
                         field: 'Unit',
                         width: 150,
-                        pinned: 'left',
+                        // pinned: 'left',
                         cellRenderer: AgTextCellRenderer,
                         // valueFormatter: 'node.data.Unit',
                         filter: AgSelect2Filter,
@@ -350,6 +358,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                       {
                         headerName: 'Phiếu cập nhật giá',
                         field: 'Note',
+                        // pinned: 'right',
                         width: 200,
                         filter: 'agTextColumnFilter',
                         headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
@@ -365,9 +374,18 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                         cellRenderer: AgTextCellRenderer,
                       },
                       {
+                        ...agMakeTagsColDef(this.cms, (tag) => {
+                          this.cms.previewVoucher(tag.type, tag.id);
+                        }),
+                        headerName: 'Chứng từ liên quan',
+                        field: 'Note',
+                        width: 330,
+                        valueGetter: (params) => params.node.data?.Note ? [{ id: params.node.data.Note, label: 'PCNG:' + params.node.data.Note, status: 'success' }] : null,
+                      },
+                      {
                         headerName: 'Yêu cầu bởi',
                         field: 'RequestBy',
-                        pinned: 'left',
+                        // pinned: 'left',
                         width: 250,
                         cellRenderer: AgTextCellRenderer,
                         filter: AgSelect2Filter,
@@ -387,7 +405,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                       {
                         headerName: 'Phê duyệt bởi',
                         field: 'ApprovedBy',
-                        pinned: 'left',
+                        // pinned: 'left',
                         width: 250,
                         cellRenderer: AgTextCellRenderer,
                         filter: AgSelect2Filter,
@@ -403,6 +421,24 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                             allowClear: true,
                           }
                         },
+                      },
+                      {
+                        headerName: 'Mô tả',
+                        field: 'ProductName',
+                        // pinned: 'left',
+                        width: 1024,
+                        filter: 'agTextColumnFilter',
+                        cellRenderer: AgTextCellRenderer,
+                        headerComponentParams: { enableMenu: true, menuIcon: 'fa-external-link-alt' },
+                        filterParams: {
+                          filterOptions: ['contains'],
+                          textMatcher: ({ value, filterText }) => {
+                            var literalMatch = this.cms.smartFilter(value, filterText);
+                            return literalMatch;
+                          },
+                          trimInput: true,
+                          debounceMs: 1000,
+                        }
                       },
                       {
                         ...agMakeCurrencyColDef(this.cms),
@@ -460,7 +496,7 @@ export class SalesMasterPriceTableComponent extends AgGridDataManagerListCompone
                     Image: m.Pictures,
                     Product: { id: m.Code, text: m.Name },
                     Unit: m.Unit as any,
-                    Description: m.Name,
+                    // Description: m.Name,
                     Price: m.Price,
                     // PurchasePrice: m.PurchasePrice
                   })) as any

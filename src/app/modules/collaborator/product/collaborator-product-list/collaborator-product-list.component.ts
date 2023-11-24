@@ -90,6 +90,7 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
           this.cms.openDialog(ProductListComponent, {
             context: {
               inputMode: 'dialog',
+              gridHeight: '95vh',
               onDialogChoose: async (chooseItems: ProductModel[]) => {
                 console.log(chooseItems);
                 const page = this.collaboratorService.currentpage$?.value;
