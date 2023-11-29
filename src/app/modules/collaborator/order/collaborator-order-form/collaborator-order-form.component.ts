@@ -13,7 +13,7 @@ import { ChatRoomMemberModel, ChatRoomModel } from '../../../../models/chat-room
 import { ContactModel } from '../../../../models/contact.model';
 import { ProductModel } from '../../../../models/product.model';
 import { PromotionActionModel } from '../../../../models/promotion.model';
-import { SalesPriceReportDetailModel, AuthorizedSaleVoucherTransportPointModel } from '../../../../models/sales.model';
+import { SalesPriceReportDetailModel, AuthorizedSaleVoucherTransportPointModel, SalesMasterPriceTableDetailModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { UnitModel } from '../../../../models/unit.model';
 import { ApiService } from '../../../../services/api.service';
@@ -1446,19 +1446,19 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
   async onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup) {
     console.log(selectedData);
     const productId = this.cms.getObjectId(selectedData);
-    // const unitPriceMap = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
-    //   priceTable: 'default',
-    //   product: this.cms.getObjectId(detail.get('Product').value),
-    //   includeUnit: true,
-    // }).then(rs => rs.reduce((result, current, index) => { result[current.Product + '-' + current.Unit] = current.Price; return result; }, {}));
+    detail.get('Image').setValue(selectedData.Pictures || (selectedData.FeaturePicture ? [selectedData.FeaturePicture] : []));
+    const descriptionControl = detail.get('Description');
+    descriptionControl.setValue(selectedData['Name']);
+    const unitPriceMap = await this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+      priceTable: 'default',
+      product: this.cms.getObjectId(detail.get('Product').value),
+      includeUnit: true,
+    }).then(rs => rs.reduce((result, current, index) => { result[current.Product + '-' + current.Unit] = current.Price; return result; }, {}));
     if (productId) {
-      const descriptionControl = detail.get('Description');
-      descriptionControl.setValue(selectedData['Name']);
-      detail.get('Image').setValue(selectedData.Pictures || (selectedData.FeaturePicture ? [selectedData.FeaturePicture] : []));
       if (selectedData.Units && selectedData?.Units.length > 0) {
-        // selectedData.Units.map(m => { m.Price = unitPriceMap[productId + '-' + this.cms.getObjectId(m)]; return m; })
-        // const defaultUnit = selectedData.Units.find(f => f['DefaultExport'] === true);
-        const defaultUnit = selectedData.Units[0];
+        selectedData.Units.map(m => { m.Price = unitPriceMap[productId + '-' + this.cms.getObjectId(m)]; return m; })
+        const defaultUnit = selectedData.Units.find(f => f['IsDefaultSales'] === true) || selectedData.Units[0];
+        // const defaultUnit = selectedData.Units[0];
         detail['UnitList'] = selectedData.Units;
         detail.get('Unit').setValue(defaultUnit);
       }
