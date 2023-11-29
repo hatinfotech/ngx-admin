@@ -447,7 +447,8 @@
         "province": "Tỉnh/Tp",
         "district": "Quận/Huyện",
         "ward": "Phường/Xã",
-        "costClassification": "khoản mục chi phí"
+        "costClassification": "khoản mục chi phí",
+        "changeToInactive": "ngừng kích hoạt"
     },
     "Contact": {
         "Customer": {

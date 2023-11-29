@@ -197,6 +197,7 @@ export class CommonService {
     CHATROOM: { prefix: '120', id: 'CHATROOM', text: 'Task', symbol: 'TASK', status: 'warning' },
     TASK: { prefix: '120', id: 'TASK', text: 'Task', symbol: 'TASK', status: 'warning' },
     PRODUCTIONORDER: { prefix: '150', id: 'PRODUCTIONORDER', text: 'Lệnh sản xuất', symbol: 'PDS', status: 'danger' },
+    MASTERPRICETABLEUPDATENOTE: { prefix: '140', id: 'MASTERPRICETABLEUPDATENOTE', text: 'Phiếu cập nhật giá bán', symbol: 'PCNG', status: 'success' },
   };
 
   constructor(
@@ -1072,6 +1073,7 @@ export class CommonService {
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
     'PRODUCTIONORDER': ProductionOrderPrintComponent,
+    'MASTERPRICETABLEUPDATENOTE': MasterPriceTableUpdateNotePrintComponent,
   };
   voucherPrintConponentTypeIndexByPrefix = {
     '104': SalesVoucherPrintComponent,
@@ -1109,6 +1111,7 @@ export class CommonService {
     'COMMERCEPOSRETURN': CommercePosReturnPrintComponent,
     'COMMERCEPOSRETURN80': CommercePosReturnsPrintComponent,
     'PRODUCTIONORDER': ProductionOrderPrintComponent,
+    'MASTERPRICETABLEUPDATENOTE': MasterPriceTableUpdateNotePrintComponent,
   };
   previewVoucher<M>(type: string, relativeVocher: string, onClose?: (data: M) => void, onChange?: (data: M, printComponent: DataManagerPrintComponent<M>) => void) {
     if (!type) {

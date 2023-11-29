@@ -423,14 +423,14 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
             } as AgCellButton
           }
         },
-        {
-          ...agMakeTextColDef(this.cms),
-          headerName: 'Level',
-          field: 'Level',
-          valueGetter: 'node.data.LevelLabel',
-          width: 155,
-          pinned: 'right',
-        },
+        // {
+        //   ...agMakeTextColDef(this.cms),
+        //   headerName: 'Level',
+        //   field: 'Level',
+        //   valueGetter: 'node.data.LevelLabel',
+        //   width: 155,
+        //   pinned: 'right',
+        // },
         {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             const stateId = this.cms.getObjectId(data.State);

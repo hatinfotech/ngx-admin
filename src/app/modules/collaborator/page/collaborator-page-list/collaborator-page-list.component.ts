@@ -23,6 +23,7 @@ import { AgGridDataManagerListComponent } from '../../../../lib/data-manager/ag-
 import { DatePipe } from '@angular/common';
 import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/column-define/selection.define';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
+import { agMakeStateColDef } from '../../../../lib/custom-element/ag-list/column-define/state.define';
 
 @Component({
   selector: 'ngx-collaborator-page-list',
@@ -106,6 +107,23 @@ export class CollaboratorPageListComponent extends AgGridDataManagerListComponen
           filter: 'agTextColumnFilter',
           // autoHeight: true,
           // pinned: 'left',
+        },
+        {
+          ...agMakeStateColDef(this.cms, AppModule.processMaps.collaboratorPage, (data) => {
+            // this.preview([data]);
+            // if (this.cms.getObjectId(data.State) == 'PROCESSING') {
+            //   this.openForm([data.Code]);
+            // } else {
+            //   this.preview([data]);
+            // }
+            this.changeStateConfirm(data).then(status => {
+              if (status) this.refresh();
+            });
+          }),
+          headerName: 'Trạng thái',
+          field: 'State',
+          pinned: 'right',
+          width: 155,
         },
         {
           ...agMakeCommandColDef(this, this.cms, true, true, true, [
@@ -261,4 +279,46 @@ export class CollaboratorPageListComponent extends AgGridDataManagerListComponen
   onGridReady(params) {
     super.onGridReady(params);
   }
+
+
+
+  changeStateConfirm(data: PageModel) {
+    const params = { id: [data.Code] };
+    const processMap: ProcessMap = AppModule.processMaps.collaboratorPage[data.State || ''];
+    params['changeState'] = processMap?.nextState;
+
+    return new Promise(resolve => {
+      this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(processMap?.confirmText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+        {
+          label: this.cms.translateText('Common.goback'),
+          status: 'primary',
+          action: () => {
+            resolve(false);
+          },
+        },
+        {
+          label: this.cms.translateText(processMap?.nextStateLabel),
+          status: AppModule.processMaps.commerceServiceByCycle[processMap.nextState || ''].status,
+          action: async () => {
+            this.loading = true;
+            return this.apiService.putPromise<PageModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+              this.loading = false;
+              this.cms.toastService.show(this.cms.translateText(processMap?.responseText, { object: this.cms.translateText('CommerceServiceByCycle.ServieByCycle.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), this.cms.translateText(processMap?.responseTitle), {
+                status: 'success',
+              });
+              resolve(true);
+              return true;
+            }).catch(err => {
+              this.loading = false;
+              resolve(false);
+              return false;
+            });
+          },
+        },
+      ], () => {
+        resolve(false);
+      });
+    });
+  }
+
 }

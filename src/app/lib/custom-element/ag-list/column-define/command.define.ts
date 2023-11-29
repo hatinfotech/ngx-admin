@@ -33,8 +33,9 @@ export const agMakeCommandColDef = <F, M>(
       status: 'info',
       icon: 'edit-2-outline',
       outline: false,
-      action: (params: any, button: any) => {
+      action: async (params: any, button: any) => {
         typeof editAction == 'function' ? editAction(params.node.data) : listComponent?.openForm([listComponent.makeId(params.node.data)]);
+        return true;
       }
     });
     width += 40;
@@ -45,8 +46,9 @@ export const agMakeCommandColDef = <F, M>(
       status: 'danger',
       icon: 'trash-2-outline',
       outline: false,
-      action: (params: any, button: any) => {
+      action: async (params: any, button: any) => {
         typeof deleteAction == 'function' ? deleteAction(params.node.data) : listComponent?.deleteConfirm([listComponent.makeId(params.node.data)]);
+        return true;
       }
     });
     width += 40;

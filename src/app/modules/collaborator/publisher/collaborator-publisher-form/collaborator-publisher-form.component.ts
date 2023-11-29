@@ -118,14 +118,14 @@ export class CollaboratorPublisherFormComponent extends DataManagerFormComponent
     const curentUrl = new URL(window.location.href); curentUrl.origin
     const newForm = this.formBuilder.group({
       Page: [this.collaboratorService.currentpage$.value],
-      Contact: [],
+      // Contact: [],
       Publisher: [],
       Name: [],
       Phone: [],
       Email: [],
       Address: [],
-      IdentifiedNumber: [],
-      Level: ['STARTER'],
+      // IdentifiedNumber: [],
+      // Level: ['STARTER'],
     });
     if (data) {
       newForm.patchValue(data);

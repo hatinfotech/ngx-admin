@@ -3,17 +3,17 @@
         <div *ngFor="let formItem of array.controls; let i = index">
             <nb-card class="small-header popup">
                 <nb-card-header>
-                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Publisher.title' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+                    <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Collaborator.Publisher.title sdf' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
                 </nb-card-header>
                 <nb-card-body>
                     <div [formGroup]="formItem">
                         <!-- <input type="hidden" nbInput fullWidth formControlName="Code"> -->
                         <div class="row">
-                            <div class="col-sm-12">
+                            <!-- <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Contact" label="ID Liên hệ" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [customIcons]="objectControlIcons" [touchedValidate]="false">
                                     <ngx-select2 formControlName="Contact" [select2Option]="select2OptionForContact"></ngx-select2>
                                 </ngx-form-group>
-                            </div>
+                            </div> -->
                             <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Name" label="Common.name" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <input type="text" nbInput fullWidth formControlName="Name" placeholder="{{'Common.name' | translate | headtitlecase}}">
@@ -34,16 +34,16 @@
                                     <input type="text" nbInput fullWidth formControlName="Address" placeholder="{{'Common.address' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
-                            <div class="col-sm-12">
+                            <!-- <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="IdentifiedNumber" label="Common.identifiedNumber" [array]="array" [index]="i" [allowCopy]="false" [required]="false">
                                     <input type="text" nbInput fullWidth formControlName="IdentifiedNumber" placeholder="{{'Common.identifiedNumber' | translate | headtitlecase}}">
                                 </ngx-form-group>
-                            </div>
-                            <div class="col-sm-12">
+                            </div> -->
+                            <!-- <div class="col-sm-12">
                                 <ngx-form-group [formGroup]="formItem" name="Level" label="Collaborator.Level.label" [array]="array" [index]="i" [allowCopy]="false" [required]="true">
                                     <ngx-select2 formControlName="Level" [data]="levelList" [select2Option]="select2OptionForLevel"></ngx-select2>
                                 </ngx-form-group>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </nb-card-body>
