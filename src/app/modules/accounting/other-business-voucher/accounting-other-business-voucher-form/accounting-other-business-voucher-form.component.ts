@@ -7,9 +7,9 @@ import { CurrencyMaskConfig } from 'ng2-currency-mask';
 import { ActionControlListOption } from '../../../../lib/custom-element/action-control-list/action-control.interface';
 import { CustomIcon, FormGroupComponent } from '../../../../lib/custom-element/form/form-group/form-group.component';
 import { DataManagerFormComponent } from '../../../../lib/data-manager/data-manager-form.component';
-import { OtherBusinessVoucherModel, AccountModel, BusinessModel, CashVoucherDetailModel } from '../../../../models/accounting.model';
+import { OtherBusinessVoucherModel, AccountModel, BusinessModel, CashVoucherDetailModel, AccBankAccountModel } from '../../../../models/accounting.model';
 import { ContactModel } from '../../../../models/contact.model';
-import { SalesVoucherModel } from '../../../../models/sales.model';
+import { SalesMasterPriceTableDetailModel, SalesVoucherModel } from '../../../../models/sales.model';
 import { TaxModel } from '../../../../models/tax.model';
 import { ApiService } from '../../../../services/api.service';
 import { CommonService } from '../../../../services/common.service';
@@ -19,7 +19,7 @@ import { AccountingOtherBusinessVoucherPrintComponent } from '../accounting-othe
 import { RootServices } from '../../../../services/root.services';
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { filter, take, takeUntil } from 'rxjs/operators';
-import { ProductUnitModel } from '../../../../models/product.model';
+import { ProductModel, ProductUnitModel } from '../../../../models/product.model';
 
 
 @Component({
@@ -49,6 +49,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   // accountDebitList: AccountModel[] = [];
   // accountCreditList: AccountModel[] = [];
   accountList: AccountModel[] = [];
+  bankAccountList: AccBankAccountModel[] = [];
   accountingBusinessList: BusinessModel[] = [];
   previewAfterCreate = true;
   printDialog = AccountingOtherBusinessVoucherPrintComponent;
@@ -150,6 +151,27 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     },
   };
 
+
+
+  // Type field option
+  select2OptionForType = {
+    placeholder: 'Chọn loại...',
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'Code',
+      text: 'Name',
+    },
+  };
+
+  select2DataForType = [
+    { id: 'PRODUCT', text: 'Sản phẩm' },
+    // { id: 'SERVICE', text: 'Dịch vụ' },
+    { id: 'CATEGORY', text: 'Danh mục' },
+  ];
+
   // Accounting Business Option
   // select2DataForAccountingBusiness = [
   //   {
@@ -242,6 +264,20 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
     }
   };
 
+  select2OptionForBankAccounting = {
+    placeholder: this.cms.translateText('Common.bankAccount'),
+    allowClear: true,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    // multiple: true,
+    tags: true,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+  };
+
   objectControlIcons: CustomIcon[] = [{
     icon: 'plus-square-outline', title: this.cms.translateText('Common.addNewContact'), status: 'success', action: (formGroupCompoent: FormGroupComponent, formGroup: FormGroup, array: FormArray, index: number, option: { parentForm: FormGroup; }) => {
       this.cms.openDialog(ContactFormComponent, {
@@ -285,7 +321,14 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
         });
       }
 
-      this.toMoney(newForm);
+      // this.toMoney(newForm, newResourceFormGroup);
+      // Call culate total
+      const details = this.getDetails(newForm);
+      let total = 0;
+      for (let i = 0; i < details.controls.length; i++) {
+        total += this.calculatAmount(details.controls[i] as FormGroup);
+      }
+      newForm.get('_total').setValue(total);
 
       // Direct callback
       if (formItemLoadCallback) {
@@ -304,6 +347,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       }
       return account;
     }));
+    this.bankAccountList = await this.apiService.getPromise<AccBankAccountModel[]>('/accounting/bank-accounts', { limit: 'nolimit', select: "id=>Code,text=>CONCAT(Owner;'/';AccountNumber;'/';Bank;'/';Branch)" });
     // this.accountDebitList = this.accountList;
     // this.accountCreditList = this.accountList;
     // this.accountingBusinessList = await this.apiService.getPromise<AccountModel[]>('/accounting/business', { limit: 'nolimit' }).then(rs => rs.map(accBusiness => {
@@ -369,6 +413,7 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
       DateOfVoucher: [this.cms.lastVoucherDate, Validators.required],
       Thread: [''],
       RelativeVouchers: [],
+      BankAccount: [],
       Details: this.formBuilder.array([]),
       _total: [''],
     });
@@ -413,11 +458,14 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CashVoucherDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
       SystemUuid: [''],
+      No: [''],
+      Image: [[]],
       AccountingBusiness: [[]],
       Description: ['', Validators.required],
       RelateCode: [''],
       DebitAccount: ['1111', Validators.required],
       CreditAccount: ['', Validators.required],
+      Type: ['PRODUCT'],
       Product: [],
       Unit: [],
       Quantity: [],
@@ -457,7 +505,14 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
 
   onRemoveDetailFormGroup(parentFormGroup: FormGroup, index: number) {
     // this.resourceList[mainIndex].splice(index, 1);
-    this.toMoney(parentFormGroup);
+    // this.toMoney(parentFormGroup);
+    // Call culate total
+    const details = this.getDetails(parentFormGroup);
+    let total = 0;
+    for (let i = 0; i < details.controls.length; i++) {
+      total += this.calculatAmount(details.controls[i] as FormGroup);
+    }
+    parentFormGroup.get('_total').setValue(total);
   }
 
   // Orverride
@@ -500,19 +555,49 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   onChangeCurrency(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
   }
 
-  toMoney(formItem: FormGroup) {
-    // detail.get('ToMoney').setValue(this.calculatToMoney(detail));
+  toMoneyx(formItem: FormGroup, detail?: FormGroup) {
+    // detail.get('Amount').setValue(this.calculatAmount(detail));
     this.cms.takeUntil(this.componentName + '_toMoney', 300).then(rs => {
       // Call culate total
       const details = formItem.get('Details') as FormArray;
       let total = 0;
       for (const detail of details.controls) {
-        // total += this.calculatToMoney(details.controls[i] as FormGroup);
+        // total += this.calculatAmount(details.controls[i] as FormGroup);
         total += parseInt(detail.get('Amount').value || 0);
 
       }
       formItem.get('_total').setValue(total);
     });
+    return false;
+  }
+
+  calculatAmount(detail: FormGroup, source?: string) {
+    if (source === 'Amount') {
+      const price = detail.get('Amount').value / detail.get('Quantity').value;
+      return price;
+    } else {
+      const toMoney = detail.get('Quantity').value * detail.get('Price').value;
+      return toMoney;
+    }
+  }
+
+  toMoney(formItem: FormGroup, detail: FormGroup, source?: string, index?: number) {
+    // this.cms.takeUntil(this.componentName + '_Amount_ ' + index, 300).then(() => {
+    if (source === 'Amount' && detail.get('Amount').value) {
+      detail.get('Price').setValue(this.calculatAmount(detail, source), { emitEvent: false });
+    } else {
+      if (detail.get('Price').value) {
+        detail.get('Amount').setValue(this.calculatAmount(detail), { emitEvent: false });
+      }
+    }
+    // Call culate total
+    const details = this.getDetails(formItem);
+    let total = 0;
+    for (let i = 0; i < details.controls.length; i++) {
+      total += this.calculatAmount(details.controls[i] as FormGroup);
+    }
+    formItem.get('_total').setValue(total);
+    // });
     return false;
   }
 
@@ -636,6 +721,54 @@ export class AccountingOtherBusinessVoucherFormComponent extends DataManagerForm
   removeRelativeVoucher(formGroup: FormGroup, relativeVocher: any) {
     const relationVoucher = formGroup.get('RelativeVouchers');
     relationVoucher.setValue(relationVoucher.value.filter(f => f?.id !== this.cms.getObjectId(relativeVocher)));
+    return false;
+  }
+
+
+
+  /** Choose product event */
+  onSelectProduct(detail: FormGroup, selectedData: ProductModel, parentForm: FormGroup, detailForm?: FormGroup) {
+    console.log(selectedData);
+    // const priceTable = this.cms.getObjectId(parentForm.get('PriceTable').value);
+    const unitControl = detail.get('Unit');
+    detail.get('Description').setValue(selectedData.Name);
+    if (selectedData && selectedData.Units && selectedData.Units.length > 0) {
+      const detaultUnit = selectedData.Units[0];
+      // if (priceTable) {
+      //   this.apiService.getPromise<SalesMasterPriceTableDetailModel[]>('/sales/master-price-tables/getProductPriceByUnits', {
+      //     priceTable: priceTable,
+      //     product: this.cms.getObjectId(selectedData),
+      //     includeUnit: true,
+      //   }).then(rs => {
+      //     console.log(rs);
+      //     unitControl['UnitList'] = rs.map(priceDetail => ({ id: priceDetail.UnitCode, text: priceDetail.UnitName, Price: priceDetail.Price }))
+      //     // if (selectedData.Units) {
+      //     if (detaultUnit) {
+      //       const choosed = rs.find(f => f.UnitCode === detaultUnit.id);
+      //       detail.get('Unit').setValue('');
+      //       setTimeout(() => detail.get('Unit').setValue(detaultUnit.id), 0);
+      //       setTimeout(() => {
+      //         detail.get('Price').setValue(choosed.Price);
+      //         this.toMoney(parentForm, detail);
+      //       }, 0);
+      //     }
+      //     // } else {
+      //     //   detail['unitList'] = this.cms.unitList;
+      //     // }
+      //   });
+      // } else {
+      unitControl['UnitList'] = selectedData.Units;
+      // unitControl.patchValue(selectedData.Units.find(f => f['DefaultImport'] === true || f['IsDefaultPurchase'] === true));
+      unitControl.setValue(detaultUnit);
+      // }
+
+    } else {
+      // detail.get('Description').setValue('');
+      detail.get('Unit').setValue('');
+
+      unitControl['UnitList'] = [];
+      unitControl['UnitList'] = null;
+    }
     return false;
   }
 
