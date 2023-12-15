@@ -3,7 +3,7 @@
     <div *ngFor="let formItem of array.controls; let i = index">
       <nb-card class="small-header popup">
         <nb-card-header>
-          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Chiến dịch chiết khấu Add-on' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
+          <ngx-card-header [option]="{controlOption: {formIndex: i, form: formItem}}" [size]="size" [icon]="favicon" [title]="title ? title : ('Chiến dịch chiết khấu nâng cao' | translate:{definition: '', action: cms.translate.instant(isEditMode ? 'Common.update' : 'Common.create')} | headtitlecase)" [controls]="actionButtonList"></ngx-card-header>
         </nb-card-header>
         <nb-card-body>
           <div [formGroup]="formItem">
@@ -33,7 +33,14 @@
               </div>
             </div>
 
-            <ngx-ag-dynamic-list #details [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Publisher']" (onReady)="onGridReady($event)" [onInit]="onGridInit" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+            <div class="row">
+              <div class="col-md-6">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS CTV Bán Hàng'" [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Publisher']" (onReady)="onGridReady($event)" (onNodesSelected)="onPublishersSelected($event)" (onComponentInit)="onGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+              </div>
+              <div class="col-md-6">
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'DS sản phẩm theo CTV: ' + (productExtendData?.publisher?.PublisherName || '' )" [columnDefs]="productsColumnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['Product', 'Unit']" (onReady)="onProductGridReady($event)" (onComponentInit)="onProductGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+              </div>
+            </div>
 
           </div>
         </nb-card-body>

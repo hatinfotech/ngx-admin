@@ -546,32 +546,6 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
   //   },
   // };
 
-  select2OptionForWard = {
-    placeholder: 'Chọn phường/xã/thị trấn...',
-    allowClear: false,
-    width: '100%',
-    dropdownAutoWidth: true,
-    minimumInputLength: 0,
-    keyMap: {
-      id: 'id',
-      text: 'text',
-    },
-    ajax: {
-      url: (params: any, options: any) => {
-        const formGroup = options?.formGroup;
-        const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
-        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
-      },
-      delay: 300,
-      processResults: (data: any, params: any) => {
-        // console.info(data, params);
-        return {
-          results: data
-        };
-      },
-    },
-  };
-
   select2OptionForTax = {
     placeholder: 'Chọn thuế...',
     allowClear: true,
@@ -671,6 +645,32 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       delay: 300,
       processResults: (data: any, params: any) => {
         console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
         return {
           results: data
         };
@@ -924,7 +924,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
 
   /** Execute api put */
   executePut(params: any, data: ProductModel[], success: (data: ProductModel[]) => void, error: (e: any) => void) {
-    // params['page'] = this.collaboratorService?.currentpage$?.value;
+    params['page'] = this.cms.getObjectId(this.collaboratorService.currentpage$.value);
     return super.executePut(params, data, success, error);
   }
 
@@ -1178,7 +1178,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       Product: [''],
       Description: [''],
       Quantity: [1],
-      Price: { value: null, disabled: true },
+      Price: [],
       Unit: [''],
       // Tax: ['VAT10'],
       ToMoney: { value: null, disabled: true },

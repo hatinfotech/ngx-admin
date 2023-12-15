@@ -123,7 +123,22 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-12">
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryProvince" label="Địa chỉ nhận hàng, mục tiêu phải đến: Tỉnh/TP" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="DeliveryProvince" [select2Option]="makeSelect2Option(select2OptionForProvince, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryDistrict" label="Common.district" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="DeliveryDistrict" [select2Option]="makeSelect2Option(select2OptionForDistrict, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
+                                <ngx-form-group [formGroup]="formItem" name="DeliveryWard" label="Common.ward" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="DeliveryWard" [select2Option]="makeSelect2Option(select2OptionForWard, formItem)"></ngx-select2>
+                                </ngx-form-group>
+                            </div>
+                            <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="DeliveryAddress" label="Sales.deliveryAddress" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
                                     <input type="text" nbInput fullWidth formControlName="DeliveryAddress" placeholder="{{'Sales.deliveryAddress' | translate | headtitlecase}}">
                                 </ngx-form-group>
@@ -181,18 +196,18 @@
                         <label class="label label-with-border-below">{{'Thông tin vận chuyển' | translate | headtitlecase}}</label>
                         <div class="row">
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="Driver" label="Người triển khai" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <ngx-select2 formControlName="Driver" [select2Option]="select2OptionForContact" (selectChange)="onDriverChange(formItem, $event, i)"></ngx-select2>
+                                <ngx-form-group [formGroup]="formItem" name="Implementer" label="Người triển khai" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <ngx-select2 formControlName="Implementer" [select2Option]="select2OptionForContact" (selectChange)="onImplementerChange(formItem, $event, i)"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-6">
-                                <ngx-form-group [formGroup]="formItem" name="DriverName" label="Tên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <input type="text" nbInput fullWidth formControlName="DriverName" placeholder="{{'Tên người triên khai' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="ImplementerName" label="Tên" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <input type="text" nbInput fullWidth formControlName="ImplementerName" placeholder="{{'Tên người triên khai' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">
-                                <ngx-form-group [formGroup]="formItem" name="DriverPhone" label="SĐT" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <input type="text" nbInput fullWidth formControlName="DriverPhone" placeholder="{{'SĐT người triên khai' | translate | headtitlecase}}">
+                                <ngx-form-group [formGroup]="formItem" name="ImplementerPhone" label="SĐT" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                    <input type="text" nbInput fullWidth formControlName="ImplementerPhone" placeholder="{{'SĐT người triên khai' | translate | headtitlecase}}">
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">

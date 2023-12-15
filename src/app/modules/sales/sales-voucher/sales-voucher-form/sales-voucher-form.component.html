@@ -259,7 +259,7 @@
                                                                 </ngx-form-group>
                                                             </div>
                                                             <div class="col-lg-8 col-md-8 col-sm-9 col-is-12" *ngIf="getFieldValue(detail, 'Type') !== 'CATEGORY'">
-                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="trie" [touchedValidate]="false" [customIcons]="getCustomIcons(i + ic)" [option]="{parentForm: formItem}">
+                                                                <ngx-form-group [hideLabel]="false" [formGroup]="detail" name="Product" label="Common.productOrService" [array]="getDetails(formItem)" [index]="ic" [allowCopy]="false" [required]="true" [touchedValidate]="false" [customIcons]="getCustomIcons(i + ic)" [option]="{parentForm: formItem}">
                                                                     <ngx-select2 formControlName="Product" [select2Option]="select2OptionForProduct" (selectChange)="onSelectProduct(detail, $event, formItem, detail)"></ngx-select2>
                                                                 </ngx-form-group>
                                                             </div>

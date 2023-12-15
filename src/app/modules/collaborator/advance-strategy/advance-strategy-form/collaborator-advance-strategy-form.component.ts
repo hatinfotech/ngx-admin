@@ -73,14 +73,6 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
         width: 100,
       },
       {
-        headerName: 'Sku',
-        field: 'Sku',
-        width: 100,
-        filter: 'agTextColumnFilter',
-        cellRenderer: AgTextCellRenderer,
-        pinned: 'left',
-      },
-      {
         headerName: 'Tên CTV',
         field: 'PublisherName',
         width: 400,

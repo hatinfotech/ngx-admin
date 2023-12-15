@@ -255,7 +255,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
         },
         {
           headerName: 'Người triển khai',
-          field: 'Driver',
+          field: 'Implementer',
           // pinned: 'left',
           width: 200,
           cellRenderer: AgTextCellRenderer,
@@ -423,7 +423,7 @@ export class DeploymentVoucherListComponent extends AgGridDataManagerListCompone
 
   prepareApiParams(params: any, getRowParams: IGetRowsParams) {
     params['includeObject'] = true;
-    params['includeDriver'] = true;
+    params['includeImplementer'] = true;
     params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
     // params['sort_Id'] = 'desc';

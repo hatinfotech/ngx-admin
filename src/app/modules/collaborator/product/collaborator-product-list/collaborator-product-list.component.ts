@@ -24,6 +24,7 @@ import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column
 import { agMakeTagsColDef } from '../../../../lib/custom-element/ag-list/column-define/tags.define';
 import { agMakeCurrencyColDef } from '../../../../lib/custom-element/ag-list/column-define/currency.define';
 import { agMakeNumberColDef } from '../../../../lib/custom-element/ag-list/column-define/number.define';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'ngx-collaborator-product-list',
@@ -448,5 +449,28 @@ export class CollaboratorProductListComponent extends AgGridDataManagerListCompo
     this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
       this.refresh();
     });
+  }
+
+  /** Api delete funciton */
+  async executeDelete(ids: any, success: (resp: any) => void, error?: (e: HttpErrorResponse) => void, complete?: (resp: any | HttpErrorResponse) => void) {
+    if (this.rowModelType === 'infinite') {
+      // await super.executeDelete(ids, success, error, complete);
+      const params = {
+        id: ids,
+        page: this.collaboratorService?.currentpage$?.value,
+      };
+      return this.apiService.deletePromise(this.apiPath, params).then(resp => {
+        // this.removeGridItems(deletedItems);
+        this.refresh();
+        if (success) success(resp);
+        if (complete) complete(resp);
+      }).catch(err => {
+        if (error) error(err);
+        return Promise.reject(err);
+      });
+    } else if (this.rowModelType === 'clientSide') {
+      const selectedNodes = this.gridApi.getSelectedNodes();
+      this.gridApi.applyTransaction({ remove: selectedNodes.map(m => m.data) });
+    }
   }
 }

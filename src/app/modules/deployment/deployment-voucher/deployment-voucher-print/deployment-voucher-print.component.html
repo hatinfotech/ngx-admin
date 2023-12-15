@@ -70,7 +70,7 @@
                             <div class="under-line" style="font-size: 1.5rem !important;
                             font-weight: bold;
                             line-height: 2rem !important;">{{'Sales.deliveryAddress' | translate | headtitlecase}}:
-                                {{renderValue(data.DeliveryAddress)}}
+                                {{renderValue(data.FullDeliveryAddress)}}
                             </div>
                             <div>
                                 <div style="font-size: 1.5rem !important; font-weight: bold; line-height: 2.5rem !important;" class="under-line">{{'Người nhận hàng' | translate | headtitlecase}}:
@@ -86,10 +86,10 @@
                 <div class="font-large">
                     <div style="display:flex">
                         <div style="flex: 1" class="under-line">{{'Tài xế' | translate | headtitlecase}} :
-                            {{renderValue(data.DriverName)}} ({{renderValue(data.Driver | objecttext)}})
+                            {{renderValue(data.ImplementerName)}} ({{renderValue(data.Implementer | objecttext)}})
                         </div>
                         <div class="under-line">{{'SĐT tài xế' | translate | headtitlecase}} :
-                            {{renderValue(data.DriverPhone)}}
+                            {{renderValue(data.ImplementerPhone)}}
                         </div>
                     </div>
                     <div style="display:flex">

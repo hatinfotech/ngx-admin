@@ -43,6 +43,10 @@ export class DeploymentVoucherModel extends Model  {
   Driver?: string;
   DriverName?: string;
   DriverPhone?: string;
+  Implementer?: string;
+  ImplementerName?: string;
+  ImplementerPhone?: string;
+  ImplementerEmail?: string;
   ShippingCost?: string;
   ShippingCostPaymentBy?: string;
   ShippingCostPaymentRatio?: string;

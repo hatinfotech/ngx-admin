@@ -138,7 +138,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
                       label: 'Đóng',
                       status: 'basic',
                       action: () => {
-      
+
                       },
                     },
                     {
@@ -163,7 +163,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
               //     label: 'Đóng',
               //     status: 'basic',
               //     action: () => {
-  
+
               //     },
               //   },
               //   {
@@ -474,7 +474,27 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
                   }
                 },
               ]);
-            }  else {
+            } else if (stateId == 'PENDING') {
+              this.cms.showDialog('Phê duyệt hồ sơ CTV Bán Hàng', 'Bạn có muốn phê duyệt hồ sơ CTV Bán Hàng của  "' + data.Name + '" không ?', [
+                {
+                  label: 'Đóng',
+                  status: 'basic',
+                  outline: true,
+                  action: () => true
+                },
+                {
+                  label: 'Duyệt hồ sơ',
+                  status: 'success',
+                  outline: true,
+                  action: () => {
+                    this.apiService.putPromise(this.apiPath, { changeState: 'APPROVED' }, [{ Id: data.Id }]).then(rs => {
+                      this.refresh();
+                      this.cms.toastService.show(data.Title, 'Đã phê duyệt hồ sơ CTV Bán Hàng !', { status: 'success' });
+                    });
+                  }
+                }
+              ]);
+            } else {
               this.cms.toastService.show(data.Title, 'Không thể thay đổi trạng thái này !', { status: 'warning' });
             }
           }),

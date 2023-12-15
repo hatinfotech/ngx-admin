@@ -587,7 +587,9 @@ export interface CollaboratorAdvanceStrategyPublisherModel {
 
 export interface CollaboratorAdvanceStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
 export interface CollaboratorAddonStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
-export interface CollaboratorRebuyStrategyProductModel extends CollaboratorBasicStrategyProductModel { }
+export interface CollaboratorRebuyStrategyProductModel extends CollaboratorBasicStrategyProductModel { 
+    Publishers?: CollaboratorRebuyStrategyPublisherModel[];
+}
 export interface CollaboratorAddonStrategyPublisherModel extends CollaboratorAdvanceStrategyPublisherModel { }
 export interface CollaboratorRebuyStrategyPublisherModel extends CollaboratorAdvanceStrategyPublisherModel { }
 export interface CollaboratorAdvanceStrategyModel extends CollaboratorBasicStrategyModel {

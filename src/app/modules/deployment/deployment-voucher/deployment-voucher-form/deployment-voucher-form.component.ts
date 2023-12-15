@@ -34,6 +34,7 @@ import { WarehouseGoodsDeliveryNoteModel } from '../../../../models/warehouse.mo
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
 import { CollaboratorOrderModel } from '../../../../models/collaborator.model';
 import { RootServices } from '../../../../services/root.services';
+import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 
 @Component({
   selector: 'ngx-deployment-voucher-form',
@@ -316,6 +317,100 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       { id: 'XETAI', text: 'Xe tải' },
       { id: 'BOCXEP', text: 'Bóc xếp' },
     ],
+  };
+
+  
+
+  makeSelect2Option(select2Options: any, formGroup: FormGroup) {
+    return {
+      ...select2Options,
+      formGroup
+    }
+  }
+
+  select2OptionForProvince = {
+    placeholder: 'Chọn tỉnh/TP...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      // url: (params, options: any) => {
+      //   return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' });
+      // },
+      transport: (settings: JQueryAjaxSettings, success?: (data: any) => null, failure?: () => null) => {
+        console.log(settings);
+        const params = settings.data;
+        this.apiService.getPromise('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[PROVINCE,CITY]' }).then(rs => {
+          success(rs);
+        }).catch(err => {
+          console.error(err);
+          failure();
+        });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+  select2OptionForDistrict = {
+    placeholder: 'Chọn quận/huyện...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params, options: any) => {
+        const formGroup = options?.formGroup;
+        const provice = formGroup && this.cms.getObjectId(formGroup.get('DeliveryProvince').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[CDISTRICT,PDISTRICT,BURG,CITYDISTRICT]', eq_Parent: provice });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
+  };
+
+  select2OptionForWard = {
+    placeholder: 'Chọn phường/xã/thị trấn...',
+    allowClear: false,
+    width: '100%',
+    dropdownAutoWidth: true,
+    minimumInputLength: 0,
+    keyMap: {
+      id: 'id',
+      text: 'text',
+    },
+    ajax: {
+      url: (params: any, options: any) => {
+        const formGroup = options?.formGroup;
+        const district = formGroup && this.cms.getObjectId(formGroup.get('DeliveryDistrict').value);
+        return this.apiService.buildApiUrl('/general/locations', { token: this.apiService?.token?.access_token, select: 'id=>Code,text=>CONCAT(TypeLabel;\' \';FullName)', limit: 100, 'search': params['term'], eq_Type: '[VILLAGE,WARD,TOWNS]', eq_Parent: district });
+      },
+      delay: 300,
+      processResults: (data: any, params: any) => {
+        // console.info(data, params);
+        return {
+          results: data
+        };
+      },
+    },
   };
 
   selectEmployeeOption = {
@@ -692,7 +787,12 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
       ContactAddress: [''],
       ContactIdentifiedNumber: [''],
       DateOfDelivery: [''],
+      
+      DeliveryProvince: [],
+      DeliveryDistrict: [],
+      DeliveryWard: [],
       DeliveryAddress: [''],
+
       MapUrl: [''],
       PriceTable: [''],
       Thread: [''],
@@ -710,9 +810,9 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
       // Transport
       Transportation: [null],
-      Driver: [null],
-      DriverName: [null],
-      DriverPhone: [],
+      Implementer: [null],
+      ImplementerName: [null],
+      ImplementerPhone: [],
       ShippingCost: [],
       ShippingCostPaymentBy: [null],
       ShippingCostPaymentRatio: [100],
@@ -976,7 +1076,7 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
     }
   }
 
-  onDriverChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
+  onImplementerChange(formGroup: FormGroup, selectedData: ContactModel, formIndex?: number) {
     // console.info(item);
 
     if (!this.isProcessing) {
@@ -984,8 +1084,8 @@ export class DeploymentVoucherFormComponent extends DataManagerFormComponent<Dep
 
         // this.priceReportForm.get('Object').setValue($event['data'][0]['id']);
         if (selectedData.Code) {
-          formGroup.get('DriverName').setValue(selectedData.Name);
-          formGroup.get('DriverPhone').setValue(selectedData.Phone);
+          formGroup.get('ImplementerName').setValue(selectedData.Name);
+          formGroup.get('ImplementerPhone').setValue(selectedData.Phone);
         }
       }
     }
