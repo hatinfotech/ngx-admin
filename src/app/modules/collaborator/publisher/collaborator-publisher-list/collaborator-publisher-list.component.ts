@@ -101,7 +101,7 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
               },
             }
           },
-          value: this.collaboratorService.currentpage$.value,
+          asyncValue: this.collaboratorService.currentpage$,
           change: (value: any, option: any) => {
             this.onChangePage(value);
           },
@@ -641,9 +641,11 @@ export class CollaboratorPublisherListComponent extends AgGridDataManagerListCom
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
-    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
-      this.refresh();
-    });
+    if (page !== null) {
+      this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+      this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+        this.refresh();
+      });
+    }
   }
 }

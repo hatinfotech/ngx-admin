@@ -27,7 +27,7 @@ import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/col
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
 import { RootServices } from '../../../../services/root.services';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 import { CollaboratorOrderDetailModel, CollaboratorOrderModel, CollaboratorOrderTransportPointModel } from '../../../../models/collaborator.model';
 
 @Component({
@@ -1026,7 +1026,8 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
 
   makeNewFormGroup(data?: CollaboratorOrderModel): FormGroup {
     const newForm = this.formBuilder.group({
-      Page: [this.collaboratorService.currentpage$.value, Validators.required],
+      // Page: [this.collaboratorService.currentpage$?.value || null, Validators.required],
+      Page: {disabled: true, value: this.collaboratorService.currentpage$?.value || null},
       Code: { disabled: false, value: null },
       Object: [null, Validators.required],
       ObjectName: { value: null, disabled: true },
@@ -1099,7 +1100,9 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       this.addDetailFormGroup(newForm);
     }
 
-
+    this.collaboratorService.currentpage$.pipe(take(1)).toPromise().then(page => {
+      newForm.get('Page').setValue(page);
+    });
     const transportPointsArray = newForm['TransportPoints'] = newForm.get('TransportPoints') as FormArray;
 
 

@@ -89,7 +89,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
       this.actionButtonList = this.actionButtonList.filter(f => ['add','edit','delete'].indexOf(f.name) < 0);
 
       // Add page choosed
-      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      this.collaboratorService.pageList$.pipe(filter(f => f && f.length > 0), take(1)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
           type: 'select2',
           name: 'pbxdomain',
@@ -111,7 +111,7 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
               },
             }
           },
-          value: this.collaboratorService.currentpage$.value,
+          asyncValue: this.collaboratorService.currentpage$,
           change: (value: any, option: any) => {
             this.onChangePage(value);
           },
@@ -367,9 +367,12 @@ export class CollaboratorProductPreviewListComponent extends ServerDataManagerLi
   }
 
   onChangePage(page: PageModel) {
-    // this.currentPage = page;
-    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
-    this.refresh();
+    if (page !== null) {
+      this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+      this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+        this.refresh();
+      });
+    }
   }
 
 }

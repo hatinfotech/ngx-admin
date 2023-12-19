@@ -149,7 +149,7 @@ export class CollaboratorSubscriptionProductComponent extends ServerDataManagerL
       });
 
       // Add page choosed
-      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      this.collaboratorService.pageList$.pipe(filter(f => f && f.length > 0), take(1)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
           type: 'select2',
           name: 'pbxdomain',

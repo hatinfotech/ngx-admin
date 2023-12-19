@@ -176,9 +176,11 @@ export class CollaboratorKpiGroupListComponent extends AgGridDataManagerListComp
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
-    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
-      this.refresh();
-    });
+    if (page !== null) {
+      this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+      this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+        this.refresh();
+      });
+    }
   }
 }

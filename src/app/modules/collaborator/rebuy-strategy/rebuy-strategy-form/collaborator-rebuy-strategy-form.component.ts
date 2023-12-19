@@ -22,6 +22,7 @@ import { CollaboratorBasicStrategyProductFormComponent } from '../../basic-strat
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { RootServices } from '../../../../services/root.services';
+import { CollaboratorAdvanceStrategyPublisherFormComponent } from '../../advance-strategy/publisher-form/collaborator-advance-strategy-publisher-form.component';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
@@ -139,9 +140,9 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
                   ],
                   onDialogSave(newData) {
                     console.log(newData);
-                    let currentNode: IRowNode = $this.publisherGridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
                     currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
-                    $this.updateProductPublishers();
+                    
                   },
                 }
               });
@@ -154,7 +155,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
       },
     ];
 
-    this.productsColumnDefs = [
+    this.publisherColumnDefs = [
       {
         ...agMakeSelectionColDef(this.cms),
         headerName: 'STT',
@@ -194,15 +195,16 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
             status: 'primary',
             outline: false,
             action: async (params) => {
-              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+              this.cms.openDialog(CollaboratorAdvanceStrategyPublisherFormComponent, {
                 context: {
                   data: [
                     params.node.data,
                   ],
                   onDialogSave(newData) {
                     console.log(newData);
-                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+                    let currentNode: IRowNode = $this.publisherGridApi.getRowNode($this.cms.getObjectId(params.data.Publisher));
                     currentNode.setData(newData[0]);
+                    $this.updateProductPublishers();
                   },
                 }
               });
@@ -222,7 +224,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
   public publisherGridApi: GridApi;
   public gridColumnApi: ColumnApi;
   public columnDefs: ColDef[];
-  public productsColumnDefs: ColDef[];
+  public publisherColumnDefs: ColDef[];
   public gridParams;
 
   onGridReady(params) {
@@ -231,7 +233,7 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
     this.gridColumnApi = params.columnApi;
     this.loadList();
   }
-  onProductGridReady(params) {
+  onPublisherGridReady(params) {
     this.publisherGridApi = params.api;
     this.publisherGridApi.setRowData([]);
   }

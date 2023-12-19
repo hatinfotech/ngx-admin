@@ -137,7 +137,7 @@ export class CollaboratorKpiIndicatorListComponent extends AgGridDataManagerList
       //         },
       //       }
       //     },
-      //     value: this.collaboratorService.currentpage$.value,
+          // asyncValue: this.collaboratorService.currentpage$,
       //     change: (value: any, option: any) => {
       //       this.onChangePage(value);
       //     },

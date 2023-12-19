@@ -38,7 +38,7 @@
                 <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS Sản phẩm'" [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Product', 'Unit']" (onReady)="onGridReady($event)" (onNodesSelected)="onProductsSelected($event)" (onComponentInit)="onGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
               </div>
               <div class="col-md-6">
-                <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'DS  CTV Bán Hàng theo sản phẩm: ' + (productExtendData?.publisher?.PublisherName || '' )" [columnDefs]="productsColumnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['Publisher']" (onReady)="onProductGridReady($event)" (onComponentInit)="onProductGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'DS  CTV Bán Hàng theo sản phẩm: ' + (productExtendData?.publisher?.PublisherName || '' )" [columnDefs]="publisherColumnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['Publisher']" (onReady)="onPublisherGridReady($event)" (onComponentInit)="onProductGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
               </div>
             </div>
 

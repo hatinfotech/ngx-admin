@@ -1,3 +1,4 @@
+import { BehaviorSubject } from 'rxjs';
 import { Select2Option } from '../select2/select2.component';
 import { FormGroup } from '@angular/forms';
 
@@ -14,6 +15,7 @@ export interface ActionControl {
   outline?: boolean;
   select2?: { data?: any[], option?: Select2Option };
   value?: any;
+  asyncValue?: BehaviorSubject<any>;
   disabled?: (option?: any) => boolean;
   hidden?: (option?: any) => boolean;
   click: (event?: any, option?: ActionControlListOption, context?: any) => void;

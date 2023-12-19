@@ -292,7 +292,7 @@
                             </div>
                             <div class="col-sm-3">
                                 <ngx-form-group [formGroup]="formItem" name="Page" label="Collaborator.Page.label" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$.value"></ngx-select2>
+                                    <ngx-select2 formControlName="Page" [select2Option]="select2OptionForPage" [data]="this.collaboratorService.pageList$ | async"></ngx-select2>
                                 </ngx-form-group>
                             </div>
                             <div class="col-sm-3">

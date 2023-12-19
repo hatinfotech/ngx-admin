@@ -83,7 +83,7 @@ export class CollaboratorCommissionIncurredListComponent extends AgGridDataManag
 
 
       // Add page choosed
-      this.collaboratorService.pageList$.pipe(take(1), filter(f => f && f.length > 0)).toPromise().then(pageList => {
+      this.collaboratorService.pageList$.pipe(filter(f => f && f.length > 0), take(1)).toPromise().then(pageList => {
         this.actionButtonList.unshift({
           type: 'select2',
           name: 'pbxdomain',
@@ -106,7 +106,7 @@ export class CollaboratorCommissionIncurredListComponent extends AgGridDataManag
               },
             }
           },
-          value: this.collaboratorService.currentpage$.value,
+          asyncValue: this.collaboratorService.currentpage$,
           change: (value: any, option: any) => {
             this.onChangePage(value);
           },
@@ -496,9 +496,11 @@ export class CollaboratorCommissionIncurredListComponent extends AgGridDataManag
   }
 
   onChangePage(page: PageModel) {
-    this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
-    this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
-      this.refresh();
-    });
+    if (page !== null) {
+      this.collaboratorService.currentpage$.next(this.cms.getObjectId(page));
+      this.cms.takeOnce(this.componentName + '_on_domain_changed', 1000).then(() => {
+        this.refresh();
+      });
+    }
   }
 }
