@@ -33,6 +33,10 @@ import { CollaboratorKpiStrategyListComponent } from "./kpi/kpi-strategy/kpi-str
 import { CollaboratorKpiAwardListComponent } from "./kpi/kpi-award/kpi-award-list/kpi-award-list.component";
 import { CollaboratorKpiDistributedContractListComponent } from "./kpi/kpi-distributed-contract/kpi-distributed-contract-list/kpi-distributed-contract-list.component";
 import { CollaboratorKpiDashboardComponent } from "./kpi/kpi-dashboard/kpi-dashboard.component";
+import { CollaboratorBasicSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-list/collaborator-basic-sale-commission-configuration-list.component";
+import { CollaboratorAdvancedSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/advanced-sale-commission-configuration/advanced-sale-commission-configuration-list/collaborator-advanced-sale-commission-configuration-list.component";
+import { CollaboratorAddonSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/addon-sale-commission-configuration/addon-sale-commission-configuration-list/collaborator-addon-sale-commission-configuration-list.component";
+import { CollaboratorSellerListComponent } from "./collaborator-seller-list/collaborator-seller-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -305,6 +309,41 @@ export const collaboratorRoutes: Routes = [
           reuse: true,
         },
       },
+      //
+      {
+        path: 'collaborator/basic-sale-commission-configuration/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorBasicSaleCommissionConfigurationListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/advanced-sale-commission-configuration/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorAdvancedSaleCommissionConfigurationListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/add-on-sale-commission-configuration/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorAddonSaleCommissionConfigurationListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      //
+      {
+        path: 'collaborator/contact/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorSellerListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      //
       {
         path: 'collaborator/rebuy-strategy/list',
         canActivate: [AuthGuardService],

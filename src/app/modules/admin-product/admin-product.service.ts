@@ -123,7 +123,7 @@ export class AdminProductService {
         params: { includePath: true, includeIdText: true }
       },
     ]).then(rs => {
-      console.log(rs);
+      // console.log(rs);
 
       // Update unit list & map
       this.unitList$.next(rs[0]);

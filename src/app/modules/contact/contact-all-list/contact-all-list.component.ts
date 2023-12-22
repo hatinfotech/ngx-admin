@@ -83,7 +83,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
       });
 
       this.actionButtonList.unshift({
-        name: 'importProducts',
+        name: 'importFromFile',
         status: 'primary',
         label: this.cms.textTransform(this.cms.translate.instant('Import'), 'head-title'),
         icon: 'download-outline',
@@ -212,76 +212,7 @@ export class ContactAllListComponent extends AgGridDataManagerListComponent<Cont
           cellRenderer: AgDateCellRenderer,
         },
         {
-          ...agMakeCommandColDef(this, this.cms, true, true, true, [
-            // {
-            //   name: 'assignMemberCard',
-            //   appendTo: 'head',
-            //   title: 'Gán thẻ thành viên',
-            //   status: 'success',
-            //   icon: 'credit-card-outline',
-            //   outline: false,
-            //   action: async (params: { node: { data: ContactModel } }) => {
-            //     this.cms.openDialog(DialogFormComponent, {
-            //       context: {
-            //         title: 'Phát hành thẻ thành viên',
-            //         width: '600px',
-            //         onInit: async (form, dialog) => {
-            //           return true;
-            //         },
-            //         controls: [
-            //           {
-            //             name: 'MemberCard',
-            //             label: 'ID thẻ thành viên',
-            //             placeholder: 'Quét ID thẻ thành viên...',
-            //             type: 'text',
-            //             focus: true,
-            //             initValue: '',
-            //           },
-            //         ],
-            //         actions: [
-            //           {
-            //             label: 'Trở về',
-            //             icon: 'back',
-            //             status: 'basic',
-            //             action: async () => { return true; },
-            //           },
-            //           {
-            //             label: 'Phát hành',
-            //             icon: 'npm-outline',
-            //             status: 'success',
-            //             action: async (form: FormGroup) => {
-
-            //               let memberCard: string[] = form.get('MemberCard').value.trim();
-
-            //               if (memberCard) {
-            //                 let toastRef = null;
-            //                 try {
-            //                   // ids = [...new Set(ids)];
-            //                   this.loading = true;
-            //                   if (params.node?.data?.Code) {
-            //                     await this.apiService.putPromise('/marketing/member-cards/' + memberCard, { distribute: true, contact: params.node.data.Code }, [{ Code: memberCard }]);
-            //                     // toastRef.close();
-            //                     toastRef = this.cms.showToast('Thẻ thành viên đã được phát hành cho khách hàng ' + params.node.data.Name, 'Phát hành thẻ thành công', { status: 'success', duration: 10000 });
-            //                   }
-            //                   this.loading = false;
-            //                 } catch (err) {
-            //                   console.error(err);
-            //                   this.loading = false;
-            //                   toastRef.close();
-            //                   toastRef = this.cms.showToast('Chưa thể phát hành thẻ thành viên', 'Lỗi phát hành thẻ thành viên', { status: 'danger', duration: 30000 });
-            //                 }
-            //               }
-
-            //               return true;
-            //             },
-            //           },
-            //         ],
-            //       },
-            //     });
-            //     return true;
-            //   }
-            // }
-          ]),
+          ...agMakeCommandColDef(this, this.cms, true, true, true, []),
           headerName: 'Lệnh',
         },
       ] as ColDef[]);

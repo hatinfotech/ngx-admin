@@ -601,3 +601,40 @@ export interface CollaboratorAddonStrategyModel extends CollaboratorBasicStrateg
 export interface CollaboratorRebuyStrategyModel extends CollaboratorBasicStrategyModel {
     Products?: CollaboratorRebuyStrategyProductModel[];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+export interface CollaboratorBasicSaleCommissionConfigurationModel extends CollaboratorBasicStrategyModel {
+    Products?: CollaboratorBasicSaleCommissionConfigurationProductModel[];
+}
+
+export interface CollaboratorBasicSaleCommissionConfigurationProductModel extends CollaboratorBasicStrategyProductModel {
+    Configuration?: any;
+}
+
+export interface CollaboratorBasicSaleCommissionConfigurationSellerModel {
+    Products?: CollaboratorBasicSaleCommissionConfigurationProductModel[];
+}
+
+export interface CollaboratorAdvancedSaleCommissionConfigurationProductModel extends CollaboratorBasicSaleCommissionConfigurationProductModel { }
+export interface CollaboratorAdvancedSaleCommissionConfigurationSellerModel extends CollaboratorBasicSaleCommissionConfigurationSellerModel { }
+export interface CollaboratorAddonSaleCommissionConfigurationProductModel extends CollaboratorBasicSaleCommissionConfigurationProductModel { }
+export interface CollaboratorAddonSaleCommissionConfigurationSellerModel extends CollaboratorAdvancedSaleCommissionConfigurationSellerModel { }
+export interface CollaboratorAdvancedSaleCommissionConfigurationModel extends CollaboratorBasicSaleCommissionConfigurationModel {
+    Sellers?: CollaboratorAdvancedSaleCommissionConfigurationSellerModel[];
+}
+export interface CollaboratorAddonSaleCommissionConfigurationModel extends CollaboratorBasicSaleCommissionConfigurationModel {
+    Products?: CollaboratorAddonSaleCommissionConfigurationProductModel[];
+}

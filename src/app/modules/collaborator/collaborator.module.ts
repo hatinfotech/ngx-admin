@@ -16,6 +16,7 @@ import { CollaboratorRevenueStatisticsComponent } from "./collaborator-dashboard
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
 import { CollaboratorMostOfDebtComponent } from "./collaborator-dashboard/collaborator-most-of-debt/collaborator-most-of-debt.component";
 import { CollaboratorPageComponent } from "./collaborator-page/collaborator-page.component";
+import { CollaboratorSellerListComponent } from "./collaborator-seller-list/collaborator-seller-list.component";
 import { CollaboratorCommissionIncurredFormComponent } from "./commission-incurred/commission-incurred-form/commission-incurred-form.component";
 import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
 import { CollaboratorCommissionIncurredPrintComponent } from "./commission-incurred/commission-incurred-print/commission-incurred-print.component";
@@ -54,6 +55,12 @@ import { CollaboratorRebuyStrategyProductFormComponent } from "./rebuy-strategy/
 import { CollaboratorRebuyStrategyPublisherFormComponent } from "./rebuy-strategy/publisher-form/collaborator-rebuy-strategy-publisher-form.component";
 import { CollaboratorRebuyStrategyFormComponent } from "./rebuy-strategy/rebuy-strategy-form/collaborator-rebuy-strategy-form.component";
 import { CollaboratorRebuyStrategyListComponent } from "./rebuy-strategy/rebuy-strategy-list/collaborator-rebuy-strategy-list.component";
+import { CollaboratorAddonSaleCommissionConfigurationFormComponent } from "./sale-commission-configuration/addon-sale-commission-configuration/addon-sale-commission-configuration-form/collaborator-addon-sale-commission-configuration-form.component";
+import { CollaboratorAddonSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/addon-sale-commission-configuration/addon-sale-commission-configuration-list/collaborator-addon-sale-commission-configuration-list.component";
+import { CollaboratorAdvancedSaleCommissionConfigurationFormComponent } from "./sale-commission-configuration/advanced-sale-commission-configuration/advanced-sale-commission-configuration-form/collaborator-advanced-sale-commission-configuration-form.component";
+import { CollaboratorAdvancedSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/advanced-sale-commission-configuration/advanced-sale-commission-configuration-list/collaborator-advanced-sale-commission-configuration-list.component";
+import { CollaboratorBasicSaleCommissionConfigurationFormComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-form/collaborator-basic-sale-commission-configuration-form.component";
+import { CollaboratorBasicSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-list/collaborator-basic-sale-commission-configuration-list.component";
 import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
 
 export const collaboratorComponents = [
@@ -115,4 +122,14 @@ export const collaboratorComponents = [
     CollaboratorKpiDashboardComponent,
     CollaboratorOrderFormComponent,
     CollaboratorOrderListComponent,
+    //
+    CollaboratorBasicSaleCommissionConfigurationListComponent,
+    CollaboratorBasicSaleCommissionConfigurationFormComponent,
+    CollaboratorAdvancedSaleCommissionConfigurationListComponent,
+    CollaboratorAdvancedSaleCommissionConfigurationFormComponent,
+    CollaboratorAddonSaleCommissionConfigurationListComponent,
+    CollaboratorAddonSaleCommissionConfigurationFormComponent,
+    //
+    CollaboratorSellerListComponent,
+    
 ];

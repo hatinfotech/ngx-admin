@@ -1,0 +1,9 @@
+nb-card.ag-grid-card {
+    height: 100%;
+    margin-bottom: 0;
+    &.dialog {
+        height: calc(100vh - 4rem);
+        min-height: 35rem;
+        width: calc(100vw - 4rem);
+    }
+}
