@@ -35,7 +35,7 @@
 
             <div class="row">
               <div class="col-md-6">
-                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS Seller'" [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Sellers']" (onReady)="onGridReady($event)" (onNodesSelected)="onSellersSelected($event)" (onComponentInit)="onGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
+                <ngx-ag-dynamic-list [titleNowrap]="true" #details [title]="'DS Seller'" [columnDefs]="columnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [idKey]="['Seller']" (onReady)="onGridReady($event)" (onNodesSelected)="onSellersSelected($event)" (onComponentInit)="onGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>
               </div>
               <div class="col-md-6">
                 <ngx-ag-dynamic-list [titleNowrap]="true" #details2 [title]="'DS sản phẩm theo CTV: ' + (productExtendData?.publisher?.SellerName || '' )" [columnDefs]="productsColumnDefs" [rowModelType]="'clientSide'" [rowData]="rowData" [extendData]="productExtendData" [idKey]="['Product', 'Unit']" (onReady)="onProductGridReady($event)" (onComponentInit)="onProductGridInit($event)" style="display: block; height: 500px"></ngx-ag-dynamic-list>

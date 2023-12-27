@@ -574,6 +574,10 @@ export class CollaboratorAddonSaleCommissionConfigurationFormComponent extends D
         this.cms.openDialog(CollaboratorProductListComponent, {
           context: {
             // gridHeight: '90vh',
+            prepareApiParams: (params) => {
+              params['onlyBusinessProducts'] = false;
+              return params;
+            },
             onDialogChoose(chooseItems) {
               console.log(chooseItems);
               const newRowNodeTrans = $this.productGridApi.applyTransaction({
