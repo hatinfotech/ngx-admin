@@ -2,7 +2,7 @@ import { ICellRendererAngularComp } from "@ag-grid-community/angular";
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { CommonService } from "../../../../../services/common.service";
 import { CurrencyPipe, DecimalPipe } from "@angular/common";
-import { ICellRendererParams } from "@ag-grid-community/core";
+import { ICellRendererParams, IRowNode } from "@ag-grid-community/core";
 import { FormControl } from "@angular/forms";
 import { Subject } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -74,9 +74,15 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, A
                 // if (typeof value != 'undefined') {
                 this.params.status = 'warning';
                 // }
-                this.cms.takeUntilCallback('ag-number-stop-typing', 1000, () => {
+                if (this.params.takeUntilDelay === 0) {
                     this.onChangeHandler(null);
-                });
+                } else {
+                    const nodeId = (this.params.node as IRowNode).id;
+                    console.log('node id', nodeId);
+                    this.cms.takeUntilCallback('ag-number-stop-typing-' + nodeId, this.params.takeUntilDelay || 1000, () => {
+                        this.onChangeHandler(null);
+                    });
+                }
             });
         }, 500);
     }
@@ -85,6 +91,9 @@ export class AgNumberCellInput implements ICellRendererAngularComp, OnDestroy, A
         let value = this.inputControl.value;
         let colId = this.params.column.colId;
         this.params.node.setDataValue(colId, value);
+        if (!this.params.changed) {
+            this.params.status = 'success';
+        }
         return this.params.changed && this.params.changed(value, this.params);
     }
 

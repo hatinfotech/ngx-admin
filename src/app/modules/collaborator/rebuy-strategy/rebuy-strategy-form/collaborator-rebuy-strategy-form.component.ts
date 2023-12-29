@@ -23,6 +23,7 @@ import { CollaboratorPublisherListComponent } from '../../publisher/collaborator
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { RootServices } from '../../../../services/root.services';
 import { CollaboratorAdvanceStrategyPublisherFormComponent } from '../../advance-strategy/publisher-form/collaborator-advance-strategy-publisher-form.component';
+import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
 @Component({
   selector: 'ngx-collaborator-rebuy-strategy-form',
   templateUrl: './collaborator-rebuy-strategy-form.component.html',
@@ -97,14 +98,14 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         cellRenderer: AgTextCellRenderer,
         // pinned: 'right',
       },
-      {
-        headerName: 'CKNC',
-        field: 'Level1CommissionRatio',
-        width: 1024,
-        filter: 'agTextColumnFilter',
-        cellRenderer: AgTextCellRenderer,
-        // pinned: 'right',
-      },
+      // {
+      //   headerName: 'Chiết khấu',
+      //   field: 'CommissionRatio',
+      //   width: 120,
+      //   filter: 'agTextColumnFilter',
+      //   cellRenderer: AgNumberCellInput,
+      //   // pinned: 'right',
+      // },
       {
         headerName: 'CTV Bán Hàng',
         field: 'Publishers',
@@ -126,29 +127,29 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
           $this.publisherGridApi.applyTransaction({ remove: [params] });
           $this.updateProductPublishers();
         }, false, [
-          {
-            name: 'setting',
-            title: 'Cài đặt',
-            icon: 'settings-2-outline',
-            status: 'primary',
-            outline: false,
-            action: async (params) => {
-              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
-                context: {
-                  data: [
-                    params.node.data,
-                  ],
-                  onDialogSave(newData) {
-                    console.log(newData);
-                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                    currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
+          // {
+          //   name: 'setting',
+          //   title: 'Cài đặt',
+          //   icon: 'settings-2-outline',
+          //   status: 'primary',
+          //   outline: false,
+          //   action: async (params) => {
+          //     this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+          //       context: {
+          //         data: [
+          //           params.node.data,
+          //         ],
+          //         onDialogSave(newData) {
+          //           console.log(newData);
+          //           let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+          //           currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
                     
-                  },
-                }
-              });
-              return true;
-            }
-          },
+          //         },
+          //       }
+          //     });
+          //     return true;
+          //   }
+          // },
         ]),
         // width: 123,
         headerName: 'Lệnh',
@@ -177,6 +178,17 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         // pinned: 'left',
       },
       {
+        headerName: 'Chiết khấu',
+        field: 'CommissionRatio',
+        width: 120,
+        filter: 'agTextColumnFilter',
+        cellRenderer: AgNumberCellInput,
+        cellRendererParams: {
+          takeUntilDelay: 0,
+        },
+        // pinned: 'right',
+      },
+      {
         headerName: 'SystemUuid',
         field: 'SystemUuid',
         width: 400,
@@ -188,29 +200,29 @@ export class CollaboratorRebuyStrategyFormComponent extends DataManagerFormCompo
         ...agMakeCommandColDef(null, this.cms, false, (params) => {
           this.gridApi.applyTransaction({ remove: [params] });
         }, false, [
-          {
-            name: 'setting',
-            title: 'Cài đặt',
-            icon: 'settings-2-outline',
-            status: 'primary',
-            outline: false,
-            action: async (params) => {
-              this.cms.openDialog(CollaboratorAdvanceStrategyPublisherFormComponent, {
-                context: {
-                  data: [
-                    params.node.data,
-                  ],
-                  onDialogSave(newData) {
-                    console.log(newData);
-                    let currentNode: IRowNode = $this.publisherGridApi.getRowNode($this.cms.getObjectId(params.data.Publisher));
-                    currentNode.setData(newData[0]);
-                    $this.updateProductPublishers();
-                  },
-                }
-              });
-              return true;
-            }
-          },
+          // {
+          //   name: 'setting',
+          //   title: 'Cài đặt',
+          //   icon: 'settings-2-outline',
+          //   status: 'primary',
+          //   outline: false,
+          //   action: async (params) => {
+          //     this.cms.openDialog(CollaboratorAdvanceStrategyPublisherFormComponent, {
+          //       context: {
+          //         data: [
+          //           params.node.data,
+          //         ],
+          //         onDialogSave(newData) {
+          //           console.log(newData);
+          //           let currentNode: IRowNode = $this.publisherGridApi.getRowNode($this.cms.getObjectId(params.data.Publisher));
+          //           currentNode.setData(newData[0]);
+          //           $this.updateProductPublishers();
+          //         },
+          //       }
+          //     });
+          //     return true;
+          //   }
+          // },
         ]),
         // width: 123,
         headerName: 'Lệnh',

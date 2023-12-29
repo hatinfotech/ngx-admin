@@ -20,6 +20,8 @@ import { agMakeSelectionColDef } from '../../../../lib/custom-element/ag-list/co
 import { agMakeImageColDef } from '../../../../lib/custom-element/ag-list/column-define/image.define';
 import { agMakeCommandColDef } from '../../../../lib/custom-element/ag-list/column-define/command.define';
 import { RootServices } from '../../../../services/root.services';
+import { AgSelectEditorComponent } from '../../../../lib/custom-element/ag-grid/ag-grid-select-editor.component';
+import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
 @Component({
   selector: 'ngx-collaborator-basic-strategy-form',
   templateUrl: './collaborator-basic-strategy-form.component.html',
@@ -95,11 +97,14 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         // pinned: 'right',
       },
       {
-        headerName: 'CKCB',
-        field: 'Level1CommissionRatio',
-        width: 1024,
+        headerName: 'Chiết khấu',
+        field: 'CommissionRatio',
+        width: 120,
         filter: 'agTextColumnFilter',
-        cellRenderer: AgTextCellRenderer,
+        cellRenderer: AgNumberCellInput,
+        cellRendererParams: {
+          takeUntilDelay: 0,
+        },
         // pinned: 'right',
       },
       // {
@@ -138,28 +143,28 @@ export class CollaboratorBasicStrategyFormComponent extends DataManagerFormCompo
         ...agMakeCommandColDef(null, this.cms, false, (params) => {
           this.gridApi.applyTransaction({ remove: [params] });
         }, false, [
-          {
-            name: 'setting',
-            title: 'Cài đặt',
-            icon: 'settings-2-outline',
-            status: 'primary',
-            outline: false,
-            action: async (params) => {
-              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
-                context: {
-                  data: [
-                    params.node.data,
-                  ],
-                  onDialogSave(newData) {
-                    console.log(newData);
-                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                    currentNode.setData(newData[0]);
-                  },
-                }
-              });
-              return true;
-            }
-          },
+          // {
+          //   name: 'setting',
+          //   title: 'Cài đặt',
+          //   icon: 'settings-2-outline',
+          //   status: 'primary',
+          //   outline: false,
+          //   action: async (params) => {
+          //     this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+          //       context: {
+          //         data: [
+          //           params.node.data,
+          //         ],
+          //         onDialogSave(newData) {
+          //           console.log(newData);
+          //           let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+          //           currentNode.setData(newData[0]);
+          //         },
+          //       }
+          //     });
+          //     return true;
+          //   }
+          // },
         ]),
         // width: 123,
         headerName: 'Lệnh',

@@ -22,6 +22,7 @@ import { CollaboratorBasicStrategyProductFormComponent } from '../../basic-strat
 import { CollaboratorPublisherListComponent } from '../../publisher/collaborator-publisher-list/collaborator-publisher-list.component';
 import { CollaboratorProductListComponent } from '../../product/collaborator-product-list/collaborator-product-list.component';
 import { RootServices } from '../../../../services/root.services';
+import { AgNumberCellInput } from '../../../../lib/custom-element/ag-list/cell/input/number.component';
 @Component({
   selector: 'ngx-collaborator-advance-strategy-form',
   templateUrl: './collaborator-advance-strategy-form.component.html',
@@ -132,28 +133,28 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
         ...agMakeCommandColDef(null, this.cms, false, (params) => {
           this.gridApi.applyTransaction({ remove: [params] });
         }, false, [
-          {
-            name: 'setting',
-            title: 'Cài đặt',
-            icon: 'settings-2-outline',
-            status: 'primary',
-            outline: false,
-            action: async (params) => {
-              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
-                context: {
-                  data: [
-                    params.node.data,
-                  ],
-                  onDialogSave(newData) {
-                    console.log(newData);
-                    let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                    currentNode.setData(newData[0]);
-                  },
-                }
-              });
-              return true;
-            }
-          },
+          // {
+          //   name: 'setting',
+          //   title: 'Cài đặt',
+          //   icon: 'settings-2-outline',
+          //   status: 'primary',
+          //   outline: false,
+          //   action: async (params) => {
+          //     this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+          //       context: {
+          //         data: [
+          //           params.node.data,
+          //         ],
+          //         onDialogSave(newData) {
+          //           console.log(newData);
+          //           let currentNode: IRowNode = $this.gridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+          //           currentNode.setData(newData[0]);
+          //         },
+          //       }
+          //     });
+          //     return true;
+          //   }
+          // },
         ]),
         // width: 123,
         headerName: 'Lệnh',
@@ -198,11 +199,14 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
         // pinned: 'right',
       },
       {
-        headerName: 'CKNC',
-        field: 'Level1CommissionRatio',
-        width: 1024,
+        headerName: 'Chiết khấu',
+        field: 'CommissionRatio',
+        width: 120,
         filter: 'agTextColumnFilter',
-        cellRenderer: AgTextCellRenderer,
+        cellRenderer: AgNumberCellInput,
+        cellRendererParams: {
+          takeUntilDelay: 0,
+        },
         // pinned: 'right',
       },
       // {
@@ -242,29 +246,29 @@ export class CollaboratorAdvanceStrategyFormComponent extends DataManagerFormCom
           $this.productGridApi.applyTransaction({ remove: [params] });
           $this.updatePublisherProducts();
         }, false, [
-          {
-            name: 'setting',
-            title: 'Cài đặt',
-            icon: 'settings-2-outline',
-            status: 'primary',
-            outline: false,
-            action: async (params) => {
-              this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
-                context: {
-                  data: [
-                    params.node.data,
-                  ],
-                  onDialogSave(newData) {
-                    console.log(newData);
-                    let currentNode: IRowNode = $this.productGridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
-                    currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
-                    $this.updatePublisherProducts();
-                  },
-                }
-              });
-              return true;
-            }
-          },
+          // {
+          //   name: 'setting',
+          //   title: 'Cài đặt',
+          //   icon: 'settings-2-outline',
+          //   status: 'primary',
+          //   outline: false,
+          //   action: async (params) => {
+          //     this.cms.openDialog(CollaboratorBasicStrategyProductFormComponent, {
+          //       context: {
+          //         data: [
+          //           params.node.data,
+          //         ],
+          //         onDialogSave(newData) {
+          //           console.log(newData);
+          //           let currentNode: IRowNode = $this.productGridApi.getRowNode($this.cms.getObjectId(params.data.Product) + '-' + $this.cms.getObjectId(params.data.Unit));
+          //           currentNode && currentNode.setData({ ...currentNode.data, ...newData[0] });
+          //           $this.updatePublisherProducts();
+          //         },
+          //       }
+          //     });
+          //     return true;
+          //   }
+          // },
         ]),
         // width: 123,
         headerName: 'Lệnh',
