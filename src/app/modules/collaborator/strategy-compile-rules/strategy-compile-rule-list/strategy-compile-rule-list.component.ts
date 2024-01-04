@@ -212,7 +212,7 @@ export class CollaboratorStrategyCompileRuleListComponent extends AgGridDataMana
         },
         {
           headerName: '%CK',
-          field: 'Level1CommissionRatio',
+          field: 'CommissionRatio',
           width: 140,
           filter: 'agTextColumnFilter',
           // pinned: 'left',

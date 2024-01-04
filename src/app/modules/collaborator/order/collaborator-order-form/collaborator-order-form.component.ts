@@ -1056,12 +1056,16 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       PublisherName: { value: null, disabled: true },
       PublisherPhone: { value: null, disabled: true },
       PublisherEmail: { value: null, disabled: true },
-      PublisherAddress: { value: null, disabled: true },
+      PublisherAddress: { value: null, disabled: true },  
       // Province: [],
       // District: [],
       // Ward: [],
       // DeliveryAddress: [],
 
+      PublisherSupporter: [],
+      Seller: [],
+      Bot: [],
+      SalesManager: [],
 
       DeliveryProvince: [],
       DeliveryDistrict: [],

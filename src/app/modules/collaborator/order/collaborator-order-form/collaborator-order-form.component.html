@@ -279,6 +279,37 @@
                                             </div>
                                         </div>
                                     </nb-tab> -->
+                                    <nb-tab tabTitle="{{'Thông tin khác' | translate | headtitlecase}}">
+                                        <!-- <label class="label label-with-border-below">{{'Common.mainInfo' | translate | headtitlecase}}</label> -->
+                                        <div class="row">
+                                            <!-- <input type="hidden" formControlName="Code"> -->
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="PublisherSupporter" label="Nhân viên chăm sóc CTV" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="PublisherSupporter" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="Seller" label="Nhân viên sell" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="Seller" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="Bot" label="Bot/Saas" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="Bot" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="SalesManager" label="Quản lý đội sales" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="SalesManager" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <ngx-form-group [formGroup]="formItem" name="SalesManagBusinessOwnerer" label="Chủ doanh nghiệp" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
+                                                    <ngx-select2 formControlName="SalesManagBusinessOwnerer" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                </ngx-form-group>
+                                            </div>
+                                        </div>
+                                    </nb-tab>
                                 </nb-tabset>
                             </div>
                         </div>

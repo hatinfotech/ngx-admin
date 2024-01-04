@@ -766,6 +766,11 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
     params['includeObject'] = true;
     params['includeCreator'] = true;
     params['includeRelativeVouchers'] = true;
+
+    if (this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'ALL' && this.cms.getObjectId(this.wordpressService.currentSite$?.value) != 'NONE') {
+      params['eq_Site'] = this.cms.getObjectId(this.wordpressService.currentSite$?.value);
+    }
+    
     // params['sort_Id'] = 'desc';
     return params;
   }
