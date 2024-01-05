@@ -16,7 +16,7 @@ import { CollaboratorRevenueStatisticsComponent } from "./collaborator-dashboard
 import { CollaboratorDashboardComponent } from "./collaborator-dashboard/collaborator-dashboard.component";
 import { CollaboratorMostOfDebtComponent } from "./collaborator-dashboard/collaborator-most-of-debt/collaborator-most-of-debt.component";
 import { CollaboratorPageComponent } from "./collaborator-page/collaborator-page.component";
-import { CollaboratorSellerListComponent } from "./collaborator-seller-list/collaborator-seller-list.component";
+import { CollaboratorSellerListComponent } from "./seller/collaborator-seller-list/collaborator-seller-list.component";
 import { CollaboratorCommissionIncurredFormComponent } from "./commission-incurred/commission-incurred-form/commission-incurred-form.component";
 import { CollaboratorCommissionIncurredListComponent } from "./commission-incurred/commission-incurred-list/commission-incurred-list.component";
 import { CollaboratorCommissionIncurredPrintComponent } from "./commission-incurred/commission-incurred-print/commission-incurred-print.component";
@@ -62,6 +62,8 @@ import { CollaboratorAdvancedSaleCommissionConfigurationListComponent } from "./
 import { CollaboratorBasicSaleCommissionConfigurationFormComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-form/collaborator-basic-sale-commission-configuration-form.component";
 import { CollaboratorBasicSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-list/collaborator-basic-sale-commission-configuration-list.component";
 import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
+import { CollaboratorSalesManagerListComponent } from "./sales-manager/collaborator-sales-manager-list/collaborator-sales-manager-list.component";
+import { CollaboratorPublisherSupporterListComponent } from "./publisher-supporter/collaborator-publisher-supporter-list/collaborator-publisher-supporter-list.component";
 
 export const collaboratorComponents = [
     CollaboratorPageComponent,
@@ -131,5 +133,6 @@ export const collaboratorComponents = [
     CollaboratorAddonSaleCommissionConfigurationFormComponent,
     //
     CollaboratorSellerListComponent,
-    
+    CollaboratorSalesManagerListComponent,
+    CollaboratorPublisherSupporterListComponent,
 ];

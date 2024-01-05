@@ -1444,9 +1444,11 @@ export class CommonService {
 
 
   makeSelect2AjaxOption(url: string, query?: any, option?: { [key: string]: any, limit?: number, prepareReaultItem?: (item: any) => any }): Select2Option {
-    query = {
-      ...query,
-      includeIdText: true,
+    if (typeof query != 'function') {
+      query = {
+        ...query,
+        includeIdText: true,
+      }
     }
     return {
       ...this.select2AjaxOptionForTemplate,
@@ -1465,7 +1467,7 @@ export class CommonService {
           const params = settings.data;
           const offset = settings.data['offset'];
           const limit = option?.limit || settings.data['limit'];
-          this.apiService.getObservable(url, { ...query, 'search': params['term'], offset, limit }).pipe(
+          this.apiService.getObservable(url, { ...(typeof query == 'function' ? query() : query), 'search': params['term'], offset, limit }).pipe(
             map((res) => {
               const total = +res.headers.get('x-total-count');
               let data = res.body;
@@ -1473,12 +1475,9 @@ export class CommonService {
             }),
           ).toPromise().then(rs => {
             success(rs);
-            // return rs.res;
-            // return null;
           }).catch(err => {
             console.error(err);
             failure();
-            // return null;
           });
           return null;
         },
@@ -1490,7 +1489,6 @@ export class CommonService {
           params.offset = params.offset += params.limit;
           return {
             results: data.map(item => {
-              // item.thumbnail = item?.FeaturePicture?.Thumbnail;
               if (option?.prepareReaultItem) {
                 item = option.prepareReaultItem(item);
               }

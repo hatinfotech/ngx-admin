@@ -27,8 +27,10 @@ import { CollaboratorOrderPrintComponent } from '../collaborator-order-print/col
 import { Select2Option } from '../../../../lib/custom-element/select2/select2.component';
 import { CurrencyPipe } from '@angular/common';
 import { RootServices } from '../../../../services/root.services';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 import { CollaboratorOrderDetailModel, CollaboratorOrderModel, CollaboratorOrderTransportPointModel } from '../../../../models/collaborator.model';
+import { Select2QueryOptions } from '../../../../../vendor/ng2select2/lib/ng2-select2.interface';
+import { AnyProps } from '../../../../models/model';
 
 @Component({
   selector: 'ngx-collaborator-order-form',
@@ -593,6 +595,64 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
     placeholder: 'Nhân viên/ĐV Vận chuyển...',
   };
 
+  select2OptionForPublisherSupporter = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/publisher-supporters', () => {
+      return {
+        includeIdText: true,
+        includeGroups: true,
+        sort_SearchRank: 'desc',
+        eq_Page: this.cms.getObjectId(this.collaboratorService.currentpage$.value),
+      };
+    }, {
+      placeholder: 'Chọn NV Chăm sóc CTV...', 
+      limit: 10, 
+      prepareReaultItem: (item) => {
+        item['id'] = item.Contact;
+        item['text'] = `${item.Contact} - ${item.Name}`;
+        return item;
+      }
+    }),
+    placeholder: 'NV Chăm sóc CTV...',
+  };
+  select2OptionForSeller = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/sellers', () => {
+      return {
+        includeIdText: true,
+        includeGroups: true,
+        sort_SearchRank: 'desc',
+        eq_Page: this.cms.getObjectId(this.collaboratorService.currentpage$.value),
+      };
+    }, {
+      placeholder: 'Chọn NV Chăm sóc CTV...', 
+      limit: 10, 
+      prepareReaultItem: (item) => {
+        item['id'] = item.Contact;
+        item['text'] = `${item.Contact} - ${item.Name}`;
+        return item;
+      }
+    }),
+    placeholder: 'NV Chăm sóc CTV...',
+  };
+  select2OptionForSalesManager = {
+    ...this.cms.makeSelect2AjaxOption('/collaborator/sales-managers', () => {
+      return {
+        includeIdText: true,
+        includeGroups: true,
+        sort_SearchRank: 'desc',
+        eq_Page: this.cms.getObjectId(this.collaboratorService.currentpage$.value),
+      };
+    }, {
+      placeholder: 'Chọn NV Chăm sóc CTV...', 
+      limit: 10, 
+      prepareReaultItem: (item) => {
+        item['id'] = item.Contact;
+        item['text'] = `${item.Contact} - ${item.Name}`;
+        return item;
+      }
+    }),
+    placeholder: 'NV Chăm sóc CTV...',
+  };
+
   select2OptionForProvince = {
     placeholder: 'Chọn tỉnh/TP...',
     allowClear: false,
@@ -1027,7 +1087,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
   makeNewFormGroup(data?: CollaboratorOrderModel): FormGroup {
     const newForm = this.formBuilder.group({
       // Page: [this.collaboratorService.currentpage$?.value || null, Validators.required],
-      Page: {disabled: true, value: this.collaboratorService.currentpage$?.value || null},
+      Page: { disabled: true, value: this.collaboratorService.currentpage$?.value || null },
       Code: { disabled: false, value: null },
       Object: [null, Validators.required],
       ObjectName: { value: null, disabled: true },
@@ -1056,7 +1116,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       PublisherName: { value: null, disabled: true },
       PublisherPhone: { value: null, disabled: true },
       PublisherEmail: { value: null, disabled: true },
-      PublisherAddress: { value: null, disabled: true },  
+      PublisherAddress: { value: null, disabled: true },
       // Province: [],
       // District: [],
       // Ward: [],

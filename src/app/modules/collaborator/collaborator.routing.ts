@@ -36,7 +36,9 @@ import { CollaboratorKpiDashboardComponent } from "./kpi/kpi-dashboard/kpi-dashb
 import { CollaboratorBasicSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/basic-sale-commission-configuration/basic-sale-commission-configuration-list/collaborator-basic-sale-commission-configuration-list.component";
 import { CollaboratorAdvancedSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/advanced-sale-commission-configuration/advanced-sale-commission-configuration-list/collaborator-advanced-sale-commission-configuration-list.component";
 import { CollaboratorAddonSaleCommissionConfigurationListComponent } from "./sale-commission-configuration/addon-sale-commission-configuration/addon-sale-commission-configuration-list/collaborator-addon-sale-commission-configuration-list.component";
-import { CollaboratorSellerListComponent } from "./collaborator-seller-list/collaborator-seller-list.component";
+import { CollaboratorSellerListComponent } from "./seller/collaborator-seller-list/collaborator-seller-list.component";
+import { CollaboratorSalesManagerListComponent } from "./sales-manager/collaborator-sales-manager-list/collaborator-sales-manager-list.component";
+import { CollaboratorPublisherSupporterListComponent } from "./publisher-supporter/collaborator-publisher-supporter-list/collaborator-publisher-supporter-list.component";
 
 export const collaboratorRoutes: Routes = [
     {
@@ -336,9 +338,25 @@ export const collaboratorRoutes: Routes = [
       },
       //
       {
-        path: 'collaborator/contact/list',
+        path: 'collaborator/seller/list',
         canActivate: [AuthGuardService],
         component: CollaboratorSellerListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/sales-manager/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorSalesManagerListComponent,
+        data: {
+          reuse: true,
+        },
+      },
+      {
+        path: 'collaborator/publisher-supporter/list',
+        canActivate: [AuthGuardService],
+        component: CollaboratorPublisherSupporterListComponent,
         data: {
           reuse: true,
         },

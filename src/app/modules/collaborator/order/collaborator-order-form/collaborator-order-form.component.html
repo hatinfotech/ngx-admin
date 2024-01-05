@@ -285,12 +285,12 @@
                                             <!-- <input type="hidden" formControlName="Code"> -->
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="PublisherSupporter" label="Nhân viên chăm sóc CTV" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <ngx-select2 formControlName="PublisherSupporter" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="PublisherSupporter" [select2Option]="select2OptionForPublisherSupporter" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="Seller" label="Nhân viên sell" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <ngx-select2 formControlName="Seller" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="Seller" [select2Option]="select2OptionForSeller" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
@@ -300,7 +300,7 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <ngx-form-group [formGroup]="formItem" name="SalesManager" label="Quản lý đội sales" [array]="array" [index]="i" [allowCopy]="false" [required]="false" [touchedValidate]="false">
-                                                    <ngx-select2 formControlName="SalesManager" [select2Option]="select2OptionForContact" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
+                                                    <ngx-select2 formControlName="SalesManager" [select2Option]="select2OptionForSalesManager" (selectChange)="onObjectChange(formItem, $event, i)"></ngx-select2>
                                                 </ngx-form-group>
                                             </div>
                                             <div class="col-sm-3">
