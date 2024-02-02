@@ -397,15 +397,18 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       // });
     }
     this.choosedForms.controls = [];
-    let previousItem = null;
-    for (const item of rs) {
+    // for (const item of rs) {
+      for (const i in rs) {
+      let nextItem = rs[parseInt(i) + 1] || null;
+      const item = rs[i];
       const formData = {};
       // item['Price'] = item['Price'] && (parseInt(item['Price']) / 1000) || null as any;
       for (const field of Object.keys(item)) {
         formData[field] = [item[field]];
       }
-      if (previousItem && (this.cms.getObjectId(previousItem.Product) != this.cms.getObjectId(item.Product) || this.cms.getObjectId(previousItem.Unit) != this.cms.getObjectId(item.Unit))) {
-        formData['IsBeginSection'] = true;
+      if (nextItem && (this.cms.getObjectId(nextItem.Product) != this.cms.getObjectId(item.Product) || this.cms.getObjectId(nextItem.Unit) != this.cms.getObjectId(item.Unit))) {
+        // formData['IsBeginSection'] = true;
+        formData['IsEndSection'] = true;
       }
       const checkbox = this.formBuilder.group({
         'Choosed': [true],
@@ -416,7 +419,7 @@ export class WarehouseGoodsReceiptNoteDetailAccessNumberPrintComponent extends D
       checkbox.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value => {
         console.log(value);
       });
-      previousItem = item;
+      // nextItem = rs[parseInt(i) + 2] || null;
     }
     this.loading = false;
     return rs;
