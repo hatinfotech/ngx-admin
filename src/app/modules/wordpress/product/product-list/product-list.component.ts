@@ -155,47 +155,56 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
           autoHeight: true,
         },
         {
-          ...agMakeTagsColDef(this.cms, (tag) => {
-          }),
           headerName: 'ĐVT',
           field: 'Unit',
-          width: 130,
-          valueGetter: (params: { data: ProductModel }) => {
-            const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
-            const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
-            return params.data?.Units?.map(unit => {
-              let text = '';
-              if (baseUnitId == unit?.id) {
-                text = unit.text;
-              } else {
-                text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
-              }
-              unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
-              if (unit.IsManageByAccessNumber) {
-                unit.status = 'danger';
-              }
-              if (!unit.IsAutoAdjustInventory) {
-                unit.status = 'warning';
-              }
-              unit.label = `${unit.text} (${unit.ConversionRatio})`;
-              return unit;
-            });
-          },
-          filter: AgSelect2Filter,
-          filterParams: {
-            select2Option: {
-              ...this.cms.makeSelect2AjaxOption('/admin-product/units', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
-                placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
-                  item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
-                  return item;
-                }
-              }),
-              multiple: true,
-              logic: 'OR',
-              allowClear: true,
-            }
-          },
+          // pinned: 'left',
+          width: 200,
+          cellRenderer: AgTextCellRenderer,
+          filter: 'agTextColumnFilter',
         },
+        // {
+        //   ...agMakeTagsColDef(this.cms, (tag) => {
+        //   }),
+        //   headerName: 'ĐVT',
+        //   field: 'Unit',
+        //   width: 130,
+        //   valueGetter: (params: { data: ProductModel }) => {
+        //     return params.data?.Unit ?[params.data?.Unit] : [];
+        //     // const baseUnitId = this.cms.getObjectId(params.data?.WarehouseUnit);
+        //     // const baseUnitText = this.cms.getObjectText(params.data?.WarehouseUnit);
+        //     // return params.data?.Units?.map(unit => {
+        //     //   let text = '';
+        //     //   if (baseUnitId == unit?.id) {
+        //     //     text = unit.text;
+        //     //   } else {
+        //     //     text = `${unit.text} = ${unit.ConversionRatio} ${baseUnitText}`;
+        //     //   }
+        //     //   unit.toolTip = `${text} (${unit.IsAutoAdjustInventory ? 'Trừ kho tự động' : 'Không tự động trừ kho'}, ${unit.IsManageByAccessNumber ? 'Quản lý theo số truy xuất' : 'Không quản lý theo số truy xuất'})`;
+        //     //   if (unit.IsManageByAccessNumber) {
+        //     //     unit.status = 'danger';
+        //     //   }
+        //     //   if (!unit.IsAutoAdjustInventory) {
+        //     //     unit.status = 'warning';
+        //     //   }
+        //     //   unit.label = `${unit.text} (${unit.ConversionRatio})`;
+        //     //   return unit;
+        //     // });
+        //   },
+        //   filter: AgSelect2Filter,
+        //   filterParams: {
+        //     select2Option: {
+        //       ...this.cms.makeSelect2AjaxOption('/admin-product/units', { includeIdText: true, includeGroups: true, sort_Name: 'asc' }, {
+        //         placeholder: 'Chọn liên hệ...', limit: 10, prepareReaultItem: (item) => {
+        //           item['text'] = item['Code'] + ' - ' + (item['Title'] ? (item['Title'] + '. ') : '') + (item['ShortName'] ? (item['ShortName'] + '/') : '') + item['Name'] + '' + (item['Groups'] ? (' (' + item['Groups'].map(g => g.text).join(', ') + ')') : '');
+        //           return item;
+        //         }
+        //       }),
+        //       multiple: true,
+        //       logic: 'OR',
+        //       allowClear: true,
+        //     }
+        //   },
+        // },
         {
           headerName: 'Site',
           field: 'Site',
@@ -465,8 +474,9 @@ export class WordpressProductListComponent extends AgGridDataManagerListComponen
                       text: 'text',
                     },
                     multiple: true,
-                    closeOnSelect: false,
+                    // closeOnSelect: false,
                     allowHtml: true,
+                    tags: true,
                     templateResult: (d) => { return d.html ? $(`<span>${d.html}</span>`) : d.text; },
                     templateSelection: (d) => { return d.text; },
                   }

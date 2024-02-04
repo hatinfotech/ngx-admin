@@ -2664,19 +2664,20 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         if (this.cms.dialogStack.length === 0) {
           const details = this.getDetails(this.orderForm).controls;
           let activeDetailIndex = details.findIndex(f => f['isActive'] === true);
-          if (activeDetailIndex > -1) {
-            details.splice(activeDetailIndex, 1);
-            this.calculateTotal(this.orderForm);
-            const nextActive = details[activeDetailIndex] as FormGroup;
-            if (nextActive) {
-              this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
-            } else {
-              if (details.length > 0) {
-                activeDetailIndex = 0;
-                this.activeDetail(this.orderForm, details[0] as FormGroup, activeDetailIndex);
-              }
-            }
-          }
+          // if (activeDetailIndex > -1) {
+          //   details.splice(activeDetailIndex, 1);
+          //   this.calculateTotal(this.orderForm);
+          //   const nextActive = details[activeDetailIndex] as FormGroup;
+          //   if (nextActive) {
+          //     this.activeDetail(this.orderForm, nextActive, activeDetailIndex);
+          //   } else {
+          //     if (details.length > 0) {
+          //       activeDetailIndex = 0;
+          //       this.activeDetail(this.orderForm, details[0] as FormGroup, activeDetailIndex);
+          //     }
+          //   }
+          // }
+          this.removeDetail(this.orderForm, activeDetailIndex);
         }
       }
     } else {
@@ -2882,8 +2883,8 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
     }
 
     const removedRelativeVouchers = this.getDetails(orderForm).controls[index]?.value?.RelativeVouchers?.map(m => this.cms.getObjectId(m)) || [];
-
-    this.getDetails(orderForm).controls.splice(index, 1);
+    const detailsForm = this.getDetails(orderForm);
+    detailsForm.controls.splice(index, 1);
     this.calculateTotal(orderForm);
 
     // Remove relative voucher
@@ -2895,6 +2896,11 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
       }
     }
     relativeVouchers.setValue(relativeVouchersData);
+    if (detailsForm.controls[index]) {
+      this.activeDetail(orderForm, detailsForm.controls[index] as FormGroup, index);
+    } else {
+      this.activeDetail(orderForm, detailsForm.controls[detailsForm.controls.length - 1] as FormGroup, detailsForm.controls.length - 1);
+    }
 
     return true;
   }

@@ -1,3 +1,4 @@
+import { agMakeTextColDef } from './../../../../lib/custom-element/ag-list/column-define/text.define';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NbDialogRef, NbDialogService, NbThemeService, NbToastrService } from '@nebular/theme';
@@ -23,7 +24,8 @@ import { MobileAppService } from '../../../mobile-app/mobile-app.service';
 import { CollaboratorService } from '../../collaborator.service';
 import { PageModel } from '../../../../models/page.model';
 import { filter, take } from 'rxjs/operators';
-import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
+// import { agMakeTextColDef } from '../../../../lib/custom-element/ag-list/column-define/text.define';
+import { CollaboratorOrderCommissionPrintComponent } from '../collaborator-order-commission-print/collaborator-order-commission-print.component';
 
 declare const $: any;
 @Component({
@@ -398,6 +400,23 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
           width: 150,
         },
         {
+          ...agMakeCurrencyColDef(this.cms),
+          headerName: 'Đã thanh toán',
+          field: 'PaidAmount',
+          // pinned: 'right',
+          width: 200,
+        },
+        {
+          ...agMakeTextColDef(this.cms),
+          headerName: 'Tỷ lệ thanh toán',
+          field: 'PaidPercent',
+          // pinned: 'right',
+          width: 200,
+          valueGetter: (params) => {
+            return parseInt(params?.data?.PaidAmount / params?.data?.Total * 100 as any) + '%';
+          }
+        },
+        {
           ...agMakeStateColDef(this.cms, processingMap, (data) => {
             // this.preview([data]);
             if (this.cms.getObjectId(data.State) == 'PROCESSING') {
@@ -411,7 +430,22 @@ export class CollaboratorOrderListComponent extends AgGridDataManagerListCompone
           width: 155,
         },
         {
-          ...agMakeCommandColDef(this, this.cms, true, true, true),
+          ...agMakeCommandColDef(this, this.cms, true, true, true, [
+            {
+              name: 'COMMISSIONPRINT',
+              icon: 'info-outline',
+              status: 'primary',
+              outline: false,
+              action: async (params: any, buttonConfig?: any) => {
+                this.cms.openDialog(CollaboratorOrderCommissionPrintComponent, {
+                  context: {
+                    id: params.data.Code,
+                  },
+                })
+                return true;
+              }
+            }
+          ]),
           headerName: 'Lệnh',
         },
       ] as ColDef[]);

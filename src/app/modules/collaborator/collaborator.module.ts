@@ -64,6 +64,7 @@ import { CollaboratorBasicSaleCommissionConfigurationListComponent } from "./sal
 import { CollaboratorStrategyCompileRuleListComponent } from "./strategy-compile-rules/strategy-compile-rule-list/strategy-compile-rule-list.component";
 import { CollaboratorSalesManagerListComponent } from "./sales-manager/collaborator-sales-manager-list/collaborator-sales-manager-list.component";
 import { CollaboratorPublisherSupporterListComponent } from "./publisher-supporter/collaborator-publisher-supporter-list/collaborator-publisher-supporter-list.component";
+import { CollaboratorOrderCommissionPrintComponent } from "./order/collaborator-order-commission-print/collaborator-order-commission-print.component";
 
 export const collaboratorComponents = [
     CollaboratorPageComponent,
@@ -135,4 +136,5 @@ export const collaboratorComponents = [
     CollaboratorSellerListComponent,
     CollaboratorSalesManagerListComponent,
     CollaboratorPublisherSupporterListComponent,
+    CollaboratorOrderCommissionPrintComponent,
 ];

@@ -1122,10 +1122,10 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
       // Ward: [],
       // DeliveryAddress: [],
 
-      PublisherSupporter: [],
-      Seller: [],
-      Bot: [],
-      SalesManager: [],
+      // PublisherSupporter: [],
+      // Seller: [],
+      // Bot: [],
+      // SalesManager: [],
 
       DeliveryProvince: [],
       DeliveryDistrict: [],
@@ -1239,7 +1239,7 @@ export class CollaboratorOrderFormComponent extends DataManagerFormComponent<Col
   /** Detail Form */
   makeNewDetailFormGroup(parentFormGroup: FormGroup, data?: CollaboratorOrderDetailModel): FormGroup {
     const newForm = this.formBuilder.group({
-      // Id: [''],
+      SystemUuid: [],
       No: [''],
       Type: ['PRODUCT'],
       Product: [''],

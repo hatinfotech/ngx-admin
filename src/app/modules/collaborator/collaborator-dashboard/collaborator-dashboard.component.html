@@ -11,10 +11,13 @@
         </div>
 
         <div class="details">
-          <div class="title h6">Chiết khấu</div>
-          <div class="status paragraph-2">Tạm tính: {{summaryReport?.TmpCommission | currency:'VND'}}</div>
+          <div class="title h6">Kênh CTV Bán Hàng</div>
+          <div class="status paragraph-2">Sô lượng CTV phát sinh: 25</div>
+          <div class="status paragraph-2">Doanh số: 250.000.000 đ</div>
+          <div class="status paragraph-2">Cơ hội bán hàng: 120.000.000 đ</div>
+          <!-- <div class="status paragraph-2">Tạm tính: {{summaryReport?.TmpCommission | currency:'VND'}}</div>
           <div class="status paragraph-2">Đã chốt: {{summaryReport?.Commission | currency:'VND'}}</div>
-          <div class="status paragraph-2">Thưởng: {{summaryReport?.Award | currency:'VND'}}</div>
+          <div class="status paragraph-2">Thưởng: {{summaryReport?.Award | currency:'VND'}}</div> -->
           <!-- <div class="status paragraph-2">Tổng quỹ: {{(summaryReport?.Cash + summaryReport?.CashInBank) | currency:'VND'}}</div> -->
         </div>
       </nb-card>
@@ -28,9 +31,12 @@
         </div>
 
         <div class="details">
-          <div class="title h6">Doanh thu</div>
-          <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}</div>
-          <div class="status paragraph-2">Giảm danh thu: {{summaryReport?.DecreaseRevenues | currency:'VND'}}<br />Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div>
+          <div class="title h6">Doanh Thu Tổng thể</div>
+          <!-- <div class="status paragraph-2">Doanh thu: {{summaryReport?.Revenues | currency:'VND'}}</div>
+          <div class="status paragraph-2">Giảm danh thu: {{summaryReport?.DecreaseRevenues | currency:'VND'}}<br />Chi phí: {{summaryReport?.Cost | currency:'VND'}}</div> -->
+          <div class="status paragraph-2">Doanh thu: 600.000.000 đ</div>
+          <div class="status paragraph-2">KPIs tổng: 100.000.000 đ</div>
+          <div class="status paragraph-2">Số lượng đơn hủy: 50</div>
         </div>
       </nb-card>
     </div>
@@ -43,8 +49,12 @@
         </div>
 
         <div class="details">
-          <div class="title h6">Công nợ</div>
-          <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br />Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div>
+          <div class="title h6">Vai Trò Sales</div>
+          <!-- <div class="status paragraph-2">Phải thu: {{summaryReport?.CustomerReceivableDebt | currency:'VND'}}<br />Phải trả: {{summaryReport?.LiabilitiesDebt | currency:'VND'}}</div> -->
+          <div class="status paragraph-2">KPIs doanh thu: 350.000.000 đ</div>
+          <div class="status paragraph-2">Số lượng NV: 350.000.000 đ</div>
+          <div class="status paragraph-2">Số lượng đơn: 500</div>
+          <div class="status paragraph-2">Số lượng cơ hội bán hàng: 200</div>
         </div>
       </nb-card>
     </div>
@@ -57,10 +67,13 @@
         </div>
 
         <div class="details">
-          <div class="title h6">Nhân lực</div>
-          <div class="status paragraph-2">Quản lý: {{summaryReport?.NumOfManagers | number:'1.0-0'}}</div>
+          <div class="title h6">Vai Trò Chăm Sóc CTV</div>
+          <!-- <div class="status paragraph-2">Quản lý: {{summaryReport?.NumOfManagers | number:'1.0-0'}}</div>
           <div class="status paragraph-2">QL CTV: {{summaryReport?.NumOfSales | number:'1.0-0'}}</div>
-          <div class="status paragraph-2">CTV: {{summaryReport?.NumOfPublishers | number:'1.0-0'}}</div>
+          <div class="status paragraph-2">CTV: {{summaryReport?.NumOfPublishers | number:'1.0-0'}}</div> -->
+          <div class="status paragraph-2">KPIs doanh số: 300.000.000 đ</div>
+          <div class="status paragraph-2">KPIs sản lượng CTV: 50</div>
+          <div class="status paragraph-2">Số lượng NV Chăm Sóc CTV: 10</div>
         </div>
         <!-- <div class="details">
           <div class="title h6">Lãi/lỗ</div>
@@ -236,21 +249,21 @@
               </nb-card-body>
             </nb-card>
           </nb-tab>
-          <nb-tab tabTitle="Dòng tiền thuần">
+          <nb-tab tabTitle="Vai trò Chăm sóc CTV">
             <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="debtCompareStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
-          <nb-tab tabTitle="Lưu chuyển tiền tệ">
+          <nb-tab tabTitle="Vai trò Sales">
             <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="cashFlowStatisticsData" [options]="options"></chart>
               </nb-card-body>
             </nb-card>
           </nb-tab>
-          <nb-tab tabTitle="Lãi/lỗ">
+          <nb-tab tabTitle="Doanh thu tổng thể">
             <nb-card class="size-giant chart small-header" style="height: calc(100vh - 22.2rem)">
               <nb-card-body class="commission-statistics-wrapper">
                 <chart type="line" [data]="profitStatisticsData" [options]="options"></chart>
