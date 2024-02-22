@@ -46,7 +46,10 @@ export class CollaboratorStrategyCompileRuleListComponent extends AgGridDataMana
     BASIC: { id: 'BASIC', text: 'Chiết khấu cơ bản' },
     ADVANCE: { id: 'ADVANCE', text: 'Chiết khấu nâng cao' },
     ADDON: { id: 'ADDON', text: 'Chiết khấu add-on' },
-    REBY: { id: 'REBY', text: 'Chiết khấu tái mua' },
+    REBUY: { id: 'REBUY', text: 'Chiết khấu tái mua' },
+    BASICSALE: { id: 'BASICSALE', text: 'Chiết khấu sale cơ bản' },
+    ADVANCESALE: { id: 'ADVANCESALE', text: 'Chiết khấu sale nâng cao' },
+    ADDONSALE: { id: 'ADDONSALE', text: 'Chiết khấu sale add-on' },
   };
 
   constructor(
@@ -188,8 +191,8 @@ export class CollaboratorStrategyCompileRuleListComponent extends AgGridDataMana
         },
         {
           ...agMakeTextColDef(this.cms),
-          headerName: 'CTV',
-          field: 'Publisher',
+          headerName: 'CTV/Liên hệ',
+          field: 'Contact',
           valueGetter: 'node.data.PublisherName',
           // pinned: 'left',
           width: 200,

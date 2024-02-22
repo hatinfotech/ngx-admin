@@ -60,6 +60,10 @@
   padding-right: 5px;
 }
 
+#print-area .nowrap {
+  white-space: nowrap;
+}
+
 #print-area .text-align-right {
   text-align: right;
 }
@@ -72,7 +76,8 @@
 }
 
 #print-area .print-voucher-detail-line td,
-#print-area .print-voucher-detail-header td {
+#print-area .print-voucher-detail-header td,
+#print-area .print-voucher-detail-header th {
   padding-left: 3px;
   padding-right: 3px;
 }

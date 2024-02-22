@@ -42,10 +42,8 @@
                                 <th class="text-align-right">{{'Voucher.shortUnit' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.price' | translate | headtitlecase}}</th>
                                 <th class="text-align-right">{{'Voucher.toMoney' | translate | headtitlecase}}</th>
-                                <th>{{'CTV' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'CKCB' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'CKNC' | translate | headtitlecase}}</th>
-                                <th class="text-align-right">{{'CKADDON' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'CK CTV' | translate | headtitlecase}}</th>
+                                <th class="text-align-left">{{'CK Sales' | translate | headtitlecase}}</th>
                             </tr>
                             <ng-container *ngFor="let detail of data.Details; let i = index;">
                                 <tr class="print-voucher-detail-line" *ngIf="detail.Type === 'CATEGORY'">
@@ -73,10 +71,22 @@
                                     <td class="text-align-right">{{detail.Unit | objecttext}}</td>
                                     <td class="text-align-right">{{renderValue(detail.Price) | currency:'VND'}}</td>
                                     <td class="text-align-right">{{detail['ToMoney'] | currency:'VND'}}</td>
-                                    <td class="text-align-right">{{detail.PublisherName}}</td>
-                                    <td class="text-align-right">{{detail['BasicCommissionAmount'] | currency:'VND'}}</td>
+                                    <td class="text-align-left">
+                                        <span class="nowrap"*ngIf="detail['PublisherName']">{{detail['PublisherName']}}<br></span>
+                                        <span class="nowrap"*ngIf="detail['BasicCommissionRatio']">CB: {{detail['BasicCommissionAmount'] | currency:'VND'}} ({{detail['BasicCommissionRatio']}}%)<br></span>
+                                        <span class="nowrap"*ngIf="detail['AdvanceCommissionRatio']">NC: {{detail['AdvanceCommissionAmount'] | currency:'VND'}} ({{detail['AdvanceCommissionRatio']}}%)<br></span>
+                                        <span class="nowrap"*ngIf="detail['AddonCommissionRatio']">Add-on: {{detail['AddonCommissionAmount'] | currency:'VND'}} ({{detail['AddonCommissionRatio']}}%)<br></span>
+                                        <span class="nowrap"*ngIf="detail['RebuyCommissionRatio']">Rebuy: {{detail['RebuyCommissionAmount'] | currency:'VND'}} ({{detail['RebuyCommissionRatio']}}%)</span>
+                                    </td>
+                                    <td class="text-align-left">
+                                        <span class="nowrap" *ngIf="detail['SellerName']">{{detail['SellerName']}}</span><br>
+                                        <span class="nowrap"*ngIf="detail['BasicSalerCommissionRatio']">CB: {{detail['BasicSalerCommissionAmount'] | currency:'VND'}} ({{detail['BasicSalerCommissionRatio']}}%)<br></span>
+                                        <span class="nowrap"*ngIf="detail['AdvanceSalerCommissionRatio']">NC: {{detail['AdvanceSalerCommissionAmount'] | currency:'VND'}} ({{detail['AdvanceSalerCommissionRatio']}}%)<br></span>
+                                        <span class="nowrap"*ngIf="detail['AddonSalerCommissionRatio']">Add-on: {{detail['AddonSalerCommissionAmount'] | currency:'VND'}} ({{detail['AddonSalerCommissionRatio']}}%)</span>
+                                    </td>
+                                    <!-- <td class="text-align-right">{{detail['BasicCommissionAmount'] | currency:'VND'}}</td>
                                     <td class="text-align-right">{{detail['AdvanceCommissionAmount'] | currency:'VND'}}</td>
-                                    <td class="text-align-right">{{detail['AddonCommissionAmount'] | currency:'VND'}}</td>
+                                    <td class="text-align-right">{{detail['AddonCommissionAmount'] | currency:'VND'}}</td> -->
                                 </tr>
                                 <!-- <tr class="print-voucher-detail-line" *ngIf="detail?.Product?.Description">
                                     <td>&nbsp;</td>
