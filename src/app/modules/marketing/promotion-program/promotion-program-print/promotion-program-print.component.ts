@@ -3,56 +3,44 @@ import { CashReceiptVoucherFormComponent } from '../../../accounting/cash/receip
 // import { SalesModule } from './../../sales.module';
 import { Component, OnInit } from '@angular/core';
 import { DataManagerPrintComponent } from '../../../../lib/data-manager/data-manager-print.component';
+import { SalesVoucherDetailModel } from '../../../../models/sales.model';
 import { environment } from '../../../../../environments/environment';
 import { CommonService } from '../../../../services/common.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../../../../services/api.service';
 import { NbDialogRef } from '@nebular/theme';
 import { DatePipe } from '@angular/common';
-import { MktMemberCardFormComponent } from '../member-card-form/member-card-form.component';
 import { ProcessMap } from '../../../../models/process-map.model';
 import { AppModule } from '../../../../app.module';
-import { MktMemberCardModel } from '../../../../models/marketing.model';
+import { RootServices } from '../../../../services/root.services';
+import { MktPromotionProgramFormComponent } from '../promotion-program-form/promotion-program-form.component';
+import { Model } from '../../../../models/model';
 
 @Component({
-  selector: 'ngx-mkt-member-card-print',
-  templateUrl: './member-card-print.component.html',
-  styleUrls: ['./member-card-print.component.scss'],
+  selector: 'ngx-mkt-promotion-program-print',
+  templateUrl: './promotion-program-print.component.html',
+  styleUrls: ['./promotion-program-print.component.scss'],
 })
-export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMemberCardModel> implements OnInit {
+export class MktPromotionProgramPrintComponent extends DataManagerPrintComponent<Model> implements OnInit {
 
   /** Component name */
-  componentName = 'SalesPriceReportPrintComponent';
+  componentName = 'MktPromotionProgramPrintComponent';
   title: string = '';
   env = environment;
-  apiPath = '/marketing/member-cards';
+  apiPath = '/marketing/promotion-programs';
   processMapList: ProcessMap[] = [];
   idKey = ['Code'];
-  formDialog = MktMemberCardFormComponent;
-  
-  registerInfo: any = {
-    voucherInfo: this.cms.translateText('Information.Voucher.register'),
-    voucherLogo: environment.register.logo.voucher,
-    voucherLogoHeight: 60,
-  };
+  formDialog = MktPromotionProgramFormComponent;
 
   constructor(
+    public rsv: RootServices,
     public cms: CommonService,
     public router: Router,
     public apiService: ApiService,
-    public ref: NbDialogRef<MktMemberCardPrintComponent>,
+    public ref: NbDialogRef<MktPromotionProgramPrintComponent>,
     public datePipe: DatePipe,
   ) {
-    super(cms, router, apiService, ref);
-
-    this.cms.systemConfigs$.subscribe(settings => {
-      if (settings.LICENSE_INFO && settings.LICENSE_INFO.register && settings.LICENSE_INFO.register) {
-        this.registerInfo.voucherInfo = settings.LICENSE_INFO.register.voucherInfo.replace(/\\n/g, '<br>');
-        this.registerInfo.voucherLogo = settings.LICENSE_INFO.register.voucherLogo;
-        this.registerInfo.voucherLogoHeight = settings.LICENSE_INFO.register.voucherLogoHeight;
-      }
-    });
-
+    super(rsv, cms, router, apiService, ref);
   }
 
   ngOnInit() {
@@ -62,7 +50,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
 
   async init() {
     const result = await super.init();
-    // this.title = `MktMemberCard_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
+    // this.title = `SalesVoucher_${this.identifier}` + (this.data.DateOfSale ? ('_' + this.datePipe.transform(this.data.DateOfSale, 'short')) : '');
 
     // if (this.data && this.data.length > 0) {
     //   for (const i in this.data) {
@@ -72,7 +60,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     //     for (const detail of data.Details) {
     //       data['Total'] += detail['ToMoney'] = this.toMoney(detail);
     //     }
-    //     this.processMapList[i] = AppModule.processMaps.memberCard[data.State || ''];
+    //     this.processMapList[i] = AppModule.processMaps.salesVoucher[data.State || ''];
     //   }
     // }
     this.summaryCalculate(this.data);
@@ -80,7 +68,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     return result;
   }
 
-  renderTitle(data: MktMemberCardModel) {
+  renderTitle(data: Model) {
     return `PhieuBanHang_${this.getIdentified(data).join('-')}` + (data.DateOfSale ? ('_' + this.datePipe.transform(data.DateOfSale, 'short')) : '');
   }
 
@@ -101,20 +89,20 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     }
   }
 
-  // toMoney(detail: any) {
-  //   if (detail.Type !== 'CATEGORY') {
-  //     let toMoney = detail['Quantity'] * detail['Price'];
-  //     // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
-  //     // if (detail.Tax) {
-  //     //   if (typeof detail.Tax.Tax == 'undefined') {
-  //     //     throw Error('tax not as tax model');
-  //     //   }
-  //     //   toMoney += toMoney * detail.Tax.Tax / 100;
-  //     // }
-  //     return toMoney;
-  //   }
-  //   return 0;
-  // }
+  toMoney(detail: SalesVoucherDetailModel) {
+    if (detail.Type !== 'CATEGORY') {
+      let toMoney = detail['Quantity'] * detail['Price'];
+      // detail.Tax = typeof detail.Tax === 'string' ? (this.cms.taxList?.find(f => f.Code === detail.Tax) as any) : detail.Tax;
+      // if (detail.Tax) {
+      //   if (typeof detail.Tax.Tax == 'undefined') {
+      //     throw Error('tax not as tax model');
+      //   }
+      //   toMoney += toMoney * detail.Tax.Tax / 100;
+      // }
+      return toMoney;
+    }
+    return 0;
+  }
 
   getTotal() {
     let total = 0;
@@ -143,14 +131,14 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     return '';
   }
 
-  prepareCopy(data: MktMemberCardModel) {
+  prepareCopy(data: Model) {
     this.close();
-    this.cms.openDialog(MktMemberCardFormComponent, {
+    this.cms.openDialog(MktPromotionProgramFormComponent, {
       context: {
         inputMode: 'dialog',
         inputId: [data.Code],
         isDuplicate: true,
-        onDialogSave: (newData: MktMemberCardModel[]) => {
+        onDialogSave: (newData: Model[]) => {
           // if (onDialogSave) onDialogSave(row);
           this.onClose(newData[0]);
         },
@@ -163,7 +151,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     });
   }
 
-  approvedConfirm(data: MktMemberCardModel) {
+  approvedConfirm(data: Model) {
     // if (['COMPLETE'].indexOf(data.State) > -1) {
     //   this.cms.showDiaplog(this.cms.translateText('Common.approved'), this.cms.translateText('Common.completedAlert', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
     //     {
@@ -177,7 +165,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     //   return;
     // }
     const params = { id: [data.Code] };
-    const processMap = AppModule.processMaps.memberCard[data.State || ''];
+    const processMap = AppModule.processMaps.salesVoucher[data.State || ''];
     params['changeState'] = processMap.nextState;
     // let confirmText = '';
     // let responseText = '';
@@ -207,7 +195,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
         status: 'danger',
         action: () => {
           this.loading = true;
-          this.apiService.putPromise<MktMemberCardModel[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<Model[]>(this.apiPath, params, [{ Code: data.Code }]).then(rs => {
             this.loading = false;
             this.onChange && this.onChange(data);
             this.onClose && this.onClose(data);
@@ -231,9 +219,9 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
     ]);
   }
 
-  approvedConfirmX(data: MktMemberCardModel) {
+  approvedConfirmX(data: Model) {
     if (data.State === 'COMPLETE') {
-      this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.MktMemberCard.title', { action: '', definition: '' }) }), [
+      this.cms.showDialog(this.cms.translateText('Common.notice'), this.cms.translateText('Common.completedNotice', { resource: this.cms.translateText('Sales.SalesVoucher.title', { action: '', definition: '' }) }), [
         {
           label: this.cms.translateText('Common.ok'),
           status: 'success',
@@ -241,7 +229,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
       ]);
       return;
     }
-    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.cms.translateText('Sales.MktMemberCard.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
+    this.cms.showDialog(this.cms.translateText('Common.confirm'), this.cms.translateText(!data.State ? 'Common.approvedConfirm' : (data.State === 'APPROVE' ? 'Common.completedConfirm' : ''), { object: this.cms.translateText('Sales.SalesVoucher.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
       {
         label: this.cms.translateText('Common.cancel'),
         status: 'primary',
@@ -259,7 +247,7 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
           } else if (data.State === 'APPROVED') {
             params['complete'] = true;
           }
-          this.apiService.putPromise<MktMemberCardModel[]>('/marketing/member-cards', params, [{ Code: data.Code }]).then(rs => {
+          this.apiService.putPromise<Model[]>('/sales/sales-vouchers', params, [{ Code: data.Code }]).then(rs => {
             this.cms.showDialog(this.cms.translateText('Common.completed'), this.cms.translateText('Common.completedSuccess', { object: this.cms.translateText('Sales.PriceReport.title', { definition: '', action: '' }) + ': `' + data.Title + '`' }), [
               {
                 label: this.cms.translateText('Common.close'),
@@ -279,27 +267,27 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
   }
 
   async getFormData(ids: string[]) {
-    return this.apiService.getPromise<MktMemberCardModel[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
+    return this.apiService.getPromise<Model[]>(this.apiPath, { id: ids, includeContact: true, includeObject: true, includeDetails: true, useBaseTimezone: true, includeTax: true, includeUnit: true, includeRelativeVouchers: true, includeSignature: true }).then(rs => {
       for (const item of rs) {
-        const processMap = AppModule.processMaps.memberCard[item.State || ''];
+        const processMap = AppModule.processMaps.salesVoucher[item.State || ''];
         item.StateLabel = processMap.label;
-        // if (item && item.Details) {
-        //   this.setDetailsNo(item.Details, (detail: any) => detail.Type !== 'CATEGORY');
-        //   for (const detail of item.Details) {
-        //     // item['Total'] += detail['ToMoney'] = this.toMoney(detail);
-        //   }
-        // }
+        if (item && item.Details) {
+          this.setDetailsNo(item.Details, (detail: SalesVoucherDetailModel) => detail.Type !== 'CATEGORY');
+          for (const detail of item.Details) {
+            item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+          }
+        }
       }
       this.summaryCalculate(rs);
       return rs;
     });
   }
 
-  getItemDescription(item: MktMemberCardModel) {
+  getItemDescription(item: Model) {
     return item?.Description;
   }
 
-  summaryCalculate(data: MktMemberCardModel[]) {
+  summaryCalculate(data: Model[]) {
     for (const i in data) {
       const item = data[i];
       item['Total'] = 0;
@@ -309,27 +297,27 @@ export class MktMemberCardPrintComponent extends DataManagerPrintComponent<MktMe
       //   item['DefaultNote'] = 'cho phép công nợ 1 tháng kể từ ngày bán hàng';
       // }
 
-      // for (const detail of item.Details) {
-      //   // item['Total'] += detail['ToMoney'] = this.toMoney(detail);
-      // }
-      this.processMapList[i] = AppModule.processMaps.memberCard[item.State || ''];
+      for (const detail of item.Details) {
+        item['Total'] += detail['ToMoney'] = this.toMoney(detail);
+      }
+      this.processMapList[i] = AppModule.processMaps.salesVoucher[item.State || ''];
     }
     return data;
   }
 
-  receipt(item: MktMemberCardModel) {
-    this.cms.openDialog(CashReceiptVoucherFormComponent, {
-      context: {
-        onDialogSave: (items: CashVoucherModel[]) => {
-          this.refresh();
-          this.onChange && this.onChange(item, this);
-        },
-        onAfterInit: (formComponent: CashReceiptVoucherFormComponent) => {
-          formComponent.addRelativeVoucher(item, 'SALES');
-        },
-      }
-    })
-    return false;
-  }
+  // receipt(item: Model) {
+  //   this.cms.openDialog(CashReceiptVoucherFormComponent, {
+  //     context: {
+  //       onDialogSave: (items: CashVoucherModel[]) => {
+  //         this.refresh();
+  //         this.onChange && this.onChange(item, this);
+  //       },
+  //       onAfterInit: (formComponent: CashReceiptVoucherFormComponent) => {
+  //         formComponent.addRelativeVoucher(item, 'SALES');
+  //       },
+  //     }
+  //   })
+  //   return false;
+  // }
 
 }

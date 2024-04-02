@@ -6,7 +6,7 @@ import { ShowcaseDialogComponent } from './../../../dialog/showcase-dialog/showc
 import { ProductModel, ProductSearchIndexModel, ProductUnitModel } from './../../../../models/product.model';
 import { ContactModel } from './../../../../models/contact.model';
 import { CommercePosOrderModel, CommercePosCashVoucherModel, CommercePosReturnModel, CommercePosReturnDetailModel } from './../../../../models/commerce-pos.model';
-import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl } from '@angular/forms';
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from "@angular/core";
 import { Router } from "@angular/router";
 import { NbDialogRef, NbGlobalPhysicalPosition } from "@nebular/theme";
@@ -3816,6 +3816,15 @@ export class CommercePosGuiComponent extends BaseComponent implements AfterViewI
         ]
       }
     })
+  }
+
+  click2call(order: FormGroup) {
+    let toast = this.cms.showToast('Nhất máy nội bộ của bạn khi nó đỗ chuông để bắt đầu gọi !', 'Đang kết nối tới số nội bộ !', { ...this.toastDefaultConfig, status: 'danger', duration: 0 });
+    this.apiService.putPromise('/commerce-pos/orders/' + order.get('Code').value, { click2call: true, DestPhone: order.get('ObjectPhone').value }, [{ Code: order.get('Code').value }]).then(rs => {
+      toast.close();
+      this.cms.showToast('Hệ thống đang gọi tới số của khách hàng ' + order.get('ObjectPhone').value + ', vui lòng giữ máy !', 'Đang gọi cho khách hàng', { ...this.toastDefaultConfig, status: 'success', duration: 15000 });
+      console.log(rs);
+    });
   }
 
   playNewPipSound() {

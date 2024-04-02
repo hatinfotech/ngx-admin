@@ -46,7 +46,7 @@ export class WarehouseGoodsListComponent extends AgGridDataManagerListComponent<
   componentName: string = 'WarehouseGoodsListComponent';
   formPath = '/warehouse/goods/form';
   apiPath = '/warehouse/goods';
-  idKey: string | string[] = ['Code', 'WarehouseUnit', 'Container'];
+  idKey: string | string[] = ['Code', 'Unit', 'Container'];
   formDialog = ProductFormComponent;
 
   // Use for load settings menu for context

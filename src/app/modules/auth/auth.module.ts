@@ -14,6 +14,8 @@ import { NbAuthModule } from '@nebular/auth';
 import { LoginComponent } from './login/login.component';
 import { LoginDialogComponent } from './login/login-dialog.component';
 import { CustomElementModule } from '../../lib/custom-element/custom-element.module';
+import { NgxQRCodeModule } from '@techiediaries/ngx-qrcode';
+import { NgxBarcodeModule } from 'ngx-barcode';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,8 @@ import { CustomElementModule } from '../../lib/custom-element/custom-element.mod
     NbIconModule,
     NbCardModule,
     TranslateModule,
+    NgxBarcodeModule.forRoot(),
+    NgxQRCodeModule,
     // CustomElementModule,
   ],
   entryComponents: [

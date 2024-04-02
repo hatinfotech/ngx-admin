@@ -67,7 +67,7 @@ export abstract class DataManagerFormComponent<M> extends BaseComponent implemen
   id: string[] = [];
 
   /** base form url */
-  abstract baseFormUrl: string;
+  baseFormUrl?: string;
 
   /** resource id key */
   abstract idKey: any;

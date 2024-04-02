@@ -24,6 +24,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
   static instances: LoginDialogComponent[] = [];
 
   qrCodeImgData: string;
+  qrCodeData: string;
   qrCodeExpried: boolean = null;
   isLoginByApp: boolean = false
   env = environment;
@@ -221,6 +222,7 @@ export class LoginDialogComponent extends NbLoginComponent implements OnInit, On
     }
     this.apiService.postPromise<any>('/user/login/requestAuthByQrCode', {}, []).then(rs => {
       this.qrCodeImgData = rs.QrCode;
+      this.qrCodeData = rs.QrCodeData;
       // const expired = new Date(rs.Expried);
       this.isLoginByApp = true;
       this.qrCodeExpried = false;

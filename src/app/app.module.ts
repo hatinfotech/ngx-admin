@@ -180,9 +180,6 @@ import { WordpressOrderListComponent } from './modules/wordpress/order/order-lis
 import { WordpressOrderFormComponent } from './modules/wordpress/order/order-form/order-form.component';
 import { WordpressOrderPrintComponent } from './modules/wordpress/order/order-print/order-print.component';
 import { AgDynamicListComponent } from './modules/general/ag-dymanic-list/ag-dymanic-list.component';
-import { MktMemberCardListComponent } from './modules/marketing/member-card/member-card-list/member-card-list.component';
-import { MktMemberCardFormComponent } from './modules/marketing/member-card/member-card-form/member-card-form.component';
-import { MktMemberCardPrintComponent } from './modules/marketing/member-card/member-card-print/member-card-print.component';
 import { collaboratorComponents } from './modules/collaborator/collaborator.module';
 import { MentionModule } from 'angular-mentions';
 import { saleComponents } from './modules/sales/sales.module';
@@ -195,6 +192,7 @@ import { generalComponents } from './modules/general/general.module';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { contactComponents } from './modules/contact/contact.module';
 import { purchaseComponents } from './modules/purchase/purchase.module';
+import { marketingComponents } from './modules/marketing/marketing.module';
 
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 registerLocaleData(localeVi, 'vi-VN', localeViExtra);
@@ -367,16 +365,14 @@ export class DynamicLocaleId extends String {
     WordpressOrderFormComponent,
     WordpressOrderPrintComponent,
 
-    // Marketing
-    MktMemberCardListComponent,
-    MktMemberCardFormComponent,
-    MktMemberCardPrintComponent,
-
+    
     // General components
     AgDynamicListComponent,
-
+    
     ...systemComponents,
     ...userComponents,
+    // Marketing
+    ...marketingComponents,
   ],
   imports: [
     BrowserModule,

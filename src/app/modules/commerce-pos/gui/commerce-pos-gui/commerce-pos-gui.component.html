@@ -21,11 +21,12 @@
                                     <div class="col-md-3">
                                         <ngx-form-group [formGroup]="orderForm" name="ObjectPhone" label="Số điện thoại" [allowCopy]="false" [required]="true" [hideLabel]="true">
                                             <input id="ObjectPhone" #ObjectPhone formControlName="ObjectPhone" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" (keyup)="onObjectPhoneInput(orderForm, $event)" type="text" nbInput fieldSize="medium" fullWidth placeholder="Số điện thoại..." class="pos-contact-field-input">
+                                            <nb-icon role="link" icon="phone-call" status="danger" style="position: absolute; right: 0.5rem; top: 0.6rem; cursor: pointer;" (click)="click2call(orderForm)" nbTooltip="Gọi cho khách bằng số nội bộ"></nb-icon>
                                         </ngx-form-group>
                                     </div>
                                     <div class="col-md-3">
                                         <ngx-form-group [formGroup]="orderForm" name="ObjectAddress" label="Địa chỉ" [allowCopy]="false" [required]="true" [hideLabel]="true">
-                                            <input id="ObjectAddress" #ObjectAddress formControlName="ObjectAddress" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" fieldSize="medium" fullWidth placeholder="Địa chỉ..." class="pos-contact-field-input">
+                                            <input id="ObjectAddress" #ObjectAddress formControlName="ObjectAddress" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput (keyup)="onObjectNameInput(orderForm, $event)" fieldSize="medium" fullWidth placeholder="Địa chỉ..." class="pos-contact-field-input" style="padding-right: 2rem">
                                         </ngx-form-group>
                                     </div>
                                 </div>
@@ -126,7 +127,7 @@
                                         <div class="pos-unit" style="white-space: nowrap;">{{detail.value.Unit | objecttext}}</div>
                                         <div *ngIf="detail.value.AccessNumbers && detail.value.AccessNumbers.length > 0" class="pos-access-numbers">Số truy xuất: {{detail.value.AccessNumbers | objectstext}}</div>
                                         <div class="pos-price">x {{detail.value.Price | currency:'VND'}}</div>
-                                        <div class="pos-discount">Bớt khách quen: {{detail.value.Discount | number}} đ</div>
+                                        <div class="pos-discount">Giảm giá: {{detail.value.Discount | number}} đ</div>
                                         <hr style="margin: 0.5rem;">
                                         <div class="pos-tomoney">= {{detail.value.ToMoney | currency:'VND'}}</div>
                                     </td>
@@ -390,9 +391,9 @@
                                 <div class="row">
                                     <div class="col-md-12" style="margin-bottom: 0.5rem;">
                                         <div class="pos-contact-field" style="padding-top: 10px; margin-bottom: 5px;">
-                                            <nb-badge text="Bớt (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
+                                            <nb-badge text="Giảm tổng đơn (F11)" status="success" position="top left" style="left: 5px;"></nb-badge>
                                             <nb-badge text="{{orderForm.value.Amount && orderForm.value.DecreaseForTotal && ((orderForm.value.DecreaseForTotal || 0)/orderForm.value.Amount*100).toFixed(2)}}%" status="danger" position="top right"></nb-badge>
-                                            <input id="DecreaseForTotal" style="color: var(--success) !important; padding: 0.5rem;" #DecreaseForTotal formControlName="DecreaseForTotal" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="success" fieldSize="large" fullWidth placeholder="Bớt lấy thảo" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
+                                            <input id="DecreaseForTotal" style="color: var(--success) !important; padding: 0.5rem;" #DecreaseForTotal formControlName="DecreaseForTotal" (focus)="autoBlur($event, 10000)" (blur)="clearAutoBlur($event)" type="text" nbInput status="success" fieldSize="large" fullWidth placeholder="Giảm tổng đơn" class="pos-contact-field-input" currencyMask [options]="toMoneyCurencyFormat">
                                         </div>
                                     </div>
                                     <div class="col-md-12">

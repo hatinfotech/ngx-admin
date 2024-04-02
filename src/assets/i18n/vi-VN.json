@@ -93,6 +93,17 @@
         "deploymentTask": "task triển khai",
         "date": "ngày triển khai"
     },
+    "Promotion": {
+        "Promotion": {
+            "title": "{{definition}}{{action}} chương trình khuyến mại",
+            "List": {
+                "Title": ""
+            },
+            "Form": {
+                "title": "{{action}} chương trình khuyến mại"
+            }
+        }
+    },
     "DateTime": {
         "weekend": "cuối tuần",
         "endOfTheMonth": "cuối tháng",

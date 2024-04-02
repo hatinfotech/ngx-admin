@@ -58,6 +58,7 @@ import { systemRoutes } from './modules/system/system-routing.module';
 import { userRoutes } from './modules/users/users-routing.module';
 import { contactRoutes } from './modules/contact/contact-routing.module';
 import { purchaseRoutes } from './modules/purchase/purchase.routing';
+import { marketingRoutes } from './modules/marketing/marketing.routing';
 
 @Injectable()
 export class RoutingResolve implements Resolve<any> {
@@ -471,15 +472,7 @@ const routes: Routes = [
 
 
   // Marketing
-  {
-    path: 'marketing/member-card/list',
-    canActivate: [AuthGuardService],
-    component: MktMemberCardListComponent,
-    data: {
-      reuse: true,
-    },
-  },
-  // End Marketing
+  ...marketingRoutes,
 
 
   {
